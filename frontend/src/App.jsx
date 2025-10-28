@@ -1,11 +1,16 @@
-import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 
-const App = () => {
+function App() {
   return (
-    <div className="flex items-center justify-center">
-      <p className="text-green-500 text-3xl">App</p>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+    </Routes>
   );
-};
+}
 
 export default App;
