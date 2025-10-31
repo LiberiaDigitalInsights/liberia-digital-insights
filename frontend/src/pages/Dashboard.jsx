@@ -3,10 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Table from '../components/ui/Table';
+import SidebarLayout from '../components/layouts/SidebarLayout';
+import TrafficChart from '../components/charts/TrafficChart';
 
 export default function Dashboard() {
   return (
-    <div className="mx-auto max-w-7xl p-6">
+    <SidebarLayout
+      sidebarTitle="LDI Admin"
+      items={[
+        { title: 'Content', links: [ { to: '/dashboard', label: 'Overview' }, { to: '/components', label: 'Components' } ] },
+        { title: 'Users', links: [ { to: '/about', label: 'About' }, { to: '/contact', label: 'Contact' } ] },
+      ]}
+    >
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
         <div className="flex gap-2">
@@ -72,14 +80,14 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Traffic (Placeholder)</CardTitle>
+            <CardTitle>Traffic</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-48 rounded-[var(--radius-md)] border border-dashed border-[var(--color-border)]" />
+            <TrafficChart height={192} />
           </CardContent>
         </Card>
       </div>
-    </div>
+    </SidebarLayout>
   );
 }
 
