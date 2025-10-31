@@ -21,8 +21,20 @@ export default function Dashboard() {
     <SidebarLayout
       sidebarTitle="LDI Admin"
       items={[
-        { title: 'Content', links: [ { to: '/dashboard', label: 'Overview' }, { to: '/components', label: 'Components' } ] },
-        { title: 'Users', links: [ { to: '/about', label: 'About' }, { to: '/contact', label: 'Contact' } ] },
+        {
+          title: 'Content',
+          links: [
+            { to: '/dashboard', label: 'Overview' },
+            { to: '/components', label: 'Components' },
+          ],
+        },
+        {
+          title: 'Users',
+          links: [
+            { to: '/about', label: 'About' },
+            { to: '/contact', label: 'Contact' },
+          ],
+        },
       ]}
     >
       <div className="mb-6 flex items-center justify-between">
@@ -104,4 +116,3 @@ export default function Dashboard() {
     </SidebarLayout>
   );
 }
-

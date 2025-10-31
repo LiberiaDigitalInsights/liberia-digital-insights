@@ -25,9 +25,7 @@ export default function ToastViewport() {
           <div className="flex items-start gap-3">
             <div className="flex-1">
               {t.title && <div className="font-semibold">{t.title}</div>}
-              {t.description && (
-                <div className="text-[var(--color-muted)]">{t.description}</div>
-              )}
+              {t.description && <div className="text-[var(--color-muted)]">{t.description}</div>}
             </div>
             <Button size="sm" variant="subtle" onClick={() => removeToast(t.id)}>
               Dismiss
@@ -38,4 +36,3 @@ export default function ToastViewport() {
     </div>
   );
 }
-

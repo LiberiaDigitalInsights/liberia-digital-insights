@@ -25,7 +25,8 @@ export default function SidebarLayout({ sidebarTitle = 'LDI Admin', items = [], 
                           to={l.to}
                           className={cn(
                             'rounded px-2 py-1 text-sm hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)]',
-                            location.pathname === l.to && 'bg-[color-mix(in_oklab,var(--color-surface),white_8%)]',
+                            location.pathname === l.to &&
+                              'bg-[color-mix(in_oklab,var(--color-surface),white_8%)]',
                           )}
                         >
                           {l.label}
@@ -43,4 +44,3 @@ export default function SidebarLayout({ sidebarTitle = 'LDI Admin', items = [], 
     </div>
   );
 }
-

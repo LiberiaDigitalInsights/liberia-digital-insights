@@ -33,4 +33,3 @@ export function Tabs({ tabs, value, onChange, className }) {
     </div>
   );
 }
-

@@ -24,4 +24,3 @@ export function CardTitle({ className, ...props }) {
 export function CardContent({ className, ...props }) {
   return <div className={cn('text-sm text-[var(--color-muted)]', className)} {...props} />;
 }
-

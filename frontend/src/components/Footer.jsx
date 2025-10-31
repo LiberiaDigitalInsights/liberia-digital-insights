@@ -1,5 +1,5 @@
-import React from "react";
-import { Muted } from "./ui/Typography";
+import React from 'react';
+import { Muted } from './ui/Typography';
 
 const Footer = () => {
   return (

@@ -39,5 +39,3 @@ See `/components` route for live examples.
 ## Conventions (Strict)
 
 See top-level `CONTRIBUTING.md` for mandatory rules (style, a11y, commits, testing, docs).
-
-

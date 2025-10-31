@@ -50,11 +50,21 @@ function Navbar() {
             </button>
           </div>
           <div className="flex flex-col gap-2 p-4">
-            <Link onClick={() => setOpen(false)} to="/">Home</Link>
-            <Link onClick={() => setOpen(false)} to="/about">About</Link>
-            <Link onClick={() => setOpen(false)} to="/contact">Contact</Link>
-            <Link onClick={() => setOpen(false)} to="/components">Components</Link>
-            <Link onClick={() => setOpen(false)} to="/dashboard">Dashboard</Link>
+            <Link onClick={() => setOpen(false)} to="/">
+              Home
+            </Link>
+            <Link onClick={() => setOpen(false)} to="/about">
+              About
+            </Link>
+            <Link onClick={() => setOpen(false)} to="/contact">
+              Contact
+            </Link>
+            <Link onClick={() => setOpen(false)} to="/components">
+              Components
+            </Link>
+            <Link onClick={() => setOpen(false)} to="/dashboard">
+              Dashboard
+            </Link>
           </div>
         </div>
       </div>

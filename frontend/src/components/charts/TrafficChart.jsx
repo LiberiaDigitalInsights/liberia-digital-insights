@@ -52,4 +52,3 @@ export default function TrafficChart({ data = sample, height = 180 }) {
     </div>
   );
 }
-
