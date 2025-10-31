@@ -28,6 +28,11 @@
   --radius-xl: 1rem;
 
   --spacing-3_5: 0.875rem;
+
+  /* Navbar palette approximated from reference */
+  --color-nav-top: #c91c16;
+  --color-nav-mid: #7f1d1d; /* deep red */
+  --color-nav-bottom: #a35f3e; /* brown */
 }
 
 :root {

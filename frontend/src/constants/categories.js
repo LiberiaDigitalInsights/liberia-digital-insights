@@ -1,0 +1,22 @@
+export const CATEGORIES = [
+  'Technology',
+  'Entrepreneurship',
+  'Digital Transformation',
+  'E-Commerce',
+  'Telecommunications',
+  'Education & Digital Literacy',
+  'AI & Innovation',
+  'Social Media Trends',
+  'Cybersecurity',
+  'Gaming & Entertainment',
+  'Business & Digital Economy',
+  'Tech Policies & Governance',
+  'Women in Tech',
+  'Startup Success Stories',
+  'Events & Hackathons',
+  'Opinion & Editorials',
+  'HealthTech',
+  'Environment & Sustainability in Tech',
+  'Tech for Social Good',
+];
+
