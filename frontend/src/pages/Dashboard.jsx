@@ -7,6 +7,16 @@ import SidebarLayout from '../components/layouts/SidebarLayout';
 import TrafficChart from '../components/charts/TrafficChart';
 
 export default function Dashboard() {
+  const [traffic, setTraffic] = React.useState(null);
+  const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    fetch('/traffic.json')
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('Failed to load'))))
+      .then((d) => setTraffic(d))
+      .catch((e) => setError(e.message));
+  }, []);
+
   return (
     <SidebarLayout
       sidebarTitle="LDI Admin"
@@ -83,7 +93,11 @@ export default function Dashboard() {
             <CardTitle>Traffic</CardTitle>
           </CardHeader>
           <CardContent>
-            <TrafficChart height={192} />
+            {error && <div className="text-sm text-red-500">{error}</div>}
+            {!traffic && !error && (
+              <div className="h-48 animate-pulse rounded-[var(--radius-md)] bg-[color-mix(in_oklab,var(--color-surface),white_6%)]" />
+            )}
+            {traffic && <TrafficChart data={traffic} height={192} />}
           </CardContent>
         </Card>
       </div>
