@@ -44,3 +44,12 @@ body {
   color: var(--color-text);
   font-family: var(--font-sans);
 }
+
+/* Light theme overrides */
+[data-theme='light'] {
+  --color-bg: #ffffff;
+  --color-surface: #f9fafb; /* zinc-50 */
+  --color-border: #e5e7eb; /* gray-200 */
+  --color-text: #0a0a0a; /* near-black */
+  --color-muted: #6b7280; /* gray-500 */
+}

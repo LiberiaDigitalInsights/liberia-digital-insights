@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
 function Navbar() {
   return (
-    <nav className="flex justify-around p-4 md:p-6 bg-amber-950 text-white">
-      <Link to="/">Home</Link>
-      <Link to="/about">About</Link>
-      <Link to="/contact">Contact</Link>
-      <Link to="/components">Components</Link>
+    <nav className="flex items-center justify-between p-4 md:p-6 border-b border-[var(--color-border)]">
+      <div className="flex gap-6">
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+        <Link to="/contact">Contact</Link>
+        <Link to="/components">Components</Link>
+      </div>
+      <ThemeToggle />
     </nav>
   );
 }
