@@ -18,10 +18,11 @@ export default function Signup() {
           <Input id="email" type="email" placeholder="you@example.com" />
           <HelperText>We’ll send occasional updates.</HelperText>
         </Field>
-        <Button type="submit" className="w-full">Create account</Button>
+        <Button type="submit" className="w-full">
+          Create account
+        </Button>
       </form>
       <Muted>By signing up, you agree to our terms.</Muted>
     </div>
   );
 }
-

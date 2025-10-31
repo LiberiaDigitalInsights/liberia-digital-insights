@@ -19,4 +19,3 @@ export const CATEGORIES = [
   'Environment & Sustainability in Tech',
   'Tech for Social Good',
 ];
-

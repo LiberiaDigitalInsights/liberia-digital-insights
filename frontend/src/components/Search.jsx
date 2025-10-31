@@ -28,14 +28,19 @@ export default function Search({ placeholder = 'Search…', className, onResults
       }
       // Simple local search demo against categories and key nav items
       const pool = [
-        ...CATEGORIES.map((c) => ({ label: c, to: `/category/${encodeURIComponent(c.toLowerCase())}` })),
+        ...CATEGORIES.map((c) => ({
+          label: c,
+          to: `/category/${encodeURIComponent(c.toLowerCase())}`,
+        })),
         { label: 'Home', to: '/' },
         { label: 'About Us', to: '/about' },
         { label: 'Podcasts', to: '/podcasts' },
         { label: 'Articles', to: '/articles' },
         { label: 'Contact Us', to: '/contact' },
       ];
-      const filtered = pool.filter((p) => p.label.toLowerCase().includes(term.toLowerCase())).slice(0, 8);
+      const filtered = pool
+        .filter((p) => p.label.toLowerCase().includes(term.toLowerCase()))
+        .slice(0, 8);
       setResults(filtered);
       setOpen(true);
       onResults?.(filtered);
@@ -74,4 +79,3 @@ export default function Search({ placeholder = 'Search…', className, onResults
     </div>
   );
 }
-

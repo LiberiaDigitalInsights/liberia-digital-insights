@@ -6,7 +6,7 @@ import Search from './Search';
 import { CATEGORIES } from '../constants/categories';
 import { FaFacebookF, FaTwitter, FaYoutube } from 'react-icons/fa';
 
-function Navbar() {
+export default function Navbar() {
   const [open, setOpen] = React.useState(false);
   return (
     <nav className="sticky top-0 z-40">
@@ -15,10 +15,34 @@ function Navbar() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5">
           <div className="text-white/90">Advertisement</div>
           <div className="flex items-center gap-4 text-white">
-            <span className="hidden md:inline">{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}</span>
-            <a href="#" aria-label="Facebook" className="hover:opacity-90"><FaFacebookF /></a>
-            <a href="#" aria-label="Twitter" className="hover:opacity-90"><FaTwitter /></a>
-            <a href="#" aria-label="YouTube" className="hover:opacity-90"><FaYoutube /></a>
+            <span className="hidden md:inline">
+              {new Date().toLocaleDateString(undefined, {
+                weekday: 'long',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </span>
+            <a
+              href="#"
+              aria-label="Facebook"
+              className="transition-transform duration-200 hover:scale-110 hover:opacity-90"
+            >
+              <FaFacebookF />
+            </a>
+            <a
+              href="#"
+              aria-label="Twitter"
+              className="transition-transform duration-200 hover:scale-110 hover:opacity-90"
+            >
+              <FaTwitter />
+            </a>
+            <a
+              href="#"
+              aria-label="YouTube"
+              className="transition-transform duration-200 hover:scale-110 hover:opacity-90"
+            >
+              <FaYoutube />
+            </a>
           </div>
         </div>
       </div>
@@ -37,14 +61,54 @@ function Navbar() {
       <div className="border-t border-[var(--color-border)] bg-[var(--color-nav-bottom)] text-white">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2 text-sm">
           <div className="hidden items-center gap-5 md:flex">
-            <Link to="/">Home</Link>
-            <Link to="/about">About Us</Link>
-            <Link to="/insights">Insights</Link>
-            <Link to="/podcasts">Podcasts</Link>
-            <Link to="/articles">Articles</Link>
-            <Link to="/advertisement">Advertisement</Link>
-            <Link to="/contact">Contact Us</Link>
-            <Link to="/signup">Sign Up</Link>
+            <Link
+              to="/"
+              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Home
+            </Link>
+            <Link
+              to="/about"
+              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              About Us
+            </Link>
+            <Link
+              to="/insights"
+              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Insights
+            </Link>
+            <Link
+              to="/podcasts"
+              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Podcasts
+            </Link>
+            <Link
+              to="/articles"
+              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Articles
+            </Link>
+            <Link
+              to="/advertisement"
+              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Advertisement
+            </Link>
+            <Link
+              to="/contact"
+              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Contact Us
+            </Link>
+            <Link
+              to="/signup"
+              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Sign Up
+            </Link>
           </div>
           <div className="ml-auto hidden items-center gap-3 md:flex">
             <Search placeholder="Search For" onSubmit={(q) => console.log('search', q)} />
@@ -86,7 +150,12 @@ function Navbar() {
             </button>
           </div>
           <div className="flex flex-col gap-3 p-4">
-            <Search onSubmit={(q) => { setOpen(false); console.log('search', q); }} />
+            <Search
+              onSubmit={(q) => {
+                setOpen(false);
+                console.log('search', q);
+              }}
+            />
             <button className="rounded-[var(--radius-md)] bg-brand-500 px-3 py-2 text-sm text-white hover:bg-brand-600">
               Subscribe
             </button>
@@ -94,11 +163,41 @@ function Navbar() {
               <ThemeToggle />
             </div>
             <nav className="mt-1 flex flex-col gap-2 text-sm">
-              <Link onClick={() => setOpen(false)} to="/">Home</Link>
-              <Link onClick={() => setOpen(false)} to="/about">About</Link>
-              <Link onClick={() => setOpen(false)} to="/contact">Contact</Link>
-              <Link onClick={() => setOpen(false)} to="/components">Components</Link>
-              <Link onClick={() => setOpen(false)} to="/dashboard">Dashboard</Link>
+              <Link
+                onClick={() => setOpen(false)}
+                to="/"
+                className="rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:text-[var(--color-text)]"
+              >
+                Home
+              </Link>
+              <Link
+                onClick={() => setOpen(false)}
+                to="/about"
+                className="rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:text-[var(--color-text)]"
+              >
+                About
+              </Link>
+              <Link
+                onClick={() => setOpen(false)}
+                to="/contact"
+                className="rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:text-[var(--color-text)]"
+              >
+                Contact
+              </Link>
+              <Link
+                onClick={() => setOpen(false)}
+                to="/components"
+                className="rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:text-[var(--color-text)]"
+              >
+                Components
+              </Link>
+              <Link
+                onClick={() => setOpen(false)}
+                to="/dashboard"
+                className="rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:text-[var(--color-text)]"
+              >
+                Dashboard
+              </Link>
             </nav>
             <div className="mt-1 grid grid-cols-2 gap-2">
               {CATEGORIES.slice(0, 10).map((c) => (
@@ -106,7 +205,7 @@ function Navbar() {
                   key={c}
                   onClick={() => setOpen(false)}
                   to={`/category/${encodeURIComponent(c.toLowerCase())}`}
-                  className="text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]"
+                  className="rounded-[var(--radius-sm)] px-2 py-1 text-sm text-[var(--color-muted)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)] hover:text-[var(--color-text)]"
                 >
                   {c}
                 </Link>
@@ -118,5 +217,3 @@ function Navbar() {
     </nav>
   );
 }
-
-export default Navbar;
