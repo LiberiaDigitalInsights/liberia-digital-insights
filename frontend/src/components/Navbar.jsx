@@ -23,9 +23,33 @@ function Navbar() {
         </div>
         <ThemeToggle />
       </div>
-      {open && (
-        <div className="md:hidden border-t border-[var(--color-border)]">
-          <div className="mx-auto flex max-w-7xl flex-col gap-2 p-4">
+      {/* Mobile drawer */}
+      <div
+        className={`md:hidden fixed inset-0 z-50 ${open ? '' : 'pointer-events-none'}`}
+        aria-hidden={!open}
+      >
+        {/* Backdrop */}
+        <div
+          onClick={() => setOpen(false)}
+          className={`absolute inset-0 bg-black/40 transition-opacity ${open ? 'opacity-100' : 'opacity-0'}`}
+        />
+        {/* Drawer panel */}
+        <div
+          className={`absolute right-0 top-0 h-full w-72 border-l border-[var(--color-border)] bg-[var(--color-surface)] shadow-xl transition-transform duration-300 ${open ? 'translate-x-0' : 'translate-x-full'}`}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="flex items-center justify-between p-4">
+            <span className="text-sm font-semibold">Menu</span>
+            <button
+              className="rounded px-2 py-1 text-sm hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)]"
+              onClick={() => setOpen(false)}
+              aria-label="Close menu"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="flex flex-col gap-2 p-4">
             <Link onClick={() => setOpen(false)} to="/">Home</Link>
             <Link onClick={() => setOpen(false)} to="/about">About</Link>
             <Link onClick={() => setOpen(false)} to="/contact">Contact</Link>
@@ -33,7 +57,7 @@ function Navbar() {
             <Link onClick={() => setOpen(false)} to="/dashboard">Dashboard</Link>
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
