@@ -9,6 +9,7 @@ function Navbar() {
         <Link to="/about">About</Link>
         <Link to="/contact">Contact</Link>
         <Link to="/components">Components</Link>
+        <Link to="/dashboard">Dashboard</Link>
       </div>
       <ThemeToggle />
     </nav>
