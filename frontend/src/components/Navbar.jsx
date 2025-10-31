@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   return (
@@ -6,6 +6,7 @@ function Navbar() {
       <Link to="/">Home</Link>
       <Link to="/about">About</Link>
       <Link to="/contact">Contact</Link>
+      <Link to="/components">Components</Link>
     </nav>
   );
 }
