@@ -12,4 +12,3 @@ export function H2({ className, ...props }) {
 export function Muted({ className, ...props }) {
   return <p className={cn('text-sm text-[var(--color-muted)]', className)} {...props} />;
 }
-

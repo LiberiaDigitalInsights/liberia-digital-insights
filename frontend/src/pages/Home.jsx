@@ -1,7 +1,7 @@
-import React from "react";
-import { H1, Muted } from "../components/ui/Typography";
-import Button from "../components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
+import React from 'react';
+import { H1, Muted } from '../components/ui/Typography';
+import Button from '../components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 
 const Home = () => {
   return (

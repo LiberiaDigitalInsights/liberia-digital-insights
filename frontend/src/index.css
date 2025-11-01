@@ -1,16 +1,16 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --color-brand-50: #fff7ed;
-  --color-brand-100: #ffedd5;
-  --color-brand-200: #fed7aa;
-  --color-brand-300: #fdba74;
-  --color-brand-400: #fb923c;
-  --color-brand-500: #f97316; /* primary */
-  --color-brand-600: #ea580c;
-  --color-brand-700: #c2410c;
-  --color-brand-800: #9a3412;
-  --color-brand-900: #7c2d12;
+  --color-brand-50: #fffbeb;
+  --color-brand-100: #fef3c7;
+  --color-brand-200: #fde68a;
+  --color-brand-300: #fcd34d;
+  --color-brand-400: #fbbf24;
+  --color-brand-500: #882627; /* primary = brand */
+  --color-brand-600: #6f1f20; /* hover/focus */
+  --color-brand-700: #92400e;
+  --color-brand-800: #78350f;
+  --color-brand-900: #451a03;
 
   --color-bg: #0b0b0b;
   --color-surface: #111111;
@@ -18,9 +18,9 @@
   --color-text: #fafafa;
   --color-muted: #a1a1aa;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter,
-    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, 'Helvetica Neue', Arial,
+    'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
@@ -28,13 +28,20 @@
   --radius-xl: 1rem;
 
   --spacing-3_5: 0.875rem;
+
+  /* Navbar palette approximated from reference */
+  --color-nav-top: #c91c16;
+  --color-nav-mid: #7f1d1d; /* deep red */
+  --color-nav-bottom: #a35f3e; /* brown */
 }
 
 :root {
   color-scheme: light dark;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 
@@ -42,4 +49,13 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
+}
+
+/* Light theme overrides */
+[data-theme='light'] {
+  --color-bg: #ffffff;
+  --color-surface: #f9fafb; /* zinc-50 */
+  --color-border: #e5e7eb; /* gray-200 */
+  --color-text: #0a0a0a; /* near-black */
+  --color-muted: #6b7280; /* gray-500 */
 }
