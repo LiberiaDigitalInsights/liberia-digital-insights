@@ -10,6 +10,7 @@ import Articles from './pages/Articles';
 import Advertisement from './pages/Advertisement';
 import Signup from './pages/Signup';
 import Category from './pages/Category';
+import ArticleDetail from './pages/ArticleDetail';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Route path="/insights" element={<Insights />} />
       <Route path="/podcasts" element={<Podcasts />} />
       <Route path="/articles" element={<Articles />} />
+      <Route path="/article/:id" element={<ArticleDetail />} />
       <Route path="/advertisement" element={<Advertisement />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/category/:slug" element={<Category />} />
