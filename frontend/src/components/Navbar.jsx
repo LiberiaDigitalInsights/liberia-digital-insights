@@ -131,85 +131,91 @@ export default function Navbar() {
         {/* Backdrop */}
         <div
           onClick={() => setOpen(false)}
-          className={`absolute inset-0 bg-black/40 transition-opacity ${open ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`}
         />
         {/* Drawer panel */}
         <div
-          className={`absolute right-0 top-0 h-full w-80 border-l border-[var(--color-border)] bg-[var(--color-surface)] shadow-xl transition-transform duration-300 ${open ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`absolute right-0 top-0 h-full w-full max-w-sm border-l border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl transition-transform duration-300 ease-out ${open ? 'translate-x-0' : 'translate-x-full'}`}
           role="dialog"
           aria-modal="true"
         >
-          <div className="flex items-center justify-between border-b border-[var(--color-border)] p-4">
-            <span className="text-sm font-semibold">Menu</span>
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
+            <Logo />
             <button
-              className="rounded px-2 py-1 text-sm hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)]"
+              className="rounded-[var(--radius-sm)] p-2 text-[var(--color-text)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)]"
               onClick={() => setOpen(false)}
               aria-label="Close menu"
             >
-              ✕
+              <span className="text-lg">✕</span>
             </button>
           </div>
-          <div className="flex flex-col gap-3 p-4">
-            <Search
-              onSubmit={(q) => {
-                setOpen(false);
-                console.log('search', q);
-              }}
-            />
-            <button className="rounded-[var(--radius-md)] bg-brand-500 px-3 py-2 text-sm text-white hover:bg-brand-600">
-              Subscribe
-            </button>
-            <div>
-              <ThemeToggle />
-            </div>
-            <nav className="mt-1 flex flex-col gap-2 text-sm">
-              <Link
-                onClick={() => setOpen(false)}
-                to="/"
-                className="rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:text-[var(--color-text)]"
-              >
-                Home
-              </Link>
-              <Link
-                onClick={() => setOpen(false)}
-                to="/about"
-                className="rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:text-[var(--color-text)]"
-              >
-                About
-              </Link>
-              <Link
-                onClick={() => setOpen(false)}
-                to="/contact"
-                className="rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:text-[var(--color-text)]"
-              >
-                Contact
-              </Link>
-              <Link
-                onClick={() => setOpen(false)}
-                to="/components"
-                className="rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:text-[var(--color-text)]"
-              >
-                Components
-              </Link>
-              <Link
-                onClick={() => setOpen(false)}
-                to="/dashboard"
-                className="rounded-[var(--radius-sm)] px-2 py-1.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:text-[var(--color-text)]"
-              >
-                Dashboard
-              </Link>
-            </nav>
-            <div className="mt-1 grid grid-cols-2 gap-2">
-              {CATEGORIES.slice(0, 10).map((c) => (
-                <Link
-                  key={c}
-                  onClick={() => setOpen(false)}
-                  to={`/category/${encodeURIComponent(c.toLowerCase())}`}
-                  className="rounded-[var(--radius-sm)] px-2 py-1 text-sm text-[var(--color-muted)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)] hover:text-[var(--color-text)]"
-                >
-                  {c}
-                </Link>
-              ))}
+
+          {/* Scrollable content */}
+          <div className="flex h-[calc(100vh-60px)] flex-col overflow-y-auto">
+            <div className="flex flex-col gap-4 p-4">
+              {/* Search */}
+              <div>
+                <Search
+                  onSubmit={(q) => {
+                    setOpen(false);
+                    console.log('search', q);
+                  }}
+                />
+              </div>
+
+              {/* Quick actions */}
+              <div className="flex gap-2">
+                <button className="flex-1 rounded-[var(--radius-md)] bg-brand-500 px-4 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-brand-600">
+                  Subscribe
+                </button>
+                <ThemeToggle />
+              </div>
+
+              {/* Main navigation */}
+              <nav className="flex flex-col gap-1">
+                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-muted)]">
+                  Navigation
+                </div>
+                {[
+                  { to: '/', label: 'Home' },
+                  { to: '/about', label: 'About Us' },
+                  { to: '/insights', label: 'Insights' },
+                  { to: '/podcasts', label: 'Podcasts' },
+                  { to: '/articles', label: 'Articles' },
+                  { to: '/advertisement', label: 'Advertisement' },
+                  { to: '/contact', label: 'Contact Us' },
+                  { to: '/signup', label: 'Sign Up' },
+                ].map((item) => (
+                  <Link
+                    key={item.to}
+                    onClick={() => setOpen(false)}
+                    to={item.to}
+                    className="rounded-[var(--radius-sm)] px-3 py-2.5 text-sm font-medium text-[var(--color-text)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+
+              {/* Categories */}
+              <div className="flex flex-col gap-2">
+                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-muted)]">
+                  Categories
+                </div>
+                <div className="flex flex-col gap-1">
+                  {CATEGORIES.slice(0, 12).map((c) => (
+                    <Link
+                      key={c}
+                      onClick={() => setOpen(false)}
+                      to={`/category/${encodeURIComponent(c.toLowerCase())}`}
+                      className="rounded-[var(--radius-sm)] px-3 py-2 text-sm text-[var(--color-muted)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)] hover:text-[var(--color-text)]"
+                    >
+                      {c}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
