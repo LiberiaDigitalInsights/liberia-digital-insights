@@ -52,9 +52,9 @@ export default function About() {
         <H1 className="mb-4">About Liberia Digital Insights</H1>
         <Muted className="mx-auto max-w-3xl text-lg">
           Liberia Digital Insights is your premier destination for technology news, insights, and
-          innovation stories from Liberia and beyond. We cover everything from startup ecosystems
-          to enterprise technology, digital transformation, and the people driving change in
-          Liberia's tech landscape.
+          innovation stories from Liberia and beyond. We cover everything from startup ecosystems to
+          enterprise technology, digital transformation, and the people driving change in Liberia's
+          tech landscape.
         </Muted>
       </header>
 
@@ -63,9 +63,9 @@ export default function About() {
         <Card className="p-6">
           <H2 className="mb-4 text-2xl">Our Mission</H2>
           <p className="text-[var(--color-muted)]">
-            To empower Liberia's digital ecosystem by providing comprehensive coverage of
-            technology news, insights, and innovation. We aim to bridge the information gap,
-            connect stakeholders, and inspire the next generation of tech leaders in Liberia.
+            To empower Liberia's digital ecosystem by providing comprehensive coverage of technology
+            news, insights, and innovation. We aim to bridge the information gap, connect
+            stakeholders, and inspire the next generation of tech leaders in Liberia.
           </p>
         </Card>
         <Card className="p-6">

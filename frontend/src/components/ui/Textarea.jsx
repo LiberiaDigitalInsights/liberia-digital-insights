@@ -7,4 +7,3 @@ const base =
 export default function Textarea({ className, ...props }) {
   return <textarea className={cn(base, className)} {...props} />;
 }
-
