@@ -2,11 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { H1, H2, Muted } from '../components/ui/Typography';
 import Button from '../components/ui/Button';
+import SEO from '../components/SEO';
 import { FaHome, FaArrowLeft, FaExclamationTriangle } from 'react-icons/fa';
 
 export default function NotFound() {
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center px-4 py-12 text-center">
+    <>
+      <SEO title="404 - Page Not Found | Liberia Digital Insights" />
+      <div className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center px-4 py-12 text-center">
       <div className="mb-6 flex justify-center">
         <div className="rounded-full bg-red-500/10 p-6">
           <FaExclamationTriangle className="h-16 w-16 text-red-500" />
@@ -26,5 +29,6 @@ export default function NotFound() {
         </Button>
       </div>
     </div>
+    </>
   );
 }

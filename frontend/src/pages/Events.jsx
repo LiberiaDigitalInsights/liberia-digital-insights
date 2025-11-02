@@ -10,7 +10,9 @@ export default function Events() {
   const past = getPastEvents();
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO />
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Header */}
       <header className="mb-8">
         <H1 className="mb-4 text-3xl font-bold">Events</H1>
@@ -99,5 +101,6 @@ export default function Events() {
         />
       </div>
     </div>
+    </>
   );
 }

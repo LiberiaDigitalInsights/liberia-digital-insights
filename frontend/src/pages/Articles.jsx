@@ -4,6 +4,7 @@ import { H1 } from '../components/ui/Typography';
 import ArticleCard from '../components/articles/ArticleCard';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
+import SEO from '../components/SEO';
 import { CATEGORIES } from '../constants/categories';
 import { generateArticleGrid } from '../data/mockArticles';
 
@@ -33,7 +34,9 @@ export default function Articles() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO />
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Header */}
       <header className="mb-8">
         <H1 className="mb-4 text-3xl font-bold">Articles</H1>
@@ -128,5 +131,6 @@ export default function Articles() {
         </div>
       )}
     </div>
+    </>
   );
 }

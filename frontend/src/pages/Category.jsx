@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { H1, Muted } from '../components/ui/Typography';
 import ArticleCard from '../components/articles/ArticleCard';
 import PodcastCard from '../components/podcasts/PodcastCard';
+import SEO from '../components/SEO';
 import { generateArticleGrid } from '../data/mockArticles';
 import { mockPodcasts } from '../data/mockPodcasts';
 import { CATEGORIES } from '../constants/categories';
@@ -114,7 +115,9 @@ export default function Category() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO title={`${matchedCategory} | Liberia Digital Insights`} />
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Header */}
       <header className="mb-8">
         <H1 className="mb-4">{matchedCategory}</H1>
@@ -135,5 +138,6 @@ export default function Category() {
         <span className="text-[var(--color-text)]">{matchedCategory}</span>
       </nav>
     </div>
+    </>
   );
 }

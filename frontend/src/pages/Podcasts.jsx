@@ -1,13 +1,16 @@
 import React from 'react';
 import { H1 } from '../components/ui/Typography';
 import PodcastCard from '../components/podcasts/PodcastCard';
+import SEO from '../components/SEO';
 import { generatePodcastGrid } from '../data/mockPodcasts';
 
 export default function Podcasts() {
   const allEpisodes = generatePodcastGrid(12);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO />
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Header */}
       <header className="mb-8">
         <H1 className="mb-4 text-3xl font-bold">Podcasts</H1>
@@ -52,5 +55,6 @@ export default function Podcasts() {
         </div>
       </section>
     </div>
+    </>
   );
 }

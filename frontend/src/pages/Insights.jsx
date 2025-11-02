@@ -2,6 +2,7 @@ import React from 'react';
 import { H1, H2, Muted } from '../components/ui/Typography';
 import Card from '../components/ui/Card';
 import ArticleCard from '../components/articles/ArticleCard';
+import SEO from '../components/SEO';
 import { generateArticleGrid } from '../data/mockArticles';
 import { CATEGORIES } from '../constants/categories';
 import { FaHashtag, FaLightbulb, FaBullhorn } from 'react-icons/fa';
@@ -46,7 +47,9 @@ export default function Insights() {
       : articles.filter((article) => article.category === selectedCategory);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO />
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Header */}
       <header className="mb-12 text-center">
         <H1 className="mb-4">Editorial Insights</H1>
@@ -175,5 +178,6 @@ export default function Insights() {
         </div>
       </section>
     </div>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { H1 } from '../components/ui/Typography';
 import GalleryItem from '../components/gallery/GalleryItem';
 import Lightbox from '../components/gallery/Lightbox';
+import SEO from '../components/SEO';
 import { mockGallery, getAllEvents, getAllCategories } from '../data/mockGallery';
 
 export default function Gallery() {
@@ -37,7 +38,9 @@ export default function Gallery() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO />
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Header */}
       <header className="mb-8">
         <H1 className="mb-4 text-3xl font-bold">Gallery</H1>
@@ -121,5 +124,6 @@ export default function Gallery() {
         />
       )}
     </div>
+    </>
   );
 }

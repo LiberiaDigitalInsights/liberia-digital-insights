@@ -4,6 +4,7 @@ import { H1, H2, Muted } from '../components/ui/Typography';
 import PodcastPlayer from '../components/podcasts/PodcastPlayer';
 import PodcastCard from '../components/podcasts/PodcastCard';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
+import SEO from '../components/SEO';
 import { mockPodcasts, generatePodcastGrid } from '../data/mockPodcasts';
 
 export default function PodcastDetail() {
@@ -13,7 +14,16 @@ export default function PodcastDetail() {
   const relatedPodcasts = generatePodcastGrid(3).filter((p) => p.id !== podcast.id);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO
+        title={podcast.title}
+        description={podcast.description || podcast.title}
+        image={podcast.image}
+        type="article"
+        author={podcast.guest}
+        tags={podcast.tags || [podcast.category]}
+      />
+      <div className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12">
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm text-[var(--color-muted)]">
         <Link to="/" className="hover:text-[var(--color-text)]">
@@ -116,5 +126,6 @@ export default function PodcastDetail() {
         </div>
       </section>
     </div>
+    </>
   );
 }

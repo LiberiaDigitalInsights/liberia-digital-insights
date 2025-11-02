@@ -6,6 +6,7 @@ import Textarea from '../components/ui/Textarea';
 import Select from '../components/ui/Select';
 import Button from '../components/ui/Button';
 import { Field, Label, HelperText, ErrorText } from '../components/ui/Form';
+import SEO from '../components/SEO';
 import { useToast } from '../context/ToastContext';
 import { FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 
@@ -119,7 +120,9 @@ export default function Contact() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO />
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Header */}
       <header className="mb-12 text-center">
         <H1 className="mb-4">Contact Us</H1>
@@ -298,5 +301,6 @@ export default function Contact() {
         </div>
       </div>
     </div>
+    </>
   );
 }

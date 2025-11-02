@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 
 const DEFAULT_META = {
@@ -63,38 +64,6 @@ const ROUTE_META = {
   },
 };
 
-function updateMetaTag(property, content) {
-  const isProperty = property.startsWith('og:') || property.startsWith('article:');
-  const selector = isProperty ? `meta[property="${property}"]` : `meta[name="${property}"]`;
-  let element = document.querySelector(selector);
-
-  if (!element) {
-    element = document.createElement('meta');
-    if (isProperty) {
-      element.setAttribute('property', property);
-    } else {
-      element.setAttribute('name', property);
-    }
-    document.head.appendChild(element);
-  }
-
-  element.setAttribute('content', content);
-}
-
-function updateTitle(title) {
-  document.title = title;
-}
-
-function updateCanonical(url) {
-  let link = document.querySelector('link[rel="canonical"]');
-  if (!link) {
-    link = document.createElement('link');
-    link.setAttribute('rel', 'canonical');
-    document.head.appendChild(link);
-  }
-  link.setAttribute('href', url);
-}
-
 export default function SEO({
   title,
   description,
@@ -118,51 +87,47 @@ export default function SEO({
     : `${metaTitle} | ${DEFAULT_META.siteName}`;
 
   const url = `${window.location.origin}${location.pathname}`;
-  const imageUrl = image ? new URL(metaImage, window.location.origin).href : new URL(DEFAULT_META.image, window.location.origin).href;
+  const imageUrl = image
+    ? new URL(metaImage, window.location.origin).href
+    : new URL(DEFAULT_META.image, window.location.origin).href;
 
-  useEffect(() => {
-    // Update title
-    updateTitle(fullTitle);
+  const keywords = tags ? (Array.isArray(tags) ? tags.join(', ') : tags) : undefined;
 
-    // Primary Meta Tags
-    updateMetaTag('title', fullTitle);
-    updateMetaTag('description', metaDescription);
-    if (author) updateMetaTag('author', author);
-    if (tags) {
-      const keywords = Array.isArray(tags) ? tags.join(', ') : tags;
-      updateMetaTag('keywords', keywords);
-    }
+  return (
+    <Helmet>
+      {/* Primary Meta Tags */}
+      <title>{fullTitle}</title>
+      <meta name="title" content={fullTitle} />
+      <meta name="description" content={metaDescription} />
+      {author && <meta name="author" content={author} />}
+      {keywords && <meta name="keywords" content={keywords} />}
 
-    // Open Graph / Facebook
-    updateMetaTag('og:type', metaType);
-    updateMetaTag('og:url', url);
-    updateMetaTag('og:title', fullTitle);
-    updateMetaTag('og:description', metaDescription);
-    updateMetaTag('og:image', imageUrl);
-    updateMetaTag('og:site_name', DEFAULT_META.siteName);
+      {/* Open Graph / Facebook */}
+      <meta property="og:type" content={metaType} />
+      <meta property="og:url" content={url} />
+      <meta property="og:title" content={fullTitle} />
+      <meta property="og:description" content={metaDescription} />
+      <meta property="og:image" content={imageUrl} />
+      <meta property="og:site_name" content={DEFAULT_META.siteName} />
+      {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+      {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+      {tags &&
+        Array.isArray(tags) &&
+        tags.map((tag, idx) => <meta key={idx} property="article:tag" content={tag} />)}
 
-    if (publishedTime) updateMetaTag('article:published_time', publishedTime);
-    if (modifiedTime) updateMetaTag('article:modified_time', modifiedTime);
-    if (tags && Array.isArray(tags)) {
-      // Remove existing article:tag meta tags first
-      document.querySelectorAll('meta[property="article:tag"]').forEach((el) => el.remove());
-      tags.forEach((tag) => updateMetaTag('article:tag', tag));
-    }
+      {/* Twitter */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={url} />
+      <meta name="twitter:title" content={fullTitle} />
+      <meta name="twitter:description" content={metaDescription} />
+      <meta name="twitter:image" content={imageUrl} />
 
-    // Twitter
-    updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:url', url);
-    updateMetaTag('twitter:title', fullTitle);
-    updateMetaTag('twitter:description', metaDescription);
-    updateMetaTag('twitter:image', imageUrl);
-
-    // Additional SEO
-    updateCanonical(url);
-    updateMetaTag('robots', 'index, follow');
-    updateMetaTag('language', 'English');
-    updateMetaTag('revisit-after', '7 days');
-  }, [fullTitle, metaDescription, imageUrl, metaType, url, author, publishedTime, modifiedTime, tags]);
-
-  return null;
+      {/* Additional SEO */}
+      <link rel="canonical" href={url} />
+      <meta name="robots" content="index, follow" />
+      <meta name="language" content="English" />
+      <meta name="revisit-after" content="7 days" />
+    </Helmet>
+  );
 }
 

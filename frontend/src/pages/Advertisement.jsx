@@ -2,6 +2,7 @@ import React from 'react';
 import { H1, H2, Muted } from '../components/ui/Typography';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import SEO from '../components/SEO';
 import { FaFileDownload, FaEye, FaBullhorn, FaEnvelope } from 'react-icons/fa';
 
 export default function Advertisement() {
@@ -91,7 +92,9 @@ export default function Advertisement() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO />
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Header */}
       <header className="mb-12 text-center">
         <H1 className="mb-4">Advertising Opportunities</H1>
@@ -262,5 +265,6 @@ export default function Advertisement() {
         </div>
       </Card>
     </div>
+    </>
   );
 }

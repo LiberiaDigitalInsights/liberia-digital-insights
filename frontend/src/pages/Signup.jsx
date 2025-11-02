@@ -4,6 +4,7 @@ import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { Field, Label, HelperText, ErrorText } from '../components/ui/Form';
+import SEO from '../components/SEO';
 import { useToast } from '../context/ToastContext';
 import { FaEnvelope, FaUser, FaCheckCircle } from 'react-icons/fa';
 
@@ -101,7 +102,9 @@ export default function Signup() {
 
   if (isSuccess) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-12">
+      <>
+        <SEO />
+        <div className="mx-auto max-w-2xl px-4 py-12">
         <Card className="p-8 text-center">
           <div className="mb-4 flex justify-center">
             <div className="rounded-full bg-green-500/10 p-4">
@@ -115,11 +118,14 @@ export default function Signup() {
           </Muted>
         </Card>
       </div>
+      </>
     );
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO />
+      <div className="mx-auto max-w-2xl px-4 py-8 md:px-6 md:py-12">
       {/* Header */}
       <header className="mb-8 text-center">
         <H1 className="mb-4">Subscribe to Our Newsletter</H1>
@@ -247,5 +253,6 @@ export default function Signup() {
         </div>
       </div>
     </div>
+    </>
   );
 }
