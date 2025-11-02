@@ -12,6 +12,7 @@ import Signup from './pages/Signup';
 import Category from './pages/Category';
 import ArticleDetail from './pages/ArticleDetail';
 import PodcastDetail from './pages/PodcastDetail';
+import Events from './pages/Events';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
       <Route path="/podcast/:id" element={<PodcastDetail />} />
       <Route path="/articles" element={<Articles />} />
       <Route path="/article/:id" element={<ArticleDetail />} />
+      <Route path="/events" element={<Events />} />
       <Route path="/advertisement" element={<Advertisement />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/category/:slug" element={<Category />} />
