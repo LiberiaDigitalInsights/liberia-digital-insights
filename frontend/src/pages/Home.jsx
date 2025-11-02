@@ -4,6 +4,7 @@ import PodcastWidget from '../components/sidebar/PodcastWidget';
 import NewsletterWidget from '../components/sidebar/NewsletterWidget';
 import EventsWidget from '../components/sidebar/EventsWidget';
 import { H2 } from '../components/ui/Typography';
+import SEO from '../components/SEO';
 import { mockArticles, generateArticleGrid } from '../data/mockArticles';
 
 const Home = () => {
@@ -11,7 +12,9 @@ const Home = () => {
   const articleGrid = generateArticleGrid(12);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO />
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_350px]">
         {/* Main content */}
         <main className="space-y-12">
@@ -158,6 +161,7 @@ const Home = () => {
         </aside>
       </div>
     </div>
+    </>
   );
 };
 

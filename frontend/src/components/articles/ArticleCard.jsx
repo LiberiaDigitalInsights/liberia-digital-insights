@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '../../lib/cn';
+import LazyImage from '../LazyImage';
 
 export default function ArticleCard({
   image,
@@ -25,14 +26,16 @@ export default function ArticleCard({
     >
       {image && (
         <div className="relative h-48 overflow-hidden bg-[color-mix(in_oklab,var(--color-surface),white_6%)] md:h-56">
-          <img
-            src={image}
-            alt={title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="h-full w-full transition-transform duration-500 group-hover:scale-110">
+            <LazyImage
+              src={image}
+              alt={title}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
           {category && (
-            <div className="absolute top-3 left-3 rounded-full bg-brand-500 px-2.5 py-1 text-xs font-medium text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+            <div className="absolute top-3 left-3 rounded-full bg-brand-500 px-2.5 py-1 text-xs font-medium text-white shadow-lg transition-transform duration-300 group-hover:scale-110 z-10">
               {category}
             </div>
           )}

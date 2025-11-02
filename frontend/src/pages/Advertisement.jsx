@@ -109,11 +109,7 @@ export default function Advertisement() {
           availability.
         </Muted>
         <div className="flex flex-wrap justify-center gap-4">
-          <Button
-            as="a"
-            href="mailto:sales@liberiadigitalinsights.news"
-            leftIcon={<FaEnvelope />}
-          >
+          <Button as="a" href="mailto:sales@liberiadigitalinsights.news" leftIcon={<FaEnvelope />}>
             Contact Sales
           </Button>
           <Button
@@ -154,7 +150,10 @@ export default function Advertisement() {
               </div>
               <ul className="mb-6 space-y-2">
                 {pkg.features.map((feature, fIdx) => (
-                  <li key={fIdx} className="flex items-start gap-2 text-sm text-[var(--color-muted)]">
+                  <li
+                    key={fIdx}
+                    className="flex items-start gap-2 text-sm text-[var(--color-muted)]"
+                  >
                     <span className="mt-1 text-brand-500">✓</span>
                     <span>{feature}</span>
                   </li>
@@ -242,8 +241,8 @@ export default function Advertisement() {
           <div>
             <h3 className="mb-3 text-lg font-semibold">Engaged Audience</h3>
             <p className="text-sm text-[var(--color-muted)]">
-              Our community includes active readers, podcast listeners, and event attendees who value
-              quality technology content.
+              Our community includes active readers, podcast listeners, and event attendees who
+              value quality technology content.
             </p>
           </div>
           <div>

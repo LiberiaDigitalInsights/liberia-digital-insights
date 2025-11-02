@@ -19,9 +19,8 @@ export default function Category() {
 
   // Find matching category (case-insensitive)
   const matchedCategory =
-    CATEGORIES.find(
-      (cat) => cat.toLowerCase().replace(/\s+/g, '-') === slug?.toLowerCase(),
-    ) || categoryName;
+    CATEGORIES.find((cat) => cat.toLowerCase().replace(/\s+/g, '-') === slug?.toLowerCase()) ||
+    categoryName;
 
   const allArticles = generateArticleGrid(20);
   const categoryArticles = allArticles.filter(

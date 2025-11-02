@@ -4,6 +4,7 @@ import { H1, H2, Muted } from '../components/ui/Typography';
 import ArticleCard from '../components/articles/ArticleCard';
 import { Card, CardContent } from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
+import SEO from '../components/SEO';
 import { mockArticles, generateArticleGrid } from '../data/mockArticles';
 import { FaFacebookF, FaTwitter, FaYoutube } from 'react-icons/fa';
 
@@ -14,7 +15,16 @@ export default function ArticleDetail() {
   const relatedArticles = generateArticleGrid(3);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO
+        title={article.title}
+        description={article.excerpt || article.title}
+        image={article.image}
+        type="article"
+        author={article.author}
+        tags={[article.category]}
+      />
+      <div className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12">
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm text-[var(--color-muted)]">
         <Link to="/" className="hover:text-[var(--color-text)]">
@@ -132,5 +142,6 @@ export default function ArticleDetail() {
         </div>
       </section>
     </div>
+    </>
   );
 }

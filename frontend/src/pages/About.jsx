@@ -1,6 +1,7 @@
 import React from 'react';
 import { H1, H2, Muted } from '../components/ui/Typography';
 import Card from '../components/ui/Card';
+import SEO from '../components/SEO';
 import { FaUsers, FaLightbulb, FaHandshake, FaRocket } from 'react-icons/fa';
 
 export default function About() {
@@ -46,7 +47,9 @@ export default function About() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+    <>
+      <SEO />
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Hero Section */}
       <header className="mb-12 text-center">
         <H1 className="mb-4">About Liberia Digital Insights</H1>
@@ -180,5 +183,6 @@ export default function About() {
         </div>
       </Card>
     </div>
+    </>
   );
 }

@@ -206,7 +206,9 @@ export default function Signup() {
                   />
                 </div>
                 {errors.email && <ErrorText>{errors.email}</ErrorText>}
-                <HelperText>We'll send occasional updates. No spam, unsubscribe anytime.</HelperText>
+                <HelperText>
+                  We'll send occasional updates. No spam, unsubscribe anytime.
+                </HelperText>
               </Field>
 
               <Field>
@@ -237,8 +239,8 @@ export default function Signup() {
               </Button>
 
               <Muted className="text-center text-xs">
-                By signing up, you agree to our terms and privacy policy. We respect your inbox
-                and will never share your information.
+                By signing up, you agree to our terms and privacy policy. We respect your inbox and
+                will never share your information.
               </Muted>
             </form>
           </Card>

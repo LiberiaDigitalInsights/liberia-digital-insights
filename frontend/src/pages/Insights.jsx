@@ -24,7 +24,7 @@ export default function Insights() {
       icon: FaLightbulb,
       title: 'Editorial Insights',
       description:
-        'In-depth analysis and opinion pieces on technology trends, policies, and innovations shaping Liberia\'s digital landscape.',
+        "In-depth analysis and opinion pieces on technology trends, policies, and innovations shaping Liberia's digital landscape.",
       bgColor: 'bg-yellow-500/20',
       iconColor: 'text-yellow-500',
       cardBg: 'bg-yellow-500/10',
@@ -91,8 +91,8 @@ export default function Insights() {
                 IF YOUR GITHUB IS EMPTY, YOU'RE INVISIBLE IN TECH.
               </div>
               <Muted>
-                Join us every Thursday for weekly tech insights, career tips, and expert advice
-                from Liberia's tech community.
+                Join us every Thursday for weekly tech insights, career tips, and expert advice from
+                Liberia's tech community.
               </Muted>
             </div>
           </div>
