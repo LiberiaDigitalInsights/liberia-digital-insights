@@ -11,6 +11,7 @@ import Advertisement from './pages/Advertisement';
 import Signup from './pages/Signup';
 import Category from './pages/Category';
 import ArticleDetail from './pages/ArticleDetail';
+import PodcastDetail from './pages/PodcastDetail';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/insights" element={<Insights />} />
       <Route path="/podcasts" element={<Podcasts />} />
+      <Route path="/podcast/:id" element={<PodcastDetail />} />
       <Route path="/articles" element={<Articles />} />
       <Route path="/article/:id" element={<ArticleDetail />} />
       <Route path="/advertisement" element={<Advertisement />} />
