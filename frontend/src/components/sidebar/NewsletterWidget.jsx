@@ -12,7 +12,8 @@ export default function NewsletterWidget() {
       </CardHeader>
       <CardContent>
         <p className="mb-4 text-sm text-[var(--color-muted)]">
-          Sign up for our weekly newsletter and get the latest industry insights right in your inbox.
+          Sign up for our weekly newsletter and get the latest industry insights right in your
+          inbox.
         </p>
         <form className="space-y-3">
           <Field>
@@ -43,4 +44,3 @@ export default function NewsletterWidget() {
     </Card>
   );
 }
-
