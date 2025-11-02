@@ -92,6 +92,12 @@ export default function Navbar() {
               Articles
             </Link>
             <Link
+              to="/gallery"
+              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Gallery
+            </Link>
+            <Link
               to="/advertisement"
               className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
             >
@@ -183,6 +189,7 @@ export default function Navbar() {
                   { to: '/insights', label: 'Insights' },
                   { to: '/podcasts', label: 'Podcasts' },
                   { to: '/articles', label: 'Articles' },
+                  { to: '/gallery', label: 'Gallery' },
                   { to: '/advertisement', label: 'Advertisement' },
                   { to: '/contact', label: 'Contact Us' },
                   { to: '/signup', label: 'Sign Up' },

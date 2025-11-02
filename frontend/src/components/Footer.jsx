@@ -75,6 +75,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/gallery" className="hover:text-[var(--color-text)]">
+                  Gallery
+                </Link>
+              </li>
+              <li>
                 <Link to="/events" className="hover:text-[var(--color-text)]">
                   Categories
                 </Link>
