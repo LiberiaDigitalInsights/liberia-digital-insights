@@ -13,12 +13,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ThemeProvider>
       <ToastProvider>
-    <BrowserRouter>
-      <Navbar />
-      <App />
-      <Footer />
+        <BrowserRouter>
+          <Navbar />
+          <App />
+          <Footer />
           <ToastViewport />
-    </BrowserRouter>
+        </BrowserRouter>
       </ToastProvider>
     </ThemeProvider>
   </React.StrictMode>,

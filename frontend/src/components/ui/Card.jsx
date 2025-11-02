@@ -13,6 +13,8 @@ export function Card({ className, ...props }) {
   );
 }
 
+export default Card;
+
 export function CardHeader({ className, ...props }) {
   return <div className={cn('mb-3 flex items-center justify-between', className)} {...props} />;
 }
