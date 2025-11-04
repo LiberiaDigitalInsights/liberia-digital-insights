@@ -3,6 +3,7 @@ import { H1 } from '../components/ui/Typography';
 import EventCard from '../components/events/EventCard';
 import { getUpcomingEvents, getPastEvents } from '../data/mockEvents';
 import { Tabs } from '../components/ui/Tabs';
+import SEO from '../components/SEO';
 
 export default function Events() {
   const [tab, setTab] = React.useState('upcoming');
