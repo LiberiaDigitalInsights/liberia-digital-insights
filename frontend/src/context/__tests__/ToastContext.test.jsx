@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { vi } from 'vitest';
 import React from 'react';
 import { ToastProvider, useToast } from '../ToastContext';
 import ToastViewport from '../../components/ui/Toast';
@@ -7,7 +8,7 @@ const TestComponent = () => {
   const { showToast } = useToast();
   return (
     <div>
-      <button onClick={() => showToast({ title: 'Test', description: 'Message' })}>
+      <button onClick={() => showToast({ title: 'Test', description: 'Message', duration: 10 })}>
         Show Toast
       </button>
     </div>
@@ -57,14 +58,6 @@ describe('ToastContext', () => {
     const button = screen.getByText('Show Toast');
     fireEvent.click(button);
 
-    // Wait for toast to appear
-    await waitFor(
-      () => {
-        expect(screen.getByText('Test')).toBeInTheDocument();
-      },
-      { timeout: 1000 },
-    );
-
     // Verify toast is visible
     expect(screen.getByText('Test')).toBeInTheDocument();
 
@@ -73,15 +66,13 @@ describe('ToastContext', () => {
       vi.advanceTimersByTime(3600); // Slightly more than duration
     });
 
-    // Process all pending async work
+    // Flush microtasks and re-render cycle
     await act(async () => {
-      await vi.runAllTimersAsync();
+      await Promise.resolve();
     });
 
-    // Verify toast is removed
-    // Note: The setTimeout in ToastContext should have triggered removeToast
-    const toastAfterTimeout = screen.queryByText('Test');
-    expect(toastAfterTimeout).not.toBeInTheDocument();
+    // Verify toast is removed without relying on waitFor timers
+    expect(screen.queryByText('Test')).not.toBeInTheDocument();
 
     vi.useRealTimers();
   }, 10000);

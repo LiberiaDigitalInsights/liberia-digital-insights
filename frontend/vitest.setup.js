@@ -25,3 +25,10 @@ global.IntersectionObserver = vi.fn().mockImplementation((callback) => ({
   rootMargin: '',
   thresholds: [],
 }));
+
+// Ensure tests don't leak persisted state
+beforeEach(() => {
+  try {
+    localStorage.clear();
+  } catch {}
+});

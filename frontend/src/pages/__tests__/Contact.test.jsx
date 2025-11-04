@@ -1,23 +1,10 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { renderWithProviders, screen, fireEvent, waitFor, act } from '../../test/utils';
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
 import Contact from '../Contact';
-import { ToastProvider } from '../../context/ToastContext';
-import { HelmetProvider } from 'react-helmet-async';
-
-const ContactWrapper = () => (
-  <HelmetProvider>
-    <BrowserRouter>
-      <ToastProvider>
-        <Contact />
-      </ToastProvider>
-    </BrowserRouter>
-  </HelmetProvider>
-);
 
 describe('Contact Page', () => {
   it('renders contact form', () => {
-    render(<ContactWrapper />);
+    renderWithProviders(<Contact />);
     expect(screen.getByText(/contact us/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -26,7 +13,7 @@ describe('Contact Page', () => {
   });
 
   it('shows validation errors on empty submit', async () => {
-    render(<ContactWrapper />);
+    renderWithProviders(<Contact />);
     const submitButton = screen.getByRole('button', { name: /send message/i });
     fireEvent.click(submitButton);
 
@@ -37,7 +24,7 @@ describe('Contact Page', () => {
   });
 
   it('validates email format', async () => {
-    render(<ContactWrapper />);
+    renderWithProviders(<Contact />);
 
     // Fill all required fields with valid data except email
     fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'John Doe' } });
@@ -80,7 +67,7 @@ describe('Contact Page', () => {
   });
 
   it('validates message length', async () => {
-    render(<ContactWrapper />);
+    renderWithProviders(<Contact />);
     const messageInput = screen.getByLabelText(/message/i);
     fireEvent.change(messageInput, { target: { value: 'short' } });
 
@@ -93,7 +80,7 @@ describe('Contact Page', () => {
   });
 
   it('submits form with valid data', async () => {
-    render(<ContactWrapper />);
+    renderWithProviders(<Contact />);
 
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
@@ -125,7 +112,7 @@ describe('Contact Page', () => {
   }, 10000);
 
   it('clears error when user starts typing', async () => {
-    render(<ContactWrapper />);
+    renderWithProviders(<Contact />);
     const submitButton = screen.getByRole('button', { name: /send message/i });
     
     // Submit empty form to trigger validation errors
