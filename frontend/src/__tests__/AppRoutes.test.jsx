@@ -21,19 +21,19 @@ function renderAt(pathname) {
 }
 
 describe('App routes', () => {
-  it('renders Home at /', () => {
+  it('renders Home at /', async () => {
     renderAt('/');
-    expect(screen.getAllByText(/technology/i).length).toBeGreaterThan(0);
+    await screen.findByText(/technology/i);
   });
 
-  it('renders Contact at /contact', () => {
+  it('renders Contact at /contact', async () => {
     renderAt('/contact');
-    expect(screen.getByText(/contact us/i)).toBeInTheDocument();
+    await screen.findByText(/contact us/i);
   });
 
-  it('renders NotFound on unknown route', () => {
+  it('renders NotFound on unknown route', async () => {
     renderAt('/does-not-exist');
     // Page Not Found heading from NotFound.jsx
-    expect(screen.getByText(/page not found/i)).toBeInTheDocument();
+    await screen.findByText(/page not found/i);
   });
 });
