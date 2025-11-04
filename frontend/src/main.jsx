@@ -18,8 +18,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <ThemeProvider>
           <ToastProvider>
             <BrowserRouter>
+              <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:m-4 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-black">
+                Skip to content
+              </a>
               <Navbar />
-              <App />
+              <main id="main-content" className="outline-none focus:outline-none">
+                <App />
+              </main>
               <Footer />
               <ToastViewport />
             </BrowserRouter>

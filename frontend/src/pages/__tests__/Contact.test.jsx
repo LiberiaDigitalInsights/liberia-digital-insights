@@ -1,4 +1,5 @@
 import { renderWithProviders, screen, fireEvent, waitFor, act } from '../../test/utils';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import Contact from '../Contact';
 
@@ -15,7 +16,8 @@ describe('Contact Page', () => {
   it('shows validation errors on empty submit', async () => {
     renderWithProviders(<Contact />);
     const submitButton = screen.getByRole('button', { name: /send message/i });
-    fireEvent.click(submitButton);
+    const user = userEvent.setup();
+    await user.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/name is required/i)).toBeInTheDocument();
@@ -25,21 +27,24 @@ describe('Contact Page', () => {
 
   it('validates email format', async () => {
     renderWithProviders(<Contact />);
+    const user = userEvent.setup();
 
     // Fill all required fields with valid data except email
-    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'John Doe' } });
-    fireEvent.change(screen.getByLabelText(/subject/i), { target: { value: 'Test Subject' } });
-    fireEvent.change(screen.getByLabelText(/category/i), { target: { value: 'general' } });
-    fireEvent.change(screen.getByLabelText(/message/i), {
-      target: { value: 'This is a test message with enough characters' },
-    });
+    await user.type(screen.getByLabelText(/name/i), 'John Doe');
+    await user.type(screen.getByLabelText(/subject/i), 'Test Subject');
+    await user.selectOptions(screen.getByLabelText(/category/i), 'general');
+    await user.type(
+      screen.getByLabelText(/message/i),
+      'This is a test message with enough characters',
+    );
 
     // Set invalid email
     const emailInput = screen.getByLabelText(/email/i);
-    fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+    await user.clear(emailInput);
+    await user.type(emailInput, 'invalid-email');
 
     const submitButton = screen.getByRole('button', { name: /send message/i });
-    fireEvent.click(submitButton);
+    await user.click(submitButton);
 
     // Wait for validation error - either error text appears or toast shows validation error
     // Since validateForm sets errors state, wait for either
@@ -68,11 +73,12 @@ describe('Contact Page', () => {
 
   it('validates message length', async () => {
     renderWithProviders(<Contact />);
+    const user = userEvent.setup();
     const messageInput = screen.getByLabelText(/message/i);
-    fireEvent.change(messageInput, { target: { value: 'short' } });
+    await user.type(messageInput, 'short');
 
     const submitButton = screen.getByRole('button', { name: /send message/i });
-    fireEvent.click(submitButton);
+    await user.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/at least 10 characters/i)).toBeInTheDocument();
@@ -81,6 +87,7 @@ describe('Contact Page', () => {
 
   it('submits form with valid data', async () => {
     renderWithProviders(<Contact />);
+    const user = userEvent.setup();
 
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
@@ -88,13 +95,11 @@ describe('Contact Page', () => {
     const categorySelect = screen.getByLabelText(/category/i);
     const messageInput = screen.getByLabelText(/message/i);
 
-    fireEvent.change(nameInput, { target: { value: 'John Doe' } });
-    fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
-    fireEvent.change(subjectInput, { target: { value: 'Test Subject' } });
-    fireEvent.change(categorySelect, { target: { value: 'general' } });
-    fireEvent.change(messageInput, {
-      target: { value: 'This is a test message with enough characters' },
-    });
+    await user.type(nameInput, 'John Doe');
+    await user.type(emailInput, 'john@example.com');
+    await user.type(subjectInput, 'Test Subject');
+    await user.selectOptions(categorySelect, 'general');
+    await user.type(messageInput, 'This is a test message with enough characters');
 
     const submitButton = screen.getByRole('button', { name: /send message/i });
     fireEvent.click(submitButton);
@@ -113,10 +118,11 @@ describe('Contact Page', () => {
 
   it('clears error when user starts typing', async () => {
     renderWithProviders(<Contact />);
+    const user = userEvent.setup();
     const submitButton = screen.getByRole('button', { name: /send message/i });
     
     // Submit empty form to trigger validation errors
-    fireEvent.click(submitButton);
+    await user.click(submitButton);
 
     // Wait for validation error to appear
     await waitFor(
@@ -128,7 +134,7 @@ describe('Contact Page', () => {
 
     // Type in the name field - this should clear the error
     const nameInput = screen.getByLabelText(/name/i);
-    fireEvent.change(nameInput, { target: { value: 'John' } });
+    await user.type(nameInput, 'John');
 
     // Wait a bit for React to process the change
     await act(async () => {
