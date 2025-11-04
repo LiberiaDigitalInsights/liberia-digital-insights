@@ -4,6 +4,7 @@ import EventCard from '../components/events/EventCard';
 import { getUpcomingEvents, getPastEvents } from '../data/mockEvents';
 import { Tabs } from '../components/ui/Tabs';
 import SEO from '../components/SEO';
+import Countdown from '../components/events/Countdown';
 
 export default function Events() {
   const [tab, setTab] = React.useState('upcoming');
@@ -20,6 +21,11 @@ export default function Events() {
         <p className="text-lg text-[var(--color-muted)]">
           Discover tech events, hackathons, conferences, and meetups in Liberia
         </p>
+        {upcoming.length > 0 && (
+          <div className="mt-4">
+            <Countdown to={upcoming[0].date} />
+          </div>
+        )}
       </header>
 
       {/* Tabs */}

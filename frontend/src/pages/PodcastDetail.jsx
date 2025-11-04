@@ -56,6 +56,30 @@ export default function PodcastDetail() {
           date={podcast.date}
           guest={podcast.guest}
         />
+        {podcast.links && (
+          <div className="mt-4 flex flex-wrap gap-3 text-sm">
+            {podcast.links.youtube && (
+              <a
+                href={podcast.links.youtube}
+                target="_blank"
+                rel="noreferrer"
+                className="text-brand-500 hover:underline"
+              >
+                Watch on YouTube
+              </a>
+            )}
+            {podcast.links.spotify && (
+              <a
+                href={podcast.links.spotify}
+                target="_blank"
+                rel="noreferrer"
+                className="text-brand-500 hover:underline"
+              >
+                Listen on Spotify
+              </a>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Show Notes */}
