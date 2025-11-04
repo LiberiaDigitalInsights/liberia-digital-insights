@@ -80,6 +80,34 @@ export default function PodcastDetail() {
             )}
           </div>
         )}
+        {/* Inline Embeds */}
+        {podcast.links?.youtube && (
+          <div className="mt-6 aspect-video overflow-hidden rounded-[var(--radius-md)]">
+            <iframe
+              title="YouTube embed"
+              width="100%"
+              height="100%"
+              src={toYouTubeEmbed(podcast.links.youtube)}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+        )}
+        {podcast.links?.spotify && (
+          <div className="mt-6 overflow-hidden rounded-[var(--radius-md)]">
+            <iframe
+              title="Spotify embed"
+              style={{ borderRadius: '12px' }}
+              src={toSpotifyEmbed(podcast.links.spotify)}
+              width="100%"
+              height="152"
+              frameBorder="0"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            />
+          </div>
+        )}
       </div>
 
       {/* Show Notes */}
@@ -152,4 +180,36 @@ export default function PodcastDetail() {
     </div>
     </>
   );
+}
+
+function toYouTubeEmbed(url) {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('youtube.com')) {
+      const id = u.searchParams.get('v');
+      return id ? `https://www.youtube.com/embed/${id}` : url;
+    }
+    if (u.hostname.includes('youtu.be')) {
+      const id = u.pathname.slice(1);
+      return `https://www.youtube.com/embed/${id}`;
+    }
+    return url;
+  } catch {
+    return url;
+  }
+}
+
+function toSpotifyEmbed(url) {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('open.spotify.com')) {
+      return url
+        .replace('/track/', '/embed/track/')
+        .replace('/show/', '/embed/show/')
+        .replace('/episode/', '/embed/episode/');
+    }
+    return url;
+  } catch {
+    return url;
+  }
 }
