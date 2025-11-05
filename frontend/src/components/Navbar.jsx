@@ -65,7 +65,7 @@ export default function Navbar() {
               to="/"
               className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
             >
-              Home
+              News
             </Link>
             <Link
               to="/about"
@@ -103,6 +103,14 @@ export default function Navbar() {
             >
               Advertisement
             </Link>
+
+            <Link
+              to="/tech-talents"
+              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Tech Talents
+            </Link>
+
             <Link
               to="/contact"
               className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"

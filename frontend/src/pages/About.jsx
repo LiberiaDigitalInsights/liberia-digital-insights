@@ -7,31 +7,47 @@ import { FaUsers, FaLightbulb, FaHandshake, FaRocket } from 'react-icons/fa';
 export default function About() {
   const values = [
     {
-      icon: FaUsers,
-      title: 'Community First',
-      description: 'We believe in the power of community and collaborative innovation.',
-    },
-    {
       icon: FaLightbulb,
       title: 'Innovation',
-      description: 'We champion cutting-edge technology and innovative solutions for Liberia.',
+      description:
+        'We strive to inspire and embrace innovative solutions to drive Liberia’s digital transformation.',
+    },
+    {
+      icon: FaUsers,
+      title: 'Collaboration',
+      description: 'We believe in teamwork and partnerships to achieve collective success.',
     },
     {
       icon: FaHandshake,
-      title: 'Partnership',
-      description: 'We build strong partnerships to drive digital transformation.',
+      title: 'Integrity',
+      description: 'We maintain transparency, accountability, and trust in all our engagements.',
     },
     {
       icon: FaRocket,
-      title: 'Growth',
-      description: 'We support startups and entrepreneurs on their journey to success.',
+      title: 'Empowerment',
+      description:
+        'We are committed to empowering individuals and businesses with knowledge and resources to thrive in the digital.',
+    },
+
+    {
+      icon: FaRocket,
+      title: 'Excellence',
+      description:
+        'We pursue quality and excellence in everything we do, ensuring impactful outcomes.',
+    },
+
+    {
+      icon: FaRocket,
+      title: 'Inclusivity',
+      description:
+        'We champion diversity and inclusion, ensuring every voice is heard and valued in the digital ecosystem.',
     },
   ];
 
   const team = [
     {
-      name: 'John Doe',
-      role: 'Founder & CEO',
+      name: 'James Anointed Morgan Jr.',
+      role: 'CEO & Founder',
       bio: 'Passionate about technology and digital transformation in Liberia.',
     },
     {
@@ -54,10 +70,14 @@ export default function About() {
         <header className="mb-12 text-center">
           <H1 className="mb-4">About Liberia Digital Insights</H1>
           <Muted className="mx-auto max-w-3xl text-lg">
-            Liberia Digital Insights is your premier destination for technology news, insights, and
-            innovation stories from Liberia and beyond. We cover everything from startup ecosystems
-            to enterprise technology, digital transformation, and the people driving change in
-            Liberia's tech landscape.
+            Liberia Digital Insights represents a platform focused on providing in-depth knowledge,
+            analysis, and updates about digital transformation, technology advancements,
+            entrepreneurship, and innovation within Liberia. It reflects the vision of empowering
+            Liberians with insights into the digital world to foster technological growth and
+            national development. Our goal is to build a thriving tech community where young people
+            and professionals alike can stay updated on trends, share their knowledge, and learn
+            about new opportunities. We are committed to inspiring creativity, promoting innovation,
+            and driving interest in STEM education and technology across Liberia.
           </Muted>
         </header>
 
@@ -66,17 +86,19 @@ export default function About() {
           <Card className="p-6">
             <H2 className="mb-4 text-2xl">Our Mission</H2>
             <p className="text-[var(--color-muted)]">
-              To empower Liberia's digital ecosystem by providing comprehensive coverage of
-              technology news, insights, and innovation. We aim to bridge the information gap,
-              connect stakeholders, and inspire the next generation of tech leaders in Liberia.
+              Our mission is to provide relevant, high-quality tech content that informs, educates,
+              and encourages more Liberians to embrace technology. We strive to make Liberia a
+              well-recognized player in the global tech landscape through meaningful stories,
+              educational insights, and engaging content.
             </p>
           </Card>
           <Card className="p-6">
             <H2 className="mb-4 text-2xl">Our Vision</H2>
             <p className="text-[var(--color-muted)]">
-              To become the leading voice for technology and innovation in Liberia, recognized for
-              quality journalism, insightful analysis, and meaningful contributions to the country's
-              digital transformation journey.
+              Our vision is to become the leading tech media hub in Liberia, empowering individuals
+              and inspiring the next generation of tech innovators. Liberia Digital Insights aims to
+              be the go-to platform for all things tech in Liberia, bridging the gap between global
+              tech trends and local innovation.
             </p>
           </Card>
         </div>
