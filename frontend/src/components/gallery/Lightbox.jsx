@@ -1,14 +1,12 @@
-import React from 'react';
-import { cn } from '../../lib/cn';
-import Button from '../ui/Button';
+import React, { useEffect } from 'react';
 import { FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 export default function Lightbox({ items, currentIndex, onClose, onNext, onPrevious }) {
-  if (!items || items.length === 0 || currentIndex === null) return null;
+  const isOpen = !!(items && items.length > 0 && currentIndex !== null);
+  const current = isOpen ? items[currentIndex] : null;
 
-  const current = items[currentIndex];
-
-  React.useEffect(() => {
+  useEffect(() => {
+    if (!isOpen) return;
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
       if (e.key === 'ArrowLeft') onPrevious();
@@ -22,12 +20,17 @@ export default function Lightbox({ items, currentIndex, onClose, onNext, onPrevi
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
     };
-  }, [onClose, onNext, onPrevious]);
+  }, [isOpen, onClose, onNext, onPrevious]);
+
+  if (!isOpen) return null;
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={current?.title || 'Lightbox dialog'}
     >
       <div className="relative max-h-full max-w-6xl" onClick={(e) => e.stopPropagation()}>
         {/* Close button */}

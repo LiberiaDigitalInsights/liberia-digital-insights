@@ -8,7 +8,11 @@ export const mockPodcasts = [
     date: 'Jun 18, Liberia Digital Insights Podcast',
     guest: 'Movement For Tech Liberia Team',
     image: '/LDI_favicon.png',
-    audioUrl: null, // Placeholder - would be actual audio URL
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    links: {
+      youtube: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      spotify: 'https://open.spotify.com/show/example',
+    },
     showNotes: [
       'Introduction to Liberia Digital Insights Podcast',
       'Overview of the tech ecosystem in Liberia',
@@ -26,7 +30,10 @@ export const mockPodcasts = [
     date: 'Jul 2, Liberia Digital Insights Podcast',
     guest: 'Various Startup Founders',
     image: '/LDI_favicon.png',
-    audioUrl: null,
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+    links: {
+      youtube: 'https://www.youtube.com/watch?v=oHg5SJYRHA0',
+    },
     showNotes: [
       'Guest introductions',
       'Founding stories',
