@@ -5,17 +5,25 @@ import Badge from '../ui/Badge';
 export default function GalleryItem({ item, onClick, className }) {
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={() => onClick(item)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick(item);
+        }
+      }}
       className={cn(
-        'group relative cursor-pointer overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] transition-all duration-300 hover:shadow-xl hover:-translate-y-1',
+        'group relative cursor-pointer overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] transition-all duration-300 hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-brand-500',
         className,
       )}
     >
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden bg-[color-mix(in_oklab,var(--color-surface),white_6%)]">
         <img
-          src={item.thumbnail}
-          alt={item.title}
+          src={item.thumbnail || item.url}
+          alt={item.title || 'Gallery item'}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

@@ -10,6 +10,25 @@ Vite + React + Tailwind CSS design system and app shell.
 4. Lint: `npm run lint` | Format: `npm run format`
 5. Test: `npm run test`
 
+## Testing
+
+- Run all tests once: `npm run test`
+- Watch mode: `npm run test:watch`
+- With coverage: `npm run test:coverage`
+- Test utilities are in `src/test` (`renderWithProviders`, shared Providers).
+
+## Coverage
+
+- Provider: V8 (via `@vitest/coverage-v8`)
+- Reports: text, HTML, lcov in `./coverage`
+- Thresholds: lines 70, functions 70, branches 60, statements 70 (see `vitest.config.js`)
+- Open `coverage/index.html` after running: `npm run test:coverage`
+
+## CI
+
+- GitHub Actions workflow runs tests with coverage on pushes/PRs to `main`.
+- Coverage HTML is uploaded as an artifact.
+
 ## Project Structure
 
 - `src/components/ui`: Design system primitives

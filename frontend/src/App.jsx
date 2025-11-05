@@ -20,6 +20,7 @@ const Advertisement = lazy(() => import('./pages/Advertisement'));
 const Signup = lazy(() => import('./pages/Signup'));
 const Talent = lazy(() => import('./pages/Talent'));
 const Category = lazy(() => import('./pages/Category'));
+const Admin = lazy(() => import('./pages/Admin'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Loading fallback component
@@ -56,6 +57,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/talent" element={<Talent />} />
           <Route path="/category/:slug" element={<Category />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
