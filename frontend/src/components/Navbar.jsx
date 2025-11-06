@@ -70,6 +70,7 @@ export default function Navbar() {
               { to: '/gallery', label: 'Gallery' },
               { to: '/advertisement', label: 'Advertisement' },
               { to: '/talent', label: 'Tech Talents' },
+              { to: '/training-courses', label: 'Training & Courses' },
               { to: '/contact', label: 'Contact Us' },
               { to: '/signup', label: 'Sign Up' },
             ].map((item) => (
@@ -166,6 +167,7 @@ export default function Navbar() {
                   { to: '/gallery', label: 'Gallery' },
                   { to: '/advertisement', label: 'Advertisement' },
                   { to: '/talent', label: 'Tech Talents' },
+                  { to: '/training-courses', label: 'Training & Courses' },
                   { to: '/contact', label: 'Contact Us' },
                   { to: '/signup', label: 'Sign Up' },
                 ].map((item) => (
