@@ -56,6 +56,35 @@ export default function PodcastDetail() {
             date={podcast.date}
             guest={podcast.guest}
           />
+          {/* Guest Info */}
+          {podcast.guest && (
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>Guest</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-4">
+                  <div
+                    aria-hidden
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_8%)] text-sm font-semibold text-[var(--color-text)]"
+                    title={podcast.guest}
+                  >
+                    {String(podcast.guest).charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-[var(--color-text)]">
+                      {podcast.guest}
+                    </div>
+                    {podcast.date && (
+                      <div className="text-xs text-[var(--color-muted)]">
+                        Recorded {podcast.date}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
           {podcast.links && (
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
               {podcast.links.youtube && (
@@ -127,6 +156,20 @@ export default function PodcastDetail() {
                   </li>
                 ))}
               </ul>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Transcript */}
+        {podcast.description && (
+          <Card className="mb-12">
+            <CardHeader>
+              <CardTitle>Transcript</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="whitespace-pre-line text-sm text-[var(--color-text)]">
+                {podcast.description}
+              </p>
             </CardContent>
           </Card>
         )}

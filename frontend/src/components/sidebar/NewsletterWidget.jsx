@@ -147,7 +147,7 @@ export default function NewsletterWidget() {
           </Button>
           {status === 'success' && (
             <div role="status" className="text-sm text-green-600">
-              You’re subscribed! Check your inbox for a welcome email.
+              You’re all set! Check your inbox for a welcome email.
             </div>
           )}
           {status === 'error' && Object.keys(errors).length === 0 && (

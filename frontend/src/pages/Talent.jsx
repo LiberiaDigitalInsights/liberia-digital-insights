@@ -80,7 +80,8 @@ export default function Talent() {
                 <button
                   key={c}
                   onClick={() => setFilter(c)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                  aria-pressed={filter === c}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
                     filter === c
                       ? 'bg-brand-500 text-white'
                       : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
