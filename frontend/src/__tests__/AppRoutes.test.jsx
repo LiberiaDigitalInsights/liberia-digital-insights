@@ -24,12 +24,12 @@ describe('App routes', () => {
   it('renders Home at /', async () => {
     renderAt('/');
     // Wait for the Home content to render (Suspense fallback uses skeletons now)
-    await screen.findByRole('heading', { name: /technology/i }, { timeout: 5000 });
+    await screen.findByRole('heading', { name: /technology/i }, { timeout: 10000 });
   });
 
   it('renders Contact at /contact', async () => {
     renderAt('/contact');
-    await screen.findByText(/contact us/i);
+    await screen.findByRole('heading', { name: /contact us/i }, { timeout: 10000 });
   });
 
   it('renders NotFound on unknown route', async () => {

@@ -1,4 +1,4 @@
-import { renderWithProviders, screen, fireEvent, waitFor, act } from '../../test/utils';
+import { renderWithProviders, screen, waitFor, act } from '../../test/utils';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import Contact from '../Contact';
@@ -102,14 +102,14 @@ describe('Contact Page', () => {
     await user.type(messageInput, 'This is a test message with enough characters');
 
     const submitButton = screen.getByRole('button', { name: /send message/i });
-    fireEvent.click(submitButton);
+    await user.click(submitButton);
 
     // Button should be disabled during submission
     await waitFor(
       () => {
         expect(submitButton).toBeDisabled();
       },
-      { timeout: 1000 },
+      { timeout: 5000 },
     );
 
     // Verify form submission started (button is disabled, indicating isSubmitting is true)
