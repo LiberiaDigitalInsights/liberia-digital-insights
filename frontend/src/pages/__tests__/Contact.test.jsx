@@ -111,7 +111,7 @@ describe('Contact Page', () => {
       },
       { timeout: 1000 },
     );
-    
+
     // Verify form submission started (button is disabled, indicating isSubmitting is true)
     expect(submitButton).toBeDisabled();
   }, 10000);
@@ -120,7 +120,7 @@ describe('Contact Page', () => {
     renderWithProviders(<Contact />);
     const user = userEvent.setup();
     const submitButton = screen.getByRole('button', { name: /send message/i });
-    
+
     // Submit empty form to trigger validation errors
     await user.click(submitButton);
 

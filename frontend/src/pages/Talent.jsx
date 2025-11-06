@@ -41,7 +41,11 @@ export default function Talent() {
     const err = validate();
     if (Object.keys(err).length) {
       setErrors(err);
-      showToast({ title: 'Validation Error', description: 'Please fix the form fields.', variant: 'danger' });
+      showToast({
+        title: 'Validation Error',
+        description: 'Please fix the form fields.',
+        variant: 'danger',
+      });
       return;
     }
     const newTalent = {
@@ -63,7 +67,9 @@ export default function Talent() {
       <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
         <header className="mb-8">
           <H1 className="mb-4 text-3xl font-bold">Talent Hub</H1>
-          <p className="text-lg text-[var(--color-muted)]">Discover talent and submit your profile.</p>
+          <p className="text-lg text-[var(--color-muted)]">
+            Discover talent and submit your profile.
+          </p>
         </header>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -86,8 +92,8 @@ export default function Talent() {
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {filtered.map((t) => (
-                <TalentCard key={t.id} {...t} />)
-              )}
+                <TalentCard key={t.id} {...t} />
+              ))}
             </div>
           </section>
 
@@ -101,12 +107,20 @@ export default function Talent() {
                   <Field>
                     <Label htmlFor="name">Name</Label>
                     <Input id="name" value={form.name} onChange={onChange} />
-                    {errors.name ? <ErrorText>{errors.name}</ErrorText> : <HelperText>Your full name.</HelperText>}
+                    {errors.name ? (
+                      <ErrorText>{errors.name}</ErrorText>
+                    ) : (
+                      <HelperText>Your full name.</HelperText>
+                    )}
                   </Field>
                   <Field>
                     <Label htmlFor="role">Role</Label>
                     <Input id="role" value={form.role} onChange={onChange} />
-                    {errors.role ? <ErrorText>{errors.role}</ErrorText> : <HelperText>e.g., Engineer</HelperText>}
+                    {errors.role ? (
+                      <ErrorText>{errors.role}</ErrorText>
+                    ) : (
+                      <HelperText>e.g., Engineer</HelperText>
+                    )}
                   </Field>
                   <Field>
                     <Label htmlFor="category">Category</Label>
@@ -114,18 +128,28 @@ export default function Talent() {
                       <option value="" disabled>
                         Choose a category
                       </option>
-                      {categories.filter((c) => c !== 'All').map((c) => (
-                        <option key={c} value={c}>
-                          {c}
-                        </option>
-                      ))}
+                      {categories
+                        .filter((c) => c !== 'All')
+                        .map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
                     </Select>
-                    {errors.category ? <ErrorText>{errors.category}</ErrorText> : <HelperText>Select best fit.</HelperText>}
+                    {errors.category ? (
+                      <ErrorText>{errors.category}</ErrorText>
+                    ) : (
+                      <HelperText>Select best fit.</HelperText>
+                    )}
                   </Field>
                   <Field>
                     <Label htmlFor="bio">Bio</Label>
                     <Input id="bio" value={form.bio} onChange={onChange} placeholder="Short bio" />
-                    {errors.bio ? <ErrorText>{errors.bio}</ErrorText> : <HelperText>Min 10 characters.</HelperText>}
+                    {errors.bio ? (
+                      <ErrorText>{errors.bio}</ErrorText>
+                    ) : (
+                      <HelperText>Min 10 characters.</HelperText>
+                    )}
                   </Field>
                   <Field>
                     <Label htmlFor="link">Link</Label>
@@ -134,7 +158,13 @@ export default function Talent() {
                   </Field>
                   <div className="flex gap-2">
                     <Button type="submit">Submit</Button>
-                    <Button type="button" variant="subtle" onClick={() => setForm({ name: '', role: '', category: '', bio: '', link: '' })}>
+                    <Button
+                      type="button"
+                      variant="subtle"
+                      onClick={() =>
+                        setForm({ name: '', role: '', category: '', bio: '', link: '' })
+                      }
+                    >
                       Reset
                     </Button>
                   </div>

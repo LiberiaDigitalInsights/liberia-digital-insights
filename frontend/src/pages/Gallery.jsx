@@ -41,89 +41,89 @@ export default function Gallery() {
     <>
       <SEO />
       <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
-      {/* Header */}
-      <header className="mb-8">
-        <H1 className="mb-4 text-3xl font-bold">Gallery</H1>
-        <p className="text-lg text-[var(--color-muted)]">
-          Photos and videos from our events, interviews, and community gatherings
-        </p>
-      </header>
+        {/* Header */}
+        <header className="mb-8">
+          <H1 className="mb-4 text-3xl font-bold">Gallery</H1>
+          <p className="text-lg text-[var(--color-muted)]">
+            Photos and videos from our events, interviews, and community gatherings
+          </p>
+        </header>
 
-      {/* Filters */}
-      <div className="mb-8 flex flex-wrap gap-3">
-        <button
-          onClick={() => setFilter('all')}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
-            filter === 'all'
-              ? 'bg-brand-500 text-white'
-              : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
-          }`}
-        >
-          All ({mockGallery.length})
-        </button>
-        {events.map((event) => (
+        {/* Filters */}
+        <div className="mb-8 flex flex-wrap gap-3">
           <button
-            key={event}
-            onClick={() => setFilter(`event:${event}`)}
+            onClick={() => setFilter('all')}
             className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
-              filter === `event:${event}`
+              filter === 'all'
                 ? 'bg-brand-500 text-white'
                 : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
             }`}
           >
-            {event}
+            All ({mockGallery.length})
           </button>
-        ))}
-        {categories.map((category) => (
-          <button
-            key={category}
-            onClick={() => setFilter(`category:${category}`)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
-              filter === `category:${category}`
-                ? 'bg-brand-500 text-white'
-                : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
-            }`}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-
-      {/* Results count */}
-      <div className="mb-6 text-sm text-[var(--color-muted)]">
-        Showing {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'}
-      </div>
-
-      {/* Gallery Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {filteredItems.length > 0 ? (
-          filteredItems.map((item, idx) => (
-            <div
-              key={item.id}
-              className="opacity-0 animate-slide-up"
-              style={{ animationDelay: `${100 + idx * 30}ms` }}
+          {events.map((event) => (
+            <button
+              key={event}
+              onClick={() => setFilter(`event:${event}`)}
+              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                filter === `event:${event}`
+                  ? 'bg-brand-500 text-white'
+                  : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
+              }`}
             >
-              <GalleryItem item={item} onClick={openLightbox} />
+              {event}
+            </button>
+          ))}
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setFilter(`category:${category}`)}
+              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                filter === `category:${category}`
+                  ? 'bg-brand-500 text-white'
+                  : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
+        {/* Results count */}
+        <div className="mb-6 text-sm text-[var(--color-muted)]">
+          Showing {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'}
+        </div>
+
+        {/* Gallery Grid */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item, idx) => (
+              <div
+                key={item.id}
+                className="opacity-0 animate-slide-up"
+                style={{ animationDelay: `${100 + idx * 30}ms` }}
+              >
+                <GalleryItem item={item} onClick={openLightbox} />
+              </div>
+            ))
+          ) : (
+            <div className="col-span-full py-12 text-center text-[var(--color-muted)]">
+              No items found in this filter.
             </div>
-          ))
-        ) : (
-          <div className="col-span-full py-12 text-center text-[var(--color-muted)]">
-            No items found in this filter.
-          </div>
+          )}
+        </div>
+
+        {/* Lightbox */}
+        {lightboxIndex !== null && (
+          <Lightbox
+            items={filteredItems}
+            currentIndex={lightboxIndex}
+            onClose={closeLightbox}
+            onNext={nextItem}
+            onPrevious={previousItem}
+          />
         )}
       </div>
-
-      {/* Lightbox */}
-      {lightboxIndex !== null && (
-        <Lightbox
-          items={filteredItems}
-          currentIndex={lightboxIndex}
-          onClose={closeLightbox}
-          onNext={nextItem}
-          onPrevious={previousItem}
-        />
-      )}
-    </div>
     </>
   );
 }

@@ -13,7 +13,10 @@ export default function Countdown({ to }) {
   if (past) return null;
 
   return (
-    <div aria-label="countdown" className="inline-flex items-center gap-2 rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_8%)] px-3 py-1 text-xs text-[var(--color-muted)]">
+    <div
+      aria-label="countdown"
+      className="inline-flex items-center gap-2 rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_8%)] px-3 py-1 text-xs text-[var(--color-muted)]"
+    >
       <span>Starts in:</span>
       <span className="font-medium text-[var(--color-text)]">
         {days}d {hours}h {minutes}m {seconds}s

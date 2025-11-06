@@ -118,26 +118,26 @@ export default function Category() {
     <>
       <SEO title={`${matchedCategory} | Liberia Digital Insights`} />
       <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
-      {/* Header */}
-      <header className="mb-8">
-        <H1 className="mb-4">{matchedCategory}</H1>
-        <Muted className="text-lg">
-          Explore articles and podcasts in the {matchedCategory} category.
-        </Muted>
-      </header>
+        {/* Header */}
+        <header className="mb-8">
+          <H1 className="mb-4">{matchedCategory}</H1>
+          <Muted className="text-lg">
+            Explore articles and podcasts in the {matchedCategory} category.
+          </Muted>
+        </header>
 
-      {/* Tabs */}
-      <Tabs tabs={tabs} value={activeTab} onChange={setActiveTab} className="mb-8" />
+        {/* Tabs */}
+        <Tabs tabs={tabs} value={activeTab} onChange={setActiveTab} className="mb-8" />
 
-      {/* Breadcrumb */}
-      <nav className="mb-6 text-sm text-[var(--color-muted)]">
-        <a href="/" className="hover:text-[var(--color-text)]">
-          Home
-        </a>{' '}
-        <span className="mx-2">/</span>
-        <span className="text-[var(--color-text)]">{matchedCategory}</span>
-      </nav>
-    </div>
+        {/* Breadcrumb */}
+        <nav className="mb-6 text-sm text-[var(--color-muted)]">
+          <a href="/" className="hover:text-[var(--color-text)]">
+            Home
+          </a>{' '}
+          <span className="mx-2">/</span>
+          <span className="text-[var(--color-text)]">{matchedCategory}</span>
+        </nav>
+      </div>
     </>
   );
 }
