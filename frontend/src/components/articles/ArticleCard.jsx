@@ -36,7 +36,7 @@ export default function ArticleCard({
                   ? '(min-width: 1024px) 66vw, 100vw'
                   : '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
               }
-              fetchpriority={featured ? 'high' : 'auto'}
+              fetchPriority={featured ? 'high' : 'auto'}
             />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
