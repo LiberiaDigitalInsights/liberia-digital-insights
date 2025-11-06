@@ -5,6 +5,7 @@ import { H1 } from '../components/ui/Typography';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { mockCourses } from '../data/mockTraining';
+import LazyImage from '../components/LazyImage';
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -16,6 +17,22 @@ export default function CourseDetail() {
     <>
       <SEO title={course.title} description={course.summary} image={course.image} />
       <div className="mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-12">
+        <Link
+          to={`/register?type=course&id=${course.id}`}
+          aria-label={`Register for ${course.title}`}
+          className="block"
+        >
+          <div className="mb-6 h-56 w-full overflow-hidden rounded-[var(--radius-lg)] bg-gradient-to-br from-[color-mix(in_oklab,var(--color-surface),white_6%)] to-[color-mix(in_oklab,var(--color-surface),white_14%)] md:h-72">
+            <LazyImage
+              src={course.image}
+              alt={course.title}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              fetchPriority="low"
+              sizes="(min-width: 768px) 720px, 100vw"
+            />
+          </div>
+        </Link>
         <header className="mb-6">
           <H1 className="mb-2 text-3xl font-bold">{course.title}</H1>
           <div className="text-sm text-[var(--color-muted)]">

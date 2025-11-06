@@ -106,13 +106,13 @@ export default function About() {
         {/* Core Values */}
         <section className="mb-16">
           <H2 className="mb-8 text-center">Our Core Values</H2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8 xl:gap-10">
             {values.map((value, idx) => {
               const Icon = value.icon;
               return (
                 <Card
                   key={idx}
-                  className="p-6 text-center opacity-0 animate-slide-up"
+                  className="p-5 md:p-6 lg:p-8 text-center opacity-0 animate-slide-up"
                   style={{ animationDelay: `${100 + idx * 100}ms` }}
                 >
                   <div className="mb-4 flex justify-center">

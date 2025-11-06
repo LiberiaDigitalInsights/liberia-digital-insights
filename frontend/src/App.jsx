@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react';
+import AuthGate from './components/auth/AuthGate';
 import Skeleton from './components/ui/Skeleton';
 import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
@@ -80,7 +81,14 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/talent" element={<Talent />} />
           <Route path="/category/:slug" element={<Category />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route
+            path="/admin"
+            element={
+              <AuthGate>
+                <Admin />
+              </AuthGate>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

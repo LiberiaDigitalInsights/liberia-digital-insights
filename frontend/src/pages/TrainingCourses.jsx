@@ -4,6 +4,7 @@ import { H1 } from '../components/ui/Typography';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { Link } from 'react-router-dom';
+import LazyImage from '../components/LazyImage';
 import {
   getUpcomingTrainings,
   getUpcomingCourses,
@@ -119,6 +120,22 @@ export default function TrainingCourses() {
                   key={t.id}
                   className="group overflow-hidden transition-all duration-300 hover:shadow-lg"
                 >
+                  <Link
+                    to={`/training/${t.id}`}
+                    aria-label={`View details for ${t.title}`}
+                    className="block"
+                  >
+                    <div className="h-56 w-full overflow-hidden bg-gradient-to-br from-[color-mix(in_oklab,var(--color-surface),white_6%)] to-[color-mix(in_oklab,var(--color-surface),white_14%)] md:h-72">
+                      <LazyImage
+                        src={t.image}
+                        alt={t.title}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                        fetchPriority="low"
+                        sizes="(min-width: 1024px) 560px, 100vw"
+                      />
+                    </div>
+                  </Link>
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between gap-3">
                       <span className="truncate">{t.title}</span>
@@ -183,6 +200,22 @@ export default function TrainingCourses() {
                   key={c.id}
                   className="group overflow-hidden transition-all duration-300 hover:shadow-lg"
                 >
+                  <Link
+                    to={`/course/${c.id}`}
+                    aria-label={`View details for ${c.title}`}
+                    className="block"
+                  >
+                    <div className="h-56 w-full overflow-hidden bg-gradient-to-br from-[color-mix(in_oklab,var(--color-surface),white_6%)] to-[color-mix(in_oklab,var(--color-surface),white_14%)] md:h-72">
+                      <LazyImage
+                        src={c.image}
+                        alt={c.title}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                        fetchPriority="low"
+                        sizes="(min-width: 1024px) 560px, 100vw"
+                      />
+                    </div>
+                  </Link>
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between gap-3">
                       <span className="truncate">{c.title}</span>

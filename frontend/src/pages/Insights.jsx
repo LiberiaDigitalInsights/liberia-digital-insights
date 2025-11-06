@@ -2,6 +2,7 @@ import React from 'react';
 import { H1, H2, Muted } from '../components/ui/Typography';
 import Card from '../components/ui/Card';
 import ArticleCard from '../components/articles/ArticleCard';
+import FeaturedArticleRow from '../components/articles/FeaturedArticleRow';
 import SEO from '../components/SEO';
 import { generateArticleGrid } from '../data/mockArticles';
 import { CATEGORIES } from '../constants/categories';
@@ -100,7 +101,8 @@ export default function Insights() {
               </div>
             </div>
             <div className="opacity-0 animate-slide-up animation-delay-200">
-              <ArticleCard
+              <FeaturedArticleRow
+                index={1}
                 image={articles[0].image}
                 title={articles[0].title}
                 excerpt={articles[0].excerpt || 'Weekly insights from tech experts in Liberia.'}

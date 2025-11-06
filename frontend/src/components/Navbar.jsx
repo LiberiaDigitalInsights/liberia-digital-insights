@@ -8,8 +8,73 @@ import { FaFacebookF, FaTwitter, FaYoutube } from 'react-icons/fa';
 
 export default function Navbar() {
   const [open, setOpen] = React.useState(false);
+  const [openMenu, setOpenMenu] = React.useState(null);
+  const [pinned, setPinned] = React.useState(false);
+  const [barHeight, setBarHeight] = React.useState(0);
+  const contentTriggerRef = React.useRef(null);
+  const contentMenuRef = React.useRef(null);
+  const communityTriggerRef = React.useRef(null);
+  const communityMenuRef = React.useRef(null);
+  const moreTriggerRef = React.useRef(null);
+  const moreMenuRef = React.useRef(null);
+  const primaryBarRef = React.useRef(null);
+
+  React.useEffect(() => {
+    function onDocClick(e) {
+      if (!openMenu) return;
+      const map = {
+        content: { trigger: contentTriggerRef.current, menu: contentMenuRef.current },
+        community: { trigger: communityTriggerRef.current, menu: communityMenuRef.current },
+        more: { trigger: moreTriggerRef.current, menu: moreMenuRef.current },
+      };
+      const nodes = map[openMenu];
+      if (!nodes) return;
+      const t = e.target;
+      if (nodes.trigger && nodes.menu && !nodes.trigger.contains(t) && !nodes.menu.contains(t)) {
+        setOpenMenu(null);
+      }
+    }
+    document.addEventListener('mousedown', onDocClick);
+    return () => document.removeEventListener('mousedown', onDocClick);
+  }, [openMenu]);
+
+  React.useEffect(() => {
+    // Move focus into the opened menu's first item
+    let menuEl = null;
+    if (openMenu === 'content') menuEl = contentMenuRef.current;
+    else if (openMenu === 'community') menuEl = communityMenuRef.current;
+    else if (openMenu === 'more') menuEl = moreMenuRef.current;
+    if (menuEl) {
+      const firstItem = menuEl.querySelector('[role="menuitem"]');
+      if (firstItem) {
+        // delay to ensure visibility transition doesn't block focus
+        setTimeout(() => firstItem.focus(), 0);
+      }
+    }
+  }, [openMenu]);
+
+  React.useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY || window.pageYOffset;
+      // Pin once the page has scrolled a little (small threshold)
+      setPinned(y > 40);
+    };
+    // Measure bar height for spacer to avoid layout shift
+    const measure = () => {
+      if (primaryBarRef.current) {
+        setBarHeight(primaryBarRef.current.offsetHeight || 0);
+      }
+    };
+    measure();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', measure);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
   return (
-    <nav className="sticky top-0 z-40" role="navigation" aria-label="Primary">
+    <nav className="z-40" role="navigation" aria-label="Primary">
       {/* Top utility strip with date + social */}
       <div className="hidden bg-[var(--color-nav-top)] text-xs md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5">
@@ -44,6 +109,8 @@ export default function Navbar() {
               <FaYoutube />
             </a>
           </div>
+          {/* Spacer to prevent layout jump when bar becomes fixed */}
+          {pinned ? <div style={{ height: barHeight }} aria-hidden="true" /> : null}
         </div>
       </div>
 
@@ -58,35 +125,188 @@ export default function Navbar() {
       </div>
 
       {/* Primary nav bar with menu + search */}
-      <div className="border-t border-[var(--color-border)] bg-[var(--color-nav-bottom)] text-white">
+      <div
+        ref={primaryBarRef}
+        className={`border-t border-[var(--color-border)] bg-[var(--color-nav-bottom)] text-white ${
+          pinned ? 'fixed inset-x-0 top-0 z-50 shadow-sm' : ''
+        }`}
+      >
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2 text-sm">
           <div className="hidden items-center gap-5 md:flex">
-            {[
-              { to: '/', label: 'News' },
-              { to: '/about', label: 'About Us' },
-              { to: '/insights', label: 'Insights' },
-              { to: '/podcasts', label: 'Podcasts' },
-              { to: '/articles', label: 'Articles' },
-              { to: '/gallery', label: 'Gallery' },
-              { to: '/advertisement', label: 'Advertisement' },
-              { to: '/talent', label: 'Tech Talents' },
-              { to: '/training-courses', label: 'Training & Courses' },
-              { to: '/contact', label: 'Contact Us' },
-              { to: '/signup', label: 'Sign Up' },
-            ].map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300 ${
-                    isActive ? 'text-yellow-300 after:w-full' : ''
-                  }`
-                }
-                aria-current={({ isActive }) => (isActive ? 'page' : undefined)}
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300 ${
+                  isActive ? 'text-yellow-300 after:w-full' : ''
+                }`
+              }
+              aria-current={({ isActive }) => (isActive ? 'page' : undefined)}
+            >
+              News
+            </NavLink>
+
+            <div className="relative group" onMouseLeave={() => setOpenMenu(null)}>
+              <button
+                id="content-trigger"
+                className="relative inline-flex items-center gap-1 py-1 transition-colors duration-200 hover:text-yellow-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300"
+                aria-haspopup="menu"
+                aria-controls="content-menu"
+                aria-expanded={openMenu === 'content'}
+                ref={contentTriggerRef}
+                onClick={() => setOpenMenu((m) => (m === 'content' ? null : 'content'))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setOpenMenu((m) => (m === 'content' ? null : 'content'));
+                  } else if (e.key === 'Escape') {
+                    setOpenMenu(null);
+                    setTimeout(() => contentTriggerRef.current?.focus(), 0);
+                  }
+                }}
               >
-                {item.label}
-              </NavLink>
-            ))}
+                Content
+                <span
+                  aria-hidden
+                  className={`ml-0.5 text-xs opacity-80 transition-transform duration-200 ${openMenu === 'content' ? 'rotate-180' : ''}`}
+                >
+                  ▾
+                </span>
+              </button>
+              <div
+                id="content-menu"
+                role="menu"
+                tabIndex={-1}
+                className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
+                  openMenu === 'content' ? 'visible opacity-100' : 'invisible opacity-0'
+                } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
+              >
+                {[
+                  { to: '/insights', label: 'Insights' },
+                  { to: '/articles', label: 'Articles' },
+                  { to: '/podcasts', label: 'Podcasts' },
+                  { to: '/gallery', label: 'Gallery' },
+                ].map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    role="menuitem"
+                    tabIndex={-1}
+                    onClick={() => setOpenMenu(null)}
+                    className="block rounded px-3 py-2 text-sm transition-colors duration-150 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative group" onMouseLeave={() => setOpenMenu(null)}>
+              <button
+                id="community-trigger"
+                className="relative inline-flex items-center gap-1 py-1 transition-colors duration-200 hover:text-yellow-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300"
+                aria-haspopup="menu"
+                aria-controls="community-menu"
+                aria-expanded={openMenu === 'community'}
+                ref={communityTriggerRef}
+                onClick={() => setOpenMenu((m) => (m === 'community' ? null : 'community'))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setOpenMenu((m) => (m === 'community' ? null : 'community'));
+                  } else if (e.key === 'Escape') {
+                    setOpenMenu(null);
+                    setTimeout(() => communityTriggerRef.current?.focus(), 0);
+                  }
+                }}
+              >
+                Community
+                <span
+                  aria-hidden
+                  className={`ml-0.5 text-xs opacity-80 transition-transform duration-200 ${openMenu === 'community' ? 'rotate-180' : ''}`}
+                >
+                  ▾
+                </span>
+              </button>
+              <div
+                id="community-menu"
+                role="menu"
+                tabIndex={-1}
+                className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
+                  openMenu === 'community' ? 'visible opacity-100' : 'invisible opacity-0'
+                } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
+              >
+                {[
+                  { to: '/talent', label: 'Tech Talents' },
+                  { to: '/training-courses', label: 'Training & Courses' },
+                ].map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    role="menuitem"
+                    tabIndex={-1}
+                    onClick={() => setOpenMenu(null)}
+                    className="block rounded px-3 py-2 text-sm transition-colors duration-150 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative group" onMouseLeave={() => setOpenMenu(null)}>
+              <button
+                id="more-trigger"
+                className="relative inline-flex items-center gap-1 py-1 transition-colors duration-200 hover:text-yellow-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300"
+                aria-haspopup="menu"
+                aria-controls="more-menu"
+                aria-expanded={openMenu === 'more'}
+                ref={moreTriggerRef}
+                onClick={() => setOpenMenu((m) => (m === 'more' ? null : 'more'))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setOpenMenu((m) => (m === 'more' ? null : 'more'));
+                  } else if (e.key === 'Escape') {
+                    setOpenMenu(null);
+                    setTimeout(() => moreTriggerRef.current?.focus(), 0);
+                  }
+                }}
+              >
+                More
+                <span
+                  aria-hidden
+                  className={`ml-0.5 text-xs opacity-80 transition-transform duration-200 ${openMenu === 'more' ? 'rotate-180' : ''}`}
+                >
+                  ▾
+                </span>
+              </button>
+              <div
+                id="more-menu"
+                role="menu"
+                tabIndex={-1}
+                className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
+                  openMenu === 'more' ? 'visible opacity-100' : 'invisible opacity-0'
+                } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
+              >
+                {[
+                  { to: '/about', label: 'About Us' },
+                  { to: '/advertisement', label: 'Advertisement' },
+                  { to: '/contact', label: 'Contact Us' },
+                  { to: '/signup', label: 'Sign Up' },
+                ].map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    role="menuitem"
+                    tabIndex={-1}
+                    onClick={() => setOpenMenu(null)}
+                    className="block rounded px-3 py-2 text-sm transition-colors duration-150 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
           <div className="ml-auto hidden items-center gap-3 md:flex">
             <Search placeholder="Search For" onSubmit={(q) => console.log('search', q)} />
