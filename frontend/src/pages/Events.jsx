@@ -7,6 +7,7 @@ import SEO from '../components/SEO';
 import Countdown from '../components/events/Countdown';
 import { mockGallery } from '../data/mockGallery';
 import { Link } from 'react-router-dom';
+import EmptyState from '../components/ui/EmptyState';
 
 export default function Events() {
   const [tab, setTab] = React.useState('upcoming');
@@ -64,8 +65,11 @@ export default function Events() {
                         </div>
                       ))
                     ) : (
-                      <div className="col-span-full py-12 text-center text-[var(--color-muted)]">
-                        No upcoming events scheduled.
+                      <div className="col-span-full">
+                        <EmptyState
+                          title="No upcoming events"
+                          description="Check back soon or explore past recaps below."
+                        />
                       </div>
                     )}
                   </div>
@@ -99,8 +103,11 @@ export default function Events() {
                         </div>
                       ))
                     ) : (
-                      <div className="col-span-full py-12 text-center text-[var(--color-muted)]">
-                        No past events found.
+                      <div className="col-span-full">
+                        <EmptyState
+                          title="No past events"
+                          description="We’ll publish recaps as events conclude."
+                        />
                       </div>
                     )}
                   </div>
@@ -122,7 +129,7 @@ export default function Events() {
               <Link
                 to="/gallery"
                 key={item.id}
-                className="group overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)]"
+                className="group overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface)]"
                 aria-label={`${item.title} recap`}
               >
                 <div className="aspect-square overflow-hidden bg-[color-mix(in_oklab,var(--color-surface),white_6%)]">
