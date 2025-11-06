@@ -6,7 +6,6 @@ import Button from '../ui/Button';
 import { formatEventDateRange } from '../../data/mockEvents';
 
 export default function EventCard({
-  id,
   title,
   description,
   date,

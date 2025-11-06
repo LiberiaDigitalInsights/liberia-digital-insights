@@ -18,7 +18,6 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock window.scrollTo (not implemented in jsdom)
 if (!window.scrollTo) {
-  // eslint-disable-next-line no-empty-function
   window.scrollTo = vi.fn(() => {});
 }
 
