@@ -6,6 +6,7 @@ import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import Button from '../components/ui/Button';
 import { Field, Label, HelperText, ErrorText } from '../components/ui/Form';
+import EmptyState from '../components/ui/EmptyState';
 import TalentCard from '../components/talent/TalentCard';
 import { mockTalents, getTalentCategories } from '../data/mockTalents';
 import { useToast } from '../context/ToastContext';
@@ -90,11 +91,18 @@ export default function Talent() {
               ))}
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {filtered.map((t) => (
-                <TalentCard key={t.id} {...t} />
-              ))}
-            </div>
+            {filtered.length === 0 ? (
+              <EmptyState
+                title="No talent found"
+                description="Try a different category or reset filters."
+              />
+            ) : (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {filtered.map((t) => (
+                  <TalentCard key={t.id} {...t} />
+                ))}
+              </div>
+            )}
           </section>
 
           <aside className="md:col-span-1">
@@ -106,25 +114,44 @@ export default function Talent() {
                 <form className="space-y-3" onSubmit={onSubmit}>
                   <Field>
                     <Label htmlFor="name">Name</Label>
-                    <Input id="name" value={form.name} onChange={onChange} />
+                    <Input
+                      id="name"
+                      value={form.name}
+                      onChange={onChange}
+                      aria-invalid={Boolean(errors.name) || undefined}
+                      aria-describedby={errors.name ? 'name-error' : 'name-help'}
+                    />
                     {errors.name ? (
-                      <ErrorText>{errors.name}</ErrorText>
+                      <ErrorText id="name-error">{errors.name}</ErrorText>
                     ) : (
-                      <HelperText>Your full name.</HelperText>
+                      <HelperText id="name-help">Your full name.</HelperText>
                     )}
                   </Field>
                   <Field>
                     <Label htmlFor="role">Role</Label>
-                    <Input id="role" value={form.role} onChange={onChange} />
+                    <Input
+                      id="role"
+                      value={form.role}
+                      onChange={onChange}
+                      aria-invalid={Boolean(errors.role) || undefined}
+                      aria-describedby={errors.role ? 'role-error' : 'role-help'}
+                    />
                     {errors.role ? (
-                      <ErrorText>{errors.role}</ErrorText>
+                      <ErrorText id="role-error">{errors.role}</ErrorText>
                     ) : (
-                      <HelperText>e.g., Engineer</HelperText>
+                      <HelperText id="role-help">e.g., Engineer</HelperText>
                     )}
                   </Field>
                   <Field>
                     <Label htmlFor="category">Category</Label>
-                    <Select id="category" value={form.category} onChange={onChange} defaultValue="">
+                    <Select
+                      id="category"
+                      value={form.category}
+                      onChange={onChange}
+                      defaultValue=""
+                      aria-invalid={Boolean(errors.category) || undefined}
+                      aria-describedby={errors.category ? 'category-error' : 'category-help'}
+                    >
                       <option value="" disabled>
                         Choose a category
                       </option>
@@ -137,18 +164,25 @@ export default function Talent() {
                         ))}
                     </Select>
                     {errors.category ? (
-                      <ErrorText>{errors.category}</ErrorText>
+                      <ErrorText id="category-error">{errors.category}</ErrorText>
                     ) : (
-                      <HelperText>Select best fit.</HelperText>
+                      <HelperText id="category-help">Select best fit.</HelperText>
                     )}
                   </Field>
                   <Field>
                     <Label htmlFor="bio">Bio</Label>
-                    <Input id="bio" value={form.bio} onChange={onChange} placeholder="Short bio" />
+                    <Input
+                      id="bio"
+                      value={form.bio}
+                      onChange={onChange}
+                      placeholder="Short bio"
+                      aria-invalid={Boolean(errors.bio) || undefined}
+                      aria-describedby={errors.bio ? 'bio-error' : 'bio-help'}
+                    />
                     {errors.bio ? (
-                      <ErrorText>{errors.bio}</ErrorText>
+                      <ErrorText id="bio-error">{errors.bio}</ErrorText>
                     ) : (
-                      <HelperText>Min 10 characters.</HelperText>
+                      <HelperText id="bio-help">Min 10 characters.</HelperText>
                     )}
                   </Field>
                   <Field>

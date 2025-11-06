@@ -5,6 +5,8 @@ export default function LazyImage({
   src,
   alt,
   className,
+  sizes,
+  fetchpriority = 'auto',
   placeholder = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect width="400" height="300" fill="%23e5e7eb"/%3E%3C/svg%3E',
   ...props
 }) {
@@ -66,6 +68,9 @@ export default function LazyImage({
               isLoaded ? 'opacity-100' : 'opacity-0',
             )}
             loading="lazy"
+            decoding="async"
+            sizes={sizes}
+            fetchpriority={fetchpriority}
           />
         </>
       )}

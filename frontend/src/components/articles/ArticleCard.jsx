@@ -27,7 +27,17 @@ export default function ArticleCard({
       {image && (
         <div className="relative h-48 overflow-hidden bg-[color-mix(in_oklab,var(--color-surface),white_6%)] md:h-56">
           <div className="h-full w-full transition-transform duration-500 group-hover:scale-110">
-            <LazyImage src={image} alt={title} className="h-full w-full object-cover" />
+            <LazyImage
+              src={image}
+              alt={title}
+              className="h-full w-full object-cover"
+              sizes={
+                featured
+                  ? '(min-width: 1024px) 66vw, 100vw'
+                  : '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
+              }
+              fetchpriority={featured ? 'high' : 'auto'}
+            />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
           {category && (

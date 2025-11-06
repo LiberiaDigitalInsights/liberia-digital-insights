@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import React from 'react';
 import Logo from './Logo';
@@ -9,7 +9,7 @@ import { FaFacebookF, FaTwitter, FaYoutube } from 'react-icons/fa';
 export default function Navbar() {
   const [open, setOpen] = React.useState(false);
   return (
-    <nav className="sticky top-0 z-40">
+    <nav className="sticky top-0 z-40" role="navigation" aria-label="Primary">
       {/* Top utility strip with date + social */}
       <div className="hidden bg-[var(--color-nav-top)] text-xs md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5">
@@ -61,68 +61,31 @@ export default function Navbar() {
       <div className="border-t border-[var(--color-border)] bg-[var(--color-nav-bottom)] text-white">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2 text-sm">
           <div className="hidden items-center gap-5 md:flex">
-            <Link
-              to="/"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              News
-            </Link>
-            <Link
-              to="/about"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              About Us
-            </Link>
-            <Link
-              to="/insights"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Insights
-            </Link>
-            <Link
-              to="/podcasts"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Podcasts
-            </Link>
-            <Link
-              to="/articles"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Articles
-            </Link>
-            <Link
-              to="/gallery"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Gallery
-            </Link>
-            <Link
-              to="/advertisement"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Advertisement
-            </Link>
-
-            <Link
-              to="/tech-talents"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Tech Talents
-            </Link>
-
-            <Link
-              to="/contact"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Contact Us
-            </Link>
-            <Link
-              to="/signup"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Sign Up
-            </Link>
+            {[
+              { to: '/', label: 'News' },
+              { to: '/about', label: 'About Us' },
+              { to: '/insights', label: 'Insights' },
+              { to: '/podcasts', label: 'Podcasts' },
+              { to: '/articles', label: 'Articles' },
+              { to: '/gallery', label: 'Gallery' },
+              { to: '/advertisement', label: 'Advertisement' },
+              { to: '/talent', label: 'Tech Talents' },
+              { to: '/contact', label: 'Contact Us' },
+              { to: '/signup', label: 'Sign Up' },
+            ].map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300 ${
+                    isActive ? 'text-yellow-300 after:w-full' : ''
+                  }`
+                }
+                aria-current={({ isActive }) => (isActive ? 'page' : undefined)}
+              >
+                {item.label}
+              </NavLink>
+            ))}
           </div>
           <div className="ml-auto hidden items-center gap-3 md:flex">
             <Search placeholder="Search For" onSubmit={(q) => console.log('search', q)} />
@@ -131,6 +94,8 @@ export default function Navbar() {
           <button
             className="md:hidden rounded px-2 py-1 text-sm text-white"
             aria-label="Toggle menu"
+            aria-expanded={open}
+            aria-controls="mobile-drawer"
             onClick={() => setOpen((v) => !v)}
           >
             ☰
@@ -149,6 +114,7 @@ export default function Navbar() {
         />
         {/* Drawer panel */}
         <div
+          id="mobile-drawer"
           className={`absolute right-0 top-0 h-full w-full max-w-sm border-l border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl transition-transform duration-300 ease-out ${open ? 'translate-x-0' : 'translate-x-full'}`}
           role="dialog"
           aria-modal="true"
@@ -199,6 +165,7 @@ export default function Navbar() {
                   { to: '/articles', label: 'Articles' },
                   { to: '/gallery', label: 'Gallery' },
                   { to: '/advertisement', label: 'Advertisement' },
+                  { to: '/talent', label: 'Tech Talents' },
                   { to: '/contact', label: 'Contact Us' },
                   { to: '/signup', label: 'Sign Up' },
                 ].map((item) => (

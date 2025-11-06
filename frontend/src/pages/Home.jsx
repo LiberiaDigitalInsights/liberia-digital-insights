@@ -3,7 +3,8 @@ import ArticleCard from '../components/articles/ArticleCard';
 import PodcastWidget from '../components/sidebar/PodcastWidget';
 import NewsletterWidget from '../components/sidebar/NewsletterWidget';
 import EventsWidget from '../components/sidebar/EventsWidget';
-import { H2 } from '../components/ui/Typography';
+import { H1, H2, Muted } from '../components/ui/Typography';
+import Button from '../components/ui/Button';
 import SEO from '../components/SEO';
 import { mockArticles, generateArticleGrid } from '../data/mockArticles';
 
@@ -15,6 +16,25 @@ const Home = () => {
     <>
       <SEO />
       <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+        {/* Hero */}
+        <section className="mb-10 animate-fade-in">
+          <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 md:p-12 text-center">
+            <H1 className="mb-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+              Liberia's home for tech news and insights
+            </H1>
+            <Muted className="mx-auto mb-6 max-w-2xl text-base md:text-lg">
+              Stories, analysis, and interviews from Liberia’s growing technology ecosystem.
+            </Muted>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Button as="a" href="/insights" variant="solid">
+                Explore Insights
+              </Button>
+              <Button as="a" href="/signup" variant="secondary">
+                Subscribe
+              </Button>
+            </div>
+          </div>
+        </section>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_350px]">
           {/* Main content */}
           <main className="space-y-12">

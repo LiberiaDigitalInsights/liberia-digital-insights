@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react';
+import Skeleton from './components/ui/Skeleton';
 import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import { H1, Muted } from './components/ui/Typography';
@@ -26,10 +27,24 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 // Loading fallback component
 function LoadingFallback() {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center">
-      <div className="text-center">
-        <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
-        <Muted>Loading...</Muted>
+    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_350px]">
+        <main className="space-y-8">
+          <section>
+            <Skeleton className="mb-4 h-6 w-40" />
+            <Skeleton className="h-56 w-full" />
+          </section>
+          <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-64 w-full" />
+          </section>
+        </main>
+        <aside className="space-y-4">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-40 w-full" />
+          <Skeleton className="h-40 w-full" />
+        </aside>
       </div>
     </div>
   );
