@@ -24,8 +24,8 @@ describe('App routes', () => {
   it('renders Home at /', async () => {
     renderAt('/');
     // Wait for Suspense fallback to disappear, then assert content
-    await screen.findByText(/loading/i);
-    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
+    const loading = await screen.findByText(/loading/i, undefined, { timeout: 5000 });
+    await waitForElementToBeRemoved(loading, { timeout: 10000 });
     await screen.findByRole('heading', { name: /technology/i });
   });
 

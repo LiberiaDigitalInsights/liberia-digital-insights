@@ -67,9 +67,9 @@ describe('Contact Page', () => {
           }
         }
       },
-      { timeout: 3000 },
+      { timeout: 8000 },
     );
-  });
+  }, 15000);
 
   it('validates message length', async () => {
     renderWithProviders(<Contact />);

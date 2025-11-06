@@ -16,10 +16,8 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Mock window.scrollTo (not implemented in jsdom)
-if (!window.scrollTo) {
-  window.scrollTo = vi.fn(() => {});
-}
+// Mock window.scrollTo (jsdom provides a placeholder that throws; always stub it)
+window.scrollTo = vi.fn(() => {});
 
 // Mock IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation((callback) => ({
