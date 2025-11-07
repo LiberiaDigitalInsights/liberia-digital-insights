@@ -5,6 +5,7 @@ import Logo from './Logo';
 import Search from './Search';
 import { CATEGORIES } from '../constants/categories';
 import { FaFacebookF, FaTwitter, FaYoutube } from 'react-icons/fa';
+import AdSlot from '../components/ads/AdSlot';
 
 export default function Navbar() {
   const [open, setOpen] = React.useState(false);
@@ -119,7 +120,9 @@ export default function Navbar() {
         <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr] items-center gap-6 px-4 py-4">
           <Logo />
           <div className="hidden justify-end md:flex">
-            <div className="h-14 w-[520px] rounded-[var(--radius-md)] bg-[color-mix(in_oklab,var(--color-surface),white_8%)] ring-1 ring-[var(--color-border)]" />
+            <div className="h-14 w-[520px]">
+              <AdSlot position="hero" count={1} />
+            </div>
           </div>
         </div>
       </div>

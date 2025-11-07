@@ -4,6 +4,7 @@ import FeaturedArticleRow from '../components/articles/FeaturedArticleRow';
 import PodcastWidget from '../components/sidebar/PodcastWidget';
 import NewsletterWidget from '../components/sidebar/NewsletterWidget';
 import EventsWidget from '../components/sidebar/EventsWidget';
+import AdSlot from '../components/ads/AdSlot';
 import { H1, H2, Muted } from '../components/ui/Typography';
 import Button from '../components/ui/Button';
 import SEO from '../components/SEO';
@@ -178,10 +179,8 @@ const Home = () => {
             <div className="opacity-0 animate-fade-in animation-delay-300">
               <EventsWidget />
             </div>
-            {/* Advertisement placeholder */}
-            <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 text-center text-sm text-[var(--color-muted)] transition-all duration-300 hover:shadow-lg">
-              Advertisement
-            </div>
+            {/* Advertisements */}
+            <AdSlot position="sidebar" className="opacity-0 animate-fade-in animation-delay-400" />
           </aside>
         </div>
       </div>

@@ -12,7 +12,7 @@ import sanitizeHtml from '../utils/sanitizeHtml';
 import { CATEGORIES } from '../data/categories';
 import { generateArticleGrid } from '../data/mockArticles';
 import { getUpcomingTrainings, getUpcomingCourses } from '../data/mockTraining';
-import { FaEye, FaTrash, FaClock, FaEdit, FaPlus } from 'react-icons/fa';
+import { FaEye, FaTrash, FaClock, FaEdit, FaPlus, FaUpload, FaLink } from 'react-icons/fa';
 import { useToast } from '../context/ToastContext';
 import {
   ResponsiveContainer,
@@ -104,6 +104,36 @@ export default function Admin() {
     }));
     return [...t, ...c];
   });
+
+  // Advertisements list (persisted in localStorage)
+  const [ads, setAds] = React.useState(() => {
+    const saved = localStorage.getItem('ads_list');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        /* empty */
+      }
+    }
+    return [
+      {
+        id: 9001,
+        title: 'LDI Community — Join Now',
+        image: '/LDI_favicon.png',
+        link: 'https://github.com/LiberiaDigitalInsights',
+        position: 'inline',
+        status: 'published',
+        scheduledAt: '',
+      },
+    ];
+  });
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('ads_list', JSON.stringify(ads));
+    } catch {
+      /* empty */
+    }
+  }, [ads]);
 
   // Stats derived from state
   const stats = {
@@ -253,6 +283,19 @@ export default function Admin() {
   const prTotalPages = Math.max(1, Math.ceil(filteredPrograms.length / prPageSize));
   const prPaged = filteredPrograms.slice((prPage - 1) * prPageSize, prPage * prPageSize);
 
+  // Filters and pagination for Advertisements
+  const [adQuery, setAdQuery] = React.useState('');
+  const [adStatus, setAdStatus] = React.useState('all');
+  const [adPage, setAdPage] = React.useState(1);
+  const adPageSize = 5;
+  const filteredAds = ads.filter(
+    (x) =>
+      (adStatus === 'all' || x.status === adStatus) &&
+      (!adQuery || x.title.toLowerCase().includes(adQuery.toLowerCase())),
+  );
+  const adTotalPages = Math.max(1, Math.ceil(filteredAds.length / adPageSize));
+  const adPaged = filteredAds.slice((adPage - 1) * adPageSize, adPage * adPageSize);
+
   // Actions
   const togglePublish = (list, setList, id) => {
     setList((prev) =>
@@ -302,6 +345,8 @@ export default function Admin() {
     content: '',
     readTime: 3,
     image: '/LDI_favicon.png',
+    link: '',
+    position: 'inline',
     status: 'draft',
     scheduledAt: '',
   };
@@ -338,6 +383,8 @@ export default function Admin() {
       content: row.content || '',
       readTime: row.readTime || 3,
       image: row.image || '/LDI_favicon.png',
+      link: row.link || '',
+      position: row.position || 'inline',
       status: row.status || 'draft',
       scheduledAt: row.scheduledAt || '',
     });
@@ -357,6 +404,7 @@ export default function Admin() {
     else if (editList === 'insights') setInsights(apply);
     else if (editList === 'podcasts') setPodcasts(apply);
     else if (editList === 'programs') setPrograms(apply);
+    else if (editList === 'ads') setAds(apply);
     setEditOpen(false);
     showToast({
       title: isEdit ? 'Updated' : 'Created',
@@ -501,6 +549,193 @@ export default function Admin() {
                   );
                 })}
               </div>
+            </section>
+
+            {/* Advertisements CRUD table */}
+            <section>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Advertisements</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-3 flex flex-wrap items-end gap-3">
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">Search</label>
+                      <Input
+                        value={adQuery}
+                        onChange={(e) => {
+                          setAdQuery(e.target.value);
+                          setAdPage(1);
+                        }}
+                        placeholder="Title..."
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">Status</label>
+                      <Select
+                        value={adStatus}
+                        onChange={(e) => {
+                          setAdStatus(e.target.value);
+                          setAdPage(1);
+                        }}
+                      >
+                        <option value="all">All</option>
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="overflow-x-auto max-w-full">
+                    <table className="min-w-full table-fixed text-xs sm:text-sm">
+                      <thead className="text-left text-[var(--color-muted)] text-xs sm:text-sm">
+                        <tr>
+                          <th className="px-2 py-2 md:w-[40%]">Title</th>
+                          <th className="px-2 py-2 hidden sm:table-cell md:w-[20%]">Position</th>
+                          <th className="px-2 py-2 md:w-[14%]">Status</th>
+                          <th className="px-2 py-2 hidden md:table-cell md:w-[16%]">Schedule</th>
+                          <th className="px-2 py-2 md:w-[10%]">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {adPaged.map((row) => (
+                          <tr key={row.id} className="border-t border-[var(--color-border)]">
+                            <td className="px-2 py-2 pr-4 break-words whitespace-normal">
+                              <div className="flex items-center gap-2">
+                                <img
+                                  src={row.image}
+                                  alt="ad"
+                                  className="h-8 w-8 rounded object-cover"
+                                />
+                                <div className="line-clamp-2">{row.title}</div>
+                              </div>
+                            </td>
+                            <td className="px-2 py-2 hidden sm:table-cell">{row.position}</td>
+                            <td className="px-2 py-2">
+                              <Button
+                                size="sm"
+                                variant={row.status === 'published' ? 'secondary' : 'solid'}
+                                onClick={() =>
+                                  askConfirm(() => {
+                                    if (!canEdit) return;
+                                    togglePublish(ads, setAds, row.id);
+                                    showToast({
+                                      title:
+                                        row.status === 'published' ? 'Unpublished' : 'Published',
+                                      description: `Item ${row.status === 'published' ? 'moved to draft' : 'is now live'}.`,
+                                      variant: 'success',
+                                    });
+                                  })
+                                }
+                                disabled={!canEdit}
+                                title={!canEdit ? 'Insufficient role' : undefined}
+                              >
+                                {row.status === 'published' ? 'Unpublish' : 'Publish'}
+                              </Button>
+                            </td>
+                            <td className="px-2 py-2 hidden md:table-cell">
+                              <input
+                                type="datetime-local"
+                                className="w-40 md:w-52 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1"
+                                value={row.scheduledAt || ''}
+                                onChange={(e) => setSchedule(ads, setAds, row.id, e.target.value)}
+                                disabled={!canEdit}
+                                title={!canEdit ? 'Insufficient role' : undefined}
+                              />
+                            </td>
+                            <td className="px-2 py-2">
+                              <div className="flex gap-2">
+                                {/* Icon buttons on small screens */}
+                                <Button
+                                  size="sm"
+                                  as={Link}
+                                  to={row.link || '#'}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  aria-label="Open link"
+                                  className="inline-flex items-center justify-center md:hidden"
+                                >
+                                  <FaLink />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => openEdit('ads', row)}
+                                  aria-label="Edit"
+                                  disabled={!canEdit}
+                                  title={!canEdit ? 'Insufficient role' : undefined}
+                                  className="inline-flex items-center justify-center md:hidden"
+                                >
+                                  <FaEdit />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  onClick={() => askConfirm(() => removeItem(ads, setAds, row.id))}
+                                  aria-label="Delete"
+                                  className="inline-flex items-center justify-center md:hidden"
+                                  disabled={!canEdit}
+                                  title={!canEdit ? 'Insufficient role' : undefined}
+                                >
+                                  <FaTrash />
+                                </Button>
+                                {/* Text buttons on md+ */}
+                                <div className="hidden md:flex md:gap-2">
+                                  <Button
+                                    size="sm"
+                                    as={Link}
+                                    to={row.link || '#'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    Open Link
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => openEdit('ads', row)}
+                                    disabled={!canEdit}
+                                    title={!canEdit ? 'Insufficient role' : undefined}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="secondary"
+                                    onClick={() =>
+                                      askConfirm(() => removeItem(ads, setAds, row.id))
+                                    }
+                                    disabled={!canEdit}
+                                    title={!canEdit ? 'Insufficient role' : undefined}
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <Button
+                      variant="subtle"
+                      onClick={() => setAdPage((p) => Math.max(1, p - 1))}
+                      disabled={adPage === 1}
+                    >
+                      Previous
+                    </Button>
+                    <div className="text-sm text-[var(--color-muted)]">
+                      Page {adPage} of {adTotalPages}
+                    </div>
+                    <Button
+                      variant="subtle"
+                      onClick={() => setAdPage((p) => Math.min(adTotalPages, p + 1))}
+                      disabled={adPage >= adTotalPages}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </section>
 
             <section>
@@ -663,7 +898,7 @@ export default function Admin() {
             {/* Quick actions */}
             <section>
               <H2 className="mb-4 text-2xl">Quick Actions</H2>
-              <div className="flex flex-wrap gap-3">
+              <div className="mb-6 flex flex-wrap gap-3">
                 <Button
                   onClick={() => openCreate('articles')}
                   variant="solid"
@@ -699,6 +934,15 @@ export default function Admin() {
                 >
                   <FaPlus className="mr-2" />
                   Create Training/Course
+                </Button>
+                <Button
+                  onClick={() => openCreate('ads')}
+                  variant="secondary"
+                  disabled={!canEdit}
+                  title={!canEdit ? 'Insufficient role' : undefined}
+                >
+                  <FaPlus className="mr-2" />
+                  New Advertisement
                 </Button>
               </div>
             </section>
@@ -789,16 +1033,25 @@ export default function Admin() {
                             </td>
                             <td className="px-2 py-2">
                               <div className="flex gap-2">
-                                <Button size="sm" as={Link} to="/podcasts">
-                                  View
+                                {/* Icon buttons on small screens */}
+                                <Button
+                                  size="sm"
+                                  as={Link}
+                                  to="/podcasts"
+                                  aria-label="View"
+                                  className="inline-flex items-center justify-center md:hidden"
+                                >
+                                  <FaEye />
                                 </Button>
                                 <Button
                                   size="sm"
                                   onClick={() => openEdit('podcasts', row)}
+                                  aria-label="Edit"
                                   disabled={!canEdit}
                                   title={!canEdit ? 'Insufficient role' : undefined}
+                                  className="inline-flex items-center justify-center md:hidden"
                                 >
-                                  Edit
+                                  <FaEdit />
                                 </Button>
                                 <Button
                                   size="sm"
@@ -806,11 +1059,38 @@ export default function Admin() {
                                   onClick={() =>
                                     askConfirm(() => removeItem(podcasts, setPodcasts, row.id))
                                   }
+                                  aria-label="Delete"
+                                  className="inline-flex items-center justify-center md:hidden"
                                   disabled={!canEdit}
                                   title={!canEdit ? 'Insufficient role' : undefined}
                                 >
-                                  Delete
+                                  <FaTrash />
                                 </Button>
+                                {/* Text buttons on md+ */}
+                                <div className="hidden md:flex md:gap-2">
+                                  <Button size="sm" as={Link} to="/podcasts">
+                                    View
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => openEdit('podcasts', row)}
+                                    disabled={!canEdit}
+                                    title={!canEdit ? 'Insufficient role' : undefined}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="secondary"
+                                    onClick={() =>
+                                      askConfirm(() => removeItem(podcasts, setPodcasts, row.id))
+                                    }
+                                    disabled={!canEdit}
+                                    title={!canEdit ? 'Insufficient role' : undefined}
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
                               </div>
                             </td>
                           </tr>
@@ -948,16 +1228,25 @@ export default function Admin() {
                             </td>
                             <td className="px-2 py-2">
                               <div className="flex gap-2">
-                                <Button size="sm" as={Link} to="/training-courses">
-                                  View
+                                {/* Icon buttons on small screens */}
+                                <Button
+                                  size="sm"
+                                  as={Link}
+                                  to="/training-courses"
+                                  aria-label="View"
+                                  className="inline-flex items-center justify-center md:hidden"
+                                >
+                                  <FaEye />
                                 </Button>
                                 <Button
                                   size="sm"
                                   onClick={() => openEdit('programs', row)}
+                                  aria-label="Edit"
                                   disabled={!canEdit}
                                   title={!canEdit ? 'Insufficient role' : undefined}
+                                  className="inline-flex items-center justify-center md:hidden"
                                 >
-                                  Edit
+                                  <FaEdit />
                                 </Button>
                                 <Button
                                   size="sm"
@@ -965,11 +1254,38 @@ export default function Admin() {
                                   onClick={() =>
                                     askConfirm(() => removeItem(programs, setPrograms, row.id))
                                   }
+                                  aria-label="Delete"
+                                  className="inline-flex items-center justify-center md:hidden"
                                   disabled={!canEdit}
                                   title={!canEdit ? 'Insufficient role' : undefined}
                                 >
-                                  Delete
+                                  <FaTrash />
                                 </Button>
+                                {/* Text buttons on md+ */}
+                                <div className="hidden md:flex md:gap-2">
+                                  <Button size="sm" as={Link} to="/training-courses">
+                                    View
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => openEdit('programs', row)}
+                                    disabled={!canEdit}
+                                    title={!canEdit ? 'Insufficient role' : undefined}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="secondary"
+                                    onClick={() =>
+                                      askConfirm(() => removeItem(programs, setPrograms, row.id))
+                                    }
+                                    disabled={!canEdit}
+                                    title={!canEdit ? 'Insufficient role' : undefined}
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
                               </div>
                             </td>
                           </tr>
@@ -1395,7 +1711,18 @@ export default function Admin() {
           <div className="absolute inset-0 bg-black/50" onClick={() => setEditOpen(false)} />
           <div className="relative w-full max-w-lg rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-xl max-h-[85vh] overflow-y-auto">
             <h3 className="mb-2 text-lg font-semibold">
-              {isEdit ? 'Edit' : 'Create'} {editList === 'articles' ? 'Article' : 'Insight'}
+              {isEdit ? 'Edit' : 'Create'}{' '}
+              {editList === 'articles'
+                ? 'Article'
+                : editList === 'insights'
+                  ? 'Insight'
+                  : editList === 'podcasts'
+                    ? 'Podcast'
+                    : editList === 'programs'
+                      ? 'Program'
+                      : editList === 'ads'
+                        ? 'Advertisement'
+                        : 'Item'}
             </h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div className="sm:col-span-2">
@@ -1545,14 +1872,65 @@ export default function Admin() {
                   )}
                 </div>
               )}
-              <div>
-                <label className="mb-1 block text-sm font-medium">Image URL</label>
-                <Input
-                  value={form.image}
-                  onChange={(e) => setForm({ ...form, image: e.target.value })}
-                  disabled={!canEdit}
-                />
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-sm font-medium">Cover Image</label>
+                {form.image ? (
+                  <img
+                    src={form.image}
+                    alt="preview"
+                    className="mb-2 max-h-40 w-auto rounded border border-[var(--color-border)] object-cover"
+                  />
+                ) : null}
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <Input
+                    value={form.image}
+                    onChange={(e) => setForm({ ...form, image: e.target.value })}
+                    placeholder="https://... or data:image/..."
+                    disabled={!canEdit}
+                  />
+                  <label className="inline-flex items-center gap-2 self-start rounded-[var(--radius-sm)] border border-dashed border-[var(--color-border)] px-3 py-2 text-sm hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)] cursor-pointer">
+                    <FaUpload /> Upload
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files && e.target.files[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => setForm({ ...form, image: String(reader.result) });
+                        reader.readAsDataURL(file);
+                      }}
+                      disabled={!canEdit}
+                    />
+                  </label>
+                </div>
               </div>
+              {editList === 'ads' && (
+                <>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium">Target Link</label>
+                    <Input
+                      value={form.link}
+                      onChange={(e) => setForm({ ...form, link: e.target.value })}
+                      placeholder="https://..."
+                      disabled={!canEdit}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium">Position</label>
+                    <Select
+                      value={form.position}
+                      onChange={(e) => setForm({ ...form, position: e.target.value })}
+                      disabled={!canEdit}
+                    >
+                      <option value="inline">Inline</option>
+                      <option value="sidebar">Sidebar</option>
+                      <option value="hero">Hero</option>
+                    </Select>
+                  </div>
+                </>
+              )}
               <div>
                 <label className="mb-1 block text-sm font-medium">Status</label>
                 <Select
