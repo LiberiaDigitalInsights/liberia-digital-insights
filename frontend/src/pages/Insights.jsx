@@ -5,7 +5,7 @@ import ArticleCard from '../components/articles/ArticleCard';
 import FeaturedArticleRow from '../components/articles/FeaturedArticleRow';
 import SEO from '../components/SEO';
 import { generateArticleGrid } from '../data/mockArticles';
-import { CATEGORIES } from '../constants/categories';
+import { CATEGORIES } from '../data/categories';
 import { FaHashtag, FaLightbulb, FaBullhorn } from 'react-icons/fa';
 
 export default function Insights() {
@@ -110,7 +110,7 @@ export default function Insights() {
                 author="Stephen M. Parteh, IT Manager of Liberia Digital Insights"
                 date={articles[0].date}
                 readTime={articles[0].readTime}
-                to={`/article/${articles[0].id}`}
+                to={`/insight/${articles[0].id}`}
               />
             </div>
           </div>

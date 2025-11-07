@@ -12,7 +12,10 @@
     "test:coverage": "vitest --run --coverage",
     "test:watch": "vitest",
     "format": "prettier --write .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.16",
@@ -52,6 +55,7 @@
     "jsdom": "^26.0.0",
     "prettier": "^3.3.3",
     "vite": "^7.2.0",
-    "vitest": "^2.1.4"
+    "vitest": "^2.1.4",
+    "vitepress": "^1.5.0"
   }
 }

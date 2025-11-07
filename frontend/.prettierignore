@@ -7,3 +7,6 @@ node_modules
 # Generated coverage reports
 coverage
 
+# VitePress cache
+docs/.vitepress/cache
+

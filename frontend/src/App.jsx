@@ -12,6 +12,7 @@ const Contact = lazy(() => import('./pages/Contact'));
 const ComponentsPage = lazy(() => import('./pages/Components'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Insights = lazy(() => import('./pages/Insights'));
+const InsightDetail = lazy(() => import('./pages/InsightDetail'));
 const Podcasts = lazy(() => import('./pages/Podcasts'));
 const PodcastDetail = lazy(() => import('./pages/PodcastDetail'));
 const Articles = lazy(() => import('./pages/Articles'));
@@ -67,6 +68,7 @@ function App() {
           <Route path="/components" element={<ComponentsPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/insights" element={<Insights />} />
+          <Route path="/insight/:id" element={<InsightDetail />} />
           <Route path="/podcasts" element={<Podcasts />} />
           <Route path="/podcast/:id" element={<PodcastDetail />} />
           <Route path="/articles" element={<Articles />} />

@@ -9,6 +9,7 @@ import Select from '../components/ui/Select';
 import Textarea from '../components/ui/Textarea';
 import RichTextEditor from '../components/ui/RichTextEditor';
 import sanitizeHtml from '../utils/sanitizeHtml';
+import { CATEGORIES } from '../data/categories';
 import { generateArticleGrid } from '../data/mockArticles';
 import { getUpcomingTrainings, getUpcomingCourses } from '../data/mockTraining';
 import { FaEye, FaTrash, FaClock, FaEdit, FaPlus } from 'react-icons/fa';
@@ -1072,7 +1073,7 @@ export default function Admin() {
                                 <Button
                                   size="sm"
                                   as={Link}
-                                  to={`/article/${row.id}`}
+                                  to={`/insight/${row.id}`}
                                   aria-label="View"
                                   className="inline-flex items-center justify-center md:hidden"
                                 >
@@ -1114,7 +1115,7 @@ export default function Admin() {
                                 </Button>
                                 {/* Text buttons on md+ */}
                                 <div className="hidden md:flex md:gap-2">
-                                  <Button size="sm" as={Link} to={`/article/${row.id}`}>
+                                  <Button size="sm" as={Link} to={`/insight/${row.id}`}>
                                     View
                                   </Button>
                                   <Button
@@ -1407,11 +1408,22 @@ export default function Admin() {
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium">Category</label>
-                <Input
+                <Select
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                   disabled={!canEdit}
-                />
+                >
+                  {/* Ensure current value remains selectable if not in list */}
+                  {form.category && !CATEGORIES.includes(form.category) && (
+                    <option value={form.category}>{form.category}</option>
+                  )}
+                  <option value="">Select a category</option>
+                  {CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </Select>
               </div>
               {editList === 'programs' && (
                 <div>
