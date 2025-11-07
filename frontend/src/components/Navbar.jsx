@@ -105,7 +105,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              to="/tech-talents"
+              to="/talent"
               className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
             >
               Tech Talents
