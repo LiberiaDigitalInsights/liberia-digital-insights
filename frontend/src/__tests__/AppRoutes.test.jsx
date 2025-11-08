@@ -24,7 +24,11 @@ describe('App routes', () => {
   it('renders Home at /', async () => {
     renderAt('/');
     // Wait for the hero heading to ensure Home finished lazy loading
-    await screen.findByRole('heading', { name: /liberia's home for tech news and insights/i }, { timeout: 20000 });
+    await screen.findByRole(
+      'heading',
+      { name: /liberia's home for tech news and insights/i },
+      { timeout: 20000 },
+    );
   }, 25000);
 
   it('renders Contact at /contact', async () => {

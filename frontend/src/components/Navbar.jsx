@@ -189,6 +189,8 @@ export default function Navbar() {
                   { to: '/articles', label: 'Articles' },
                   { to: '/podcasts', label: 'Podcasts' },
                   { to: '/gallery', label: 'Gallery' },
+                  { to: '/tag/insighttechthursdays', label: '#InsightTechThursdays' },
+                  { to: '/categories', label: 'Categories' },
                 ].map((item) => (
                   <Link
                     key={item.to}

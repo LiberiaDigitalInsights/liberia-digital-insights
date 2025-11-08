@@ -89,6 +89,7 @@ export default function Articles() {
                 category={article.category}
                 date={article.date}
                 readTime={article.readTime}
+                tags={article.tags}
                 to={`/article/${article.id}`}
               />
             ))

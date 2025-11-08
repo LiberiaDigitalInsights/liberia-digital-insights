@@ -23,6 +23,8 @@ const Advertisement = lazy(() => import('./pages/Advertisement'));
 const Signup = lazy(() => import('./pages/Signup'));
 const Talent = lazy(() => import('./pages/Talent'));
 const Category = lazy(() => import('./pages/Category'));
+const Categories = lazy(() => import('./pages/Categories'));
+const Tag = lazy(() => import('./pages/Tag'));
 const TrainingCourses = lazy(() => import('./pages/TrainingCourses'));
 const TrainingDetail = lazy(() => import('./pages/TrainingDetail'));
 const CourseDetail = lazy(() => import('./pages/CourseDetail'));
@@ -83,6 +85,9 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/talent" element={<Talent />} />
           <Route path="/category/:slug" element={<Category />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/tag/:slug" element={<Tag />} />
+          <Route path="/hashtag/:slug" element={<Tag />} />
           <Route
             path="/admin"
             element={
