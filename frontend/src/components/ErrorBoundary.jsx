@@ -36,7 +36,7 @@ export class ErrorBoundary extends React.Component {
             We encountered an unexpected error. Please try refreshing the page or return to the home
             page.
           </Muted>
-          {process.env.NODE_ENV === 'development' && this.state.error && (
+          {import.meta.env.MODE === 'development' && this.state.error && (
             <details className="mb-8 w-full rounded-[var(--radius-md)] border border-red-500/20 bg-red-500/5 p-4 text-left">
               <summary className="cursor-pointer font-semibold text-red-500">
                 Error Details (Development Only)

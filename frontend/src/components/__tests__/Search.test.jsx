@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { vi } from 'vitest';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import Search from '../Search';

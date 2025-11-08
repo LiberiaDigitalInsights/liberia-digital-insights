@@ -4,3 +4,9 @@ node_modules
 .vite
 .DS_Store
 
+# Generated coverage reports
+coverage
+
+# VitePress cache
+docs/.vitepress/cache
+

@@ -1,4 +1,6 @@
 import { lazy, Suspense } from 'react';
+import AuthGate from './components/auth/AuthGate';
+import Skeleton from './components/ui/Skeleton';
 import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import { H1, Muted } from './components/ui/Typography';
@@ -10,6 +12,7 @@ const Contact = lazy(() => import('./pages/Contact'));
 const ComponentsPage = lazy(() => import('./pages/Components'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Insights = lazy(() => import('./pages/Insights'));
+const InsightDetail = lazy(() => import('./pages/InsightDetail'));
 const Podcasts = lazy(() => import('./pages/Podcasts'));
 const PodcastDetail = lazy(() => import('./pages/PodcastDetail'));
 const Articles = lazy(() => import('./pages/Articles'));
@@ -20,16 +23,34 @@ const Advertisement = lazy(() => import('./pages/Advertisement'));
 const Signup = lazy(() => import('./pages/Signup'));
 const Talent = lazy(() => import('./pages/Talent'));
 const Category = lazy(() => import('./pages/Category'));
+const TrainingCourses = lazy(() => import('./pages/TrainingCourses'));
+const TrainingDetail = lazy(() => import('./pages/TrainingDetail'));
+const CourseDetail = lazy(() => import('./pages/CourseDetail'));
+const Register = lazy(() => import('./pages/Register'));
 const Admin = lazy(() => import('./pages/Admin'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Loading fallback component
 function LoadingFallback() {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center">
-      <div className="text-center">
-        <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
-        <Muted>Loading...</Muted>
+    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_350px]">
+        <main className="space-y-8">
+          <section>
+            <Skeleton className="mb-4 h-6 w-40" />
+            <Skeleton className="h-56 w-full" />
+          </section>
+          <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-64 w-full" />
+          </section>
+        </main>
+        <aside className="space-y-4">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-40 w-full" />
+          <Skeleton className="h-40 w-full" />
+        </aside>
       </div>
     </div>
   );
@@ -47,6 +68,7 @@ function App() {
           <Route path="/components" element={<ComponentsPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/insights" element={<Insights />} />
+          <Route path="/insight/:id" element={<InsightDetail />} />
           <Route path="/podcasts" element={<Podcasts />} />
           <Route path="/podcast/:id" element={<PodcastDetail />} />
           <Route path="/articles" element={<Articles />} />
@@ -55,9 +77,20 @@ function App() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/advertisement" element={<Advertisement />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/training-courses" element={<TrainingCourses />} />
+          <Route path="/training/:id" element={<TrainingDetail />} />
+          <Route path="/course/:id" element={<CourseDetail />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/talent" element={<Talent />} />
           <Route path="/category/:slug" element={<Category />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route
+            path="/admin"
+            element={
+              <AuthGate>
+                <Admin />
+              </AuthGate>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

@@ -46,6 +46,31 @@ Vite + React + Tailwind CSS design system and app shell.
 
 See `/components` route for live examples.
 
+### Tokens & Props
+
+- Spacing and radius via CSS vars. Card additionally supports `elevation` (`none|sm|md|lg`) and `padding` (`sm|md|lg`).
+- Colors: use `--color-surface`, `--color-border`, `--color-text`, `--color-muted`, and brand ramp.
+- Typography components (`H1`, `H2`, `Muted`, etc.) carry standardized sizing.
+
+### Skeleton & Empty States
+
+- Use `Skeleton` for loading placeholders that match final layout.
+- Use `EmptyState` with a short `title` and optional `description` for no-results.
+- Prefer replacing spinners with skeletons for perceived performance.
+
+### Images
+
+- Use `LazyImage` for responsive images. Provide `sizes` and, when appropriate, `fetchPriority="high"` for above-the-fold media.
+- Always include informative `alt` text.
+
+### Accessibility Guidelines
+
+- Landmarks: header/nav/main/footer; provide `aria-label` when helpful.
+- Forms: use `aria-invalid` and `aria-describedby` to connect inputs and messages.
+- Focus: ensure `:focus-visible` styles on interactive elements. Keyboard-test dialogs and menus.
+- Motion: `prefers-reduced-motion` is respected; avoid non-essential animations for reduced-motion users.
+- Dialogs: trap focus, set initial focus, and restore on close.
+
 ## Theming
 
 - Dark is default. Light mode via `[data-theme='light']` overrides in `src/index.css`.

@@ -7,6 +7,7 @@ import Badge from '../components/ui/Badge';
 import SEO from '../components/SEO';
 import { mockArticles, generateArticleGrid } from '../data/mockArticles';
 import { FaFacebookF, FaTwitter, FaYoutube } from 'react-icons/fa';
+import ContentRenderer from '../components/ui/ContentRenderer';
 
 export default function ArticleDetail() {
   const { id } = useParams();
@@ -75,24 +76,13 @@ export default function ArticleDetail() {
 
         {/* Article Content */}
         <article className="mb-12 prose prose-invert max-w-none">
-          <div className="space-y-6 text-[var(--color-text)]">
-            <p className="text-lg leading-relaxed">
-              Today, #TeamEden, winners of the Orange Summer Challenge 2024, had the privilege of
-              meeting with investors from the U.S. Embassy. They delivered an impressive pitch,
-              faced insightful questions, and received commendation from investors, leading to
-              potential partnership opportunities.
+          {article.content ? (
+            <ContentRenderer html={article.content} />
+          ) : (
+            <p className="text-[var(--color-muted)]">
+              {article.excerpt || 'No content available.'}
             </p>
-            <p className="leading-relaxed">
-              The meeting highlighted the growing tech ecosystem in Liberia and the importance of
-              supporting innovative startups. Team Eden's presentation showcased their technical
-              expertise and business acumen, leaving a strong impression on the potential investors.
-            </p>
-            <p className="leading-relaxed">
-              This interaction opens doors for further discussions and potential funding
-              opportunities that could significantly impact Liberia's digital transformation
-              journey.
-            </p>
-          </div>
+          )}
         </article>
 
         {/* Share Section */}

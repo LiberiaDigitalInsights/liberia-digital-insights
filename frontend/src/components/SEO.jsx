@@ -20,12 +20,12 @@ const ROUTE_META = {
   '/about': {
     title: 'About Us | Liberia Digital Insights',
     description:
-      'Learn about Liberia Digital Insights, our mission, vision, values, and the team behind Liberia\'s leading technology news platform.',
+      "Learn about Liberia Digital Insights, our mission, vision, values, and the team behind Liberia's leading technology news platform.",
   },
   '/contact': {
     title: 'Contact Us | Liberia Digital Insights',
     description:
-      'Get in touch with Liberia Digital Insights. Have questions, suggestions, or want to collaborate? We\'d love to hear from you.',
+      "Get in touch with Liberia Digital Insights. Have questions, suggestions, or want to collaborate? We'd love to hear from you.",
   },
   '/articles': {
     title: 'Articles | Liberia Digital Insights',
@@ -55,7 +55,7 @@ const ROUTE_META = {
   '/advertisement': {
     title: 'Advertising Opportunities | Liberia Digital Insights',
     description:
-      'Reach Liberia\'s tech community through Liberia Digital Insights. Explore advertising packages and opportunities.',
+      "Reach Liberia's tech community through Liberia Digital Insights. Explore advertising packages and opportunities.",
   },
   '/signup': {
     title: 'Subscribe | Liberia Digital Insights',
@@ -130,4 +130,3 @@ export default function SEO({
     </Helmet>
   );
 }
-

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8a2b2c"/>
+      <stop offset="100%" stop-color="#c04a4b"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="8" width="56" height="48" rx="6" fill="url(#g)"/>
+  <rect x="10" y="14" width="44" height="36" rx="4" fill="#fff" opacity="0.12"/>
+  <path d="M18 20h20M18 26h28M18 32h24M18 38h16" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="50" cy="46" r="6" fill="#fff"/>
+  <path d="M50 42v8M46 46h8" stroke="#8a2b2c" stroke-width="2" stroke-linecap="round"/>
+  <title>Liberia Digital Insights</title>
+</svg>

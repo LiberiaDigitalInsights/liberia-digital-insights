@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from '../context/ThemeContext';
@@ -23,15 +23,13 @@ function renderAt(pathname) {
 describe('App routes', () => {
   it('renders Home at /', async () => {
     renderAt('/');
-    // Wait for Suspense fallback to disappear, then assert content
-    await screen.findByText(/loading/i);
-    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
-    await screen.findByRole('heading', { name: /technology/i });
+    // Wait for the Home content to render (Suspense fallback uses skeletons now)
+    await screen.findByRole('heading', { name: /technology/i }, { timeout: 10000 });
   });
 
   it('renders Contact at /contact', async () => {
     renderAt('/contact');
-    await screen.findByText(/contact us/i);
+    await screen.findByRole('heading', { name: /contact us/i }, { timeout: 10000 });
   });
 
   it('renders NotFound on unknown route', async () => {

@@ -12,14 +12,28 @@
     "test:coverage": "vitest --run --coverage",
     "test:watch": "vitest",
     "format": "prettier --write .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.16",
+    "@tiptap/extension-color": "^3.10.2",
+    "@tiptap/extension-image": "^3.10.2",
+    "@tiptap/extension-link": "^3.10.2",
+    "@tiptap/extension-placeholder": "^3.10.2",
+    "@tiptap/extension-text-align": "^3.10.2",
+    "@tiptap/extension-text-style": "^3.10.2",
+    "@tiptap/extension-underline": "^3.10.2",
+    "@tiptap/pm": "^3.10.2",
+    "@tiptap/react": "^3.10.2",
+    "@tiptap/starter-kit": "^3.10.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-helmet-async": "^2.0.5",
     "react-icons": "^5.5.0",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^7.9.4",
     "recharts": "^2.15.4",
     "tailwindcss": "^4.1.16"
@@ -41,6 +55,7 @@
     "jsdom": "^26.0.0",
     "prettier": "^3.3.3",
     "vite": "^7.2.0",
-    "vitest": "^2.1.4"
+    "vitest": "^2.1.4",
+    "vitepress": "^1.5.0"
   }
 }

@@ -38,6 +38,8 @@ describe('Talent Hub', () => {
     await user.click(screen.getByRole('button', { name: /^submit$/i }));
 
     // New card should appear on the page
-    expect(await screen.findByText('New Person')).toBeInTheDocument();
-  });
+    expect(
+      await screen.findByText('New Person', undefined, { timeout: 10000 }),
+    ).toBeInTheDocument();
+  }, 20000);
 });

@@ -1,11 +1,32 @@
 import React from 'react';
 import { cn } from '../../lib/cn';
 
-export function Card({ className, ...props }) {
+const elevations = {
+  none: '',
+  sm: 'shadow-sm',
+  md: 'shadow-md',
+  lg: 'shadow-lg',
+};
+
+const paddings = {
+  sm: 'p-3',
+  md: 'p-4',
+  lg: 'p-6',
+};
+
+export function Card({
+  as: Comp = 'div',
+  elevation = 'none',
+  padding = 'md',
+  className,
+  ...props
+}) {
   return (
-    <div
+    <Comp
       className={cn(
-        'rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4',
+        'rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]',
+        paddings[padding],
+        elevations[elevation],
         className,
       )}
       {...props}

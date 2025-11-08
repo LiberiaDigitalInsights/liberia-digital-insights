@@ -1,4 +1,4 @@
-**Categories for the Platform**
+# Categories
 
 These categories organize content effectively to ensure it resonates with Liberia Digital Insights' audience and goals.
 
