@@ -1,10 +1,14 @@
 import React from 'react';
 
-export default function AdSlot({ position = 'inline', className = '' }) {
+export default function AdSlot({ position = 'inline', className = '', rotateSeconds = 9 }) {
   const [ads, setAds] = React.useState([]);
   const [index, setIndex] = React.useState(0);
   const [paused, setPaused] = React.useState(false);
   const [fadeOn, setFadeOn] = React.useState(true);
+  const [reducedMotion, setReducedMotion] = React.useState(false);
+  const containerRef = React.useRef(null);
+  const [inView, setInView] = React.useState(true);
+  const elapsedRef = React.useRef(0);
 
   React.useEffect(() => {
     try {
@@ -20,14 +24,56 @@ export default function AdSlot({ position = 'inline', className = '' }) {
 
   const visible = ads.filter((a) => a && a.status === 'published' && a.position === position);
 
-  // Auto-rotate when multiple ads available
+  // Auto-rotate based on visibility time (not wall time)
   React.useEffect(() => {
-    if (visible.length <= 1 || paused) return;
+    if (visible.length <= 1) return;
+    const tickMs = 250;
     const id = setInterval(() => {
-      setIndex((i) => (i + 1) % visible.length);
-    }, 9000);
+      if (paused || reducedMotion || document.visibilityState !== 'visible' || !inView) {
+        return;
+      }
+      const next = elapsedRef.current + tickMs / 1000;
+      if (next >= rotateSeconds) {
+        setIndex((i) => (i + 1) % visible.length);
+        elapsedRef.current = 0;
+      } else {
+        elapsedRef.current = next;
+      }
+    }, tickMs);
     return () => clearInterval(id);
-  }, [visible.length, paused]);
+  }, [visible.length, paused, reducedMotion, inView, rotateSeconds]);
+
+  // Respect reduced motion and page visibility
+  React.useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const apply = () => setReducedMotion(!!mq.matches);
+    apply();
+    mq.addEventListener?.('change', apply);
+    const onVis = () => {
+      // restart fade on visibility regain
+      setFadeOn(true);
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      mq.removeEventListener?.('change', apply);
+      document.removeEventListener('visibilitychange', onVis);
+    };
+  }, []);
+
+  // Observe slot visibility in viewport
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const e = entries[0];
+        setInView((e?.intersectionRatio || 0) >= 0.5);
+      },
+      { threshold: [0, 0.5, 1] },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   // Reset index if visible set changes
   React.useEffect(() => {
@@ -38,10 +84,11 @@ export default function AdSlot({ position = 'inline', className = '' }) {
   const onLeave = () => setPaused(false);
   // Trigger fade on index change
   React.useEffect(() => {
+    if (reducedMotion) return;
     setFadeOn(false);
     const t = setTimeout(() => setFadeOn(true), 20);
     return () => clearTimeout(t);
-  }, [index]);
+  }, [index, reducedMotion]);
 
   if (visible.length === 0) return null;
 
@@ -52,6 +99,7 @@ export default function AdSlot({ position = 'inline', className = '' }) {
       <div
         className={`w-full overflow-hidden ${className}`}
         style={{ display: 'flex', justifyContent: 'flex-end' }}
+        ref={containerRef}
         onMouseEnter={onEnter}
         onMouseLeave={onLeave}
       >
@@ -60,7 +108,10 @@ export default function AdSlot({ position = 'inline', className = '' }) {
           target="_blank"
           rel="noopener noreferrer"
           className="flex h-14 w-full items-center justify-center"
-          style={{ opacity: fadeOn ? 1 : 0, transition: 'opacity 700ms ease-in-out' }}
+          style={{
+            opacity: fadeOn || reducedMotion ? 1 : 0,
+            transition: reducedMotion ? 'none' : 'opacity 700ms ease-in-out',
+          }}
         >
           {ad.image ? (
             <img
@@ -79,8 +130,14 @@ export default function AdSlot({ position = 'inline', className = '' }) {
   const current = visible[index] || visible[0];
 
   return (
-    <div className={className} onMouseEnter={onEnter} onMouseLeave={onLeave}>
-      <div className={wrapperClass} style={{ opacity: fadeOn ? 1 : 0, transition: 'opacity 700ms ease-in-out' }}>
+    <div ref={containerRef} className={className} onMouseEnter={onEnter} onMouseLeave={onLeave}>
+      <div
+        className={wrapperClass}
+        style={{
+          opacity: fadeOn || reducedMotion ? 1 : 0,
+          transition: reducedMotion ? 'none' : 'opacity 700ms ease-in-out',
+        }}
+      >
         <a
           key={current.id}
           href={current.link || '#'}

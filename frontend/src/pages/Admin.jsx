@@ -7,9 +7,10 @@ import { Link } from 'react-router-dom';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import Textarea from '../components/ui/Textarea';
-import RichTextEditor from '../components/ui/RichTextEditor';
-import sanitizeHtml from '../utils/sanitizeHtml';
-import { CATEGORIES } from '../data/categories';
+import TipTapEditor from '../components/ui/TipTapEditor';
+import ContentRenderer from '../components/ui/ContentRenderer';
+// import sanitizeHtml from '../utils/sanitizeHtml';
+import { CATEGORIES } from '../constants/categories';
 import { generateArticleGrid } from '../data/mockArticles';
 import { getUpcomingTrainings, getUpcomingCourses } from '../data/mockTraining';
 import { FaEye, FaTrash, FaClock, FaEdit, FaPlus, FaUpload, FaLink } from 'react-icons/fa';
@@ -515,9 +516,9 @@ export default function Admin() {
           </aside>
 
           {/* Main */}
-          <main className="space-y-8">
+          <main className="flex flex-col gap-8">
             {/* Stats */}
-            <section>
+            <section className="order-10">
               <H2 className="mb-4 text-2xl">Overview</H2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {[
@@ -552,7 +553,7 @@ export default function Admin() {
             </section>
 
             {/* Advertisements CRUD table */}
-            <section>
+            <section className="order-70">
               <Card>
                 <CardHeader>
                   <CardTitle>Advertisements</CardTitle>
@@ -738,7 +739,7 @@ export default function Admin() {
               </Card>
             </section>
 
-            <section>
+            <section className="order-20">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <H2 className="text-2xl">Analytics</H2>
                 <div className="flex items-center gap-2 text-sm">
@@ -896,7 +897,7 @@ export default function Admin() {
             </section>
 
             {/* Quick actions */}
-            <section>
+            <section className="order-25">
               <H2 className="mb-4 text-2xl">Quick Actions</H2>
               <div className="mb-6 flex flex-wrap gap-3">
                 <Button
@@ -948,7 +949,7 @@ export default function Admin() {
             </section>
 
             {/* Podcasts CRUD table */}
-            <section>
+            <section className="order-50">
               <Card>
                 <CardHeader>
                   <CardTitle>Podcasts</CardTitle>
@@ -1141,7 +1142,7 @@ export default function Admin() {
             </section>
 
             {/* Training/Course CRUD table */}
-            <section>
+            <section className="order-60">
               <Card>
                 <CardHeader>
                   <CardTitle>Training & Courses</CardTitle>
@@ -1298,7 +1299,7 @@ export default function Admin() {
             </section>
 
             {/* Articles CRUD table */}
-            <section>
+            <section className="order-30">
               <Card>
                 <CardHeader>
                   <CardTitle>Articles</CardTitle>
@@ -1485,7 +1486,7 @@ export default function Admin() {
             </section>
 
             {/* Insights CRUD table */}
-            <section>
+            <section className="order-40">
               <Card>
                 <CardHeader>
                   <CardTitle>Insights</CardTitle>
@@ -1576,7 +1577,7 @@ export default function Admin() {
                                 <Button
                                   size="sm"
                                   as={Link}
-                                  to={`/article/${row.id}`}
+                                  to={`/insight/${row.id}`}
                                   aria-label="View"
                                   className="inline-flex items-center justify-center md:hidden"
                                 >
@@ -1618,7 +1619,7 @@ export default function Admin() {
                                 </Button>
                                 {/* Text buttons on md+ */}
                                 <div className="hidden md:flex md:gap-2">
-                                  <Button size="sm" as={Link} to={`/article/${row.id}`}>
+                                  <Button size="sm" as={Link} to={`/insight/${row.id}`}>
                                     View
                                   </Button>
                                   <Button
@@ -1855,20 +1856,14 @@ export default function Admin() {
                     </div>
                   </div>
                   {contentTab === 'edit' ? (
-                    <RichTextEditor
+                    <TipTapEditor
                       value={form.content}
                       onChange={(e) => setForm({ ...form, content: e.target.value })}
                       disabled={!canEdit}
+                      placeholder="Write content here..."
                     />
                   ) : (
-                    <div
-                      className="min-h-[160px] w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 prose prose-sm max-w-none"
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          sanitizeHtml(form.content) ||
-                          '<p class="text-[var(--color-muted)]">Nothing to preview.</p>',
-                      }}
-                    />
+                    <ContentRenderer html={form.content} className="min-h-[160px]" />
                   )}
                 </div>
               )}

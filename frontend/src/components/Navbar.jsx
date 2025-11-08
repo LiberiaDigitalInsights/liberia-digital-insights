@@ -121,7 +121,7 @@ export default function Navbar() {
           <Logo />
           <div className="hidden justify-end md:flex">
             <div className="h-14 w-[520px]">
-              <AdSlot position="hero" count={1} />
+              <AdSlot position="hero" />
             </div>
           </div>
         </div>

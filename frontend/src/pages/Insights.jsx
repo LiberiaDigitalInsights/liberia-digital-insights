@@ -5,7 +5,7 @@ import ArticleCard from '../components/articles/ArticleCard';
 import FeaturedArticleRow from '../components/articles/FeaturedArticleRow';
 import SEO from '../components/SEO';
 import { generateArticleGrid } from '../data/mockArticles';
-import { CATEGORIES } from '../data/categories';
+import { CATEGORIES } from '../constants/categories';
 import { FaHashtag, FaLightbulb, FaBullhorn } from 'react-icons/fa';
 
 export default function Insights() {
@@ -169,7 +169,7 @@ export default function Insights() {
                     author={article.author}
                     date={article.date}
                     readTime={article.readTime}
-                    to={`/article/${article.id}`}
+                    to={`/insight/${article.id}`}
                   />
                 </div>
               ))
