@@ -187,6 +187,7 @@ export default function Navbar() {
                 id="content-menu"
                 role="menu"
                 tabIndex={-1}
+                ref={contentMenuRef}
                 className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
                   openMenu === 'content' ? 'visible opacity-100' : 'invisible opacity-0'
                 } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
@@ -243,6 +244,7 @@ export default function Navbar() {
                 id="community-menu"
                 role="menu"
                 tabIndex={-1}
+                ref={communityMenuRef}
                 className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
                   openMenu === 'community' ? 'visible opacity-100' : 'invisible opacity-0'
                 } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
@@ -296,6 +298,7 @@ export default function Navbar() {
                 id="more-menu"
                 role="menu"
                 tabIndex={-1}
+                ref={moreMenuRef}
                 className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
                   openMenu === 'more' ? 'visible opacity-100' : 'invisible opacity-0'
                 } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}

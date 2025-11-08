@@ -1,9 +1,16 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 import { renderWithProviders } from '../../../test/utils';
 import NewsletterWidget from '../NewsletterWidget';
 import ToastViewport from '../../ui/Toast';
+
+// Ensure deterministic success for subscribeNewsletter in tests
+// Note: path is relative to this test file location
+vi.mock('../../../lib/newsletter', () => ({
+  subscribeNewsletter: vi.fn().mockResolvedValue({ ok: true }),
+}));
 
 describe('NewsletterWidget', () => {
   it('validates required fields and submits successfully', async () => {
