@@ -10,17 +10,46 @@ import EmptyState from '../components/ui/EmptyState';
 import TalentCard from '../components/talent/TalentCard';
 import { mockTalents, getTalentCategories } from '../data/mockTalents';
 import { useToast } from '../context/ToastContext';
+import { api } from '../services/api';
 
 export default function Talent() {
   const [filter, setFilter] = React.useState('All');
-  const [talents, setTalents] = React.useState(mockTalents);
+  const [talents, setTalents] = React.useState([]);
   const { showToast } = useToast();
 
-  const filtered = filter === 'All' ? talents : talents.filter((t) => t.category === filter);
+  const filteredCategory = filter === 'All' ? talents : talents.filter((t) => t.category === filter);
+  const filtered = filteredCategory.filter((t) => (t.status ? t.status === 'published' : true));
 
   const [form, setForm] = React.useState({ name: '', role: '', category: '', bio: '', link: '' });
   const [errors, setErrors] = React.useState({});
   const categories = getTalentCategories();
+
+  // Seed and hydrate from mock API
+  React.useEffect(() => {
+    // Seed initial talents with status 'published' if storage empty
+    api.initList('talents', mockTalents.map((t) => ({ ...t, status: 'published' })));
+    let mounted = true;
+    (async () => {
+      const list = await api.list('talents');
+      if (mounted) setTalents(list);
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const reloadTalents = React.useCallback(async () => {
+    const list = await api.list('talents');
+    setTalents(list);
+  }, []);
+
+  React.useEffect(() => {
+    const handleFocus = () => {
+      reloadTalents();
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [reloadTalents]);
 
   const onChange = (e) => {
     const { id, value } = e.target;
@@ -50,16 +79,26 @@ export default function Talent() {
       return;
     }
     const newTalent = {
-      id: talents.length + 1,
       name: form.name,
       role: form.role,
       bio: form.bio,
       category: form.category,
       links: form.link ? { website: form.link } : undefined,
+      status: 'pending',
     };
-    setTalents((t) => [newTalent, ...t]);
-    setForm({ name: '', role: '', category: '', bio: '', link: '' });
-    showToast({ title: 'Submitted', description: 'Talent profile submitted.', variant: 'success' });
+    try {
+      const created = await api.create('talents', newTalent);
+      // Keep local state in sync even if pending (won't show in list until published)
+      setTalents((t) => [created, ...t]);
+      setForm({ name: '', role: '', category: '', bio: '', link: '' });
+      showToast({
+        title: 'Submitted for review',
+        description: 'Your profile was submitted and awaits admin approval.',
+        variant: 'success',
+      });
+    } catch {
+      showToast({ title: 'Error', description: 'Failed to submit profile.', variant: 'error' });
+    }
   };
 
   return (
@@ -75,7 +114,7 @@ export default function Talent() {
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <section className="md:col-span-2 space-y-6">
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               {categories.map((c) => (
                 <button
                   key={c}
@@ -90,6 +129,9 @@ export default function Talent() {
                   {c}
                 </button>
               ))}
+              <Button size="sm" variant="subtle" onClick={reloadTalents}>
+                Refresh
+              </Button>
             </div>
 
             {filtered.length === 0 ? (

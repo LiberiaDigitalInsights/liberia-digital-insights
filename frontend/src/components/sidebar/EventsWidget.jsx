@@ -15,7 +15,7 @@ export default function EventsWidget() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>EVENTS</CardTitle>
-          <Link to="/events" className="text-xs text-brand-500 hover:underline">
+          <Link to="/events" className="text-xs ml-4 text-brand-500 hover:underline">
             ALL EVENTS
           </Link>
         </div>
@@ -26,7 +26,7 @@ export default function EventsWidget() {
             <li key={idx}>
               <Link
                 to="/events"
-                className="block rounded-[var(--radius-sm)] px-2 py-2 text-sm text-[var(--color-text)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)]"
+                className="block rounded-[var(--radius-sm)] px-2 py-2 text-sm text-[var(--color-text)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)] hover:bg-[color-mix(in_oklab,var(--color-surface),black_6%)]"
               >
                 {event}
               </Link>

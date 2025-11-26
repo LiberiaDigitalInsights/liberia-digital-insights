@@ -27,13 +27,20 @@ export default function AdSlot({ position = 'inline', className = '', rotateSeco
   // Auto-rotate based on visibility time (not wall time)
   React.useEffect(() => {
     if (visible.length <= 1) return;
+    let effective = rotateSeconds;
+    try {
+      const g = Number(localStorage.getItem('ads_rotate_seconds'));
+      if (!Number.isNaN(g) && g > 0) effective = g;
+    } catch {
+      /* empty */
+    }
     const tickMs = 250;
     const id = setInterval(() => {
       if (paused || reducedMotion || document.visibilityState !== 'visible' || !inView) {
         return;
       }
       const next = elapsedRef.current + tickMs / 1000;
-      if (next >= rotateSeconds) {
+      if (next >= effective) {
         setIndex((i) => (i + 1) % visible.length);
         elapsedRef.current = 0;
       } else {
