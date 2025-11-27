@@ -4,6 +4,9 @@ import Skeleton from './components/ui/Skeleton';
 import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import { H1, Muted } from './components/ui/Typography';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
+import CookiePage from './pages/CookiePage';
 
 // Lazy load pages for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -96,6 +99,9 @@ function App() {
               </AuthGate>
             }
           />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/cookies" element={<CookiePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

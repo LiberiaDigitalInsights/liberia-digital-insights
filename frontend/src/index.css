@@ -101,6 +101,16 @@ body {
   animation-delay: 300ms;
 }
 
+/* Scrollbar utilities */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Reduced motion accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {

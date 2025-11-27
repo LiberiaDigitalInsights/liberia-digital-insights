@@ -17,7 +17,8 @@ export default function Talent() {
   const [talents, setTalents] = React.useState([]);
   const { showToast } = useToast();
 
-  const filteredCategory = filter === 'All' ? talents : talents.filter((t) => t.category === filter);
+  const filteredCategory =
+    filter === 'All' ? talents : talents.filter((t) => t.category === filter);
   const filtered = filteredCategory.filter((t) => (t.status ? t.status === 'published' : true));
 
   const [form, setForm] = React.useState({ name: '', role: '', category: '', bio: '', link: '' });
@@ -27,7 +28,10 @@ export default function Talent() {
   // Seed and hydrate from mock API
   React.useEffect(() => {
     // Seed initial talents with status 'published' if storage empty
-    api.initList('talents', mockTalents.map((t) => ({ ...t, status: 'published' })));
+    api.initList(
+      'talents',
+      mockTalents.map((t) => ({ ...t, status: 'published' })),
+    );
     let mounted = true;
     (async () => {
       const list = await api.list('talents');
