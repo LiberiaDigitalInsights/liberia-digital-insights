@@ -4,35 +4,43 @@ import { H1, Muted } from '../components/ui/Typography';
 import ArticleCard from '../components/articles/ArticleCard';
 import PodcastCard from '../components/podcasts/PodcastCard';
 import SEO from '../components/SEO';
-import { generateArticleGrid } from '../data/mockArticles';
-import { mockPodcasts } from '../data/mockPodcasts';
-import { CATEGORIES } from '../constants/categories';
+import { useArticles, usePodcasts, useCategories } from '../hooks/useBackendApi';
 import { Tabs } from '../components/ui/Tabs';
 
 export default function Category() {
   const { slug } = useParams();
   const [activeTab, setActiveTab] = React.useState('articles');
 
-  const categoryName = decodeURIComponent(slug || '')
-    .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  // Fetch real data from backend
+  const { data: articlesData, loading: articlesLoading } = useArticles({ limit: 20 });
+  const { data: podcastsData, loading: podcastsLoading } = usePodcasts({ limit: 10 });
+  const { data: categoriesData, loading: _categoriesLoading } = useCategories();
 
-  // Find matching category (case-insensitive)
-  const matchedCategory =
-    CATEGORIES.find((cat) => cat.toLowerCase().replace(/\s+/g, '-') === slug?.toLowerCase()) ||
-    categoryName;
+  const allArticles = articlesData?.articles || [];
+  const allPodcasts = podcastsData?.podcasts || [];
+  const categories = categoriesData?.data || [];
 
-  const allArticles = generateArticleGrid(20);
-  const categoryArticles = allArticles.filter(
-    (article) => article.category.toLowerCase() === matchedCategory.toLowerCase(),
-  );
+  // Find matching category by slug
+  const matchedCategory = categories.find((cat) => cat.slug === slug);
+  const categoryName =
+    matchedCategory?.name ||
+    decodeURIComponent(slug || '')
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
 
-  const categoryPodcasts = mockPodcasts.filter(
-    (podcast) =>
-      podcast.category?.toLowerCase() === matchedCategory.toLowerCase() ||
-      podcast.tags?.some((tag) => tag.toLowerCase() === matchedCategory.toLowerCase()),
-  );
+  // Filter articles and podcasts by category
+  const categoryArticles = matchedCategory
+    ? allArticles.filter((article) => article.category_id === matchedCategory.id)
+    : allArticles.filter(
+        (article) => article.category?.name?.toLowerCase() === categoryName.toLowerCase(),
+      );
+
+  const categoryPodcasts = matchedCategory
+    ? allPodcasts.filter((podcast) => podcast.category_id === matchedCategory.id)
+    : allPodcasts.filter(
+        (podcast) => podcast.category?.name?.toLowerCase() === categoryName.toLowerCase(),
+      );
 
   const tabs = [
     {
@@ -42,10 +50,21 @@ export default function Category() {
         <div>
           <div className="mb-6 text-sm text-[var(--color-muted)]">
             {categoryArticles.length > 0
-              ? `Showing ${categoryArticles.length} ${categoryArticles.length === 1 ? 'article' : 'articles'} in ${matchedCategory}`
-              : `No articles found in ${matchedCategory}`}
+              ? `Showing ${categoryArticles.length} ${categoryArticles.length === 1 ? 'article' : 'articles'} in ${categoryName}`
+              : `No articles found in ${categoryName}`}
           </div>
-          {categoryArticles.length > 0 ? (
+          {articlesLoading ? (
+            // Loading skeleton
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              ))}
+            </div>
+          ) : categoryArticles.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {categoryArticles.map((article, idx) => (
                 <div
@@ -54,14 +73,14 @@ export default function Category() {
                   style={{ animationDelay: `${100 + idx * 50}ms` }}
                 >
                   <ArticleCard
-                    image={article.image}
+                    image={article.cover_image_url}
                     title={article.title}
                     excerpt={article.excerpt}
-                    category={article.category}
-                    author={article.author}
-                    date={article.date}
-                    readTime={article.readTime}
-                    to={`/article/${article.id}`}
+                    category={article.category?.name || categoryName}
+                    author={article.author?.name}
+                    date={new Date(article.published_at).toLocaleDateString()}
+                    readTime={Math.ceil(article.content.length / 1000) + ' min read'}
+                    to={`/article/${article.slug}`}
                   />
                 </div>
               ))}
@@ -81,10 +100,21 @@ export default function Category() {
         <div>
           <div className="mb-6 text-sm text-[var(--color-muted)]">
             {categoryPodcasts.length > 0
-              ? `Showing ${categoryPodcasts.length} ${categoryPodcasts.length === 1 ? 'podcast' : 'podcasts'} in ${matchedCategory}`
-              : `No podcasts found in ${matchedCategory}`}
+              ? `Showing ${categoryPodcasts.length} ${categoryPodcasts.length === 1 ? 'podcast' : 'podcasts'} in ${categoryName}`
+              : `No podcasts found in ${categoryName}`}
           </div>
-          {categoryPodcasts.length > 0 ? (
+          {podcastsLoading ? (
+            // Loading skeleton
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              ))}
+            </div>
+          ) : categoryPodcasts.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {categoryPodcasts.map((podcast, idx) => (
                 <div
@@ -93,13 +123,13 @@ export default function Category() {
                   style={{ animationDelay: `${100 + idx * 50}ms` }}
                 >
                   <PodcastCard
-                    image={podcast.image}
+                    image={podcast.cover_image_url}
                     title={podcast.title}
                     description={podcast.description}
-                    category={podcast.category}
+                    category={podcast.category?.name || categoryName}
                     duration={podcast.duration}
-                    date={podcast.date}
-                    to={`/podcast/${podcast.id}`}
+                    date={new Date(podcast.published_at).toLocaleDateString()}
+                    to={`/podcast/${podcast.slug}`}
                   />
                 </div>
               ))}
@@ -116,13 +146,13 @@ export default function Category() {
 
   return (
     <>
-      <SEO title={`${matchedCategory} | Liberia Digital Insights`} />
+      <SEO title={`${categoryName} | Liberia Digital Insights`} />
       <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
         {/* Header */}
         <header className="mb-8">
-          <H1 className="mb-4">{matchedCategory}</H1>
+          <H1 className="mb-4">{categoryName}</H1>
           <Muted className="text-lg">
-            Explore articles and podcasts in the {matchedCategory} category.
+            Explore articles and podcasts in the {categoryName} category.
           </Muted>
         </header>
 

@@ -4,8 +4,7 @@ import { H1, Muted } from '../components/ui/Typography';
 import ArticleCard from '../components/articles/ArticleCard';
 import PodcastCard from '../components/podcasts/PodcastCard';
 import SEO from '../components/SEO';
-import { generateArticleGrid } from '../data/mockArticles';
-import { mockPodcasts } from '../data/mockPodcasts';
+import { useArticles, usePodcasts } from '../hooks/useBackendApi';
 import { Tabs } from '../components/ui/Tabs';
 
 function toDisplayTag(slug = '') {
@@ -22,13 +21,21 @@ export default function Tag() {
   const { slug } = useParams();
   const tagKey = String(slug || '').toLowerCase();
   const tagDisplay = toDisplayTag(tagKey);
+  const [activeTab, setActiveTab] = React.useState('articles');
 
-  const allArticles = generateArticleGrid(24);
+  // Fetch real data from backend
+  const { data: articlesData, loading: articlesLoading } = useArticles({ limit: 24 });
+  const { data: podcastsData, loading: podcastsLoading } = usePodcasts({ limit: 12 });
+  
+  const allArticles = articlesData?.articles || [];
+  const allPodcasts = podcastsData?.podcasts || [];
+
+  // Filter articles and podcasts by tag
   const taggedArticles = allArticles.filter(
     (a) => Array.isArray(a.tags) && a.tags.some((t) => String(t).toLowerCase() === tagKey),
   );
 
-  const taggedPodcasts = mockPodcasts.filter(
+  const taggedPodcasts = allPodcasts.filter(
     (p) => Array.isArray(p.tags) && p.tags.some((t) => String(t).toLowerCase() === tagKey),
   );
 
@@ -40,10 +47,21 @@ export default function Tag() {
         <div>
           <div className="mb-6 text-sm text-[var(--color-muted)]">
             {taggedArticles.length > 0
-              ? `Showing ${taggedArticles.length} ${taggedArticles.length === 1 ? 'article' : 'articles'} for #${tagDisplay}`
-              : `No articles found for #${tagDisplay}`}
+              ? `Showing ${taggedArticles.length} ${taggedArticles.length === 1 ? 'article' : 'articles'} tagged with #${tagDisplay}`
+              : `No articles found tagged with #${tagDisplay}`}
           </div>
-          {taggedArticles.length > 0 ? (
+          {articlesLoading ? (
+            // Loading skeleton
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              ))}
+            </div>
+          ) : taggedArticles.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {taggedArticles.map((article, idx) => (
                 <div
@@ -52,14 +70,14 @@ export default function Tag() {
                   style={{ animationDelay: `${100 + idx * 50}ms` }}
                 >
                   <ArticleCard
-                    image={article.image}
+                    image={article.cover_image_url}
                     title={article.title}
                     excerpt={article.excerpt}
-                    category={article.category}
-                    author={article.author}
-                    date={article.date}
-                    readTime={article.readTime}
-                    to={`/article/${article.id}`}
+                    category={article.category?.name || 'Uncategorized'}
+                    author={article.author?.name}
+                    date={new Date(article.published_at).toLocaleDateString()}
+                    readTime={Math.ceil(article.content.length / 1000) + ' min read'}
+                    to={`/article/${article.slug}`}
                   />
                 </div>
               ))}
@@ -82,7 +100,18 @@ export default function Tag() {
               ? `Showing ${taggedPodcasts.length} ${taggedPodcasts.length === 1 ? 'podcast' : 'podcasts'} for #${tagDisplay}`
               : `No podcasts found for #${tagDisplay}`}
           </div>
-          {taggedPodcasts.length > 0 ? (
+          {podcastsLoading ? (
+            // Loading skeleton
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              ))}
+            </div>
+          ) : taggedPodcasts.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {taggedPodcasts.map((podcast, idx) => (
                 <div
@@ -91,13 +120,13 @@ export default function Tag() {
                   style={{ animationDelay: `${100 + idx * 50}ms` }}
                 >
                   <PodcastCard
-                    image={podcast.image}
+                    image={podcast.cover_image_url}
                     title={podcast.title}
                     description={podcast.description}
-                    category={podcast.category}
+                    category={podcast.category?.name || 'Uncategorized'}
                     duration={podcast.duration}
-                    date={podcast.date}
-                    to={`/podcast/${podcast.id}`}
+                    date={new Date(podcast.published_at).toLocaleDateString()}
+                    to={`/podcast/${podcast.slug}`}
                   />
                 </div>
               ))}
@@ -121,7 +150,7 @@ export default function Tag() {
           <Muted className="text-lg">Explore content for the #{tagDisplay} tag.</Muted>
         </header>
 
-        <Tabs tabs={tabs} value={tabs[0].value} onChange={() => {}} className="mb-8" />
+        <Tabs tabs={tabs} value={activeTab} onChange={setActiveTab} className="mb-8" />
 
         <nav className="mb-6 text-sm text-[var(--color-muted)]">
           <a href="/" className="hover:text-[var(--color-text)]">

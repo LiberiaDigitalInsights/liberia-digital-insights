@@ -38,6 +38,30 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET /v1/podcasts/slug/:slug - Get single podcast by slug
+router.get("/slug/:slug", async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const { data, error } = await supabase
+      .from("podcasts")
+      .select("*")
+      .eq("slug", slug)
+      .limit(1);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "Podcast not found" });
+    }
+
+    res.json({ podcast: data[0] });
+  } catch (error) {
+    console.error("Route error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET /v1/podcasts/:id - Get single podcast
 router.get("/:id", async (req, res) => {
   try {

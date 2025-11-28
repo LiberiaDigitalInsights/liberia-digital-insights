@@ -21,6 +21,7 @@ const PodcastDetail = lazy(() => import('./pages/PodcastDetail'));
 const Articles = lazy(() => import('./pages/Articles'));
 const ArticleDetail = lazy(() => import('./pages/ArticleDetail'));
 const Events = lazy(() => import('./pages/Events'));
+const EventDetail = lazy(() => import('./pages/EventDetail'));
 const Gallery = lazy(() => import('./pages/Gallery'));
 const Advertisement = lazy(() => import('./pages/Advertisement'));
 const Signup = lazy(() => import('./pages/Signup'));
@@ -73,12 +74,13 @@ function App() {
           <Route path="/components" element={<ComponentsPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/insights" element={<Insights />} />
-          <Route path="/insight/:id" element={<InsightDetail />} />
+          <Route path="/insight/:slug" element={<InsightDetail />} />
           <Route path="/podcasts" element={<Podcasts />} />
-          <Route path="/podcast/:id" element={<PodcastDetail />} />
+          <Route path="/podcast/:slug" element={<PodcastDetail />} />
           <Route path="/articles" element={<Articles />} />
-          <Route path="/article/:id" element={<ArticleDetail />} />
+          <Route path="/article/:slug" element={<ArticleDetail />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/event/:slug" element={<EventDetail />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/advertisement" element={<Advertisement />} />
           <Route path="/signup" element={<Signup />} />

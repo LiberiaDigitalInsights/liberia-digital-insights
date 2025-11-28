@@ -45,6 +45,29 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET /v1/events/slug/:slug - Get single event by slug
+router.get("/slug/:slug", async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .eq("slug", slug)
+      .limit(1);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    res.json({ event: data[0] });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET /v1/events/:id - Get single event
 router.get("/:id", async (req, res) => {
   try {

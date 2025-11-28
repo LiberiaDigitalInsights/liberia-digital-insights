@@ -5,23 +5,64 @@ import PodcastPlayer from '../components/podcasts/PodcastPlayer';
 import PodcastCard from '../components/podcasts/PodcastCard';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import SEO from '../components/SEO';
-import { mockPodcasts, generatePodcastGrid } from '../data/mockPodcasts';
+import { usePodcast, usePodcasts } from '../hooks/useBackendApi';
 
 export default function PodcastDetail() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
-  const podcast = mockPodcasts.find((p) => p.id === Number(id)) || mockPodcasts[0];
-  const relatedPodcasts = generatePodcastGrid(3).filter((p) => p.id !== podcast.id);
+
+  // Fetch podcast by slug from backend
+  const { data: podcastData, loading: podcastLoading, error: podcastError } = usePodcast(slug);
+  const { data: relatedPodcastsData, loading: _relatedLoading } = usePodcasts({ limit: 3 });
+
+  const podcast = podcastData?.podcast;
+  const relatedPodcasts = relatedPodcastsData?.podcasts || [];
+
+  // Loading state
+  if (podcastLoading) {
+    return (
+      <div className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12">
+        <div className="animate-pulse">
+          <div className="mb-4 h-8 w-32 bg-gray-200 rounded"></div>
+          <div className="mb-4 h-12 w-3/4 bg-gray-200 rounded"></div>
+          <div className="mb-8 h-64 bg-gray-200 rounded"></div>
+          <div className="space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-full"></div>
+            <div className="h-4 bg-gray-200 rounded w-full"></div>
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (podcastError || !podcast) {
+    return (
+      <div className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12 text-center">
+        <H1 className="mb-4 text-3xl font-bold">Podcast Not Found</H1>
+        <p className="mb-8 text-[var(--color-muted)]">
+          The podcast you're looking for doesn't exist or has been removed.
+        </p>
+        <Link
+          to="/podcasts"
+          className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-brand-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-brand-600"
+        >
+          ← Back to Podcasts
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <>
       <SEO
         title={podcast.title}
         description={podcast.description || podcast.title}
-        image={podcast.image}
+        image={podcast.cover_image_url}
         type="article"
-        author={podcast.guest}
-        tags={podcast.tags || [podcast.category]}
+        author={podcast.author?.name}
+        tags={podcast.tags || []}
       />
       <div className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12">
         {/* Breadcrumb */}
@@ -34,7 +75,7 @@ export default function PodcastDetail() {
             Podcasts
           </Link>
           {' / '}
-          <span>Episode {id}</span>
+          <span>Episode {podcast.episode_number}</span>
         </nav>
 
         {/* Back button */}
@@ -51,33 +92,33 @@ export default function PodcastDetail() {
             title={podcast.title}
             description={podcast.description}
             duration={podcast.duration}
-            audioUrl={podcast.audioUrl}
-            image={podcast.image}
-            date={podcast.date}
-            guest={podcast.guest}
+            audioUrl={podcast.audio_url}
+            image={podcast.cover_image_url}
+            date={new Date(podcast.published_at).toLocaleDateString()}
+            guest={podcast.author?.name}
           />
           {/* Guest Info */}
-          {podcast.guest && (
+          {podcast.author?.name && (
             <Card className="mt-6">
               <CardHeader>
-                <CardTitle>Guest</CardTitle>
+                <CardTitle>Host</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-4">
                   <div
                     aria-hidden
                     className="flex h-12 w-12 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_8%)] text-sm font-semibold text-[var(--color-text)]"
-                    title={podcast.guest}
+                    title={podcast.author.name}
                   >
-                    {String(podcast.guest).charAt(0).toUpperCase()}
+                    {String(podcast.author.name).charAt(0).toUpperCase()}
                   </div>
                   <div>
                     <div className="text-sm font-medium text-[var(--color-text)]">
-                      {podcast.guest}
+                      {podcast.author.name}
                     </div>
-                    {podcast.date && (
+                    {podcast.published_at && (
                       <div className="text-xs text-[var(--color-muted)]">
-                        Recorded {podcast.date}
+                        Published {new Date(podcast.published_at).toLocaleDateString()}
                       </div>
                     )}
                   </div>
@@ -205,19 +246,21 @@ export default function PodcastDetail() {
         <section>
           <H2 className="mb-6 text-2xl font-bold">More Episodes</H2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {relatedPodcasts.map((related) => (
-              <PodcastCard
-                key={related.id}
-                id={related.id}
-                title={related.title}
-                description={related.description}
-                duration={related.duration}
-                date={related.date}
-                guest={related.guest}
-                image={related.image}
-                to={`/podcast/${related.id}`}
-              />
-            ))}
+            {relatedPodcasts
+              .filter((related) => related.id !== podcast.id)
+              .map((related) => (
+                <PodcastCard
+                  key={related.id}
+                  id={related.id}
+                  title={related.title}
+                  description={related.description}
+                  duration={related.duration}
+                  date={new Date(related.published_at).toLocaleDateString()}
+                  guest={related.author?.name}
+                  image={related.cover_image_url}
+                  to={`/podcast/${related.slug}`}
+                />
+              ))}
           </div>
         </section>
       </div>

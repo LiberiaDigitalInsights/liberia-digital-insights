@@ -46,6 +46,36 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET /v1/insights/slug/:slug - Get single insight by slug
+router.get("/slug/:slug", async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const { data, error } = await supabase
+      .from("insights")
+      .select(`
+        *,
+        categories(name, slug),
+        users(first_name, last_name, email)
+      `)
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (!data) {
+      return res.status(404).json({ error: "Insight not found" });
+    }
+
+    // Increment view count
+    await supabase.rpc("increment_view_count", { table_name: "insights", record_id: data.id });
+
+    res.json({ insight: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET /v1/insights/:id - Get single insight
 router.get("/:id", async (req, res) => {
   try {

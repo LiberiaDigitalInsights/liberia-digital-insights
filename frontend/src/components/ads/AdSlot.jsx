@@ -1,7 +1,9 @@
 import React from 'react';
+import { useAdvertisements } from '../../hooks/useBackendApi';
 
 export default function AdSlot({ position = 'inline', className = '', rotateSeconds = 9 }) {
-  const [ads, setAds] = React.useState([]);
+  const { data: advertisementsData, loading } = useAdvertisements({ status: 'active' });
+  const advertisements = advertisementsData?.advertisements || [];
   const [index, setIndex] = React.useState(0);
   const [paused, setPaused] = React.useState(false);
   const [fadeOn, setFadeOn] = React.useState(true);
@@ -10,19 +12,18 @@ export default function AdSlot({ position = 'inline', className = '', rotateSeco
   const [inView, setInView] = React.useState(true);
   const elapsedRef = React.useRef(0);
 
-  React.useEffect(() => {
-    try {
-      const saved = localStorage.getItem('ads_list');
-      if (saved) {
-        const list = JSON.parse(saved) || [];
-        setAds(list);
-      }
-    } catch {
-      setAds([]);
-    }
-  }, []);
+  // Map advertisement type to position
+  const positionMap = {
+    'hero': 'banner',
+    'sidebar': 'sidebar', 
+    'inline': 'featured'
+  };
 
-  const visible = ads.filter((a) => a && a.status === 'published' && a.position === position);
+  const visible = advertisements.filter((ad) => {
+    const adType = ad.type || 'banner';
+    const mappedPosition = positionMap[position] || position;
+    return ad.status === 'active' && adType === mappedPosition;
+  });
 
   // Auto-rotate based on visibility time (not wall time)
   React.useEffect(() => {
@@ -85,7 +86,7 @@ export default function AdSlot({ position = 'inline', className = '', rotateSeco
   // Reset index if visible set changes
   React.useEffect(() => {
     setIndex(0);
-  }, [position, ads.length]);
+  }, [position, advertisements.length]);
 
   const onEnter = () => setPaused(true);
   const onLeave = () => setPaused(false);
@@ -97,7 +98,7 @@ export default function AdSlot({ position = 'inline', className = '', rotateSeco
     return () => clearTimeout(t);
   }, [index, reducedMotion]);
 
-  if (visible.length === 0) return null;
+  if (loading || visible.length === 0) return null;
 
   // Hero (navbar) slot: fixed height; parent controls exact width
   if (position === 'hero') {
@@ -111,7 +112,7 @@ export default function AdSlot({ position = 'inline', className = '', rotateSeco
         onMouseLeave={onLeave}
       >
         <a
-          href={ad.link || '#'}
+          href={ad.target_url || '#'}
           target="_blank"
           rel="noopener noreferrer"
           className="flex h-14 w-full items-center justify-center"
@@ -120,9 +121,9 @@ export default function AdSlot({ position = 'inline', className = '', rotateSeco
             transition: reducedMotion ? 'none' : 'opacity 700ms ease-in-out',
           }}
         >
-          {ad.image ? (
+          {ad.image_url ? (
             <img
-              src={ad.image}
+              src={ad.image_url}
               alt={ad.title || 'Advertisement'}
               className="h-full max-h-full w-auto object-contain"
             />
@@ -147,14 +148,14 @@ export default function AdSlot({ position = 'inline', className = '', rotateSeco
       >
         <a
           key={current.id}
-          href={current.link || '#'}
+          href={current.target_url || '#'}
           target="_blank"
           rel="noopener noreferrer"
           className="group block overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_4%)]"
         >
-          {current.image ? (
+          {current.image_url ? (
             <img
-              src={current.image}
+              src={current.image_url}
               alt={current.title || 'Advertisement'}
               className={`w-full ${position === 'sidebar' ? 'h-40 object-cover' : 'h-40 object-cover'}`}
             />

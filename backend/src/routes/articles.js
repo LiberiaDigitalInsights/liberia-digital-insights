@@ -46,6 +46,37 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET /v1/articles/slug/:slug - Get single article by slug
+router.get("/slug/:slug", async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const { data, error } = await supabase
+      .from("articles")
+      .select(`
+        *,
+        categories(name, slug),
+        users(first_name, last_name, email)
+      `)
+      .eq("slug", slug)
+      .limit(1);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "Article not found" });
+    }
+
+    // Increment view count
+    await supabase.rpc("increment_view_count", { table_name: "articles", record_id: data[0].id });
+
+    res.json({ article: data[0] });
+  } catch (error) {
+    console.error("Route error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET /v1/articles/:id - Get single article
 router.get("/:id", async (req, res) => {
   try {

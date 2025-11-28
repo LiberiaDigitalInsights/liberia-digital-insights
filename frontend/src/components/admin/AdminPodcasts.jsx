@@ -8,6 +8,7 @@ import {
   Input,
   Select,
   Modal,
+  Textarea,
   RichTextEditor,
 } from '../ui';
 import {

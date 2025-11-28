@@ -15,7 +15,6 @@ import AdminInsights from '../components/admin/AdminInsights';
 import AdminAdvertisements from '../components/admin/AdminAdvertisements';
 import AdminNewsletter from '../components/admin/AdminNewsletter';
 import { generateArticleGrid } from '../data/mockArticles';
-import { getUpcomingTrainings, getUpcomingCourses } from '../data/mockTraining';
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState('dashboard');

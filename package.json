@@ -1,5 +1,36 @@
 {
+  "name": "liberia-digital-insights",
+  "version": "1.0.0",
+  "description": "Liberia Digital Insights platform",
+  "main": "dev-script/start-dev.js",
+  "scripts": {
+    "start": "node dev-script/start-dev.js",
+    "dev": "node dev-script/start-dev.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "liberia",
+    "digital",
+    "insights",
+    "vercel",
+    "supabase"
+  ],
+  "author": "Liberia Digital Insights Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LiberiaDigitalInsights/liberia-digital-insights.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LiberiaDigitalInsights/liberia-digital-insights/issues"
+  },
+  "homepage": "https://github.com/LiberiaDigitalInsights/liberia-digital-insights#readme",
   "dependencies": {
     "vercel": "^48.12.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
   }
 }

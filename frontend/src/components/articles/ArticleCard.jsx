@@ -47,14 +47,12 @@ export default function ArticleCard({
               {Array.isArray(tags) && tags.length > 0 && (
                 <span className="inline-flex flex-wrap items-center gap-1">
                   {tags.slice(0, 2).map((t) => (
-                    <Link
+                    <span
                       key={t}
-                      to={`/tag/${encodeURIComponent(String(t).toLowerCase())}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_10%)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-muted)] hover:text-[var(--color-text)]"
+                      className="rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_10%)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-muted)]"
                     >
                       #{String(t).replace(/^#/, '')}
-                    </Link>
+                    </span>
                   ))}
                 </span>
               )}
@@ -124,14 +122,12 @@ export default function ArticleCard({
               {Array.isArray(tags) && tags.length > 0 && (
                 <span className="inline-flex flex-wrap items-center gap-1">
                   {tags.slice(0, 2).map((t) => (
-                    <Link
+                    <span
                       key={t}
-                      to={`/tag/${encodeURIComponent(String(t).toLowerCase())}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_10%)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-muted)] hover:text-[var(--color-text)]"
+                      className="rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_10%)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-muted)]"
                     >
                       #{String(t).replace(/^#/, '')}
-                    </Link>
+                    </span>
                   ))}
                 </span>
               )}

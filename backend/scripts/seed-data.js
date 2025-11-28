@@ -1,5 +1,5 @@
 // Seed script for Liberia Digital Insights database
-import { supabase } from './src/supabaseClient.js';
+import { supabase } from '../src/supabaseClient.js';
 import fetch from 'node-fetch';
 
 // Sample data
@@ -8,7 +8,11 @@ const categories = [
   { name: 'Business', slug: 'business', description: 'Business insights and market analysis' },
   { name: 'Innovation', slug: 'innovation', description: 'Innovation trends and case studies' },
   { name: 'Digital Transformation', slug: 'digital-transformation', description: 'Digital transformation strategies' },
-  { name: 'Leadership', slug: 'leadership', description: 'Leadership and management insights' }
+  { name: 'Leadership', slug: 'leadership', description: 'Leadership and management insights' },
+  { name: 'Health', slug: 'health', description: 'Healthcare insights and trends' },
+  { name: 'Education', slug: 'education', description: 'Education trends and case studies' },
+  { name: 'Sustainability', slug: 'sustainability', description: 'Sustainability trends and case studies' },
+  { name: 'Politics', slug: 'politics', description: 'Politics trends and case studies' },
 ];
 
 const articles = [

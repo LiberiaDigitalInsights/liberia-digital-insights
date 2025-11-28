@@ -1,5 +1,5 @@
 // Test Supabase connection
-import { supabase } from './src/supabaseClient.js';
+import { supabase } from '../src/supabaseClient.js';
 
 async function testConnection() {
   try {

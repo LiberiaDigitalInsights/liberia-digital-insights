@@ -4,13 +4,26 @@ import Card from '../components/ui/Card';
 import ArticleCard from '../components/articles/ArticleCard';
 import FeaturedArticleRow from '../components/articles/FeaturedArticleRow';
 import SEO from '../components/SEO';
-import { generateArticleGrid } from '../data/mockArticles';
-import { CATEGORIES } from '../constants/categories';
+import { useInsights, useCategories } from '../hooks/useBackendApi';
 import { FaHashtag, FaLightbulb, FaBullhorn } from 'react-icons/fa';
 
 export default function Insights() {
   const [selectedCategory, setSelectedCategory] = React.useState('all');
-  const articles = generateArticleGrid(12);
+  
+  // Fetch real data from backend
+  const { data: insightsData, loading: insightsLoading } = useInsights({ limit: 12 });
+  const { data: categoriesData } = useCategories();
+  
+  const insights = insightsData?.insights || [];
+  const categories = categoriesData?.data || [];
+
+  // Filter insights based on selected category
+  const filteredInsights = selectedCategory === 'all' 
+    ? insights 
+    : insights.filter(insight => {
+        const category = categories.find(cat => cat.slug === selectedCategory);
+        return category && insight.category_id === category.id;
+      });
 
   const specialFeatures = [
     {
@@ -41,11 +54,6 @@ export default function Insights() {
       cardBg: 'bg-green-500/10',
     },
   ];
-
-  const filteredArticles =
-    selectedCategory === 'all'
-      ? articles
-      : articles.filter((article) => article.category === selectedCategory);
 
   return (
     <>
@@ -101,17 +109,27 @@ export default function Insights() {
               </div>
             </div>
             <div className="opacity-0 animate-slide-up animation-delay-200">
-              <FeaturedArticleRow
-                index={1}
-                image={articles[0].image}
-                title={articles[0].title}
-                excerpt={articles[0].excerpt || 'Weekly insights from tech experts in Liberia.'}
-                category="#InsightTechThursdays"
-                author="Stephen M. Parteh, IT Manager of Liberia Digital Insights"
-                date={articles[0].date}
-                readTime={articles[0].readTime}
-                to={`/insight/${articles[0].id}`}
-              />
+              {insightsLoading ? (
+                <div className="animate-pulse">
+                  <div className="h-32 bg-gray-200 rounded"></div>
+                </div>
+              ) : insights.length > 0 ? (
+                <FeaturedArticleRow
+                  index={1}
+                  image={insights[0].cover_image_url}
+                  title={insights[0].title}
+                  excerpt={insights[0].excerpt || 'Weekly insights from tech experts in Liberia.'}
+                  category="#InsightTechThursdays"
+                  author={insights[0].author?.name || "Stephen M. Parteh, IT Manager of Liberia Digital Insights"}
+                  date={new Date(insights[0].published_at).toLocaleDateString()}
+                  readTime={Math.ceil(insights[0].content.length / 1000) + ' min read'}
+                  to={`/insight/${insights[0].slug}`}
+                />
+              ) : (
+                <div className="text-center text-[var(--color-muted)]">
+                  No insights available yet.
+                </div>
+              )}
             </div>
           </div>
         </Card>
@@ -126,22 +144,22 @@ export default function Insights() {
                 : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
             }`}
           >
-            All Insights ({articles.length})
+            All Insights ({insights.length})
           </button>
-          {CATEGORIES.slice(0, 8).map((category) => {
-            const count = articles.filter((a) => a.category === category).length;
+          {categories.slice(0, 8).map((category) => {
+            const count = insights.filter((i) => i.category_id === category.id).length;
             if (count === 0) return null;
             return (
               <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
+                key={category.id}
+                onClick={() => setSelectedCategory(category.slug)}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
-                  selectedCategory === category
+                  selectedCategory === category.slug
                     ? 'bg-brand-500 text-white'
                     : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
                 }`}
               >
-                {category} ({count})
+                {category.name} ({count})
               </button>
             );
           })}
@@ -150,32 +168,45 @@ export default function Insights() {
         {/* Articles Grid */}
         <section>
           <div className="mb-6 text-sm text-[var(--color-muted)]">
-            Showing {filteredArticles.length}{' '}
-            {filteredArticles.length === 1 ? 'article' : 'articles'}
+            Showing {filteredInsights.length}{' '}
+            {filteredInsights.length === 1 ? 'insight' : 'insights'}
           </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredArticles.length > 0 ? (
-              filteredArticles.map((article, idx) => (
+            {insightsLoading ? (
+              // Loading skeleton
+              [1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              ))
+            ) : filteredInsights.length > 0 ? (
+              filteredInsights.map((insight, idx) => (
                 <div
-                  key={article.id}
+                  key={insight.id}
                   className="opacity-0 animate-slide-up"
                   style={{ animationDelay: `${100 + idx * 50}ms` }}
                 >
                   <ArticleCard
-                    image={article.image}
-                    title={article.title}
-                    excerpt={article.excerpt}
-                    category={article.category}
-                    author={article.author}
-                    date={article.date}
-                    readTime={article.readTime}
-                    to={`/insight/${article.id}`}
+                    image={insight.cover_image_url}
+                    title={insight.title}
+                    excerpt={insight.excerpt}
+                    category={insight.category?.name || 'Insights'}
+                    author={insight.author?.name}
+                    date={new Date(insight.published_at).toLocaleDateString()}
+                    readTime={Math.ceil(insight.content.length / 1000) + ' min read'}
+                    to={`/insight/${insight.slug}`}
                   />
                 </div>
               ))
             ) : (
-              <div className="col-span-full py-12 text-center text-[var(--color-muted)]">
-                No articles found in this category.
+              <div className="col-span-full text-center py-12">
+                <p className="text-[var(--color-muted)]">
+                  {selectedCategory === 'all' 
+                    ? 'No insights available yet.' 
+                    : `No insights found in this category.`}
+                </p>
               </div>
             )}
           </div>

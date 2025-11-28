@@ -5,24 +5,64 @@ import ArticleCard from '../components/articles/ArticleCard';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import SEO from '../components/SEO';
-import { CATEGORIES } from '../constants/categories';
-import { generateArticleGrid } from '../data/mockArticles';
+import AdSlot from '../components/ads/AdSlot';
+import { useArticles, useCategories } from '../hooks/useBackendApi';
 
 export default function Articles() {
   const [searchParams, setSearchParams] = useSearchParams();
   const category = searchParams.get('category') || 'all';
   const page = Number(searchParams.get('page')) || 1;
 
-  const allArticles = generateArticleGrid(24);
-  const filteredArticles =
-    category === 'all'
-      ? allArticles
-      : allArticles.filter((a) => a.category.toLowerCase() === category.toLowerCase());
+  // Fetch real data from backend
+  const { data: articlesData, loading, error } = useArticles({ 
+    page, 
+    limit: 12,
+    ...(category !== 'all' && { category })
+  });
+  
+  const { data: categoriesData } = useCategories();
 
-  const itemsPerPage = 12;
-  const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
-  const startIndex = (page - 1) * itemsPerPage;
-  const paginatedArticles = filteredArticles.slice(startIndex, startIndex + itemsPerPage);
+  // Handle loading and error states
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+        <div className="animate-pulse">
+          <div className="mb-8 h-8 w-48 bg-gray-200 rounded"></div>
+          <div className="mb-8 h-4 w-96 bg-gray-200 rounded"></div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-64 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+        <div className="text-center py-12">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Articles</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-brand-500 text-white rounded hover:bg-brand-600"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Extract articles and pagination from backend response
+  const articles = articlesData?.articles || [];
+  const pagination = articlesData?.pagination || {};
+  const totalPages = pagination.totalPages || 1;
+
+  // Get categories for filters
+  const categories = categoriesData?.data || [];
 
   const handleCategoryChange = (cat) => {
     setSearchParams({ category: cat, page: '1' });
@@ -35,7 +75,10 @@ export default function Articles() {
 
   return (
     <>
-      <SEO />
+      <SEO 
+        title="Articles - Liberia Digital Insights"
+        description="Explore our collection of tech insights, stories, and analysis from Liberia and across Africa"
+      />
       <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
         {/* Header */}
         <header className="mb-8">
@@ -57,42 +100,56 @@ export default function Articles() {
           >
             All
           </button>
-          {CATEGORIES.slice(0, 8).map((cat) => (
+          {categories.slice(0, 8).map((cat) => (
             <button
-              key={cat}
-              onClick={() => handleCategoryChange(cat.toLowerCase())}
+              key={cat.id}
+              onClick={() => handleCategoryChange(cat.slug)}
               className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
-                category === cat.toLowerCase()
+                category === cat.slug
                   ? 'bg-brand-500 text-white'
                   : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
               }`}
             >
-              {cat}
+              {cat.name}
             </button>
           ))}
         </div>
 
         {/* Results count */}
         <div className="mb-6 text-sm text-[var(--color-muted)]">
-          Showing {paginatedArticles.length} of {filteredArticles.length} articles
+          Showing {articles.length} of {pagination.total || 0} articles
           {category !== 'all' && ` in ${category}`}
+        </div>
+
+        {/* Inline Advertisement */}
+        <div className="mb-8">
+          <AdSlot position="inline" className="opacity-0 animate-fade-in" />
         </div>
 
         {/* Articles Grid */}
         <div className="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {paginatedArticles.length > 0 ? (
-            paginatedArticles.map((article) => (
-              <ArticleCard
-                key={article.id}
-                image={article.image}
-                title={article.title}
-                category={article.category}
-                date={article.date}
-                readTime={article.readTime}
-                tags={article.tags}
-                to={`/article/${article.id}`}
-              />
-            ))
+          {articles.length > 0 ? (
+            articles.map((article, index) => {
+              const isThirdArticle = (index + 1) % 3 === 0;
+              return (
+                <React.Fragment key={article.id}>
+                  <ArticleCard
+                    image={article.cover_image_url}
+                    title={article.title}
+                    category={article.category?.name || 'Uncategorized'}
+                    date={new Date(article.published_at).toLocaleDateString()}
+                    readTime={Math.ceil(article.content.length / 1000) + ' min read'}
+                    tags={article.tags || []}
+                    to={`/article/${article.slug}`}
+                  />
+                  {isThirdArticle && index < articles.length - 1 && (
+                    <div className="col-span-full">
+                      <AdSlot position="inline" className="opacity-0 animate-fade-in" />
+                    </div>
+                  )}
+                </React.Fragment>
+              );
+            })
           ) : (
             <div className="col-span-full py-12 text-center text-[var(--color-muted)]">
               No articles found in this category.
