@@ -513,13 +513,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Contact & Support
 
 - **📧 Email**: contact@liberiadigitalinsights.com
-- **🐛 Issues**: [GitHub Issues](https://github.com/your-org/liberia-digital-insights/issues)
-- **💬 Discussions**: [GitHub Discussions](https://github.com/your-org/liberia-digital-insights/discussions)
+- **🐛 Issues**: [GitHub Issues](https://github.com/LiberiaDigitalInsights/liberia-digital-insights/issues)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/LiberiaDigitalInsights/liberia-digital-insights/discussions)
 - **🐦 Twitter**: [@LiberiaDigital](https://twitter.com/LiberiaDigital)
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=your-org/liberia-digital-insights&type=Date)](https://star-history.com/#your-org/liberia-digital-insights&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=LiberiaDigitalInsights/liberia-digital-insights&type=Date)](https://star-history.com/#LiberiaDigitalInsights/liberia-digital-insights&Date)
 
 ---
 
