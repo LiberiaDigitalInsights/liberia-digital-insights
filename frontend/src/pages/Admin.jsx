@@ -176,7 +176,7 @@ export default function Admin() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <AdminDashboard stats={stats} />;
+        return <AdminDashboard stats={stats} setActiveTab={setActiveTab} />;
       case 'articles':
         return <AdminArticles articles={articles} canEdit={canEdit} />;
       case 'insights':
@@ -198,7 +198,7 @@ export default function Admin() {
       case 'settings':
         return <AdminSettings />;
       default:
-        return <AdminDashboard stats={stats} />;
+        return <AdminDashboard stats={stats} setActiveTab={setActiveTab} />;
     }
   };
 

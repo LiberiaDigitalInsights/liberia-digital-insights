@@ -2,8 +2,8 @@ import React from 'react';
 import { cn } from '../../lib/cn';
 import Button from './Button';
 
-export default function Modal({ open, onClose, title, children, footer, className }) {
-  if (!open) return null;
+export default function Modal({ open, isOpen, onClose, title, children, footer, className }) {
+  if (!open && !isOpen) return null;
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"

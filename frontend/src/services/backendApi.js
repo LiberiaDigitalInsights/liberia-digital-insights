@@ -5,8 +5,16 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 const handleResponse = async (response) => {
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || `HTTP error! status: ${response.status}`);
+    // Handle both error formats: {error: "message"} and {message: "message"}
+    const errorMessage = error.error || error.message || `HTTP error! status: ${response.status}`;
+    throw new Error(errorMessage);
   }
+  
+  // Handle 204 No Content responses (common for delete operations)
+  if (response.status === 204) {
+    return null;
+  }
+  
   return response.json();
 };
 
@@ -219,6 +227,13 @@ export const trainingApi = {
     return apiRequest(`/v1/training/${slug}`);
   },
 
+  async getById(id) {
+    console.log('API: Fetching training by ID:', id);
+    const result = await apiRequest(`/v1/training/${id}`);
+    console.log('API: Training response:', result);
+    return result;
+  },
+
   async create(trainingData) {
     return apiRequest('/v1/training', {
       method: 'POST',
@@ -265,6 +280,109 @@ export const newslettersApi = {
     return apiRequest(`/v1/newsletters/${id}`, {
       method: 'DELETE',
     });
+  },
+
+  // Send newsletter to recipients
+  async send(id, recipientData) {
+    return apiRequest(`/v1/newsletters/${id}/send`, {
+      method: 'POST',
+      body: JSON.stringify(recipientData),
+    });
+  },
+
+  // Get newsletter templates
+  async getTemplates() {
+    return apiRequest('/v1/newsletters/templates');
+  },
+
+  // Create custom template
+  async createTemplate(templateData) {
+    return apiRequest('/v1/newsletters/templates', {
+      method: 'POST',
+      body: JSON.stringify(templateData),
+    });
+  },
+
+  // Get subscribers
+  async getSubscribers(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return apiRequest(`/v1/newsletters/subscribers${query ? `?${query}` : ''}`);
+  },
+
+  // Add subscribers
+  async addSubscribers(subscribers) {
+    return apiRequest('/v1/newsletters/subscribers', {
+      method: 'POST',
+      body: JSON.stringify(subscribers),
+    });
+  },
+
+  // Get newsletter statistics
+  async getStats(id) {
+    return apiRequest(`/v1/newsletters/${id}/stats`);
+  },
+
+  // Get newsletter replies/conversations
+  async getReplies(newsletterId) {
+    return apiRequest(`/v1/newsletters/${newsletterId}/replies`);
+  },
+
+  // Reply to subscriber
+  async replyToSubscriber(newsletterId, replyData) {
+    return apiRequest(`/v1/newsletters/${newsletterId}/replies`, {
+      method: 'POST',
+      body: JSON.stringify(replyData),
+    });
+  },
+
+  // Preview newsletter
+  async preview(id, recipientData) {
+    return apiRequest(`/v1/newsletters/${id}/preview`, {
+      method: 'POST',
+      body: JSON.stringify(recipientData),
+    });
+  },
+
+  // Subscribe to newsletter
+  async subscribe(subscriberData) {
+    return apiRequest('/v1/newsletters/subscribe', {
+      method: 'POST',
+      body: JSON.stringify(subscriberData),
+    });
+  },
+
+  // Unsubscribe from newsletter
+  async unsubscribe(token) {
+    return apiRequest('/v1/newsletters/unsubscribe', {
+      method: 'POST',
+      body: JSON.stringify({ token }),
+    });
+  },
+
+  // Get subscribers list
+  async getSubscribersList(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return apiRequest(`/v1/newsletters/subscribers${query ? `?${query}` : ''}`);
+  },
+
+  // Delete subscriber
+  async deleteSubscriber(id) {
+    return apiRequest(`/v1/newsletters/subscribers/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Update subscriber status
+  async updateSubscriberStatus(id, status) {
+    return apiRequest(`/v1/newsletters/subscribers/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ status }),
+    });
+  },
+
+  // Get newsletter analytics
+  async getAnalytics() {
+    return apiRequest('/v1/newsletters/analytics');
   },
 };
 

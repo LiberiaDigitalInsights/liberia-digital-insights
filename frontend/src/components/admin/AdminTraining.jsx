@@ -21,6 +21,9 @@ import {
   FaClock,
   FaBook,
 } from 'react-icons/fa';
+import { useTraining } from '../../hooks/useBackendApi';
+import { backendApi } from '../../services/backendApi';
+import { useToast } from '../../context/ToastContext';
 
 const MediaPreview = ({ url, type }) => {
   if (!url) return null;
@@ -31,10 +34,19 @@ const MediaPreview = ({ url, type }) => {
         <img
           src={url}
           alt="Preview"
-          className="h-32 w-32 object-cover rounded-lg border border-gray-200"
-          onError={(e) => {
-            e.target.style.display = 'none';
-          }}
+          className="w-full h-40 object-cover rounded-lg"
+        />
+      </div>
+    );
+  }
+
+  if (type === 'video') {
+    return (
+      <div className="mt-2">
+        <video
+          src={url}
+          controls
+          className="w-full h-40 object-cover rounded-lg"
         />
       </div>
     );
@@ -44,6 +56,9 @@ const MediaPreview = ({ url, type }) => {
 };
 
 const AdminTraining = ({ canEdit }) => {
+  const { showToast } = useToast();
+  const { data: trainingData, refetch } = useTraining({});
+  const courses = trainingData?.training || [];
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterType, setFilterType] = useState('all');
@@ -51,35 +66,11 @@ const AdminTraining = ({ canEdit }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
-  const [coursesList, setCoursesList] = useState([
-    {
-      id: 1,
-      title: 'Web Development Bootcamp',
-      type: 'Training',
-      duration: '8 weeks',
-      students: 25,
-      status: 'active',
-      description: 'Full-stack web development training',
-      instructor: 'John Doe',
-      maxStudents: 30,
-      startDate: '2024-03-01',
-      endDate: '2024-04-26',
-    },
-    {
-      id: 2,
-      title: 'Digital Marketing Fundamentals',
-      type: 'Course',
-      duration: '4 weeks',
-      students: 18,
-      status: 'upcoming',
-      description: 'Introduction to digital marketing concepts',
-      instructor: 'Jane Smith',
-      maxStudents: 25,
-      startDate: '2024-04-01',
-      endDate: '2024-04-28',
-    },
-  ]);
+  const [submitting, setSubmitting] = useState(false);
+
+  
   const itemsPerPage = 10;
 
   // Form state for create/edit
@@ -95,6 +86,25 @@ const AdminTraining = ({ canEdit }) => {
     status: 'upcoming',
     coverImage: '',
   });
+
+  // Status badge helper
+  const getStatusBadge = (status) => {
+    const styles = {
+      published: 'bg-green-100 text-green-700',
+      draft: 'bg-yellow-100 text-yellow-700',
+      pending: 'bg-gray-100 text-gray-700',
+      upcoming: 'bg-blue-100 text-blue-700',
+      completed: 'bg-green-100 text-green-700',
+      cancelled: 'bg-red-100 text-red-700',
+    };
+    return (
+      <span
+        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${styles[status] || styles.draft}`}
+      >
+        {status}
+      </span>
+    );
+  };
 
   // Handle image upload and convert to base64
   const handleImageUpload = (e, fieldName = 'coverImage') => {
@@ -123,7 +133,7 @@ const AdminTraining = ({ canEdit }) => {
   };
 
   // Filter courses
-  const filteredCourses = coursesList.filter((course) => {
+  const filteredCourses = courses.filter((course) => {
     const matchesSearch =
       course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       course.instructor.toLowerCase().includes(searchTerm.toLowerCase());
@@ -138,26 +148,50 @@ const AdminTraining = ({ canEdit }) => {
   const paginatedCourses = filteredCourses.slice(startIndex, startIndex + itemsPerPage);
 
   // CRUD Operations
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!formData.title.trim()) return;
 
-    const newCourse = {
-      id: Date.now(),
-      title: formData.title,
-      description: formData.description,
-      type: formData.type,
-      duration: formData.duration,
-      instructor: formData.instructor,
-      maxStudents: parseInt(formData.maxStudents) || 0,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
-      status: formData.status,
-      students: 0,
-    };
+    setSubmitting(true);
+    try {
+      // Generate slug from title
+      const slug = formData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
-    setCoursesList([newCourse, ...coursesList]);
-    setShowCreateModal(false);
-    resetForm();
+      const newCourse = {
+        title: formData.title,
+        slug,
+        description: formData.description,
+        type: formData.type,
+        duration: formData.duration,
+        instructor: formData.instructor,
+        max_students: parseInt(formData.maxStudents) || 0,
+        start_date: formData.startDate,
+        end_date: formData.endDate,
+        status: formData.status,
+        cover_image_url: formData.coverImage || null,
+      };
+
+      console.log('Creating course:', newCourse);
+      await backendApi.training.create(newCourse);
+      await refetch();
+      
+      showToast({
+        title: 'Course Created',
+        description: 'Training course has been created successfully.',
+        variant: 'success'
+      });
+
+      setShowCreateModal(false);
+      resetForm();
+    } catch (error) {
+      console.error('Create error:', error);
+      showToast({
+        title: 'Error',
+        description: `Failed to create training course: ${error.message}`,
+        variant: 'error'
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleEdit = (course) => {
@@ -176,30 +210,51 @@ const AdminTraining = ({ canEdit }) => {
     setShowEditModal(true);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!formData.title.trim() || !selectedCourse) return;
 
-    const updatedCourses = coursesList.map((course) =>
-      course.id === selectedCourse.id
-        ? {
-            ...course,
-            title: formData.title,
-            description: formData.description,
-            type: formData.type,
-            duration: formData.duration,
-            instructor: formData.instructor,
-            maxStudents: parseInt(formData.maxStudents) || 0,
-            startDate: formData.startDate,
-            endDate: formData.endDate,
-            status: formData.status,
-          }
-        : course,
-    );
+    setSubmitting(true);
+    try {
+      // Generate slug from title for consistency
+      const slug = formData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
-    setCoursesList(updatedCourses);
-    setShowEditModal(false);
-    resetForm();
-    setSelectedCourse(null);
+      const updatedCourse = {
+        title: formData.title,
+        slug,
+        description: formData.description,
+        type: formData.type,
+        duration: formData.duration,
+        instructor: formData.instructor,
+        max_students: parseInt(formData.maxStudents) || 0,
+        start_date: formData.startDate,
+        end_date: formData.endDate,
+        status: formData.status,
+        cover_image_url: formData.coverImage || null,
+      };
+
+      console.log('Updating course:', selectedCourse.id, updatedCourse);
+      await backendApi.training.update(selectedCourse.id, updatedCourse);
+      await refetch();
+      
+      showToast({
+        title: 'Course Updated',
+        description: 'Training course has been updated successfully.',
+        variant: 'success'
+      });
+
+      setShowEditModal(false);
+      resetForm();
+      setSelectedCourse(null);
+    } catch (error) {
+      console.error('Update error:', error);
+      showToast({
+        title: 'Error',
+        description: `Failed to update training course: ${error.message}`,
+        variant: 'error'
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleDelete = (course) => {
@@ -207,12 +262,31 @@ const AdminTraining = ({ canEdit }) => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!selectedCourse) return;
 
-    setCoursesList(coursesList.filter((course) => course.id !== selectedCourse.id));
-    setShowDeleteModal(false);
-    setSelectedCourse(null);
+    setSubmitting(true);
+    try {
+      await backendApi.training.delete(selectedCourse.id);
+      await refetch();
+      
+      showToast({
+        title: 'Course Deleted',
+        description: 'Training course has been deleted successfully.',
+        variant: 'success'
+      });
+
+      setShowDeleteModal(false);
+      setSelectedCourse(null);
+    } catch {
+      showToast({
+        title: 'Error',
+        description: 'Failed to delete training course.',
+        variant: 'error'
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -384,7 +458,15 @@ const AdminTraining = ({ canEdit }) => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedCourse(course);
+                            setShowDetailsModal(true);
+                          }}
+                          title="View Course Details"
+                        >
                           <FaBook className="w-3 h-3" />
                         </Button>
                         {canEdit && (
@@ -574,7 +656,9 @@ const AdminTraining = ({ canEdit }) => {
             <Button variant="outline" onClick={() => setShowCreateModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleCreate}>Create Course</Button>
+            <Button onClick={handleCreate} disabled={submitting}>
+              {submitting ? 'Creating...' : 'Create Course'}
+            </Button>
           </div>
         </div>
       </Modal>
@@ -709,8 +793,84 @@ const AdminTraining = ({ canEdit }) => {
             <Button variant="outline" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleUpdate}>Update Course</Button>
+            <Button onClick={handleUpdate} disabled={submitting}>
+              {submitting ? 'Updating...' : 'Update Course'}
+            </Button>
           </div>
+        </div>
+      </Modal>
+
+      {/* Course Details Modal */}
+      <Modal
+        open={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        title="Course Details"
+      >
+        <div className="space-y-4">
+          {selectedCourse && (
+            <>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Title</label>
+                  <p className="text-[var(--color-text)] font-medium">{selectedCourse.title}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Description</label>
+                  <p className="text-[var(--color-text)]">{selectedCourse.description || 'N/A'}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Type</label>
+                    <p className="text-[var(--color-text)]">{selectedCourse.type || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Status</label>
+                    <div>{getStatusBadge(selectedCourse.status)}</div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Instructor</label>
+                    <p className="text-[var(--color-text)]">{selectedCourse.instructor || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Duration</label>
+                    <p className="text-[var(--color-text)]">{selectedCourse.duration || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Students</label>
+                    <p className="text-[var(--color-text)]">{selectedCourse.students || 0} / {selectedCourse.maxStudents || 0}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Start Date</label>
+                    <p className="text-[var(--color-text)]">{selectedCourse.startDate || 'N/A'}</p>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Cover Image</label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedCourse.coverImage ? (
+                      <a href={selectedCourse.coverImage} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {selectedCourse.coverImage}
+                      </a>
+                    ) : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Content Preview</label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedCourse.content ? 
+                      `${selectedCourse.content.substring(0, 200)}${selectedCourse.content.length > 200 ? '...' : ''}` 
+                      : 'N/A'
+                    }
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end pt-4">
+                <Button variant="outline" onClick={() => setShowDetailsModal(false)}>
+                  Close
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
 
@@ -724,8 +884,8 @@ const AdminTraining = ({ canEdit }) => {
             <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
-              Delete Course
+            <Button variant="destructive" onClick={confirmDelete} disabled={submitting}>
+              {submitting ? 'Deleting...' : 'Delete Course'}
             </Button>
           </div>
         </div>

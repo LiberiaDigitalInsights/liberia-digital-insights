@@ -24,7 +24,7 @@ const Events = lazy(() => import('./pages/Events'));
 const EventDetail = lazy(() => import('./pages/EventDetail'));
 const Gallery = lazy(() => import('./pages/Gallery'));
 const Advertisement = lazy(() => import('./pages/Advertisement'));
-const Signup = lazy(() => import('./pages/Signup'));
+const Subscribe = lazy(() => import('./pages/Subscribe'));
 const Talent = lazy(() => import('./pages/Talent'));
 const Category = lazy(() => import('./pages/Category'));
 const Categories = lazy(() => import('./pages/Categories'));
@@ -33,6 +33,7 @@ const TrainingCourses = lazy(() => import('./pages/TrainingCourses'));
 const TrainingDetail = lazy(() => import('./pages/TrainingDetail'));
 const CourseDetail = lazy(() => import('./pages/CourseDetail'));
 const Register = lazy(() => import('./pages/Register'));
+const Unsubscribe = lazy(() => import('./pages/Unsubscribe'));
 const Admin = lazy(() => import('./pages/Admin'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -83,11 +84,12 @@ function App() {
           <Route path="/event/:slug" element={<EventDetail />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/advertisement" element={<Advertisement />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/subscribe" element={<Subscribe />} />
           <Route path="/training-courses" element={<TrainingCourses />} />
           <Route path="/training/:id" element={<TrainingDetail />} />
           <Route path="/course/:id" element={<CourseDetail />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/talent" element={<Talent />} />
           <Route path="/category/:slug" element={<Category />} />
           <Route path="/categories" element={<Categories />} />

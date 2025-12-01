@@ -4,28 +4,64 @@ import SEO from '../components/SEO';
 import { H1, Muted } from '../components/ui/Typography';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import { mockTrainings } from '../data/mockTraining';
+import { useTrainingById } from '../hooks/useBackendApi';
 import LazyImage from '../components/LazyImage';
 
 export default function TrainingDetail() {
   const { id } = useParams();
-  const training = mockTrainings.find((t) => t.id === Number(id)) || mockTrainings[0];
+  const { data: courseData, loading, error } = useTrainingById(id);
+  
+  // Handle different API response structures
+  const training = courseData?.course || courseData?.training || courseData;
 
-  if (!training) return null;
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-12">
+        <div className="text-center">Loading training details...</div>
+      </div>
+    );
+  }
+
+  if (error || !training) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-12">
+        <div className="text-center text-red-600">
+          {error ? `Error: ${error.message}` : 'Training not found'}
+        </div>
+      </div>
+    );
+  }
+
+  // Add debug logging to see what data we're getting
+  console.log('Training data:', training);
+  console.log('Course data:', courseData);
+
+  // Map backend data to UI format
+  const mappedTraining = {
+    ...training,
+    title: training.title,
+    summary: training.description || training.summary || '',
+    date: training.startDate || training.date || 'TBD',
+    duration: training.duration || 'N/A',
+    location: training.location || 'Online',
+    modality: training.modality || (training.location === 'Online' ? 'Online' : 'In-person'),
+    image: training.coverImage || training.image || '/LDI_favicon.png',
+    registrationUrl: training.registrationUrl || '/register',
+  };
 
   return (
     <>
-      <SEO title={training.title} description={training.summary} image={training.image} />
+      <SEO title={mappedTraining.title} description={mappedTraining.summary} image={mappedTraining.image} />
       <div className="mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-12">
         <Link
-          to={`/register?type=training&id=${training.id}`}
-          aria-label={`Register for ${training.title}`}
+          to={`/register?type=training&id=${mappedTraining.id}`}
+          aria-label={`Register for ${mappedTraining.title}`}
           className="block"
         >
           <div className="mb-6 h-56 w-full overflow-hidden rounded-[var(--radius-lg)] bg-gradient-to-br from-[color-mix(in_oklab,var(--color-surface),white_6%)] to-[color-mix(in_oklab,var(--color-surface),white_14%)] md:h-72">
             <LazyImage
-              src={training.image}
-              alt={training.title}
+              src={mappedTraining.image}
+              alt={mappedTraining.title}
               className="h-full w-full object-cover"
               loading="lazy"
               fetchPriority="low"
@@ -34,9 +70,9 @@ export default function TrainingDetail() {
           </div>
         </Link>
         <header className="mb-6">
-          <H1 className="mb-2 text-3xl font-bold">{training.title}</H1>
+          <H1 className="mb-2 text-3xl font-bold">{mappedTraining.title}</H1>
           <div className="text-sm text-[var(--color-muted)]">
-            {training.date} • {training.duration} • {training.location}
+            {mappedTraining.date} • {mappedTraining.duration} • {mappedTraining.location}
           </div>
         </header>
 
@@ -45,12 +81,12 @@ export default function TrainingDetail() {
             <CardTitle>Overview</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-[var(--color-text)]">{training.summary}</p>
+            <p className="text-sm text-[var(--color-text)]">{mappedTraining.summary}</p>
           </CardContent>
         </Card>
 
         <div className="flex gap-2">
-          <Button as={Link} to={`/register?type=training&id=${training.id}`}>
+          <Button as={Link} to={`/register?type=training&id=${mappedTraining.id}`}>
             Register
           </Button>
           <Button as={Link} to="/training-courses" variant="secondary">

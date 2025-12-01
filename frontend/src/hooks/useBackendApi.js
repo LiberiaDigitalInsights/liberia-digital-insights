@@ -30,7 +30,7 @@ export const useApi = (apiFunction, dependencies = [], options = {}) => {
     if (options.immediate !== false) {
       fetchData();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 
   return {
@@ -167,7 +167,7 @@ export const useTalents = (params = {}) => {
       }
     }
   });
-  
+
   return useApi(() => backendApi.talents.list(cleanParams), [JSON.stringify(cleanParams)]);
 };
 
@@ -186,9 +186,114 @@ export const useTrainingCourse = (slug) => {
   return useApi(() => backendApi.training.getBySlug(slug), [slug], { immediate: !!slug });
 };
 
+// Hook for single training course by ID
+export const useTrainingById = (id) => {
+  return useApi(
+    () => {
+      console.log('Fetching training with ID:', id);
+      return backendApi.training.getById(id);
+    },
+    [id],
+    { immediate: !!id },
+  );
+};
+
 // Hook for newsletters
 export const useNewsletters = (params = {}) => {
-  return useApi(() => backendApi.newsletters.list(params), [JSON.stringify(params)]);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const paramsString = JSON.stringify(params);
+
+  const refetch = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await backendApi.newsletters.list(params);
+      setData(result);
+      return result;
+    } catch (err) {
+      setError(err.message || 'Failed to fetch newsletters');
+      // Don't throw error, just set error state
+    } finally {
+      setLoading(false);
+    }
+  }, [paramsString, params]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  return { data, loading, error, refetch };
+};
+
+// Hook for newsletter templates
+export const useNewsletterTemplates = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await backendApi.newsletters.getTemplates();
+        setData(result);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch templates');
+        // Don't throw error, just set error state
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTemplates();
+  }, []);
+
+  return { data, loading, error };
+};
+
+// Hook for newsletter subscribers
+export const useNewsletterSubscribers = (params = {}) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const paramsString = JSON.stringify(params);
+
+  useEffect(() => {
+    const fetchSubscribers = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await backendApi.newsletters.getSubscribers(params);
+        setData(result);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch subscribers');
+        // Don't throw error, just set error state
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubscribers();
+  }, [paramsString, params]);
+
+  return { data, loading, error };
+};
+
+// Hook for newsletter statistics
+export const useNewsletterStats = (newsletterId) => {
+  return useApi(() => backendApi.newsletters.getStats(newsletterId), [newsletterId], {
+    immediate: !!newsletterId,
+  });
+};
+
+// Hook for newsletter replies
+export const useNewsletterReplies = (newsletterId) => {
+  return useApi(() => backendApi.newsletters.getReplies(newsletterId), [newsletterId], {
+    immediate: !!newsletterId,
+  });
 };
 
 // Hook for categories
@@ -223,18 +328,51 @@ export const useFileUpload = () => {
   };
 };
 
+// Hook for newsletter subscribers list
+export const useNewsletterSubscribersList = (params = {}) => {
+  const paramsString = JSON.stringify(params);
+  return useApi(() => backendApi.newsletters.getSubscribersList(params), [paramsString]);
+};
+
+// Hook for newsletter subscription
+export const useNewsletterSubscription = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const subscribe = useCallback(async (subscriberData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await backendApi.newsletters.subscribe(subscriberData);
+      return result;
+    } catch (err) {
+      setError(err.message || 'Failed to subscribe to newsletter');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return {
+    subscribe,
+    loading,
+    error,
+  };
+};
+
+// Hook for newsletter analytics
+export const useNewsletterAnalytics = () => {
+  return useApi(() => backendApi.newsletters.getAnalytics(), [], { immediate: true });
+};
+
 // Hook for health check
 export const useHealthCheck = () => {
   return useApi(() => backendApi.health.check(), [], { immediate: true });
 };
 
 export default {
-  useApi,
-  useAuth,
   useArticles,
   useArticle,
-  useInsights,
-  useInsight,
   usePodcasts,
   usePodcast,
   useEvents,
@@ -245,7 +383,15 @@ export default {
   useTalent,
   useTraining,
   useTrainingCourse,
+  useTrainingById,
   useNewsletters,
+  useNewsletterTemplates,
+  useNewsletterSubscribers,
+  useNewsletterStats,
+  useNewsletterReplies,
+  useNewsletterSubscription,
+  useNewsletterSubscribersList,
+  useNewsletterAnalytics,
   useCategories,
   useFileUpload,
   useHealthCheck,

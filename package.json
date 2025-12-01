@@ -2,6 +2,7 @@
   "name": "liberia-digital-insights",
   "version": "1.0.0",
   "description": "Liberia Digital Insights platform",
+  "type": "module",
   "main": "dev-script/start-dev.js",
   "scripts": {
     "start": "node dev-script/start-dev.js",

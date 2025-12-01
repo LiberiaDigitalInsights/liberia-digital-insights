@@ -21,16 +21,23 @@ import {
   FaTimes,
   FaMicrophone,
 } from 'react-icons/fa';
+import { usePodcasts } from '../../hooks/useBackendApi';
+import { backendApi } from '../../services/backendApi';
+import { useToast } from '../../context/ToastContext';
 
-const AdminPodcasts = ({ podcasts, canEdit }) => {
+const AdminPodcasts = ({ canEdit }) => {
+  const { showToast } = useToast();
+  const { data: podcastsData, _loading, _error, refetch } = usePodcasts({});
+  const podcasts = podcastsData?.podcasts || [];
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedPodcast, setSelectedPodcast] = useState(null);
-  const [podcastsList, setPodcastsList] = useState(podcasts);
+  const [submitting, setSubmitting] = useState(false);
   const itemsPerPage = 10;
 
   // Form state for create/edit
@@ -78,7 +85,7 @@ const AdminPodcasts = ({ podcasts, canEdit }) => {
   };
 
   // Filter podcasts
-  const filteredPodcasts = podcastsList.filter((podcast) => {
+  const filteredPodcasts = podcasts.filter((podcast) => {
     const matchesSearch =
       podcast.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       podcast.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -92,32 +99,55 @@ const AdminPodcasts = ({ podcasts, canEdit }) => {
   const paginatedPodcasts = filteredPodcasts.slice(startIndex, startIndex + itemsPerPage);
 
   // CRUD Operations
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!formData.title.trim()) return;
 
-    const newPodcast = {
-      id: Date.now(),
-      title: formData.title,
-      description: formData.description,
-      duration: formData.duration,
-      guest: formData.guest,
-      category: formData.category,
-      status: formData.status,
-      audioUrl: formData.audioUrl,
-      transcript: formData.transcript,
-      videoUrl: formData.videoUrl,
-      youtubeUrl: formData.youtubeUrl,
-      facebookUrl: formData.facebookUrl,
-      spotifyUrl: formData.spotifyUrl,
-      applePodcastsUrl: formData.applePodcastsUrl,
-      coverImage: formData.coverImage,
-      date: new Date().toISOString().split('T')[0],
-      plays: 0,
-    };
+    setSubmitting(true);
+    try {
+      // Generate slug from title
+      const slug = formData.title
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
 
-    setPodcastsList([newPodcast, ...podcastsList]);
-    setShowCreateModal(false);
-    resetForm();
+      const newPodcast = {
+        title: formData.title,
+        slug,
+        description: formData.description,
+        duration: formData.duration,
+        guest: formData.guest,
+        category: formData.category,
+        status: formData.status,
+        audio_url: formData.audioUrl,
+        transcript: formData.transcript,
+        video_url: formData.videoUrl,
+        youtube_url: formData.youtubeUrl,
+        facebook_url: formData.facebookUrl,
+        spotify_url: formData.spotifyUrl,
+        apple_podcasts_url: formData.applePodcastsUrl,
+        cover_image: formData.coverImage,
+      };
+
+      await backendApi.podcasts.create(newPodcast);
+      await refetch();
+
+      showToast({
+        title: 'Podcast Created',
+        description: 'Podcast has been created successfully.',
+        variant: 'success',
+      });
+
+      setShowCreateModal(false);
+      resetForm();
+    } catch {
+      showToast({
+        title: 'Error',
+        description: 'Failed to create podcast.',
+        variant: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleEdit = (podcast) => {
@@ -141,35 +171,51 @@ const AdminPodcasts = ({ podcasts, canEdit }) => {
     setShowEditModal(true);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!formData.title.trim() || !selectedPodcast) return;
 
-    const updatedPodcasts = podcastsList.map((podcast) =>
-      podcast.id === selectedPodcast.id
-        ? {
-            ...podcast,
-            title: formData.title,
-            description: formData.description,
-            duration: formData.duration,
-            guest: formData.guest,
-            category: formData.category,
-            status: formData.status,
-            audioUrl: formData.audioUrl,
-            transcript: formData.transcript,
-            videoUrl: formData.videoUrl,
-            youtubeUrl: formData.youtubeUrl,
-            facebookUrl: formData.facebookUrl,
-            spotifyUrl: formData.spotifyUrl,
-            applePodcastsUrl: formData.applePodcastsUrl,
-            coverImage: formData.coverImage,
-          }
-        : podcast,
-    );
+    setSubmitting(true);
+    try {
+      const updatedPodcast = {
+        title: formData.title,
+        description: formData.description,
+        duration: formData.duration,
+        guest: formData.guest,
+        category: formData.category,
+        status: formData.status,
+        audio_url: formData.audioUrl,
+        transcript: formData.transcript,
+        video_url: formData.videoUrl,
+        youtube_url: formData.youtubeUrl,
+        facebook_url: formData.facebookUrl,
+        spotify_url: formData.spotifyUrl,
+        apple_podcasts_url: formData.applePodcastsUrl,
+        cover_image: formData.coverImage,
+      };
 
-    setPodcastsList(updatedPodcasts);
-    setShowEditModal(false);
-    resetForm();
-    setSelectedPodcast(null);
+      console.log('Updating podcast:', selectedPodcast.id, updatedPodcast);
+      await backendApi.podcasts.update(selectedPodcast.id, updatedPodcast);
+      await refetch();
+
+      showToast({
+        title: 'Podcast Updated',
+        description: 'Podcast has been updated successfully.',
+        variant: 'success',
+      });
+
+      setShowEditModal(false);
+      resetForm();
+      setSelectedPodcast(null);
+    } catch (error) {
+      console.error('Update error:', error);
+      showToast({
+        title: 'Error',
+        description: `Failed to update podcast: ${error.message}`,
+        variant: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleDelete = (podcast) => {
@@ -177,12 +223,31 @@ const AdminPodcasts = ({ podcasts, canEdit }) => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!selectedPodcast) return;
 
-    setPodcastsList(podcastsList.filter((podcast) => podcast.id !== selectedPodcast.id));
-    setShowDeleteModal(false);
-    setSelectedPodcast(null);
+    setSubmitting(true);
+    try {
+      await backendApi.podcasts.delete(selectedPodcast.id);
+      await refetch();
+
+      showToast({
+        title: 'Podcast Deleted',
+        description: 'Podcast has been deleted successfully.',
+        variant: 'success',
+      });
+
+      setShowDeleteModal(false);
+      setSelectedPodcast(null);
+    } catch {
+      showToast({
+        title: 'Error',
+        description: 'Failed to delete podcast.',
+        variant: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -388,7 +453,15 @@ const AdminPodcasts = ({ podcasts, canEdit }) => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedPodcast(podcast);
+                            setShowDetailsModal(true);
+                          }}
+                          title="View Podcast Details"
+                        >
                           <FaPlay className="w-3 h-3" />
                         </Button>
                         {canEdit && (
@@ -643,7 +716,9 @@ const AdminPodcasts = ({ podcasts, canEdit }) => {
             <Button variant="outline" onClick={() => setShowCreateModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleCreate}>Create Episode</Button>
+            <Button onClick={handleCreate} disabled={submitting}>
+              {submitting ? 'Creating...' : 'Create Episode'}
+            </Button>
           </div>
         </div>
       </Modal>
@@ -847,8 +922,81 @@ const AdminPodcasts = ({ podcasts, canEdit }) => {
             <Button variant="outline" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleUpdate}>Update Episode</Button>
+            <Button onClick={handleUpdate} disabled={submitting}>
+              {submitting ? 'Updating...' : 'Update Episode'}
+            </Button>
           </div>
+        </div>
+      </Modal>
+
+      {/* Podcast Details Modal */}
+      <Modal
+        open={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        title="Podcast Episode Details"
+      >
+        <div className="space-y-4">
+          {selectedPodcast && (
+            <>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Title</label>
+                  <p className="text-[var(--color-text)] font-medium">{selectedPodcast.title}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Description</label>
+                  <p className="text-[var(--color-text)]">{selectedPodcast.description || 'N/A'}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Duration</label>
+                    <p className="text-[var(--color-text)]">{selectedPodcast.duration || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Guest</label>
+                    <p className="text-[var(--color-text)]">{selectedPodcast.guest || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Status</label>
+                    <div><StatusBadge status={selectedPodcast.status} /></div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Plays</label>
+                    <p className="text-[var(--color-text)]">{selectedPodcast.plays || 0}</p>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Cover Image</label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedPodcast.coverImage ? (
+                      <a href={selectedPodcast.coverImage} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {selectedPodcast.coverImage}
+                      </a>
+                    ) : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Audio File</label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedPodcast.audioFile ? (
+                      <a href={selectedPodcast.audioFile} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {selectedPodcast.audioFile}
+                      </a>
+                    ) : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Published Date</label>
+                  <p className="text-[var(--color-text)]">{selectedPodcast.date || 'N/A'}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end pt-4">
+                <Button variant="outline" onClick={() => setShowDetailsModal(false)}>
+                  Close
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
 
@@ -867,8 +1015,8 @@ const AdminPodcasts = ({ podcasts, canEdit }) => {
             <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
-              Delete Episode
+            <Button variant="destructive" onClick={confirmDelete} disabled={submitting}>
+              {submitting ? 'Deleting...' : 'Delete Episode'}
             </Button>
           </div>
         </div>

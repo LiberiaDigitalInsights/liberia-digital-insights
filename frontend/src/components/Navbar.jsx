@@ -79,15 +79,17 @@ export default function Navbar() {
       {/* Top utility strip with date + social */}
       <div className="hidden bg-[var(--color-nav-top)] text-xs md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5">
-          <div className="text-white/90">Advertisement</div>
-          <div className="flex items-center gap-4 text-white">
+          <div className="text-white/90">
             <span className="hidden md:inline">
               {new Date().toLocaleDateString(undefined, {
                 weekday: 'long',
                 month: 'short',
                 day: 'numeric',
+                year: 'numeric',
               })}
             </span>
+          </div>
+          <div className="flex items-center gap-4 text-white">
             <a
               href="#"
               aria-label="Facebook"
@@ -116,7 +118,7 @@ export default function Navbar() {
       </div>
 
       {/* Mid header with logo + banner ad */}
-      <div className="bg-[var(--color-nav-mid)]/60 backdrop-blur supports-[backdrop-filter]:bg-[var(--color-nav-mid)]/50">
+      <div className="bg-brand-500">
         <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr] items-center gap-6 px-4 py-4">
           <Logo />
           <div className="hidden justify-end md:flex">
@@ -145,7 +147,7 @@ export default function Navbar() {
               }
               aria-current={({ isActive }) => (isActive ? 'page' : undefined)}
             >
-              News
+              Home
             </NavLink>
 
             <div className="relative group" onMouseLeave={() => setOpenMenu(null)}>
@@ -300,7 +302,7 @@ export default function Navbar() {
                   { to: '/about', label: 'About Us' },
                   { to: '/advertisement', label: 'Advertisement' },
                   { to: '/contact', label: 'Contact Us' },
-                  { to: '/signup', label: 'Sign Up' },
+                  { to: '/subscribe', label: 'Subscribe' },
                 ].map((item) => (
                   <Link
                     key={item.to}

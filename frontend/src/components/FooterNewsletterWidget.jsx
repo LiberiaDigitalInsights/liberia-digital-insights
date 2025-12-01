@@ -55,13 +55,33 @@ export default function FooterNewsletterWidget() {
       });
       setStatus('success');
       setForm({ name: '', email: '', company: '', org: '', position: '' });
-    } catch {
+    } catch (err) {
+      // Handle specific error cases
+      let errorMessage = 'Failed to subscribe. Please try again.';
+      let errorTitle = 'Error';
+      
+      if (err.message?.includes('Email already subscribed')) {
+        errorTitle = 'Already Subscribed';
+        errorMessage = 'This email is already subscribed to our newsletter.';
+        setStatus('error');
+      } else if (err.message?.includes('Invalid email format')) {
+        errorTitle = 'Invalid Email';
+        errorMessage = 'Please enter a valid email address.';
+        setStatus('error');
+      } else if (err.message?.includes('Name and email are required')) {
+        errorTitle = 'Missing Information';
+        errorMessage = 'Please fill in all required fields.';
+        setStatus('error');
+      } else if (err.message) {
+        errorMessage = err.message;
+        setStatus('error');
+      }
+      
       showToast({
-        title: 'Error',
-        description: 'Failed to subscribe. Please try again.',
+        title: errorTitle,
+        description: errorMessage,
         variant: 'danger',
       });
-      setStatus('error');
     } finally {
       setSubmitting(false);
     }

@@ -42,8 +42,8 @@ const Home = () => {
               <Button as="a" href="/insights" variant="solid">
                 Explore Insights
               </Button>
-              <Button as="a" href="/signup" variant="secondary">
-                Subscribe
+              <Button as="a" href="/subscribe" variant="secondary">
+                Subscribe to Newsletter
               </Button>
             </div>
           </div>
@@ -67,18 +67,16 @@ const Home = () => {
                     readTime={Math.ceil(featured.content.length / 1000) + ' min read'}
                     to={`/article/${featured.slug}`}
                   />
+                ) : articlesLoading ? (
+                  <div className="animate-pulse">
+                    <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  </div>
                 ) : (
-                  articlesLoading ? (
-                    <div className="animate-pulse">
-                      <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
-                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      No featured articles available
-                    </div>
-                  )
+                  <div className="text-center py-8 text-gray-500">
+                    No featured articles available
+                  </div>
                 )}
               </div>
             </section>

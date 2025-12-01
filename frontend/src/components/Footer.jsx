@@ -169,6 +169,17 @@ const Footer = () => {
                     Gallery
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to="/subscribe"
+                    className="group flex items-center gap-2 text-sm text-[var(--color-muted)] transition-all duration-200 hover:text-brand-500 hover:translate-x-1"
+                  >
+                    <span className="opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                      →
+                    </span>
+                    Subscribe
+                  </Link>
+                </li>
               </ul>
             </nav>
 

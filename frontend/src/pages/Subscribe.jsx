@@ -7,16 +7,18 @@ import { Field, Label, HelperText, ErrorText } from '../components/ui/Form';
 import SEO from '../components/SEO';
 import { useToast } from '../context/ToastContext';
 import { FaEnvelope, FaUser, FaCheckCircle } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { useNewsletterSubscription } from '../hooks/useBackendApi';
 
-export default function Signup() {
+export default function Subscribe() {
   const { showToast } = useToast();
+  const { subscribe, loading } = useNewsletterSubscription();
   const [formData, setFormData] = React.useState({
     name: '',
     email: '',
     interests: [],
   });
   const [errors, setErrors] = React.useState({});
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
   const interests = [
@@ -57,30 +59,58 @@ export default function Signup() {
       return;
     }
 
-    setIsSubmitting(true);
+    try {
+      // Prepare subscription data (interests are not sent to backend yet)
+      const subscriptionData = {
+        name: formData.name,
+        email: formData.email,
+        interests: formData.interests, // This will be stored but not used by current backend
+      };
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+      await subscribe(subscriptionData);
+      
+      setIsSuccess(true);
 
-    setIsSubmitting(false);
-    setIsSuccess(true);
-
-    showToast({
-      title: 'Successfully Subscribed!',
-      description: 'Thank you for subscribing. Check your email for confirmation.',
-      variant: 'success',
-    });
-
-    // Reset form after showing success
-    setTimeout(() => {
-      setFormData({
-        name: '',
-        email: '',
-        interests: [],
+      showToast({
+        title: 'Successfully Subscribed!',
+        description: 'Thank you for subscribing. Check your email for confirmation.',
+        variant: 'success',
       });
-      setErrors({});
-      setIsSuccess(false);
-    }, 3000);
+
+      // Reset form after showing success
+      setTimeout(() => {
+        setFormData({
+          name: '',
+          email: '',
+          interests: [],
+        });
+        setErrors({});
+        setIsSuccess(false);
+      }, 3000);
+    } catch (err) {
+      // Handle specific error cases
+      let errorMessage = 'Failed to subscribe. Please try again.';
+      let errorTitle = 'Error';
+      
+      if (err.message?.includes('Email already subscribed')) {
+        errorTitle = 'Already Subscribed';
+        errorMessage = 'This email is already subscribed to our newsletter.';
+      } else if (err.message?.includes('Invalid email format')) {
+        errorTitle = 'Invalid Email';
+        errorMessage = 'Please enter a valid email address.';
+      } else if (err.message?.includes('Name and email are required')) {
+        errorTitle = 'Missing Information';
+        errorMessage = 'Please fill in all required fields.';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      showToast({
+        title: errorTitle,
+        description: errorMessage,
+        variant: 'danger',
+      });
+    }
   };
 
   const handleChange = (e) => {
@@ -240,13 +270,20 @@ export default function Signup() {
                   </div>
                 </Field>
 
-                <Button type="submit" loading={isSubmitting} className="w-full">
+                <Button type="submit" loading={loading} className="w-full">
                   Subscribe Now
                 </Button>
 
                 <Muted className="text-center text-xs">
-                  By signing up, you agree to our terms and privacy policy. We respect your inbox
-                  and will never share your information.
+                  By signing up, you agree to our{' '}
+                  <Link to="/terms" className="text-brand-500 hover:underline">
+                    terms
+                  </Link>{' '}
+                  and{' '}
+                  <Link to="/privacy" className="text-brand-500 hover:underline">
+                    privacy policy
+                  </Link>
+                  . We respect your inbox and will never share your information.
                 </Muted>
               </form>
             </Card>

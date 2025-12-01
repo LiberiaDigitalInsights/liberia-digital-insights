@@ -40,6 +40,9 @@ export default function RichTextEditor({
       TextStyle,
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
+        // Remove default extensions that we're adding separately
+        link: false,
+        underline: false,
       }),
       Underline,
       Link.configure({
@@ -66,7 +69,9 @@ export default function RichTextEditor({
     content: value || '',
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
-      onChange({ target: { value: html } });
+      if (typeof onChange === 'function') {
+        onChange(html);
+      }
     },
     editorProps: {
       attributes: {

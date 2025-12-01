@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -12,17 +12,38 @@ import {
   Textarea,
 } from '../ui';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaSearch, FaTimes } from 'react-icons/fa';
+import { useArticles } from '../../hooks/useBackendApi';
+import { backendApi } from '../../services/backendApi';
+import { useToast } from '../../context/ToastContext';
 
-const AdminArticles = ({ articles, canEdit }) => {
+const AdminArticles = ({ canEdit }) => {
+  const { showToast } = useToast();
+  const { data: articlesData, loading, refetch } = useArticles({});
+  const articles = articlesData?.articles || [];
+  const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
-  const [articlesList, setArticlesList] = useState(articles);
+  const [submitting, setSubmitting] = useState(false);
   const itemsPerPage = 10;
+
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await backendApi.categories.list();
+        setCategories(response.data || []);
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // Form state for create/edit
   const [formData, setFormData] = useState({
@@ -31,6 +52,7 @@ const AdminArticles = ({ articles, canEdit }) => {
     content: '',
     category: '',
     status: 'draft',
+    author: '',
     tags: '',
     coverImage: '',
   });
@@ -62,7 +84,7 @@ const AdminArticles = ({ articles, canEdit }) => {
   };
 
   // Filter articles
-  const filteredArticles = articlesList.filter((article) => {
+  const filteredArticles = articles.filter((article) => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || article.status === filterStatus;
     return matchesSearch && matchesStatus;
@@ -74,29 +96,56 @@ const AdminArticles = ({ articles, canEdit }) => {
   const paginatedArticles = filteredArticles.slice(startIndex, startIndex + itemsPerPage);
 
   // CRUD Operations
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!formData.title.trim()) return;
 
-    const newArticle = {
-      id: Date.now(),
-      title: formData.title,
-      excerpt: formData.excerpt,
-      content: formData.content,
-      category: formData.category,
-      status: formData.status,
-      tags: formData.tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter((tag) => tag),
-      coverImage: formData.coverImage,
-      date: new Date().toISOString().split('T')[0],
-      author: 'Current User',
-      image: formData.coverImage || '/api/placeholder/400/250',
-    };
+    setSubmitting(true);
+    try {
+      // Generate slug from title
+      const slug = formData.title
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
 
-    setArticlesList([newArticle, ...articlesList]);
-    setShowCreateModal(false);
-    resetForm();
+      const newArticle = {
+        title: formData.title,
+        slug,
+        excerpt: formData.excerpt,
+        content: formData.content,
+        category_id: formData.category,
+        status: formData.status,
+        tags: formData.tags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter((tag) => tag),
+      };
+
+      if (formData.coverImage) {
+        newArticle.cover_image_url = formData.coverImage;
+      }
+
+      console.log('Creating article data:', JSON.stringify(newArticle, null, 2));
+      await backendApi.articles.create(newArticle);
+      await refetch();
+
+      showToast({
+        title: 'Article Created',
+        description: 'Article has been created successfully.',
+        variant: 'success',
+      });
+
+      setShowCreateModal(false);
+      resetForm();
+    } catch (error) {
+      console.error('Create error:', error);
+      showToast({
+        title: 'Error',
+        description: `Failed to create article: ${error.message}`,
+        variant: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleEdit = (article) => {
@@ -105,40 +154,58 @@ const AdminArticles = ({ articles, canEdit }) => {
       title: article.title,
       excerpt: article.excerpt || '',
       content: article.content || '',
-      category: article.category || '',
+      category: article.category_id || '', // Use the actual category_id
       status: article.status,
       tags: article.tags ? article.tags.join(', ') : '',
-      coverImage: article.coverImage || article.image || '',
+      coverImage: article.cover_image_url || article.coverImage || article.image || '',
     });
     setShowEditModal(true);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!formData.title.trim() || !selectedArticle) return;
 
-    const updatedArticles = articlesList.map((article) =>
-      article.id === selectedArticle.id
-        ? {
-            ...article,
-            title: formData.title,
-            excerpt: formData.excerpt,
-            content: formData.content,
-            category: formData.category,
-            status: formData.status,
-            tags: formData.tags
-              .split(',')
-              .map((tag) => tag.trim())
-              .filter((tag) => tag),
-            coverImage: formData.coverImage,
-            image: formData.coverImage || article.image,
-          }
-        : article,
-    );
+    setSubmitting(true);
+    try {
+      const updatedArticle = {
+        title: formData.title,
+        excerpt: formData.excerpt,
+        content: formData.content,
+        category_id: formData.category,
+        status: formData.status,
+        tags: formData.tags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter((tag) => tag),
+      };
 
-    setArticlesList(updatedArticles);
-    setShowEditModal(false);
-    resetForm();
-    setSelectedArticle(null);
+      if (formData.coverImage) {
+        updatedArticle.cover_image_url = formData.coverImage;
+      }
+
+      console.log('Updating article:', selectedArticle.id, updatedArticle);
+      await backendApi.articles.update(selectedArticle.id, updatedArticle);
+      await refetch();
+
+      showToast({
+        title: 'Article Updated',
+        description: 'Article has been updated successfully.',
+        variant: 'success',
+      });
+
+      setShowEditModal(false);
+      resetForm();
+      setSelectedArticle(null);
+    } catch (error) {
+      console.error('Update error:', error);
+      showToast({
+        title: 'Error',
+        description: `Failed to update article: ${error.message}`,
+        variant: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleDelete = (article) => {
@@ -146,12 +213,31 @@ const AdminArticles = ({ articles, canEdit }) => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!selectedArticle) return;
 
-    setArticlesList(articlesList.filter((article) => article.id !== selectedArticle.id));
-    setShowDeleteModal(false);
-    setSelectedArticle(null);
+    setSubmitting(true);
+    try {
+      await backendApi.articles.delete(selectedArticle.id);
+      await refetch();
+
+      showToast({
+        title: 'Article Deleted',
+        description: 'Article has been deleted successfully.',
+        variant: 'success',
+      });
+
+      setShowDeleteModal(false);
+      setSelectedArticle(null);
+    } catch {
+      showToast({
+        title: 'Error',
+        description: 'Failed to delete article.',
+        variant: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -267,72 +353,90 @@ const AdminArticles = ({ articles, canEdit }) => {
       {/* Articles Table */}
       <Card>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-[var(--color-border)]">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-[var(--color-muted)]">
-                    Title
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-[var(--color-muted)]">
-                    Category
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-[var(--color-muted)]">
-                    Status
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-[var(--color-muted)]">
-                    Date
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-[var(--color-muted)]">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedArticles.map((article) => (
-                  <tr
-                    key={article.id}
-                    className="border-b border-[var(--color-border)] hover:bg-[var(--color-surface)]"
-                  >
-                    <td className="py-3 px-4">
-                      <div>
-                        <p className="font-medium text-[var(--color-text)]">{article.title}</p>
-                        <p className="text-sm text-[var(--color-muted)]">{article.excerpt}</p>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="text-sm text-[var(--color-text)]">{article.category}</span>
-                    </td>
-                    <td className="py-3 px-4">{getStatusBadge(article.status)}</td>
-                    <td className="py-3 px-4">
-                      <span className="text-sm text-[var(--color-muted)]">{article.date}</span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <FaEye className="w-3 h-3" />
-                        </Button>
-                        {canEdit && (
-                          <>
-                            <Button variant="outline" size="sm" onClick={() => handleEdit(article)}>
-                              <FaEdit className="w-3 h-3" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDelete(article)}
-                            >
-                              <FaTrash className="w-3 h-3" />
-                            </Button>
-                          </>
-                        )}
-                      </div>
-                    </td>
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="animate-pulse">Loading articles...</div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-[var(--color-border)]">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-[var(--color-muted)]">
+                      Title
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-[var(--color-muted)]">
+                      Category
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-[var(--color-muted)]">
+                      Status
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-[var(--color-muted)]">
+                      Date
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-[var(--color-muted)]">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {paginatedArticles.map((article) => (
+                    <tr
+                      key={article.id}
+                      className="border-b border-[var(--color-border)] hover:bg-[var(--color-surface)]"
+                    >
+                      <td className="py-3 px-4">
+                        <div>
+                          <p className="font-medium text-[var(--color-text)]">{article.title}</p>
+                          <p className="text-sm text-[var(--color-muted)]">{article.excerpt}</p>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="text-sm text-[var(--color-text)]">{article.category}</span>
+                      </td>
+                      <td className="py-3 px-4">{getStatusBadge(article.status)}</td>
+                      <td className="py-3 px-4">
+                        <span className="text-sm text-[var(--color-muted)]">{article.date}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedArticle(article);
+                              setShowDetailsModal(true);
+                            }}
+                            title="View Article Details"
+                          >
+                            <FaEye className="w-3 h-3" />
+                          </Button>
+                          {canEdit && (
+                            <>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleEdit(article)}
+                              >
+                                <FaEdit className="w-3 h-3" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDelete(article)}
+                              >
+                                <FaTrash className="w-3 h-3" />
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -393,6 +497,16 @@ const AdminArticles = ({ articles, canEdit }) => {
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Author
+            </label>
+            <Input
+              value={formData.author}
+              onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+              placeholder="Author name"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
               Category
             </label>
             <Select
@@ -400,10 +514,11 @@ const AdminArticles = ({ articles, canEdit }) => {
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
             >
               <option value="">Select category</option>
-              <option value="Technology">Technology</option>
-              <option value="Business">Business</option>
-              <option value="Innovation">Innovation</option>
-              <option value="Leadership">Leadership</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
             </Select>
           </div>
           <div>
@@ -464,7 +579,9 @@ const AdminArticles = ({ articles, canEdit }) => {
             <Button variant="outline" onClick={() => setShowCreateModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleCreate}>Create Article</Button>
+            <Button onClick={handleCreate} disabled={submitting}>
+              {submitting ? 'Creating...' : 'Create Article'}
+            </Button>
           </div>
         </div>
       </Modal>
@@ -489,10 +606,11 @@ const AdminArticles = ({ articles, canEdit }) => {
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
             >
               <option value="">Select category</option>
-              <option value="Technology">Technology</option>
-              <option value="Business">Business</option>
-              <option value="Innovation">Innovation</option>
-              <option value="Digital Transformation">Digital Transformation</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
             </Select>
           </div>
           <div>
@@ -504,6 +622,16 @@ const AdminArticles = ({ articles, canEdit }) => {
               onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
               placeholder="Brief description of the article"
               rows={3}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Author
+            </label>
+            <Input
+              value={formData.author}
+              onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+              placeholder="Author name"
             />
           </div>
           <div>
@@ -566,8 +694,76 @@ const AdminArticles = ({ articles, canEdit }) => {
             <Button variant="outline" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleUpdate}>Update Article</Button>
+            <Button onClick={handleUpdate} disabled={submitting}>
+              {submitting ? 'Updating...' : 'Update Article'}
+            </Button>
           </div>
+        </div>
+      </Modal>
+
+      {/* Article Details Modal */}
+      <Modal
+        open={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        title="Article Details"
+      >
+        <div className="space-y-4">
+          {selectedArticle && (
+            <>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Title</label>
+                  <p className="text-[var(--color-text)] font-medium">{selectedArticle.title}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Excerpt</label>
+                  <p className="text-[var(--color-text)]">{selectedArticle.excerpt || 'N/A'}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Category</label>
+                    <p className="text-[var(--color-text)]">{selectedArticle.category || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Status</label>
+                    <div>{getStatusBadge(selectedArticle.status)}</div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Author</label>
+                    <p className="text-[var(--color-text)]">{selectedArticle.author || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Date</label>
+                    <p className="text-[var(--color-text)]">{selectedArticle.date || 'N/A'}</p>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Cover Image</label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedArticle.coverImage ? (
+                      <a href={selectedArticle.coverImage} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {selectedArticle.coverImage}
+                      </a>
+                    ) : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Content Preview</label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedArticle.content ? 
+                      `${selectedArticle.content.substring(0, 200)}${selectedArticle.content.length > 200 ? '...' : ''}` 
+                      : 'N/A'
+                    }
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end pt-4">
+                <Button variant="outline" onClick={() => setShowDetailsModal(false)}>
+                  Close
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
 
@@ -586,8 +782,8 @@ const AdminArticles = ({ articles, canEdit }) => {
             <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
-              Delete Article
+            <Button variant="destructive" onClick={confirmDelete} disabled={submitting}>
+              {submitting ? 'Deleting...' : 'Delete Article'}
             </Button>
           </div>
         </div>

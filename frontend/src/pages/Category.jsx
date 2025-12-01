@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { H1, Muted } from '../components/ui/Typography';
 import ArticleCard from '../components/articles/ArticleCard';
 import PodcastCard from '../components/podcasts/PodcastCard';
@@ -161,11 +161,11 @@ export default function Category() {
 
         {/* Breadcrumb */}
         <nav className="mb-6 text-sm text-[var(--color-muted)]">
-          <a href="/" className="hover:text-[var(--color-text)]">
+          <Link to="/" className="hover:text-[var(--color-text)]">
             Home
-          </a>{' '}
+          </Link>{' '}
           <span className="mx-2">/</span>
-          <span className="text-[var(--color-text)]">{matchedCategory}</span>
+          <span className="text-[var(--color-text)]">{categoryName}</span>
         </nav>
       </div>
     </>

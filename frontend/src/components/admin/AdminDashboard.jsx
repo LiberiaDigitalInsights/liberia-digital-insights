@@ -1,8 +1,21 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, Button } from '../ui';
-import { FaEye, FaUsers, FaNewspaper, FaMicrophone, FaCalendar } from 'react-icons/fa';
+import { Card, CardContent, CardHeader, CardTitle, Button, P } from '../ui';
+import {
+  FaEye,
+  FaUsers,
+  FaNewspaper,
+  FaMicrophone,
+  FaCalendar,
+  FaBullhorn,
+  FaLightbulb,
+  FaGraduationCap,
+  FaEnvelope,
+  FaChartBar,
+  FaCog,
+} from 'react-icons/fa';
 
-const AdminDashboard = ({ stats }) => {
+const AdminDashboard = ({ stats, setActiveTab }) => {
+
   const statCards = [
     {
       title: 'Total Articles',
@@ -117,18 +130,62 @@ const AdminDashboard = ({ stats }) => {
           <CardTitle>Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors">
-              <FaNewspaper className="w-6 h-6 text-brand-500 mb-2" />
-              <p className="text-sm font-medium text-[var(--color-text)]">Create Article</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <button 
+              onClick={() => setActiveTab('articles')}
+              className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors cursor-pointer text-center"
+            >
+              <FaNewspaper className="w-6 h-6 text-brand-500 mb-2 mx-auto" />
+              <p className="text-sm font-medium text-[var(--color-text)]">Articles</p>
             </button>
-            <button className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors">
-              <FaMicrophone className="w-6 h-6 text-brand-500 mb-2" />
-              <p className="text-sm font-medium text-[var(--color-text)]">Upload Podcast</p>
+            <button 
+              onClick={() => setActiveTab('podcasts')}
+              className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors cursor-pointer text-center"
+            >
+              <FaMicrophone className="w-6 h-6 text-brand-500 mb-2 mx-auto" />
+              <p className="text-sm font-medium text-[var(--color-text)]">Podcasts</p>
             </button>
-            <button className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors">
-              <FaCalendar className="w-6 h-6 text-brand-500 mb-2" />
-              <p className="text-sm font-medium text-[var(--color-text)]">Create Event</p>
+            <button 
+              onClick={() => setActiveTab('events')}
+              className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors cursor-pointer text-center"
+            >
+              <FaCalendar className="w-6 h-6 text-brand-500 mb-2 mx-auto" />
+              <p className="text-sm font-medium text-[var(--color-text)]">Events</p>
+            </button>
+            <button 
+              onClick={() => setActiveTab('insights')}
+              className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors cursor-pointer text-center"
+            >
+              <FaLightbulb className="w-6 h-6 text-brand-500 mb-2 mx-auto" />
+              <p className="text-sm font-medium text-[var(--color-text)]">Insights</p>
+            </button>
+            <button 
+              onClick={() => setActiveTab('training')}
+              className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors cursor-pointer text-center"
+            >
+              <FaGraduationCap className="w-6 h-6 text-brand-500 mb-2 mx-auto" />
+              <p className="text-sm font-medium text-[var(--color-text)]">Training</p>
+            </button>
+            <button 
+              onClick={() => setActiveTab('newsletter')}
+              className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors cursor-pointer text-center"
+            >
+              <FaEnvelope className="w-6 h-6 text-brand-500 mb-2 mx-auto" />
+              <p className="text-sm font-medium text-[var(--color-text)]">Newsletter</p>
+            </button>
+            <button 
+              onClick={() => setActiveTab('advertisements')}
+              className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors cursor-pointer text-center"
+            >
+              <FaBullhorn className="w-6 h-6 text-brand-500 mb-2 mx-auto" />
+              <p className="text-sm font-medium text-[var(--color-text)]">Ads</p>
+            </button>
+            <button 
+              onClick={() => setActiveTab('analytics')}
+              className="p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] transition-colors cursor-pointer text-center"
+            >
+              <FaChartBar className="w-6 h-6 text-brand-500 mb-2 mx-auto" />
+              <p className="text-sm font-medium text-[var(--color-text)]">Analytics</p>
             </button>
           </div>
         </CardContent>

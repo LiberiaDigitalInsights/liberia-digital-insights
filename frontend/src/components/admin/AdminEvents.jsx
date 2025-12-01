@@ -20,6 +20,9 @@ import {
   FaMapMarkerAlt,
   FaUsers,
 } from 'react-icons/fa';
+import { useEvents } from '../../hooks/useBackendApi';
+import { backendApi } from '../../services/backendApi';
+import { useToast } from '../../context/ToastContext';
 
 const MediaPreview = ({ url, type }) => {
   if (!url) return null;
@@ -43,37 +46,18 @@ const MediaPreview = ({ url, type }) => {
 };
 
 const AdminEvents = ({ canEdit }) => {
+  const { showToast } = useToast();
+  const { data: eventsData, _loading, _error, refetch } = useEvents({});
+  const events = eventsData?.events || [];
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [eventsList, setEventsList] = useState([
-    {
-      id: 1,
-      title: 'Tech Innovation Summit 2024',
-      date: '2024-03-15',
-      location: 'Monrovia, Liberia',
-      attendees: 150,
-      status: 'upcoming',
-      description: 'Annual technology innovation conference',
-      category: 'Conference',
-      maxAttendees: 200,
-    },
-    {
-      id: 2,
-      title: 'Digital Marketing Workshop',
-      date: '2024-02-28',
-      location: 'Virtual',
-      attendees: 75,
-      status: 'completed',
-      description: 'Hands-on digital marketing strategies',
-      category: 'Workshop',
-      maxAttendees: 100,
-    },
-  ]);
+  const [submitting, setSubmitting] = useState(false);
   const itemsPerPage = 10;
 
   // Form state for create/edit
@@ -81,12 +65,34 @@ const AdminEvents = ({ canEdit }) => {
     title: '',
     description: '',
     date: '',
+    time: '',
     location: '',
     category: '',
     status: 'upcoming',
     maxAttendees: '',
+    price: '',
+    registrationUrl: '',
     coverImage: '',
   });
+
+  // Status badge helper
+  const getStatusBadge = (status) => {
+    const styles = {
+      published: 'bg-green-100 text-green-700',
+      draft: 'bg-yellow-100 text-yellow-700',
+      pending: 'bg-gray-100 text-gray-700',
+      upcoming: 'bg-blue-100 text-blue-700',
+      completed: 'bg-green-100 text-green-700',
+      cancelled: 'bg-red-100 text-red-700',
+    };
+    return (
+      <span
+        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${styles[status] || styles.draft}`}
+      >
+        {status}
+      </span>
+    );
+  };
 
   // Handle image upload and convert to base64
   const handleImageUpload = (e, fieldName = 'coverImage') => {
@@ -115,7 +121,7 @@ const AdminEvents = ({ canEdit }) => {
   };
 
   // Filter events
-  const filteredEvents = eventsList.filter((event) => {
+  const filteredEvents = events.filter((event) => {
     const matchesSearch =
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.location.toLowerCase().includes(searchTerm.toLowerCase());
@@ -129,24 +135,48 @@ const AdminEvents = ({ canEdit }) => {
   const paginatedEvents = filteredEvents.slice(startIndex, startIndex + itemsPerPage);
 
   // CRUD Operations
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!formData.title.trim()) return;
 
-    const newEvent = {
-      id: Date.now(),
-      title: formData.title,
-      description: formData.description,
-      date: formData.date,
-      location: formData.location,
-      category: formData.category,
-      status: formData.status,
-      maxAttendees: parseInt(formData.maxAttendees) || 0,
-      attendees: 0,
-    };
+    setSubmitting(true);
+    try {
+      // Generate slug from title
+      const slug = formData.title
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
 
-    setEventsList([newEvent, ...eventsList]);
-    setShowCreateModal(false);
-    resetForm();
+      const newEvent = {
+        title: formData.title,
+        slug,
+        description: formData.description,
+        date: formData.date,
+        location: formData.location,
+        category: formData.category,
+        status: formData.status,
+        max_attendees: parseInt(formData.maxAttendees) || 0,
+      };
+
+      await backendApi.events.create(newEvent);
+      await refetch();
+
+      showToast({
+        title: 'Event Created',
+        description: 'Event has been created successfully.',
+        variant: 'success',
+      });
+
+      setShowCreateModal(false);
+      resetForm();
+    } catch {
+      showToast({
+        title: 'Error',
+        description: 'Failed to create event.',
+        variant: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleEdit = (event) => {
@@ -163,28 +193,44 @@ const AdminEvents = ({ canEdit }) => {
     setShowEditModal(true);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!formData.title.trim() || !selectedEvent) return;
 
-    const updatedEvents = eventsList.map((event) =>
-      event.id === selectedEvent.id
-        ? {
-            ...event,
-            title: formData.title,
-            description: formData.description,
-            date: formData.date,
-            location: formData.location,
-            category: formData.category,
-            status: formData.status,
-            maxAttendees: parseInt(formData.maxAttendees) || 0,
-          }
-        : event,
-    );
+    setSubmitting(true);
+    try {
+      const updatedEvent = {
+        title: formData.title,
+        description: formData.description,
+        date: formData.date,
+        location: formData.location,
+        category: formData.category,
+        status: formData.status,
+        max_attendees: parseInt(formData.maxAttendees) || 0,
+      };
 
-    setEventsList(updatedEvents);
-    setShowEditModal(false);
-    resetForm();
-    setSelectedEvent(null);
+      console.log('Updating event:', selectedEvent.id, updatedEvent);
+      await backendApi.events.update(selectedEvent.id, updatedEvent);
+      await refetch();
+
+      showToast({
+        title: 'Event Updated',
+        description: 'Event has been updated successfully.',
+        variant: 'success',
+      });
+
+      setShowEditModal(false);
+      resetForm();
+      setSelectedEvent(null);
+    } catch (error) {
+      console.error('Update error:', error);
+      showToast({
+        title: 'Error',
+        description: `Failed to update event: ${error.message}`,
+        variant: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleDelete = (event) => {
@@ -192,12 +238,31 @@ const AdminEvents = ({ canEdit }) => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!selectedEvent) return;
 
-    setEventsList(eventsList.filter((event) => event.id !== selectedEvent.id));
-    setShowDeleteModal(false);
-    setSelectedEvent(null);
+    setSubmitting(true);
+    try {
+      await backendApi.events.delete(selectedEvent.id);
+      await refetch();
+
+      showToast({
+        title: 'Event Deleted',
+        description: 'Event has been deleted successfully.',
+        variant: 'success',
+      });
+
+      setShowDeleteModal(false);
+      setSelectedEvent(null);
+    } catch {
+      showToast({
+        title: 'Error',
+        description: 'Failed to delete event.',
+        variant: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -328,7 +393,15 @@ const AdminEvents = ({ canEdit }) => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedEvent(event);
+                            setShowDetailsModal(true);
+                          }}
+                          title="View Event Details"
+                        >
                           <FaCalendar className="w-3 h-3" />
                         </Button>
                         {canEdit && (
@@ -444,6 +517,35 @@ const AdminEvents = ({ canEdit }) => {
             />
           </div>
           <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Time</label>
+            <Input
+              type="time"
+              value={formData.time}
+              onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+              placeholder="Event time"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Price
+            </label>
+            <Input
+              value={formData.price}
+              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              placeholder="Free or price amount"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Registration URL
+            </label>
+            <Input
+              value={formData.registrationUrl}
+              onChange={(e) => setFormData({ ...formData, registrationUrl: e.target.value })}
+              placeholder="https://example.com/register"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
               Location
             </label>
@@ -492,13 +594,15 @@ const AdminEvents = ({ canEdit }) => {
             <Button variant="outline" onClick={() => setShowCreateModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleCreate}>Create Event</Button>
+            <Button onClick={handleCreate} disabled={submitting}>
+              {submitting ? 'Creating...' : 'Create Event'}
+            </Button>
           </div>
         </div>
       </Modal>
 
       {/* Edit Modal */}
-      <Modal open={showEditModal} onClose={() => setShowEditModal(false)} title="Edit Event">
+      <Modal open={showEditModal} onClose={() => setShowEditModal(false)} title={`Edit Event: ${selectedEvent?.title}`}>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
@@ -558,6 +662,35 @@ const AdminEvents = ({ canEdit }) => {
             />
           </div>
           <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Time</label>
+            <Input
+              type="time"
+              value={formData.time}
+              onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+              placeholder="Event time"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Price
+            </label>
+            <Input
+              value={formData.price}
+              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              placeholder="Free or price amount"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Registration URL
+            </label>
+            <Input
+              value={formData.registrationUrl}
+              onChange={(e) => setFormData({ ...formData, registrationUrl: e.target.value })}
+              placeholder="https://example.com/register"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
               Location
             </label>
@@ -606,8 +739,85 @@ const AdminEvents = ({ canEdit }) => {
             <Button variant="outline" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleUpdate}>Update Event</Button>
+            <Button onClick={handleUpdate} disabled={submitting}>
+              {submitting ? 'Updating...' : 'Update Event'}
+            </Button>
           </div>
+        </div>
+      </Modal>
+
+      {/* Event Details Modal */}
+      <Modal
+        open={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        title="Event Details"
+      >
+        <div className="space-y-4">
+          {selectedEvent && (
+            <>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Title</label>
+                  <p className="text-[var(--color-text)] font-medium">{selectedEvent.title}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Description</label>
+                  <p className="text-[var(--color-text)]">{selectedEvent.description || 'N/A'}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Date</label>
+                    <p className="text-[var(--color-text)]">{selectedEvent.date || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Time</label>
+                    <p className="text-[var(--color-text)]">{selectedEvent.time || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Location</label>
+                    <p className="text-[var(--color-text)]">{selectedEvent.location || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Status</label>
+                    <div>{getStatusBadge(selectedEvent.status)}</div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Attendees</label>
+                    <p className="text-[var(--color-text)]">{selectedEvent.attendees || 0} / {selectedEvent.maxAttendees || 0}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Price</label>
+                    <p className="text-[var(--color-text)]">{selectedEvent.price || 'Free'}</p>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Cover Image</label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedEvent.coverImage ? (
+                      <a href={selectedEvent.coverImage} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {selectedEvent.coverImage}
+                      </a>
+                    ) : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Registration URL</label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedEvent.registrationUrl ? (
+                      <a href={selectedEvent.registrationUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {selectedEvent.registrationUrl}
+                      </a>
+                    ) : 'N/A'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end pt-4">
+                <Button variant="outline" onClick={() => setShowDetailsModal(false)}>
+                  Close
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
 
@@ -621,8 +831,8 @@ const AdminEvents = ({ canEdit }) => {
             <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
-              Delete Event
+            <Button variant="destructive" onClick={confirmDelete} disabled={submitting}>
+              {submitting ? 'Deleting...' : 'Delete Event'}
             </Button>
           </div>
         </div>

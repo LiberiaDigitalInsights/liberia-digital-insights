@@ -17,37 +17,74 @@ import {
   FaEye,
   FaSearch,
   FaBullhorn,
-  FaChartLine,
+  FaChartBar,
   FaTimes,
 } from 'react-icons/fa';
+import { useAdvertisements } from '../../hooks/useBackendApi';
+import { backendApi } from '../../services/backendApi';
+import { useToast } from '../../context/ToastContext';
 
-const AdminAdvertisements = ({ advertisements, canEdit }) => {
+const AdminAdvertisements = ({ canEdit }) => {
+  const { showToast } = useToast();
+  const { data: advertisementsData, refetch } = useAdvertisements({});
+  const advertisements = advertisementsData?.advertisements || [];
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showPerformanceModal, setShowPerformanceModal] = useState(false);
   const [selectedAd, setSelectedAd] = useState(null);
-  const [adsList, setAdsList] = useState(advertisements);
+  const [submitting, setSubmitting] = useState(false);
   const itemsPerPage = 10;
 
   // Form state for create/edit
   const [formData, setFormData] = useState({
-    name: '',
-    client: '',
+    title: '',
+    description: '',
     type: 'banner',
-    status: 'draft',
-    content: '',
+    status: 'active',
+    imageUrl: '',
     targetUrl: '',
+      startDate: '',
+      endDate: '',
     impressions: 0,
     clicks: 0,
   });
 
+  // Handle file upload and convert to base64
+  const handleFileUpload = (e, fieldName = 'imageUrl') => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    // Check file type (only allow images)
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    // Check file size (limit to 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size must be less than 5MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result;
+      setFormData({ ...formData, [fieldName]: base64 });
+    };
+    reader.readAsDataURL(file);
+    e.currentTarget.value = ''; // Reset input
+  };
+
   // Filter advertisements
-  const filteredAds = adsList.filter((ad) => {
+  const filteredAds = advertisements.filter((ad) => {
     const matchesSearch =
-      ad.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       ad.type.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || ad.status === filterStatus;
     return matchesSearch && matchesStatus;
@@ -59,63 +96,104 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
   const paginatedAds = filteredAds.slice(startIndex, startIndex + itemsPerPage);
 
   // CRUD Operations
-  const handleCreate = () => {
-    if (!formData.name.trim()) return;
+  const handleCreate = async () => {
+    if (!formData.title.trim()) return;
 
-    const newAd = {
-      id: Date.now(),
-      name: formData.name,
-      client: formData.client,
-      type: formData.type,
-      status: formData.status,
-      content: formData.content,
-      targetUrl: formData.targetUrl,
-      impressions: 0,
-      clicks: 0,
-      date: new Date().toISOString().split('T')[0],
-    };
+    setSubmitting(true);
+    try {
+      // Generate slug from title
+      const slug = formData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
-    setAdsList([newAd, ...adsList]);
-    setShowCreateModal(false);
-    resetForm();
+      const newAd = {
+        title: formData.title,
+        slug,
+        description: formData.description,
+        type: formData.type,
+        status: formData.status,
+        image_url: formData.imageUrl || null,
+        target_url: formData.targetUrl,
+        start_date: formData.startDate || null,
+        end_date: formData.endDate || null,
+      };
+
+      console.log('Creating advertisement:', newAd);
+      await backendApi.advertisements.create(newAd);
+      await refetch();
+      
+      showToast({
+        title: 'Advertisement Created',
+        description: 'Advertisement has been created successfully.',
+        variant: 'success'
+      });
+
+      setShowCreateModal(false);
+      resetForm();
+    } catch (error) {
+      console.error('Create error:', error);
+      showToast({
+        title: 'Error',
+        description: `Failed to create advertisement: ${error.message}`,
+        variant: 'error'
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleEdit = (ad) => {
     setSelectedAd(ad);
     setFormData({
-      name: ad.name,
-      client: ad.client,
+      title: ad.title,
+      description: ad.description || '',
       type: ad.type,
       status: ad.status,
-      content: ad.content || '',
-      targetUrl: ad.targetUrl || '',
-      impressions: ad.impressions || 0,
-      clicks: ad.clicks || 0,
+      imageUrl: ad.image_url || '',
+      targetUrl: ad.target_url || '',
+      startDate: ad.start_date || '',
+      endDate: ad.end_date || '',
     });
     setShowEditModal(true);
   };
 
-  const handleUpdate = () => {
-    if (!formData.name.trim() || !selectedAd) return;
+  const handleUpdate = async () => {
+    if (!formData.title.trim() || !selectedAd) return;
 
-    const updatedAds = adsList.map((ad) =>
-      ad.id === selectedAd.id
-        ? {
-            ...ad,
-            name: formData.name,
-            client: formData.client,
-            type: formData.type,
-            status: formData.status,
-            content: formData.content,
-            targetUrl: formData.targetUrl,
-          }
-        : ad,
-    );
+    setSubmitting(true);
+    try {
+      const updatedAd = {
+        title: formData.title,
+        description: formData.description,
+        type: formData.type,
+        status: formData.status,
+        image_url: formData.imageUrl || null,
+        target_url: formData.targetUrl,
+        start_date: formData.startDate || null,
+        end_date: formData.endDate || null,
+      };
 
-    setAdsList(updatedAds);
-    setShowEditModal(false);
-    resetForm();
-    setSelectedAd(null);
+      console.log('Updating advertisement:', selectedAd.id, updatedAd);
+      await backendApi.advertisements.update(selectedAd.id, updatedAd);
+      await refetch();
+      
+      showToast({
+        title: 'Advertisement Updated',
+        description: 'Advertisement has been updated successfully.',
+        variant: 'success'
+      });
+
+      setShowEditModal(false);
+      resetForm();
+      setSelectedAd(null);
+    } catch (error) {
+      console.error('Update error:', error);
+      showToast({
+        title: 'Error',
+        description: `Failed to update advertisement: ${error.message}`,
+        variant: 'error'
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleDelete = (ad) => {
@@ -123,22 +201,44 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!selectedAd) return;
 
-    setAdsList(adsList.filter((ad) => ad.id !== selectedAd.id));
-    setShowDeleteModal(false);
-    setSelectedAd(null);
+    setSubmitting(true);
+    try {
+      await backendApi.advertisements.delete(selectedAd.id);
+      await refetch();
+      
+      showToast({
+        title: 'Advertisement Deleted',
+        description: 'Advertisement has been deleted successfully.',
+        variant: 'success'
+      });
+
+      setShowDeleteModal(false);
+      setSelectedAd(null);
+    } catch (error) {
+      console.error('Delete error:', error);
+      showToast({
+        title: 'Error',
+        description: `Failed to delete advertisement: ${error.message}`,
+        variant: 'error'
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const resetForm = () => {
     setFormData({
-      name: '',
-      client: '',
+      title: '',
+      description: '',
       type: 'banner',
-      status: 'draft',
-      content: '',
+      status: 'active',
+      imageUrl: '',
       targetUrl: '',
+      startDate: '',
+      endDate: '',
       impressions: 0,
       clicks: 0,
     });
@@ -269,11 +369,27 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedAd(ad);
+                            setShowDetailsModal(true);
+                          }}
+                          title="View Advertisement Details"
+                        >
                           <FaEye className="w-3 h-3" />
                         </Button>
-                        <Button variant="outline" size="sm">
-                          <FaChartLine className="w-3 h-3" />
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedAd(ad);
+                            setShowPerformanceModal(true);
+                          }}
+                          title="View Performance Analytics"
+                        >
+                          <FaChartBar className="w-3 h-3" />
                         </Button>
                         {canEdit && (
                           <>
@@ -335,8 +451,8 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
               Advertisement Name
             </label>
             <Input
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="Enter advertisement name"
             />
           </div>
@@ -345,8 +461,8 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
               Client
             </label>
             <Input
-              value={formData.client}
-              onChange={(e) => setFormData({ ...formData, client: e.target.value })}
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Client name"
             />
           </div>
@@ -364,14 +480,36 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-              Content
+              Description
             </label>
             <Textarea
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Advertisement content or description"
               rows={4}
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Image URL
+            </label>
+            <div className="flex gap-2">
+              <Input
+                value={formData.imageUrl}
+                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                placeholder="https://example.com/image.jpg"
+                className="flex-1"
+              />
+              <label className="px-3 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700 transition-colors">
+                Upload
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e, 'imageUrl')}
+                  className="hidden"
+                />
+              </label>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
@@ -381,6 +519,26 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
               value={formData.targetUrl}
               onChange={(e) => setFormData({ ...formData, targetUrl: e.target.value })}
               placeholder="https://example.com"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Start Date
+            </label>
+            <Input
+              type="datetime-local"
+              value={formData.startDate}
+              onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              End Date
+            </label>
+            <Input
+              type="datetime-local"
+              value={formData.endDate}
+              onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
             />
           </div>
           <div>
@@ -401,7 +559,7 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
             <Button variant="outline" onClick={() => setShowCreateModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleCreate}>Create Advertisement</Button>
+            <Button onClick={handleCreate} disabled={submitting}>{submitting ? "Creating..." : "Create Advertisement"}</Button>
           </div>
         </div>
       </Modal>
@@ -418,8 +576,8 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
               Advertisement Name
             </label>
             <Input
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="Enter advertisement name"
             />
           </div>
@@ -428,8 +586,8 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
               Client
             </label>
             <Input
-              value={formData.client}
-              onChange={(e) => setFormData({ ...formData, client: e.target.value })}
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Client name"
             />
           </div>
@@ -447,14 +605,36 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-              Content
+              Description
             </label>
             <Textarea
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Advertisement content or description"
               rows={4}
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Image URL
+            </label>
+            <div className="flex gap-2">
+              <Input
+                value={formData.imageUrl}
+                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                placeholder="https://example.com/image.jpg"
+                className="flex-1"
+              />
+              <label className="px-3 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700 transition-colors">
+                Upload
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e, 'imageUrl')}
+                  className="hidden"
+                />
+              </label>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
@@ -464,6 +644,26 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
               value={formData.targetUrl}
               onChange={(e) => setFormData({ ...formData, targetUrl: e.target.value })}
               placeholder="https://example.com"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Start Date
+            </label>
+            <Input
+              type="datetime-local"
+              value={formData.startDate}
+              onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              End Date
+            </label>
+            <Input
+              type="datetime-local"
+              value={formData.endDate}
+              onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
             />
           </div>
           <div>
@@ -484,8 +684,137 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
             <Button variant="outline" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleUpdate}>Update Advertisement</Button>
+            <Button onClick={handleUpdate} disabled={submitting}>{submitting ? "Updating..." : "Update Advertisement"}</Button>
           </div>
+        </div>
+      </Modal>
+
+      {/* Advertisement Details Modal */}
+      <Modal
+        open={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        title="Advertisement Details"
+      >
+        <div className="space-y-4">
+          {selectedAd && (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Name</label>
+                  <p className="text-[var(--color-text)]">{selectedAd.title || selectedAd.name || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Type</label>
+                  <TypeBadge type={selectedAd.type} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Status</label>
+                  <StatusBadge status={selectedAd.status} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Target URL</label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedAd.target_url ? (
+                      <a href={selectedAd.target_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {selectedAd.target_url}
+                      </a>
+                    ) : 'N/A'}
+                  </p>
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Description</label>
+                  <p className="text-[var(--color-text)]">{selectedAd.description || 'N/A'}</p>
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Image URL</label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedAd.image_url ? (
+                      <a href={selectedAd.image_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {selectedAd.image_url}
+                      </a>
+                    ) : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Start Date</label>
+                  <p className="text-[var(--color-text)]">{selectedAd.start_date || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">End Date</label>
+                  <p className="text-[var(--color-text)]">{selectedAd.end_date || 'N/A'}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end pt-4">
+                <Button variant="outline" onClick={() => setShowDetailsModal(false)}>
+                  Close
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      </Modal>
+
+      {/* Performance Analytics Modal */}
+      <Modal
+        open={showPerformanceModal}
+        onClose={() => setShowPerformanceModal(false)}
+        title="Performance Analytics"
+      >
+        <div className="space-y-4">
+          {selectedAd && (
+            <>
+              <div className="text-center mb-6">
+                <h3 className="text-lg font-medium text-[var(--color-text)] mb-2">{selectedAd.title || selectedAd.name}</h3>
+                <div className="flex items-center justify-center gap-4">
+                  <TypeBadge type={selectedAd.type} />
+                  <StatusBadge status={selectedAd.status} />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-[var(--color-surface)] rounded-lg">
+                  <div className="text-2xl font-bold text-[var(--color-text)]">{selectedAd.impressions || 0}</div>
+                  <div className="text-sm text-[var(--color-muted)]">Impressions</div>
+                </div>
+                <div className="text-center p-4 bg-[var(--color-surface)] rounded-lg">
+                  <div className="text-2xl font-bold text-[var(--color-text)]">{selectedAd.clicks || 0}</div>
+                  <div className="text-sm text-[var(--color-muted)]">Clicks</div>
+                </div>
+                <div className="text-center p-4 bg-[var(--color-surface)] rounded-lg">
+                  <div className="text-2xl font-bold text-[var(--color-text)]">
+                    {selectedAd.impressions > 0 ? ((selectedAd.clicks || 0) / selectedAd.impressions * 100).toFixed(2) : 0}%
+                  </div>
+                  <div className="text-sm text-[var(--color-muted)]">CTR</div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-medium text-[var(--color-text)]">Performance Summary</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-muted)]">Engagement Rate:</span>
+                    <span className="text-[var(--color-text)] font-medium">
+                      {selectedAd.impressions > 0 ? ((selectedAd.clicks || 0) / selectedAd.impressions * 100).toFixed(2) : 0}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-muted)]">Cost per Click:</span>
+                    <span className="text-[var(--color-text)] font-medium">N/A</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-muted)]">Conversion Rate:</span>
+                    <span className="text-[var(--color-text)] font-medium">N/A</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2 justify-end pt-4">
+                <Button variant="outline" onClick={() => setShowPerformanceModal(false)}>
+                  Close
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
 
@@ -503,8 +832,8 @@ const AdminAdvertisements = ({ advertisements, canEdit }) => {
             <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
-              Delete Advertisement
+            <Button variant="destructive" onClick={confirmDelete} disabled={submitting}>
+              {submitting ? 'Deleting...' : 'Delete Advertisement'}
             </Button>
           </div>
         </div>

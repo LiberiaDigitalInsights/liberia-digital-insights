@@ -140,6 +140,22 @@ CREATE TABLE newsletters (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Newsletter Subscribers table
+CREATE TABLE newsletter_subscribers (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  company VARCHAR(255),
+  org VARCHAR(255),
+  position VARCHAR(255),
+  status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'unsubscribed', 'bounced')),
+  subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  unsubscribed_at TIMESTAMP WITH TIME ZONE,
+  unsubscribe_token VARCHAR(255) UNIQUE, -- For secure unsubscribe links
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_articles_status ON articles(status);
 CREATE INDEX idx_articles_category ON articles(category_id);
@@ -150,6 +166,9 @@ CREATE INDEX idx_events_date ON events(date);
 CREATE INDEX idx_events_status ON events(status);
 CREATE INDEX idx_training_status ON training(status);
 CREATE INDEX idx_newsletters_status ON newsletters(status);
+CREATE INDEX idx_newsletter_subscribers_email ON newsletter_subscribers(email);
+CREATE INDEX idx_newsletter_subscribers_status ON newsletter_subscribers(status);
+CREATE INDEX idx_newsletter_subscribers_token ON newsletter_subscribers(unsubscribe_token);
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
 
@@ -172,6 +191,7 @@ ALTER TABLE podcasts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE training ENABLE ROW LEVEL SECURITY;
 ALTER TABLE newsletters ENABLE ROW LEVEL SECURITY;
+ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
 -- Public read access for published content
@@ -220,6 +240,15 @@ CREATE POLICY "Admins can do everything" ON newsletters
   FOR ALL USING (auth.role() = 'authenticated' AND EXISTS (
     SELECT 1 FROM users WHERE users.id = auth.uid() AND users.role = 'admin'
   ));
+
+CREATE POLICY "Admins can do everything" ON newsletter_subscribers
+  FOR ALL USING (auth.role() = 'authenticated' AND EXISTS (
+    SELECT 1 FROM users WHERE users.id = auth.uid() AND users.role = 'admin'
+  ));
+
+-- Public can subscribe to newsletter (insert only)
+CREATE POLICY "Anyone can subscribe to newsletter" ON newsletter_subscribers
+  FOR INSERT WITH CHECK (true);
 
 -- Storage policies for uploads
 CREATE POLICY "Anyone can view uploaded files" ON storage.objects

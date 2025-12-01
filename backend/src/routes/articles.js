@@ -133,7 +133,7 @@ router.post("/", async (req, res) => {
           content,
           cover_image_url,
           category_id,
-          author_id,
+          author_id: author_id || null, // Make author_id optional
           status,
           tags,
           published_at: status === "published" ? published_at || new Date().toISOString() : null,
