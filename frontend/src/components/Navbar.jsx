@@ -145,14 +145,6 @@ export default function Navbar() {
               News
             </NavLink>
 
-<<<<<<< HEAD
-            <Link
-              to="/talent"
-              className="relative py-1 transition-colors duration-200 hover:text-yellow-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-yellow-300 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Tech Talents
-            </Link>
-=======
             <div className="relative group" onMouseLeave={() => setOpenMenu(null)}>
               <button
                 id="content-trigger"
@@ -207,7 +199,6 @@ export default function Navbar() {
                 ))}
               </div>
             </div>
->>>>>>> 803044e2bf62d15a2f9dca27382b41d6c6b7008a
 
             <div className="relative group" onMouseLeave={() => setOpenMenu(null)}>
               <button
