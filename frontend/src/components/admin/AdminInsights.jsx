@@ -555,7 +555,7 @@ const AdminInsights = ({ canEdit }) => {
             </label>
             <RichTextEditor
               value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              onChange={(content) => setFormData({ ...formData, content: content })}
               placeholder="Insight content"
             />
           </div>
@@ -666,7 +666,7 @@ const AdminInsights = ({ canEdit }) => {
             </label>
             <RichTextEditor
               value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              onChange={(content) => setFormData({ ...formData, content: content })}
               placeholder="Insight content"
             />
           </div>

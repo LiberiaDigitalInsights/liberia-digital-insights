@@ -693,7 +693,7 @@ const AdminPodcasts = ({ canEdit }) => {
             </label>
             <RichTextEditor
               value={formData.transcript}
-              onChange={(e) => setFormData({ ...formData, transcript: e.target.value })}
+              onChange={(content) => setFormData({ ...formData, transcript: content })}
               placeholder="Episode transcript"
             />
           </div>
@@ -899,7 +899,7 @@ const AdminPodcasts = ({ canEdit }) => {
             </label>
             <RichTextEditor
               value={formData.transcript}
-              onChange={(e) => setFormData({ ...formData, transcript: e.target.value })}
+              onChange={(content) => setFormData({ ...formData, transcript: content })}
               placeholder="Episode transcript"
             />
           </div>

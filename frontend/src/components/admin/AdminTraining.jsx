@@ -633,7 +633,7 @@ const AdminTraining = ({ canEdit }) => {
             </label>
             <RichTextEditor
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(content) => setFormData({ ...formData, description: content })}
               placeholder="Course description"
             />
           </div>
@@ -770,7 +770,7 @@ const AdminTraining = ({ canEdit }) => {
             </label>
             <RichTextEditor
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(content) => setFormData({ ...formData, description: content })}
               placeholder="Course description"
             />
           </div>

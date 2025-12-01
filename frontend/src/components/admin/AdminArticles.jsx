@@ -558,7 +558,7 @@ const AdminArticles = ({ canEdit }) => {
             </label>
             <RichTextEditor
               value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              onChange={(content) => setFormData({ ...formData, content: content })}
               placeholder="Article content"
             />
           </div>
@@ -663,7 +663,7 @@ const AdminArticles = ({ canEdit }) => {
             </label>
             <RichTextEditor
               value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              onChange={(content) => setFormData({ ...formData, content: content })}
               placeholder="Full article content"
             />
           </div>
