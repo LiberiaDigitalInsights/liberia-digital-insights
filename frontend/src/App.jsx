@@ -4,6 +4,9 @@ import Skeleton from './components/ui/Skeleton';
 import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import { H1, Muted } from './components/ui/Typography';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
+import CookiePage from './pages/CookiePage';
 
 // Lazy load pages for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -18,15 +21,19 @@ const PodcastDetail = lazy(() => import('./pages/PodcastDetail'));
 const Articles = lazy(() => import('./pages/Articles'));
 const ArticleDetail = lazy(() => import('./pages/ArticleDetail'));
 const Events = lazy(() => import('./pages/Events'));
+const EventDetail = lazy(() => import('./pages/EventDetail'));
 const Gallery = lazy(() => import('./pages/Gallery'));
 const Advertisement = lazy(() => import('./pages/Advertisement'));
-const Signup = lazy(() => import('./pages/Signup'));
+const Subscribe = lazy(() => import('./pages/Subscribe'));
 const Talent = lazy(() => import('./pages/Talent'));
 const Category = lazy(() => import('./pages/Category'));
+const Categories = lazy(() => import('./pages/Categories'));
+const Tag = lazy(() => import('./pages/Tag'));
 const TrainingCourses = lazy(() => import('./pages/TrainingCourses'));
 const TrainingDetail = lazy(() => import('./pages/TrainingDetail'));
 const CourseDetail = lazy(() => import('./pages/CourseDetail'));
 const Register = lazy(() => import('./pages/Register'));
+const Unsubscribe = lazy(() => import('./pages/Unsubscribe'));
 const Admin = lazy(() => import('./pages/Admin'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -68,21 +75,26 @@ function App() {
           <Route path="/components" element={<ComponentsPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/insights" element={<Insights />} />
-          <Route path="/insight/:id" element={<InsightDetail />} />
+          <Route path="/insight/:slug" element={<InsightDetail />} />
           <Route path="/podcasts" element={<Podcasts />} />
-          <Route path="/podcast/:id" element={<PodcastDetail />} />
+          <Route path="/podcast/:slug" element={<PodcastDetail />} />
           <Route path="/articles" element={<Articles />} />
-          <Route path="/article/:id" element={<ArticleDetail />} />
+          <Route path="/article/:slug" element={<ArticleDetail />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/event/:slug" element={<EventDetail />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/advertisement" element={<Advertisement />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/subscribe" element={<Subscribe />} />
           <Route path="/training-courses" element={<TrainingCourses />} />
           <Route path="/training/:id" element={<TrainingDetail />} />
           <Route path="/course/:id" element={<CourseDetail />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/talent" element={<Talent />} />
           <Route path="/category/:slug" element={<Category />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/tag/:slug" element={<Tag />} />
+          <Route path="/hashtag/:slug" element={<Tag />} />
           <Route
             path="/admin"
             element={
@@ -91,6 +103,9 @@ function App() {
               </AuthGate>
             }
           />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/cookies" element={<CookiePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

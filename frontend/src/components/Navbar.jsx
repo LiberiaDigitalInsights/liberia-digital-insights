@@ -5,6 +5,7 @@ import Logo from './Logo';
 import Search from './Search';
 import { CATEGORIES } from '../constants/categories';
 import { FaFacebookF, FaTwitter, FaYoutube } from 'react-icons/fa';
+import AdSlot from '../components/ads/AdSlot';
 
 export default function Navbar() {
   const [open, setOpen] = React.useState(false);
@@ -78,15 +79,17 @@ export default function Navbar() {
       {/* Top utility strip with date + social */}
       <div className="hidden bg-[var(--color-nav-top)] text-xs md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5">
-          <div className="text-white/90">Advertisement</div>
-          <div className="flex items-center gap-4 text-white">
+          <div className="text-white/90">
             <span className="hidden md:inline">
               {new Date().toLocaleDateString(undefined, {
                 weekday: 'long',
                 month: 'short',
                 day: 'numeric',
+                year: 'numeric',
               })}
             </span>
+          </div>
+          <div className="flex items-center gap-4 text-white">
             <a
               href="#"
               aria-label="Facebook"
@@ -115,11 +118,13 @@ export default function Navbar() {
       </div>
 
       {/* Mid header with logo + banner ad */}
-      <div className="bg-[var(--color-nav-mid)]/60 backdrop-blur supports-[backdrop-filter]:bg-[var(--color-nav-mid)]/50">
+      <div className="bg-brand-500">
         <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr] items-center gap-6 px-4 py-4">
           <Logo />
           <div className="hidden justify-end md:flex">
-            <div className="h-14 w-[520px] rounded-[var(--radius-md)] bg-[color-mix(in_oklab,var(--color-surface),white_8%)] ring-1 ring-[var(--color-border)]" />
+            <div className="h-14 w-[520px]">
+              <AdSlot position="hero" />
+            </div>
           </div>
         </div>
       </div>
@@ -142,7 +147,7 @@ export default function Navbar() {
               }
               aria-current={({ isActive }) => (isActive ? 'page' : undefined)}
             >
-              News
+              Home
             </NavLink>
 
             <div className="relative group" onMouseLeave={() => setOpenMenu(null)}>
@@ -176,6 +181,7 @@ export default function Navbar() {
                 id="content-menu"
                 role="menu"
                 tabIndex={-1}
+                ref={contentMenuRef}
                 className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
                   openMenu === 'content' ? 'visible opacity-100' : 'invisible opacity-0'
                 } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
@@ -185,6 +191,8 @@ export default function Navbar() {
                   { to: '/articles', label: 'Articles' },
                   { to: '/podcasts', label: 'Podcasts' },
                   { to: '/gallery', label: 'Gallery' },
+                  { to: '/tag/insighttechthursdays', label: '#InsightTechThursdays' },
+                  { to: '/categories', label: 'Categories' },
                 ].map((item) => (
                   <Link
                     key={item.to}
@@ -231,6 +239,7 @@ export default function Navbar() {
                 id="community-menu"
                 role="menu"
                 tabIndex={-1}
+                ref={communityMenuRef}
                 className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
                   openMenu === 'community' ? 'visible opacity-100' : 'invisible opacity-0'
                 } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
@@ -284,6 +293,7 @@ export default function Navbar() {
                 id="more-menu"
                 role="menu"
                 tabIndex={-1}
+                ref={moreMenuRef}
                 className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
                   openMenu === 'more' ? 'visible opacity-100' : 'invisible opacity-0'
                 } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
@@ -292,7 +302,7 @@ export default function Navbar() {
                   { to: '/about', label: 'About Us' },
                   { to: '/advertisement', label: 'Advertisement' },
                   { to: '/contact', label: 'Contact Us' },
-                  { to: '/signup', label: 'Sign Up' },
+                  { to: '/subscribe', label: 'Subscribe' },
                 ].map((item) => (
                   <Link
                     key={item.to}

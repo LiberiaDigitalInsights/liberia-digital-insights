@@ -4,24 +4,26 @@ import FeaturedArticleRow from '../components/articles/FeaturedArticleRow';
 import PodcastWidget from '../components/sidebar/PodcastWidget';
 import NewsletterWidget from '../components/sidebar/NewsletterWidget';
 import EventsWidget from '../components/sidebar/EventsWidget';
+import AdSlot from '../components/ads/AdSlot';
 import { H1, H2, Muted } from '../components/ui/Typography';
 import Button from '../components/ui/Button';
 import SEO from '../components/SEO';
-import {
-  mockArticles,
-  generateArticleGrid,
-  getInsightTechThursdays,
-  getVideoInterviews,
-} from '../data/mockArticles';
+import { useArticles, usePodcasts, useEvents, useNewsletters } from '../hooks/useBackendApi';
 
 const Home = () => {
-  const featured = mockArticles[0];
-  const LATEST_NEWS_COUNT = 12;
-  const ITT_COUNT = 6;
-  const VIDEO_COUNT = 3;
-  const articleGrid = generateArticleGrid(LATEST_NEWS_COUNT);
-  const ittItems = getInsightTechThursdays(ITT_COUNT);
-  const videoItems = getVideoInterviews(VIDEO_COUNT);
+  // Fetch real data from backend
+  const { data: articlesData, loading: articlesLoading } = useArticles({ limit: 12 });
+  const { data: podcastsData, loading: podcastsLoading } = usePodcasts({ limit: 3 });
+  const { data: eventsData, loading: eventsLoading } = useEvents({ limit: 3 });
+  const { data: newslettersData, loading: newslettersLoading } = useNewsletters({ limit: 3 });
+
+  // Extract data from backend responses
+  const articles = articlesData?.articles || [];
+  const featured = articles[0];
+  const latestArticles = articles.slice(0, 12);
+  const podcasts = podcastsData?.podcasts || [];
+  const events = eventsData?.events || [];
+  const newsletters = newslettersData?.newsletters || [];
 
   return (
     <>
@@ -40,8 +42,8 @@ const Home = () => {
               <Button as="a" href="/insights" variant="solid">
                 Explore Insights
               </Button>
-              <Button as="a" href="/signup" variant="secondary">
-                Subscribe
+              <Button as="a" href="/subscribe" variant="secondary">
+                Subscribe to Newsletter
               </Button>
             </div>
           </div>
@@ -53,59 +55,85 @@ const Home = () => {
             <section className="animate-fade-in">
               <H2 className="mb-6 text-2xl font-bold">Technology</H2>
               <div className="opacity-0 animate-slide-up animation-delay-100">
-                <FeaturedArticleRow
-                  index={0}
-                  image={featured.image}
-                  title={featured.title}
-                  excerpt={featured.excerpt}
-                  category={featured.category}
-                  author={featured.author}
-                  date={featured.date}
-                  readTime={featured.readTime}
-                  to={`/article/${featured.id}`}
-                />
+                {featured ? (
+                  <FeaturedArticleRow
+                    index={0}
+                    image={featured.cover_image_url}
+                    title={featured.title}
+                    excerpt={featured.excerpt}
+                    category={featured.category?.name || 'Technology'}
+                    author={featured.author?.name || 'Admin'}
+                    date={new Date(featured.published_at).toLocaleDateString()}
+                    readTime={Math.ceil(featured.content.length / 1000) + ' min read'}
+                    to={`/article/${featured.slug}`}
+                  />
+                ) : articlesLoading ? (
+                  <div className="animate-pulse">
+                    <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No featured articles available
+                  </div>
+                )}
               </div>
+            </section>
+
+            {/* Inline Advertisement */}
+            <section className="animate-fade-in">
+              <AdSlot position="inline" className="opacity-0 animate-fade-in animation-delay-200" />
             </section>
 
             {/* Article Grid */}
             <section className="animate-fade-in">
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {articleGrid.slice(0, 12).map((article, idx) => (
+                {latestArticles.map((article, idx) => (
                   <div
                     key={article.id}
                     className="opacity-0 animate-slide-up"
                     style={{ animationDelay: `${100 + idx * 50}ms` }}
                   >
                     <ArticleCard
-                      image={article.image}
+                      image={article.cover_image_url}
                       title={article.title}
-                      category={article.category}
-                      date={article.date}
-                      readTime={article.readTime}
-                      to={`/article/${article.id}`}
+                      category={article.category?.name || 'Uncategorized'}
+                      date={new Date(article.published_at).toLocaleDateString()}
+                      readTime={Math.ceil(article.content.length / 1000) + ' min read'}
+                      to={`/article/${article.slug}`}
                     />
                   </div>
                 ))}
               </div>
+              {articlesLoading && (
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-48 bg-gray-200 rounded-lg"></div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* InsightTechThursdays Section */}
             <section className="animate-fade-in">
               <H2 className="mb-6 text-2xl font-bold">INSIGHT TECH THURSDAYS</H2>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {ittItems.map((article, idx) => (
+                {latestArticles.slice(0, 6).map((article, idx) => (
                   <div
                     key={`itt-${article.id}`}
                     className="opacity-0 animate-slide-up"
                     style={{ animationDelay: `${100 + idx * 50}ms` }}
                   >
                     <ArticleCard
-                      image={article.image}
+                      image={article.cover_image_url}
                       title={article.title}
-                      category={article.category}
-                      date={article.date}
-                      readTime={article.readTime}
-                      to={`/article/${article.id}`}
+                      category={article.category?.name || 'Insights'}
+                      date={new Date(article.published_at).toLocaleDateString()}
+                      readTime={Math.ceil(article.content.length / 1000) + ' min read'}
+                      to={`/article/${article.slug}`}
                     />
                   </div>
                 ))}
@@ -116,19 +144,19 @@ const Home = () => {
             <section className="animate-fade-in">
               <H2 className="mb-6 text-2xl font-bold">LATEST NEWS</H2>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {articleGrid.slice(0, 12).map((article, idx) => (
+                {latestArticles.slice(6, 18).map((article, idx) => (
                   <div
                     key={`latest-${article.id}`}
                     className="opacity-0 animate-slide-up"
                     style={{ animationDelay: `${100 + idx * 50}ms` }}
                   >
                     <ArticleCard
-                      image={article.image}
+                      image={article.cover_image_url}
                       title={article.title}
-                      category={article.category}
-                      date={article.date}
-                      readTime={article.readTime}
-                      to={`/article/${article.id}`}
+                      category={article.category?.name || 'News'}
+                      date={new Date(article.published_at).toLocaleDateString()}
+                      readTime={Math.ceil(article.content.length / 1000) + ' min read'}
+                      to={`/article/${article.slug}`}
                     />
                   </div>
                 ))}
@@ -147,19 +175,19 @@ const Home = () => {
                     <div className="text-sm text-[var(--color-muted)]">DATE</div>
                   </div>
                 </div>
-                {videoItems.map((video, idx) => (
+                {podcasts.slice(0, 2).map((podcast, idx) => (
                   <div
-                    key={`video-${video.id}`}
+                    key={`video-${podcast.id}`}
                     className="opacity-0 animate-slide-up"
                     style={{ animationDelay: `${100 + idx * 50}ms` }}
                   >
                     <ArticleCard
-                      image={video.image}
-                      title={video.title}
-                      category={video.category}
-                      date={video.date}
-                      readTime={video.readTime}
-                      to={`/article/${video.id}`}
+                      image={podcast.cover_image_url}
+                      title={podcast.title}
+                      category={podcast.category?.name || 'Podcast'}
+                      date={new Date(podcast.published_at).toLocaleDateString()}
+                      readTime={podcast.duration}
+                      to={`/podcast/${podcast.slug}`}
                     />
                   </div>
                 ))}
@@ -170,18 +198,16 @@ const Home = () => {
           {/* Sidebar */}
           <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
             <div className="opacity-0 animate-fade-in animation-delay-100">
-              <PodcastWidget />
+              <PodcastWidget podcasts={podcasts} loading={podcastsLoading} />
             </div>
             <div className="opacity-0 animate-fade-in animation-delay-200">
-              <NewsletterWidget />
+              <NewsletterWidget newsletters={newsletters} loading={newslettersLoading} />
             </div>
             <div className="opacity-0 animate-fade-in animation-delay-300">
-              <EventsWidget />
+              <EventsWidget events={events} loading={eventsLoading} />
             </div>
-            {/* Advertisement placeholder */}
-            <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 text-center text-sm text-[var(--color-muted)] transition-all duration-300 hover:shadow-lg">
-              Advertisement
-            </div>
+            {/* Advertisements */}
+            <AdSlot position="sidebar" className="opacity-0 animate-fade-in animation-delay-400" />
           </aside>
         </div>
       </div>

@@ -26,7 +26,7 @@ export default function About() {
       icon: FaRocket,
       title: 'Empowerment',
       description:
-        'We are committed to empowering individuals and businesses with knowledge and resources to thrive in the digital.',
+        'We are committed to empowering individuals and businesses with knowledge and resources to thrive in the digital age.',
     },
 
     {
@@ -56,7 +56,7 @@ export default function About() {
       bio: 'Experienced journalist with a focus on tech and innovation stories.',
     },
     {
-      name: 'Mike Johnson',
+      name: 'Isaac L. Kamara, Jr (Dev Iskalo)',
       role: 'Tech Lead',
       bio: 'Full-stack developer and tech enthusiast driving our platform development.',
     },
@@ -69,7 +69,7 @@ export default function About() {
         {/* Hero Section */}
         <header className="mb-12 text-center">
           <H1 className="mb-4">About Liberia Digital Insights</H1>
-          <Muted className="mx-auto max-w-3xl text-lg">
+          <Muted className="mx-auto max-w-3xl">
             Liberia Digital Insights represents a platform focused on providing in-depth knowledge,
             analysis, and updates about digital transformation, technology advancements,
             entrepreneurship, and innovation within Liberia. It reflects the vision of empowering

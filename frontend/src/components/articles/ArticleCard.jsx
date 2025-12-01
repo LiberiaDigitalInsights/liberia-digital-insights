@@ -15,6 +15,7 @@ export default function ArticleCard({
   featured = false,
   featuredReverse = false,
   className,
+  tags = [],
 }) {
   return (
     <Link
@@ -37,12 +38,24 @@ export default function ArticleCard({
                 {excerpt}
               </p>
             )}
-            <div className="flex items-center gap-3 text-xs text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-text)]">
+            <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-text)]">
               {author && <span>{author}</span>}
               {date && <span>•</span>}
               {date && <span>{date}</span>}
               {readTime && <span>•</span>}
               {readTime && <span>{readTime} mins read</span>}
+              {Array.isArray(tags) && tags.length > 0 && (
+                <span className="inline-flex flex-wrap items-center gap-1">
+                  {tags.slice(0, 2).map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_10%)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-muted)]"
+                    >
+                      #{String(t).replace(/^#/, '')}
+                    </span>
+                  ))}
+                </span>
+              )}
             </div>
           </div>
           {image && (
@@ -100,12 +113,24 @@ export default function ArticleCard({
                 {excerpt}
               </p>
             )}
-            <div className="flex items-center gap-3 text-xs text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-text)]">
+            <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-text)]">
               {author && <span>{author}</span>}
               {date && <span>•</span>}
               {date && <span>{date}</span>}
               {readTime && <span>•</span>}
               {readTime && <span>{readTime} mins read</span>}
+              {Array.isArray(tags) && tags.length > 0 && (
+                <span className="inline-flex flex-wrap items-center gap-1">
+                  {tags.slice(0, 2).map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_10%)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-muted)]"
+                    >
+                      #{String(t).replace(/^#/, '')}
+                    </span>
+                  ))}
+                </span>
+              )}
             </div>
           </div>
         </>

@@ -56,9 +56,9 @@ export default {
     ],
     // To enable Algolia DocSearch, fill in your credentials and uncomment below
     algolia: {
-      appId: '0MG5COI1YB',
-      apiKey: 'f2e7f19a73725c5920434ad0306702a9',
-      indexName: 'liberia-digital-insights',
+      appId: '0UBN8TXL71',
+      apiKey: 'a788855362e490c9a3556309138b0500',
+      indexName: 'ldi_search',
     },
     socialLinks: [
       {

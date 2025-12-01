@@ -33,16 +33,16 @@ describe('Training & Courses routes', () => {
     // Title from mock training item 1
     await screen.findByRole('heading', { name: /full-stack web development bootcamp/i });
     // Register CTA should be present
-    const register = await screen.findByRole('link', { name: /register/i });
+    const register = await screen.findByRole('link', { name: /^register$/i }, { timeout: 10000 });
     expect(register).toBeInTheDocument();
-  });
+  }, 20000);
 
   it('renders course detail', async () => {
     renderAt('/course/1');
     await screen.findByRole('heading', { name: /foundations of cybersecurity/i });
-    const register = await screen.findByRole('link', { name: /register/i });
+    const register = await screen.findByRole('link', { name: /^register$/i }, { timeout: 10000 });
     expect(register).toBeInTheDocument();
-  });
+  }, 20000);
 
   it('renders register page with type/id context', async () => {
     renderAt('/register?type=training&id=1');

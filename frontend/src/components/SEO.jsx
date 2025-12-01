@@ -9,6 +9,7 @@ const DEFAULT_META = {
   image: '/LDI_favicon.png',
   type: 'website',
   siteName: 'Liberia Digital Insights',
+  siteUrl: 'https://liberiadigitalinsights.com',
 };
 
 const ROUTE_META = {
@@ -62,6 +63,99 @@ const ROUTE_META = {
     description:
       'Subscribe to our newsletter for weekly tech news, insights, podcasts, and exclusive event invitations.',
   },
+  '/privacy': {
+    title: 'Privacy Policy | Liberia Digital Insights',
+    description:
+      'Learn how Liberia Digital Insights protects your privacy and handles your data responsibly.',
+  },
+  '/terms': {
+    title: 'Terms of Service | Liberia Digital Insights',
+    description: 'Read our terms of service and user agreement for Liberia Digital Insights.',
+  },
+  '/cookies': {
+    title: 'Cookie Policy | Liberia Digital Insights',
+    description: 'Understand how Liberia Digital Insights uses cookies and tracking technologies.',
+  },
+  '/talent': {
+    title: 'Talent Hub | Liberia Digital Insights',
+    description: "Connect with Liberia's tech talent. Find opportunities and showcase your skills.",
+  },
+  '/training-courses': {
+    title: 'Training & Courses | Liberia Digital Insights',
+    description:
+      'Enhance your skills with our technology training courses and workshops in Liberia.',
+  },
+};
+
+// Generate JSON-LD structured data
+const generateStructuredData = (meta, url, imageUrl) => {
+  const baseSchema = {
+    '@context': 'https://schema.org',
+    '@type': meta.type === 'article' ? 'Article' : 'WebPage',
+    name: meta.title,
+    description: meta.description,
+    url: url,
+    image: imageUrl,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Liberia Digital Insights',
+      url: DEFAULT_META.siteUrl,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${DEFAULT_META.siteUrl}/LDI_favicon.png`,
+      },
+      sameAs: [
+        'https://facebook.com/LiberiaDigitalInsights',
+        'https://twitter.com/LiberiaDigitalInsights',
+        'https://linkedin.com/company/LiberiaDigitalInsights',
+        'https://youtube.com/@LiberiaDigitalInsights',
+      ],
+    },
+  };
+
+  // Add article-specific fields
+  if (meta.type === 'article') {
+    baseSchema.datePublished = meta.publishedTime;
+    baseSchema.dateModified = meta.modifiedTime || meta.publishedTime;
+    baseSchema.author = {
+      '@type': 'Organization',
+      name: meta.author || 'Liberia Digital Insights',
+    };
+    if (meta.tags && Array.isArray(meta.tags)) {
+      baseSchema.keywords = meta.tags.join(', ');
+    }
+  }
+
+  return baseSchema;
+};
+
+// Generate breadcrumb schema
+const generateBreadcrumbSchema = (pathname) => {
+  const pathSegments = pathname.split('/').filter(Boolean);
+  const breadcrumbs = [{ name: 'Home', url: DEFAULT_META.siteUrl }];
+
+  let currentPath = '';
+  pathSegments.forEach((segment) => {
+    currentPath += `/${segment}`;
+    const routeMeta = ROUTE_META[currentPath];
+    if (routeMeta) {
+      breadcrumbs.push({
+        name: routeMeta.title.replace(' | Liberia Digital Insights', ''),
+        url: `${DEFAULT_META.siteUrl}${currentPath}`,
+      });
+    }
+  });
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.name,
+      item: crumb.url,
+    })),
+  };
 };
 
 export default function SEO({
@@ -73,6 +167,7 @@ export default function SEO({
   publishedTime,
   modifiedTime,
   tags,
+  schemaData,
 }) {
   const location = useLocation();
   const routeMeta = ROUTE_META[location.pathname] || {};
@@ -93,6 +188,25 @@ export default function SEO({
 
   const keywords = tags ? (Array.isArray(tags) ? tags.join(', ') : tags) : undefined;
 
+  // Generate structured data
+  const structuredData =
+    schemaData ||
+    generateStructuredData(
+      {
+        title: fullTitle,
+        description: metaDescription,
+        type: metaType,
+        author,
+        publishedTime,
+        modifiedTime,
+        tags,
+      },
+      url,
+      imageUrl,
+    );
+
+  const breadcrumbData = generateBreadcrumbSchema(location.pathname);
+
   return (
     <Helmet>
       {/* Primary Meta Tags */}
@@ -108,6 +222,8 @@ export default function SEO({
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={metaDescription} />
       <meta property="og:image" content={imageUrl} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content={DEFAULT_META.siteName} />
       {publishedTime && <meta property="article:published_time" content={publishedTime} />}
       {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
@@ -121,12 +237,97 @@ export default function SEO({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={metaDescription} />
       <meta name="twitter:image" content={imageUrl} />
+      <meta name="twitter:site" content="@LiberiaDigitalInsights" />
+      <meta name="twitter:creator" content="@LiberiaDigitalInsights" />
 
       {/* Additional SEO */}
       <link rel="canonical" href={url} />
       <meta name="robots" content="index, follow" />
+      <meta name="googlebot" content="index, follow" />
       <meta name="language" content="English" />
       <meta name="revisit-after" content="7 days" />
+      <meta name="geo.region" content="LR" />
+      <meta name="geo.placename" content="Monrovia, Liberia" />
+      <meta name="ICBM" content="6.2916; -10.7607" />
+
+      {/* Favicon and App Icons */}
+      <link rel="icon" href="/favicon.ico" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+      <link rel="manifest" href="/site.webmanifest" />
+
+      {/* Preconnect to external domains */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link rel="preconnect" href="https://liberiadigitalinsights.com" />
+
+      {/* DNS Prefetch */}
+      <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+      <link rel="dns-prefetch" href="//www.google-analytics.com" />
+      <link rel="dns-prefetch" href="//connect.facebook.net" />
+      <link rel="dns-prefetch" href="//platform.twitter.com" />
+
+      {/* JSON-LD Structured Data */}
+      <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+
+      {/* Breadcrumb Schema */}
+      {location.pathname !== '/' && (
+        <script type="application/ld+json">{JSON.stringify(breadcrumbData)}</script>
+      )}
+
+      {/* Organization Schema for homepage */}
+      {location.pathname === '/' && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'Liberia Digital Insights',
+            url: DEFAULT_META.siteUrl,
+            logo: `${DEFAULT_META.siteUrl}/LDI_favicon.png`,
+            description: DEFAULT_META.description,
+            address: {
+              '@type': 'PostalAddress',
+              addressCountry: 'LR',
+              addressLocality: 'Monrovia',
+            },
+            contactPoint: {
+              '@type': 'ContactPoint',
+              telephone: '+231-XXX-XXXX',
+              contactType: 'customer service',
+              email: 'contact@liberiadigitalinsights.com',
+            },
+            sameAs: [
+              'https://facebook.com/LiberiaDigitalInsights',
+              'https://twitter.com/LiberiaDigitalInsights',
+              'https://linkedin.com/company/LiberiaDigitalInsights',
+              'https://youtube.com/@LiberiaDigitalInsights',
+            ],
+          })}
+        </script>
+      )}
+
+      {/* Website Schema for homepage */}
+      {location.pathname === '/' && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'Liberia Digital Insights',
+            url: DEFAULT_META.siteUrl,
+            description: DEFAULT_META.description,
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: `${DEFAULT_META.siteUrl}/search?q={search_term_string}`,
+              'query-input': 'required name=search_term_string',
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'Liberia Digital Insights',
+            },
+          })}
+        </script>
+      )}
     </Helmet>
   );
 }

@@ -5,20 +5,39 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import Button from '../components/ui/Button';
 import { Link } from 'react-router-dom';
 import LazyImage from '../components/LazyImage';
-import {
-  getUpcomingTrainings,
-  getUpcomingCourses,
-  getPastTrainings,
-  getPastCourses,
-} from '../data/mockTraining';
+import { useTraining } from '../hooks/useBackendApi';
 import Select from '../components/ui/Select';
 import EmptyState from '../components/ui/EmptyState';
 
 export default function TrainingCourses() {
-  const trainings = getUpcomingTrainings();
-  const courses = getUpcomingCourses();
-  const pastTrainings = getPastTrainings();
-  const pastCourses = getPastCourses();
+  const { data: trainingData, loading, error } = useTraining({});
+  const allTraining = trainingData?.training || [];
+  
+  // Filter training and courses based on type
+  const trainings = allTraining.filter(item => item.type === 'training');
+  const courses = allTraining.filter(item => item.type === 'course');
+  
+  // Map backend data to the expected format for the UI
+  const mapTrainingToUI = (item) => ({
+    ...item,
+    id: item.id,
+    title: item.title,
+    summary: item.description || item.summary || '',
+    date: item.startDate || item.date || 'TBD',
+    duration: item.duration || 'N/A',
+    location: item.location || 'Online',
+    modality: item.modality || (item.location === 'Online' ? 'Online' : 'In-person'),
+    image: item.coverImage || item.image || '/LDI_favicon.png',
+    registrationUrl: item.registrationUrl || '/register',
+  });
+  
+  const mappedTrainings = trainings.map(mapTrainingToUI);
+  const mappedCourses = courses.map(mapTrainingToUI);
+  
+  // For now, we'll show all items as "upcoming" since the API doesn't provide date filtering
+  // This can be enhanced later with date-based filtering
+  const pastTrainings = [];
+  const pastCourses = [];
 
   const [location, setLocation] = React.useState('All');
   const [modality, setModality] = React.useState('All');
@@ -28,11 +47,11 @@ export default function TrainingCourses() {
 
   const allLocations = [
     'All',
-    ...Array.from(new Set([...trainings, ...courses].map((x) => x.location))),
+    ...Array.from(new Set([...mappedTrainings, ...mappedCourses].map((x) => x.location || 'Unknown'))),
   ];
   const allModalities = [
     'All',
-    ...Array.from(new Set([...trainings, ...courses].map((x) => x.modality || ''))),
+    ...Array.from(new Set([...mappedTrainings, ...mappedCourses].map((x) => x.modality || ''))),
   ].filter(Boolean);
 
   const applyFilters = (list) =>
@@ -42,10 +61,26 @@ export default function TrainingCourses() {
         (modality === 'All' || x.modality === modality),
     );
 
-  const filteredTrainings = applyFilters(trainings);
-  const filteredCourses = applyFilters(courses);
+  const filteredTrainings = applyFilters(mappedTrainings);
+  const filteredCourses = applyFilters(mappedCourses);
   const pagedTrainings = filteredTrainings.slice((pageT - 1) * pageSize, pageT * pageSize);
   const pagedCourses = filteredCourses.slice((pageC - 1) * pageSize, pageC * pageSize);
+
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+        <div className="text-center">Loading training data...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+        <div className="text-center text-red-600">Error loading training data: {error.message}</div>
+      </div>
+    );
+  }
 
   return (
     <>

@@ -102,8 +102,8 @@ export default function Contact() {
     {
       icon: FaEnvelope,
       label: 'Email',
-      value: 'info@liberiadigitalinsights.news',
-      link: 'mailto:info@liberiadigitalinsights.news',
+      value: 'info@liberiadigitalinsights.com',
+      link: 'mailto:info@liberiadigitalinsights.com',
     },
     {
       icon: FaPhone,
@@ -180,7 +180,7 @@ export default function Contact() {
                       href="mailto:sales@liberiadigitalinsights.news"
                       className="text-[var(--color-text)] transition-colors duration-200 hover:text-brand-500"
                     >
-                      sales@liberiadigitalinsights.news
+                      sales@liberiadigitalinsights.com
                     </a>
                   </div>
                   <div>
@@ -189,7 +189,7 @@ export default function Contact() {
                       href="mailto:newsroom@liberiadigitalinsights.news"
                       className="text-[var(--color-text)] transition-colors duration-200 hover:text-brand-500"
                     >
-                      newsroom@liberiadigitalinsights.news
+                      newsroom@liberiadigitalinsights.com
                     </a>
                   </div>
                 </div>

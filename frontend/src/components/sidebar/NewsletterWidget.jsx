@@ -4,10 +4,11 @@ import { Field, Label, HelperText } from '../ui/Form';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { useToast } from '../../context/ToastContext';
-import { subscribeNewsletter } from '../../lib/newsletter';
+import { useNewsletterSubscription } from '../../hooks/useBackendApi';
 
 export default function NewsletterWidget() {
   const { showToast } = useToast();
+  const { subscribe, loading } = useNewsletterSubscription();
   const [form, setForm] = React.useState({
     name: '',
     email: '',
@@ -15,7 +16,6 @@ export default function NewsletterWidget() {
     org: '',
     position: '',
   });
-  const [submitting, setSubmitting] = React.useState(false);
   const [errors, setErrors] = React.useState({});
   const [status, setStatus] = React.useState('idle'); // idle | success | error
 
@@ -47,8 +47,7 @@ export default function NewsletterWidget() {
       return;
     }
     try {
-      setSubmitting(true);
-      await subscribeNewsletter(form);
+      await subscribe(form);
       showToast({
         title: 'Subscribed',
         description: 'Thanks for subscribing to our newsletter!',
@@ -56,15 +55,33 @@ export default function NewsletterWidget() {
       });
       setStatus('success');
       setForm({ name: '', email: '', company: '', org: '', position: '' });
-    } catch {
+    } catch (err) {
+      // Handle specific error cases
+      let errorMessage = 'Failed to subscribe. Please try again.';
+      let errorTitle = 'Error';
+      
+      if (err.message?.includes('Email already subscribed')) {
+        errorTitle = 'Already Subscribed';
+        errorMessage = 'This email is already subscribed to our newsletter.';
+        setStatus('error');
+      } else if (err.message?.includes('Invalid email format')) {
+        errorTitle = 'Invalid Email';
+        errorMessage = 'Please enter a valid email address.';
+        setStatus('error');
+      } else if (err.message?.includes('Name and email are required')) {
+        errorTitle = 'Missing Information';
+        errorMessage = 'Please fill in all required fields.';
+        setStatus('error');
+      } else if (err.message) {
+        errorMessage = err.message;
+        setStatus('error');
+      }
+      
       showToast({
-        title: 'Error',
-        description: 'Failed to subscribe. Please try again.',
+        title: errorTitle,
+        description: errorMessage,
         variant: 'danger',
       });
-      setStatus('error');
-    } finally {
-      setSubmitting(false);
     }
   };
   return (
@@ -142,7 +159,7 @@ export default function NewsletterWidget() {
               onChange={onChange}
             />
           </Field>
-          <Button type="submit" className="w-full" loading={submitting} loadingText="Submitting...">
+          <Button type="submit" className="w-full" loading={loading} loadingText="Submitting...">
             Sign Up
           </Button>
           {status === 'success' && (

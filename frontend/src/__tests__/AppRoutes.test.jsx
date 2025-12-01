@@ -23,9 +23,13 @@ function renderAt(pathname) {
 describe('App routes', () => {
   it('renders Home at /', async () => {
     renderAt('/');
-    // Wait for the Home content to render (Suspense fallback uses skeletons now)
-    await screen.findByRole('heading', { name: /technology/i }, { timeout: 10000 });
-  });
+    // Wait for the hero heading to ensure Home finished lazy loading
+    await screen.findByRole(
+      'heading',
+      { name: /liberia's home for tech news and insights/i },
+      { timeout: 20000 },
+    );
+  }, 25000);
 
   it('renders Contact at /contact', async () => {
     renderAt('/contact');
@@ -34,7 +38,7 @@ describe('App routes', () => {
 
   it('renders NotFound on unknown route', async () => {
     renderAt('/does-not-exist');
-    // Page Not Found heading from NotFound.jsx
-    await screen.findByText(/page not found/i);
-  });
+    // Wait for lazy NotFound to load; assert the H2 heading text
+    await screen.findByRole('heading', { name: /page not found/i }, { timeout: 20000 });
+  }, 25000);
 });

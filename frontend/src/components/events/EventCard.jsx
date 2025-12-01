@@ -14,7 +14,6 @@ export default function EventCard({
   image,
   category,
   registrationUrl,
-  status,
   isPast,
   className,
 }) {
@@ -40,7 +39,7 @@ export default function EventCard({
               {category}
             </div>
           )}
-          {status === 'upcoming' && (
+          {!isPast && (
             <div className="absolute top-3 right-3 rounded-full bg-green-500 px-2.5 py-1 text-xs font-medium text-white shadow-lg">
               Upcoming
             </div>
