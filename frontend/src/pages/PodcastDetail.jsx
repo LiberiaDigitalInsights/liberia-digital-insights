@@ -75,7 +75,13 @@ export default function PodcastDetail() {
             Podcasts
           </Link>
           {' / '}
-          <span>Episode {podcast.episode_number}</span>
+          <span>
+            {podcast.episode_number && podcast.season_number 
+              ? `S${podcast.season_number}E${podcast.episode_number}`
+              : podcast.episode_number 
+                ? `Episode ${podcast.episode_number}`
+                : podcast.title}
+          </span>
         </nav>
 
         {/* Back button */}
@@ -95,42 +101,41 @@ export default function PodcastDetail() {
             audioUrl={podcast.audio_url}
             image={podcast.cover_image_url}
             date={new Date(podcast.published_at).toLocaleDateString()}
-            guest={podcast.author?.name}
+            guest={podcast.guest}
           />
           {/* Guest Info */}
-          {podcast.author?.name && (
+          {podcast.guest && (
             <Card className="mt-6">
               <CardHeader>
-                <CardTitle>Host</CardTitle>
+                <CardTitle>Guest</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-4">
                   <div
                     aria-hidden
                     className="flex h-12 w-12 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--color-surface),white_8%)] text-sm font-semibold text-[var(--color-text)]"
-                    title={podcast.author.name}
+                    title={podcast.guest}
                   >
-                    {String(podcast.author.name).charAt(0).toUpperCase()}
+                    {String(podcast.guest).charAt(0).toUpperCase()}
                   </div>
                   <div>
                     <div className="text-sm font-medium text-[var(--color-text)]">
-                      {podcast.author.name}
+                      {podcast.guest}
                     </div>
-                    {podcast.published_at && (
-                      <div className="text-xs text-[var(--color-muted)]">
-                        Published {new Date(podcast.published_at).toLocaleDateString()}
-                      </div>
-                    )}
+                    <div className="text-xs text-[var(--color-muted)]">
+                      Guest Speaker
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
           )}
-          {podcast.links && (
+          {/* Platform Links */}
+          {(podcast.youtube_url || podcast.spotify_url || podcast.apple_podcasts_url || podcast.facebook_url) && (
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
-              {podcast.links.youtube && (
+              {podcast.youtube_url && (
                 <a
-                  href={podcast.links.youtube}
+                  href={podcast.youtube_url}
                   target="_blank"
                   rel="noreferrer"
                   className="text-brand-500 hover:underline"
@@ -138,9 +143,9 @@ export default function PodcastDetail() {
                   Watch on YouTube
                 </a>
               )}
-              {podcast.links.spotify && (
+              {podcast.spotify_url && (
                 <a
-                  href={podcast.links.spotify}
+                  href={podcast.spotify_url}
                   target="_blank"
                   rel="noreferrer"
                   className="text-brand-500 hover:underline"
@@ -148,28 +153,48 @@ export default function PodcastDetail() {
                   Listen on Spotify
                 </a>
               )}
+              {podcast.apple_podcasts_url && (
+                <a
+                  href={podcast.apple_podcasts_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-brand-500 hover:underline"
+                >
+                  Listen on Apple Podcasts
+                </a>
+              )}
+              {podcast.facebook_url && (
+                <a
+                  href={podcast.facebook_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-brand-500 hover:underline"
+                >
+                  Listen on Facebook
+                </a>
+              )}
             </div>
           )}
           {/* Inline Embeds */}
-          {podcast.links?.youtube && (
+          {podcast.youtube_url && (
             <div className="mt-6 aspect-video overflow-hidden rounded-[var(--radius-md)]">
               <iframe
                 title="YouTube embed"
                 width="100%"
                 height="100%"
-                src={toYouTubeEmbed(podcast.links.youtube)}
+                src={toYouTubeEmbed(podcast.youtube_url)}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
               />
             </div>
           )}
-          {podcast.links?.spotify && (
+          {podcast.spotify_url && (
             <div className="mt-6 overflow-hidden rounded-[var(--radius-md)]">
               <iframe
                 title="Spotify embed"
                 style={{ borderRadius: '12px' }}
-                src={toSpotifyEmbed(podcast.links.spotify)}
+                src={toSpotifyEmbed(podcast.spotify_url)}
                 width="100%"
                 height="152"
                 frameBorder="0"
@@ -202,14 +227,14 @@ export default function PodcastDetail() {
         )}
 
         {/* Transcript */}
-        {podcast.description && (
+        {podcast.transcript && (
           <Card className="mb-12">
             <CardHeader>
               <CardTitle>Transcript</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="whitespace-pre-line text-sm text-[var(--color-text)]">
-                {podcast.description}
+                {podcast.transcript}
               </p>
             </CardContent>
           </Card>
@@ -221,10 +246,16 @@ export default function PodcastDetail() {
             <CardTitle>Episode Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
-            {podcast.date && (
+            {podcast.published_at && (
               <div>
                 <span className="font-medium text-[var(--color-text)]">Published:</span>{' '}
-                <span className="text-[var(--color-muted)]">{podcast.date}</span>
+                <span className="text-[var(--color-muted)]">
+                  {new Date(podcast.published_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </span>
               </div>
             )}
             {podcast.duration && (
@@ -237,6 +268,71 @@ export default function PodcastDetail() {
               <div>
                 <span className="font-medium text-[var(--color-text)]">Guest:</span>{' '}
                 <span className="text-[var(--color-muted)]">{podcast.guest}</span>
+              </div>
+            )}
+            {(podcast.episode_number || podcast.season_number) && (
+              <div>
+                <span className="font-medium text-[var(--color-text)]">Episode:</span>{' '}
+                <span className="text-[var(--color-muted)]">
+                  {podcast.episode_number && podcast.season_number 
+                    ? `S${podcast.season_number}E${podcast.episode_number}`
+                    : podcast.episode_number 
+                      ? `Episode ${podcast.episode_number}`
+                      : `Season ${podcast.season_number}`}
+                </span>
+              </div>
+            )}
+            {podcast.category_id && (
+              <div>
+                <span className="font-medium text-[var(--color-text)]">Category:</span>{' '}
+                <span className="text-[var(--color-muted)]">
+                  {podcast.categories?.name || podcast.category_id}
+                </span>
+              </div>
+            )}
+            {podcast.language && (
+              <div>
+                <span className="font-medium text-[var(--color-text)]">Language:</span>{' '}
+                <span className="text-[var(--color-muted)]">
+                  {podcast.language === 'en' ? 'English' :
+                   podcast.language === 'fr' ? 'French' :
+                   podcast.language === 'es' ? 'Spanish' :
+                   podcast.language}
+                </span>
+              </div>
+            )}
+            {podcast.tags && podcast.tags.length > 0 && (
+              <div>
+                <span className="font-medium text-[var(--color-text)]">Tags:</span>{' '}
+                <span className="text-[var(--color-muted)]">{podcast.tags.join(', ')}</span>
+              </div>
+            )}
+            {podcast.is_featured && (
+              <div>
+                <span className="font-medium text-[var(--color-text)]">Featured:</span>{' '}
+                <span className="text-[var(--color-muted)]">Yes</span>
+              </div>
+            )}
+            {(podcast.plays_count || podcast.downloads_count || podcast.likes_count) && (
+              <div className="grid grid-cols-3 gap-4 pt-2">
+                {podcast.plays_count !== undefined && (
+                  <div className="text-center">
+                    <div className="font-medium text-[var(--color-text)]">{podcast.plays_count || 0}</div>
+                    <div className="text-xs text-[var(--color-muted)]">Plays</div>
+                  </div>
+                )}
+                {podcast.downloads_count !== undefined && (
+                  <div className="text-center">
+                    <div className="font-medium text-[var(--color-text)]">{podcast.downloads_count || 0}</div>
+                    <div className="text-xs text-[var(--color-muted)]">Downloads</div>
+                  </div>
+                )}
+                {podcast.likes_count !== undefined && (
+                  <div className="text-center">
+                    <div className="font-medium text-[var(--color-text)]">{podcast.likes_count || 0}</div>
+                    <div className="text-xs text-[var(--color-muted)]">Likes</div>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>

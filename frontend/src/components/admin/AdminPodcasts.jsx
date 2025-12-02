@@ -24,11 +24,30 @@ import {
 import { usePodcasts } from '../../hooks/useBackendApi';
 import { backendApi } from '../../services/backendApi';
 import { useToast } from '../../context/ToastContext';
+import { useCategories } from '../../hooks/useBackendApi';
 
 const AdminPodcasts = ({ canEdit }) => {
   const { showToast } = useToast();
-  const { data: podcastsData, _loading, _error, refetch } = usePodcasts({});
+  const { data: podcastsData, refetch } = usePodcasts({});
+  const { data: categoriesData } = useCategories({});
   const podcasts = podcastsData?.podcasts || [];
+  const categories = categoriesData?.data || [];
+  
+  // Debug logging for categories
+  console.log('Categories data:', categoriesData);
+  console.log('Categories array:', categories);
+  
+  // Fallback categories if API fails
+  const fallbackCategories = [
+    { id: 'technology-fallback', name: 'Technology' },
+    { id: 'business-fallback', name: 'Business' },
+    { id: 'innovation-fallback', name: 'Innovation' },
+    { id: 'leadership-fallback', name: 'Leadership' },
+    { id: 'interview-fallback', name: 'Interview' }
+  ];
+  
+  const displayCategories = categories.length > 0 ? categories : fallbackCategories;
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,7 +65,12 @@ const AdminPodcasts = ({ canEdit }) => {
     description: '',
     duration: '',
     guest: '',
-    category: '',
+    category_id: '',
+    episode_number: '',
+    season_number: '',
+    language: 'en',
+    tags: '',
+    is_featured: false,
     status: 'draft',
     audioUrl: '',
     transcript: '',
@@ -116,7 +140,12 @@ const AdminPodcasts = ({ canEdit }) => {
         description: formData.description,
         duration: formData.duration,
         guest: formData.guest,
-        category: formData.category,
+        category_id: formData.category_id || null,
+        episode_number: formData.episode_number || null,
+        season_number: formData.season_number || null,
+        language: formData.language,
+        tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : [],
+        is_featured: formData.is_featured,
         status: formData.status,
         audio_url: formData.audioUrl,
         transcript: formData.transcript,
@@ -125,7 +154,7 @@ const AdminPodcasts = ({ canEdit }) => {
         facebook_url: formData.facebookUrl,
         spotify_url: formData.spotifyUrl,
         apple_podcasts_url: formData.applePodcastsUrl,
-        cover_image: formData.coverImage,
+        cover_image_url: formData.coverImage,
       };
 
       await backendApi.podcasts.create(newPodcast);
@@ -157,16 +186,21 @@ const AdminPodcasts = ({ canEdit }) => {
       description: podcast.description || '',
       duration: podcast.duration || '',
       guest: podcast.guest || '',
-      category: podcast.category || '',
+      category_id: podcast.category_id || '',
+      episode_number: podcast.episode_number || '',
+      season_number: podcast.season_number || '',
+      language: podcast.language || 'en',
+      tags: podcast.tags ? podcast.tags.join(', ') : '',
+      is_featured: podcast.is_featured || false,
       status: podcast.status,
-      audioUrl: podcast.audioUrl || '',
+      audioUrl: podcast.audio_url || '',
       transcript: podcast.transcript || '',
-      videoUrl: podcast.videoUrl || '',
-      youtubeUrl: podcast.youtubeUrl || '',
-      facebookUrl: podcast.facebookUrl || '',
-      spotifyUrl: podcast.spotifyUrl || '',
-      applePodcastsUrl: podcast.applePodcastsUrl || '',
-      coverImage: podcast.coverImage || '',
+      videoUrl: podcast.video_url || '',
+      youtubeUrl: podcast.youtube_url || '',
+      facebookUrl: podcast.facebook_url || '',
+      spotifyUrl: podcast.spotify_url || '',
+      applePodcastsUrl: podcast.apple_podcasts_url || '',
+      coverImage: podcast.cover_image_url || '',
     });
     setShowEditModal(true);
   };
@@ -181,7 +215,12 @@ const AdminPodcasts = ({ canEdit }) => {
         description: formData.description,
         duration: formData.duration,
         guest: formData.guest,
-        category: formData.category,
+        category_id: formData.category_id || null,
+        episode_number: formData.episode_number || null,
+        season_number: formData.season_number || null,
+        language: formData.language,
+        tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : [],
+        is_featured: formData.is_featured,
         status: formData.status,
         audio_url: formData.audioUrl,
         transcript: formData.transcript,
@@ -190,7 +229,7 @@ const AdminPodcasts = ({ canEdit }) => {
         facebook_url: formData.facebookUrl,
         spotify_url: formData.spotifyUrl,
         apple_podcasts_url: formData.applePodcastsUrl,
-        cover_image: formData.coverImage,
+        cover_image_url: formData.coverImage,
       };
 
       console.log('Updating podcast:', selectedPodcast.id, updatedPodcast);
@@ -256,7 +295,12 @@ const AdminPodcasts = ({ canEdit }) => {
       description: '',
       duration: '',
       guest: '',
-      category: '',
+      category_id: '',
+      episode_number: '',
+      season_number: '',
+      language: 'en',
+      tags: '',
+      is_featured: false,
       status: 'draft',
       audioUrl: '',
       transcript: '',
@@ -453,8 +497,8 @@ const AdminPodcasts = ({ canEdit }) => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={() => {
                             setSelectedPodcast(podcast);
@@ -547,16 +591,40 @@ const AdminPodcasts = ({ canEdit }) => {
               Category
             </label>
             <Select
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              value={formData.category_id}
+              onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
             >
               <option value="">Select category</option>
-              <option value="Technology">Technology</option>
-              <option value="Business">Business</option>
-              <option value="Innovation">Innovation</option>
-              <option value="Leadership">Leadership</option>
-              <option value="Interview">Interview</option>
+              {displayCategories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
             </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                Episode Number
+              </label>
+              <Input
+                type="number"
+                value={formData.episode_number}
+                onChange={(e) => setFormData({ ...formData, episode_number: e.target.value })}
+                placeholder="e.g., 1"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                Season Number
+              </label>
+              <Input
+                type="number"
+                value={formData.season_number}
+                onChange={(e) => setFormData({ ...formData, season_number: e.target.value })}
+                placeholder="e.g., 1"
+              />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
@@ -753,16 +821,40 @@ const AdminPodcasts = ({ canEdit }) => {
               Category
             </label>
             <Select
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              value={formData.category_id}
+              onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
             >
               <option value="">Select category</option>
-              <option value="Technology">Technology</option>
-              <option value="Business">Business</option>
-              <option value="Innovation">Innovation</option>
-              <option value="Leadership">Leadership</option>
-              <option value="Interview">Interview</option>
+              {displayCategories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
             </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                Episode Number
+              </label>
+              <Input
+                type="number"
+                value={formData.episode_number}
+                onChange={(e) => setFormData({ ...formData, episode_number: e.target.value })}
+                placeholder="e.g., 1"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                Season Number
+              </label>
+              <Input
+                type="number"
+                value={formData.season_number}
+                onChange={(e) => setFormData({ ...formData, season_number: e.target.value })}
+                placeholder="e.g., 1"
+              />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
@@ -940,54 +1032,250 @@ const AdminPodcasts = ({ canEdit }) => {
             <>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Title</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Title
+                  </label>
                   <p className="text-[var(--color-text)] font-medium">{selectedPodcast.title}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Description</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Description
+                  </label>
                   <p className="text-[var(--color-text)]">{selectedPodcast.description || 'N/A'}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Duration</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Duration
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedPodcast.duration || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Guest</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Guest
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedPodcast.guest || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Status</label>
-                    <div><StatusBadge status={selectedPodcast.status} /></div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Episode
+                    </label>
+                    <p className="text-[var(--color-text)]">
+                      {selectedPodcast.episode_number && selectedPodcast.season_number
+                        ? `S${selectedPodcast.season_number}E${selectedPodcast.episode_number}`
+                        : selectedPodcast.episode_number
+                          ? `Episode ${selectedPodcast.episode_number}`
+                          : 'N/A'}
+                    </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Plays</label>
-                    <p className="text-[var(--color-text)]">{selectedPodcast.plays || 0}</p>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Category
+                    </label>
+                    <p className="text-[var(--color-text)]">
+                      {selectedPodcast.category_id
+                        ? selectedPodcast.categories?.name || selectedPodcast.category_id
+                        : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Language
+                    </label>
+                    <p className="text-[var(--color-text)]">
+                      {selectedPodcast.language === 'en'
+                        ? 'English'
+                        : selectedPodcast.language === 'fr'
+                          ? 'French'
+                          : selectedPodcast.language === 'es'
+                            ? 'Spanish'
+                            : selectedPodcast.language || 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Status
+                    </label>
+                    <div>
+                      <StatusBadge status={selectedPodcast.status} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Featured
+                    </label>
+                    <p className="text-[var(--color-text)]">
+                      {selectedPodcast.is_featured ? 'Yes' : 'No'}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Plays
+                    </label>
+                    <p className="text-[var(--color-text)]">{selectedPodcast.plays_count || 0}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Downloads
+                    </label>
+                    <p className="text-[var(--color-text)]">
+                      {selectedPodcast.downloads_count || 0}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Likes
+                    </label>
+                    <p className="text-[var(--color-text)]">{selectedPodcast.likes_count || 0}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Published Date
+                    </label>
+                    <p className="text-[var(--color-text)]">
+                      {selectedPodcast.published_at
+                        ? new Date(selectedPodcast.published_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })
+                        : 'N/A'}
+                    </p>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Cover Image</label>
-                  <p className="text-[var(--color-text)] text-sm">
-                    {selectedPodcast.coverImage ? (
-                      <a href={selectedPodcast.coverImage} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                        {selectedPodcast.coverImage}
-                      </a>
-                    ) : 'N/A'}
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Tags
+                  </label>
+                  <p className="text-[var(--color-text)]">
+                    {selectedPodcast.tags && selectedPodcast.tags.length > 0
+                      ? selectedPodcast.tags.join(', ')
+                      : 'N/A'}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Audio File</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Cover Image
+                  </label>
                   <p className="text-[var(--color-text)] text-sm">
-                    {selectedPodcast.audioFile ? (
-                      <a href={selectedPodcast.audioFile} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                        {selectedPodcast.audioFile}
+                    {selectedPodcast.cover_image_url ? (
+                      <a
+                        href={selectedPodcast.cover_image_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
+                        {selectedPodcast.cover_image_url}
                       </a>
-                    ) : 'N/A'}
+                    ) : (
+                      'N/A'
+                    )}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Published Date</label>
-                  <p className="text-[var(--color-text)]">{selectedPodcast.date || 'N/A'}</p>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Audio File
+                  </label>
+                  <p className="text-[var(--color-text)] text-sm">
+                    {selectedPodcast.audio_url ? (
+                      <a
+                        href={selectedPodcast.audio_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
+                        {selectedPodcast.audio_url}
+                      </a>
+                    ) : (
+                      'N/A'
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Transcript
+                  </label>
+                  <p className="text-[var(--color-text)] text-sm max-h-32 overflow-y-auto">
+                    {selectedPodcast.transcript || 'N/A'}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      YouTube URL
+                    </label>
+                    <p className="text-[var(--color-text)] text-sm">
+                      {selectedPodcast.youtube_url ? (
+                        <a
+                          href={selectedPodcast.youtube_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                        >
+                          YouTube
+                        </a>
+                      ) : (
+                        'N/A'
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Spotify URL
+                    </label>
+                    <p className="text-[var(--color-text)] text-sm">
+                      {selectedPodcast.spotify_url ? (
+                        <a
+                          href={selectedPodcast.spotify_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                        >
+                          Spotify
+                        </a>
+                      ) : (
+                        'N/A'
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Apple Podcasts URL
+                    </label>
+                    <p className="text-[var(--color-text)] text-sm">
+                      {selectedPodcast.apple_podcasts_url ? (
+                        <a
+                          href={selectedPodcast.apple_podcasts_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                        >
+                          Apple Podcasts
+                        </a>
+                      ) : (
+                        'N/A'
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Facebook URL
+                    </label>
+                    <p className="text-[var(--color-text)] text-sm">
+                      {selectedPodcast.facebook_url ? (
+                        <a
+                          href={selectedPodcast.facebook_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                        >
+                          Facebook
+                        </a>
+                      ) : (
+                        'N/A'
+                      )}
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="flex gap-2 justify-end pt-4">

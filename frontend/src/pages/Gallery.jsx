@@ -46,7 +46,7 @@ export default function Gallery() {
     };
 
     fetchData();
-  }, [gallery]);
+  }, []); // Remove gallery dependency to prevent infinite re-renders
 
   const filteredItems = React.useMemo(() => {
     if (filter === 'all') return items;

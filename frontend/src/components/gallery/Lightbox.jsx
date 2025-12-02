@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import VideoPlayer from '../video/VideoPlayer';
 
 export default function Lightbox({ items, currentIndex, onClose, onNext, onPrevious }) {
   const isOpen = !!(items && items.length > 0 && currentIndex !== null);
@@ -109,10 +110,12 @@ export default function Lightbox({ items, currentIndex, onClose, onNext, onPrevi
               className="max-h-[80vh] w-auto rounded-[var(--radius-lg)] object-contain"
             />
           ) : (
-            <div className="aspect-video rounded-[var(--radius-lg)] bg-[var(--color-surface)] p-8">
-              <p className="text-center text-white">Video player placeholder</p>
-              <p className="mt-2 text-center text-sm text-white/70">{current.title}</p>
-            </div>
+            <VideoPlayer
+              url={current.url}
+              title={current.title}
+              thumbnail={current.thumbnail_url}
+              className="max-h-[80vh] w-auto"
+            />
           )}
 
           {/* Metadata */}

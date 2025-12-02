@@ -35,11 +35,11 @@ const handleResponse = async (response) => {
     const errorMessage = error.error || error.message || `HTTP error! status: ${response.status}`;
     throw new Error(errorMessage);
   }
-  
+
   if (response.status === 204) {
     return null;
   }
-  
+
   return response.json();
 };
 
@@ -73,8 +73,8 @@ const useEventsApi = () => {
   return {
     getEvents: async () => {
       const response = await apiRequest('/v1/events');
-      return response.data.events || response.data;
-    }
+      return response?.data?.events || response?.events || response || [];
+    },
   };
 };
 
@@ -82,8 +82,8 @@ const usePodcastsApi = () => {
   return {
     getPodcasts: async () => {
       const response = await apiRequest('/v1/podcasts');
-      return response.data.podcasts || response.data;
-    }
+      return response?.data?.podcasts || response?.podcasts || response || [];
+    },
   };
 };
 
@@ -130,9 +130,27 @@ export default function AdminGallery() {
       ]);
 
       // Handle different response structures
-      setItems(Array.isArray(itemsData?.items) ? itemsData.items : Array.isArray(itemsData) ? itemsData : []);
-      setEvents(Array.isArray(eventsData?.events) ? eventsData.events : Array.isArray(eventsData) ? eventsData : []);
-      setPodcasts(Array.isArray(podcastsData?.podcasts) ? podcastsData.podcasts : Array.isArray(podcastsData) ? podcastsData : []);
+      setItems(
+        Array.isArray(itemsData?.items)
+          ? itemsData.items
+          : Array.isArray(itemsData)
+            ? itemsData
+            : [],
+      );
+      setEvents(
+        Array.isArray(eventsData?.events)
+          ? eventsData.events
+          : Array.isArray(eventsData)
+            ? eventsData
+            : [],
+      );
+      setPodcasts(
+        Array.isArray(podcastsData?.podcasts)
+          ? podcastsData.podcasts
+          : Array.isArray(podcastsData)
+            ? podcastsData
+            : [],
+      );
       setCategories(Array.isArray(categoriesData) ? categoriesData : []);
     } catch (error) {
       console.error('Error fetching gallery data:', error);
@@ -144,19 +162,32 @@ export default function AdminGallery() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const submitData = {
         ...formData,
-        tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(Boolean) : [],
+        tags: formData.tags
+          ? formData.tags
+              .split(',')
+              .map((tag) => tag.trim())
+              .filter(Boolean)
+          : [],
       };
 
       if (editingItem) {
         await gallery.updateItem(editingItem.id, submitData);
-        showToast({ title: 'Success', description: 'Gallery item updated successfully', variant: 'success' });
+        showToast({
+          title: 'Success',
+          description: 'Gallery item updated successfully',
+          variant: 'success',
+        });
       } else {
         await gallery.createItem(submitData);
-        showToast({ title: 'Success', description: 'Gallery item created successfully', variant: 'success' });
+        showToast({
+          title: 'Success',
+          description: 'Gallery item created successfully',
+          variant: 'success',
+        });
       }
 
       setShowCreateModal(false);
@@ -190,11 +221,19 @@ export default function AdminGallery() {
     if (window.confirm(`Are you sure you want to delete "${item.title}"?`)) {
       try {
         await gallery.deleteItem(item.id);
-        showToast({ title: 'Success', description: 'Gallery item deleted successfully', variant: 'success' });
+        showToast({
+          title: 'Success',
+          description: 'Gallery item deleted successfully',
+          variant: 'success',
+        });
         fetchData();
       } catch (error) {
         console.error('Error deleting gallery item:', error);
-        showToast({ title: 'Error', description: 'Failed to delete gallery item', variant: 'danger' });
+        showToast({
+          title: 'Error',
+          description: 'Failed to delete gallery item',
+          variant: 'danger',
+        });
       }
     }
   };
@@ -215,14 +254,15 @@ export default function AdminGallery() {
   };
 
   const filteredItems = items.filter((item) => {
-    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesSearch =
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesType = filterType === 'all' || item.type === filterType;
     return matchesSearch && matchesType;
   });
 
-  const availableEvents = formData.event_type === 'event' ? events : 
-                         formData.event_type === 'podcast' ? podcasts : [];
+  const availableEvents =
+    formData.event_type === 'event' ? events : formData.event_type === 'podcast' ? podcasts : [];
 
   if (loading) {
     return (
@@ -238,7 +278,9 @@ export default function AdminGallery() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[var(--color-text)]">Gallery Management</h1>
-          <p className="text-[var(--color-muted)]">Manage photos and videos from events and podcasts</p>
+          <p className="text-[var(--color-muted)]">
+            Manage photos and videos from events and podcasts
+          </p>
         </div>
         <Button onClick={() => setShowCreateModal(true)}>
           <FaPlus className="mr-2" />
@@ -276,7 +318,11 @@ export default function AdminGallery() {
               />
               <div className="absolute top-2 right-2">
                 <Badge variant={item.type === 'video' ? 'danger' : 'secondary'}>
-                  {item.type === 'video' ? <FaVideo className="mr-1" /> : <FaImage className="mr-1" />}
+                  {item.type === 'video' ? (
+                    <FaVideo className="mr-1" />
+                  ) : (
+                    <FaImage className="mr-1" />
+                  )}
                   {item.type}
                 </Badge>
               </div>
@@ -287,9 +333,13 @@ export default function AdminGallery() {
               )}
             </div>
             <CardContent className="p-4">
-              <h3 className="font-semibold text-[var(--color-text)] mb-1 line-clamp-1">{item.title}</h3>
+              <h3 className="font-semibold text-[var(--color-text)] mb-1 line-clamp-1">
+                {item.title}
+              </h3>
               {item.category && (
-                <Badge variant="subtle" className="mb-2">{item.category}</Badge>
+                <Badge variant="subtle" className="mb-2">
+                  {item.category}
+                </Badge>
               )}
               <div className="flex justify-between items-center">
                 <div className="text-sm text-[var(--color-muted)]">
@@ -301,18 +351,10 @@ export default function AdminGallery() {
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => handleEdit(item)}
-                  >
+                  <Button variant="secondary" size="sm" onClick={() => handleEdit(item)}>
                     <FaEdit />
                   </Button>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => handleDelete(item)}
-                  >
+                  <Button variant="danger" size="sm" onClick={() => handleDelete(item)}>
                     <FaTrash />
                   </Button>
                 </div>
@@ -340,7 +382,9 @@ export default function AdminGallery() {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Title *</label>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Title *
+            </label>
             <Input
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -350,7 +394,9 @@ export default function AdminGallery() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Description</label>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Description
+            </label>
             <Textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -361,7 +407,9 @@ export default function AdminGallery() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Type *</label>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                Type *
+              </label>
               <Select
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
@@ -373,7 +421,9 @@ export default function AdminGallery() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">URL *</label>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                URL *
+              </label>
               <Input
                 value={formData.url}
                 onChange={(e) => setFormData({ ...formData, url: e.target.value })}
@@ -384,7 +434,9 @@ export default function AdminGallery() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Thumbnail URL</label>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+              Thumbnail URL
+            </label>
             <Input
               value={formData.thumbnail_url}
               onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
@@ -394,10 +446,14 @@ export default function AdminGallery() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Event Type</label>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                Event Type
+              </label>
               <Select
                 value={formData.event_type}
-                onChange={(e) => setFormData({ ...formData, event_type: e.target.value, event_id: '' })}
+                onChange={(e) =>
+                  setFormData({ ...formData, event_type: e.target.value, event_id: '' })
+                }
               >
                 <option value="">None</option>
                 <option value="event">Event</option>
@@ -414,7 +470,9 @@ export default function AdminGallery() {
                   value={formData.event_id}
                   onChange={(e) => setFormData({ ...formData, event_id: e.target.value })}
                 >
-                  <option value="">Select {formData.event_type === 'event' ? 'event' : 'podcast'}</option>
+                  <option value="">
+                    Select {formData.event_type === 'event' ? 'event' : 'podcast'}
+                  </option>
                   {availableEvents.map((event) => (
                     <option key={event.id} value={event.id}>
                       {event.title}
@@ -427,7 +485,9 @@ export default function AdminGallery() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Category</label>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                Category
+              </label>
               <Select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -450,7 +510,9 @@ export default function AdminGallery() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Tags</label>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                Tags
+              </label>
               <Input
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
@@ -484,9 +546,7 @@ export default function AdminGallery() {
             >
               Cancel
             </Button>
-            <Button type="submit">
-              {editingItem ? 'Update' : 'Create'} Gallery Item
-            </Button>
+            <Button type="submit">{editingItem ? 'Update' : 'Create'} Gallery Item</Button>
           </div>
         </form>
       </Modal>
