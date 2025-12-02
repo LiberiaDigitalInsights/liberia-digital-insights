@@ -36,6 +36,7 @@ echo -e "${BLUE}🔍 Checking for existing processes...${NC}"
 kill_port 5173  # Frontend default port
 kill_port 5000  # Backend default port
 kill_port 4000  # Backend alternative port
+kill_port 5174  # Docs default port
 
 # Check if .env files exist
 echo -e "${BLUE}📋 Checking environment files...${NC}"
@@ -80,6 +81,10 @@ cleanup() {
     
     if [ ! -z "$FRONTEND_PID" ]; then
         kill $FRONTEND_PID 2>/dev/null
+    fi
+    
+    if [ ! -z "$DOCS_PID" ]; then
+        kill $DOCS_PID 2>/dev/null
     fi
     
     echo -e "${GREEN}✅ All servers stopped.${NC}"
@@ -130,20 +135,42 @@ else
     cleanup
 fi
 
+# Start docs server
+echo -e "${BLUE}📚 Starting docs server...${NC}"
+cd frontend
+npm run docs:dev > ../docs.log 2>&1 &
+DOCS_PID=$!
+cd ..
+
+# Wait a moment for docs to start
+sleep 3
+
+# Check if docs started successfully
+if ps -p $DOCS_PID > /dev/null; then
+    echo -e "${GREEN}✅ Docs server started (PID: $DOCS_PID)${NC}"
+    echo -e "${GREEN}📚 Docs: http://localhost:5174${NC}"
+else
+    echo -e "${RED}❌ Docs server failed to start!${NC}"
+    echo -e "${YELLOW}Check docs.log for error details.${NC}"
+    cleanup
+fi
+
 echo ""
 echo "=================================================="
-echo -e "${GREEN}🎉 Both servers are running!${NC}"
+echo -e "${GREEN}🎉 All servers are running!${NC}"
 echo "=================================================="
 echo -e "${BLUE}📱 Frontend:${NC}  http://localhost:5173"
 echo -e "${BLUE}🔧 Backend:${NC}   http://localhost:5000"
+echo -e "${BLUE}📚 Docs:${NC}      http://localhost:5174"
 echo -e "${BLUE}📊 API Health:${NC} http://localhost:5000/health"
 echo -e "${BLUE}📚 API Docs:${NC}  See backend/README.md"
 echo ""
 echo -e "${YELLOW}📝 Logs:${NC}"
-echo -e "   Backend:  backend.log"
-echo -e "   Frontend: frontend.log"
+echo "   Backend:  backend.log"
+echo "   Frontend: frontend.log"
+echo "   Docs:     docs.log"
 echo ""
-echo -e "${YELLOW}🛑 Press Ctrl+C to stop both servers${NC}"
+echo -e "${YELLOW}🛑 Press Ctrl+C to stop all servers${NC}"
 echo "=================================================="
 
 # Wait for user interrupt
@@ -156,6 +183,11 @@ while true; do
     
     if ! ps -p $FRONTEND_PID > /dev/null; then
         echo -e "${RED}❌ Frontend server stopped unexpectedly!${NC}"
+        break
+    fi
+    
+    if ! ps -p $DOCS_PID > /dev/null; then
+        echo -e "${RED}❌ Docs server stopped unexpectedly!${NC}"
         break
     fi
     

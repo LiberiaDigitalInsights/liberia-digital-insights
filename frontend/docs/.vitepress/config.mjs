@@ -1,12 +1,12 @@
 export default {
   title: 'Liberia Digital Insights',
-  description: 'Project documentation',
+  description: 'Comprehensive documentation for Liberia Digital Insights platform',
   head: [
     [
       'link',
       {
         rel: 'icon',
-        href: '/logo.svg',
+        href: '/LDI_favicon.png',
       },
     ],
   ],
@@ -16,6 +16,7 @@ export default {
       { text: 'Design System', link: '/DesignSystem' },
       { text: 'Components', link: '/Components' },
       { text: 'Admin Guide', link: '/AdminGuide' },
+      { text: 'API Reference', link: '/API-Reference' },
       { text: 'Contributing', link: '/Contributing' },
       { text: 'Changelog', link: '/Changelog' },
     ],
@@ -26,18 +27,53 @@ export default {
           { text: 'Overview', link: '/' },
           { text: 'Getting Started', link: '/GettingStarted' },
           { text: 'Contributing', link: '/Contributing' },
+          { text: 'Changelog', link: '/Changelog' },
         ],
       },
       {
-        text: 'Design',
+        text: 'Development',
+        items: [
+          { text: 'Project Structure', link: '/Project-Structure' },
+          { text: 'Environment Setup', link: '/Environment-Setup' },
+          { text: 'Development Workflow', link: '/Development-Workflow' },
+        ],
+      },
+      {
+        text: 'Design & UI',
         items: [
           { text: 'Design System', link: '/DesignSystem' },
           { text: 'Components', link: '/Components' },
+          { text: 'UI Guidelines', link: '/UI-Guidelines' },
+        ],
+      },
+      {
+        text: 'Features',
+        items: [
+          { text: 'Content Management', link: '/Content-Management' },
+          { text: 'Gallery System', link: '/Gallery-System' },
+          { text: 'Event Management', link: '/Event-Management' },
+          { text: 'Podcast System', link: '/Podcast-System' },
+          { text: 'Training Courses', link: '/Training-Courses' },
+          { text: 'Talent Directory', link: '/Talent-Directory' },
+          { text: 'Newsletter System', link: '/Newsletter-System' },
         ],
       },
       {
         text: 'Admin',
-        items: [{ text: 'Admin Guide', link: '/AdminGuide' }],
+        items: [
+          { text: 'Admin Guide', link: '/AdminGuide' },
+          { text: 'User Management', link: '/User-Management' },
+          { text: 'Analytics', link: '/Analytics' },
+        ],
+      },
+      {
+        text: 'API Reference',
+        items: [
+          { text: 'API Overview', link: '/API-Reference' },
+          { text: 'Authentication', link: '/Authentication' },
+          { text: 'Endpoints', link: '/API-Endpoints' },
+          { text: 'Error Handling', link: '/Error-Handling' },
+        ],
       },
       {
         text: 'Reference',
@@ -50,15 +86,39 @@ export default {
             text: 'Categories',
             link: '/Categories',
           },
-          { text: 'Changelog', link: '/Changelog' },
+          { text: 'Database Schema', link: '/Database-Schema' },
+          { text: 'Deployment', link: '/Deployment' },
         ],
       },
     ],
-    // To enable Algolia DocSearch, fill in your credentials and uncomment below
-    algolia: {
-      appId: '0UBN8TXL71',
-      apiKey: 'a788855362e490c9a3556309138b0500',
-      indexName: 'ldi_search',
+    // Local search configuration (more reliable)
+    search: {
+      provider: 'local',
+      options: {
+        locales: {
+          en: {
+            translations: {
+              button: {
+                buttonText: 'Search Documentation',
+                buttonAriaLabel: 'Search Documentation'
+              },
+              modal: {
+                noResultsText: 'No results found',
+                resetButtonTitle: 'Clear search',
+                resetButtonAriaLabel: 'Clear search',
+                footer: {
+                  selectText: 'to select',
+                  selectKeyAriaLabel: 'to select',
+                  navigateText: 'to navigate',
+                  navigateUpKeyAriaLabel: 'to navigate up',
+                  navigateDownKeyAriaLabel: 'to navigate down',
+                  closeText: 'to close'
+                }
+              }
+            }
+          }
+        }
+      }
     },
     socialLinks: [
       {
@@ -66,5 +126,9 @@ export default {
         link: 'https://github.com/LiberiaDigitalInsights/liberia-digital-insights/',
       },
     ],
+    footer: {
+      message: 'Built with ❤️ for Liberia\'s Digital Future',
+      copyright: `Copyright © ${new Date().getFullYear()} Liberia Digital Insights Team`,
+    },
   },
 };

@@ -110,6 +110,7 @@ async function startDev() {
         await killPort(5173); // Frontend
         await killPort(5000); // Backend
         await killPort(4000); // Backend alternative
+        await killPort(5174); // Docs
 
         // Check environment files
         colorLog('blue', '📋 Checking environment files...');
@@ -192,21 +193,48 @@ async function startDev() {
             process.exit(1);
         }
 
+        // Start docs server
+        colorLog('blue', '📚 Starting docs server...');
+        const docsProcess = spawn('npm', ['run', 'docs:dev'], {
+            cwd: join(__dirname, 'frontend'),
+            stdio: ['pipe', 'pipe', 'pipe']
+        });
+
+        // Redirect docs output to log file
+        const docsLog = fs.createWriteStream(join(__dirname, 'docs.log'));
+        docsProcess.stdout.pipe(docsLog);
+        docsProcess.stderr.pipe(docsLog);
+
+        // Wait for docs to start
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        // Check if docs started
+        if (docsProcess.pid) {
+            colorLog('green', `✅ Docs server started (PID: ${docsProcess.pid})`);
+            colorLog('green', '📚 Docs: http://localhost:5174');
+        } else {
+            colorLog('red', '❌ Docs server failed to start!');
+            colorLog('yellow', 'Check docs.log for error details.');
+            process.exit(1);
+        }
+
         // Display success message
         console.log('');
         colorLog('cyan', '==================================================');
-        colorLog('green', '🎉 Both servers are running!');
+        colorLog('green', '🎉 All servers are running!');
         colorLog('cyan', '==================================================');
         colorLog('blue', '📱 Frontend:  http://localhost:5173');
         colorLog('blue', '🔧 Backend:   http://localhost:5000');
+        colorLog('blue', '📚 Docs:      http://localhost:5174');
         colorLog('blue', '📊 API Health: http://localhost:5000/health');
         colorLog('blue', '📚 API Docs:  See backend/README.md');
         console.log('');
         colorLog('yellow', '📝 Logs:');
         colorLog('yellow', '   Backend:  backend.log');
         colorLog('yellow', '   Frontend: frontend.log');
+        colorLog('yellow', '   Docs:     docs.log');
         console.log('');
-        colorLog('yellow', '🛑 Press Ctrl+C to stop both servers');
+        colorLog('yellow', '🛑 Press Ctrl+C to stop all servers');
         colorLog('cyan', '==================================================');
 
         // Handle cleanup on exit
@@ -219,6 +247,10 @@ async function startDev() {
             
             if (frontendProcess.pid) {
                 frontendProcess.kill('SIGTERM');
+            }
+            
+            if (docsProcess.pid) {
+                docsProcess.kill('SIGTERM');
             }
             
             colorLog('green', '✅ All servers stopped.');
@@ -237,6 +269,11 @@ async function startDev() {
             
             if (!frontendProcess.pid || frontendProcess.killed) {
                 colorLog('red', '❌ Frontend server stopped unexpectedly!');
+                cleanup();
+            }
+            
+            if (!docsProcess.pid || docsProcess.killed) {
+                colorLog('red', '❌ Docs server stopped unexpectedly!');
                 cleanup();
             }
         }, 1000);

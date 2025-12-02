@@ -6,7 +6,10 @@
   "main": "dev-script/start-dev.js",
   "scripts": {
     "start": "node dev-script/start-dev.js",
-    "dev": "node dev-script/start-dev.js"
+    "dev": "node dev-script/start-dev.js",
+    "dev:docs": "cd frontend && npm run docs:dev",
+    "build:docs": "cd frontend && npm run docs:build",
+    "preview:docs": "cd frontend && npm run docs:preview"
   },
   "engines": {
     "node": ">=18.0.0"

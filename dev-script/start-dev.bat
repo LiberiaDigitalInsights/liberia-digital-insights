@@ -26,6 +26,7 @@ echo 🔍 Checking for existing processes...
 call :kill_port 5173
 call :kill_port 5000
 call :kill_port 4000
+call :kill_port 5174
 timeout /t 2 /nobreak >nul
 
 REM Check if .env files exist
@@ -84,25 +85,37 @@ cd ..
 REM Wait for frontend to start
 timeout /t 3 /nobreak >nul
 
+REM Start docs server
+echo 📚 Starting docs server...
+cd frontend
+start "Docs Server" cmd /c "npm run docs:dev > ../docs.log 2>&1"
+cd ..
+
+REM Wait for docs to start
+timeout /t 3 /nobreak >nul
+
 echo.
 echo ==================================================
-echo 🎉 Both servers are running!
+echo 🎉 All servers are running!
 echo ==================================================
 echo 📱 Frontend:  http://localhost:5173
 echo 🔧 Backend:   http://localhost:5000
+echo 📚 Docs:      http://localhost:5174
 echo 📊 API Health: http://localhost:5000/health
 echo 📚 API Docs:  See backend\README.md
 echo.
 echo 📝 Logs:
 echo    Backend:  backend.log
 echo    Frontend: frontend.log
+echo    Docs:     docs.log
 echo.
-echo 🛑 Close these windows to stop both servers
+echo 🛑 Close these windows to stop all servers
 echo ==================================================
 echo.
 echo 💡 Tips:
 echo    - Backend will start on port 5000 (or 4000 if 5000 is busy)
 echo    - Frontend will start on port 5173 (or next available port)
+echo    - Docs will start on port 5174 (or next available port)
 echo    - Check the log files if you encounter any issues
 echo.
 

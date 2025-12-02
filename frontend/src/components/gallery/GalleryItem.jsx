@@ -22,7 +22,7 @@ export default function GalleryItem({ item, onClick, className }) {
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden bg-[color-mix(in_oklab,var(--color-surface),white_6%)]">
         <img
-          src={item.thumbnail || item.url}
+          src={item.thumbnail_url || item.url}
           alt={item.title || 'Gallery item'}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
@@ -47,7 +47,12 @@ export default function GalleryItem({ item, onClick, className }) {
       <div className="absolute inset-0 flex items-end p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
         <div className="w-full">
           <h3 className="mb-2 line-clamp-2 text-sm font-semibold text-white">{item.title}</h3>
-          {item.event && <p className="mb-1 text-xs text-white/80">{item.event}</p>}
+          {item.event_type === 'event' && item.events?.title && (
+            <p className="mb-1 text-xs text-white/80">{item.events.title}</p>
+          )}
+          {item.event_type === 'podcast' && item.podcasts?.title && (
+            <p className="mb-1 text-xs text-white/80">{item.podcasts.title}</p>
+          )}
           {item.category && (
             <Badge variant="subtle" className="text-xs">
               {item.category}

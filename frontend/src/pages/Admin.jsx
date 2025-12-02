@@ -14,6 +14,7 @@ import AdminSettings from '../components/admin/AdminSettings';
 import AdminInsights from '../components/admin/AdminInsights';
 import AdminAdvertisements from '../components/admin/AdminAdvertisements';
 import AdminNewsletter from '../components/admin/AdminNewsletter';
+import AdminGallery from '../components/admin/AdminGallery';
 import { generateArticleGrid } from '../data/mockArticles';
 
 export default function Admin() {
@@ -164,6 +165,7 @@ export default function Admin() {
     { id: 'insights', label: 'Insights' },
     { id: 'podcasts', label: 'Podcasts' },
     { id: 'events', label: 'Events' },
+    { id: 'gallery', label: 'Gallery' },
     { id: 'talents', label: 'Talent Hub' },
     { id: 'training', label: 'Training' },
     { id: 'advertisements', label: 'Advertisements' },
@@ -185,6 +187,8 @@ export default function Admin() {
         return <AdminPodcasts podcasts={podcasts} canEdit={canEdit} />;
       case 'events':
         return <AdminEvents canEdit={canEdit} />;
+      case 'gallery':
+        return <AdminGallery canEdit={canEdit} />;
       case 'talents':
         return <AdminTalent />;
       case 'training':

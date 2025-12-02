@@ -32,8 +32,15 @@ router.get("/", async (req, res) => {
 
     if (error) throw error;
 
+    // Transform the data to match frontend expectations
+    const transformedData = data.map(article => ({
+      ...article,
+      category: article.categories ? (Array.isArray(article.categories) ? article.categories[0] : article.categories) : null,
+      categories: undefined // Remove the original categories property
+    }));
+
     res.json({
-      articles: data,
+      articles: transformedData,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
@@ -70,7 +77,15 @@ router.get("/slug/:slug", async (req, res) => {
     // Increment view count
     await supabase.rpc("increment_view_count", { table_name: "articles", record_id: data[0].id });
 
-    res.json({ article: data[0] });
+    // Transform the data to match frontend expectations
+    const article = data[0];
+    const transformedArticle = {
+      ...article,
+      category: article.categories ? (Array.isArray(article.categories) ? article.categories[0] : article.categories) : null,
+      categories: undefined // Remove the original categories property
+    };
+
+    res.json({ article: transformedArticle });
   } catch (error) {
     console.error("Route error:", error);
     res.status(500).json({ error: error.message });
@@ -101,7 +116,14 @@ router.get("/:id", async (req, res) => {
     // Increment view count
     await supabase.rpc("increment_view_count", { table_name: "articles", record_id: id });
 
-    res.json(data);
+    // Transform the data to match frontend expectations
+    const transformedArticle = {
+      ...data,
+      category: data.categories ? (Array.isArray(data.categories) ? data.categories[0] : data.categories) : null,
+      categories: undefined // Remove the original categories property
+    };
+
+    res.json(transformedArticle);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

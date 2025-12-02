@@ -1,24 +1,77 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { H1 } from '../components/ui/Typography';
 import GalleryItem from '../components/gallery/GalleryItem';
 import Lightbox from '../components/gallery/Lightbox';
 import SEO from '../components/SEO';
-import { mockGallery, getAllEvents, getAllCategories } from '../data/mockGallery';
+import { useGallery } from '../hooks/useGallery';
 
 export default function Gallery() {
-  const [filter, setFilter] = React.useState('all');
-  const [lightboxIndex, setLightboxIndex] = React.useState(null);
-  const events = getAllEvents();
-  const categories = getAllCategories();
+  const [filter, setFilter] = useState('all');
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [items, setItems] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  const gallery = useGallery();
 
-  const filteredItems =
-    filter === 'all'
-      ? mockGallery
-      : filter.startsWith('event:')
-        ? mockGallery.filter((item) => item.event === filter.replace('event:', ''))
-        : filter.startsWith('category:')
-          ? mockGallery.filter((item) => item.category === filter.replace('category:', ''))
-          : mockGallery;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch all data in parallel
+        const [itemsData, eventsData, categoriesData] = await Promise.all([
+          gallery.getItems(),
+          gallery.getEvents(),
+          gallery.getCategories()
+        ]);
+
+        // Handle different response structures with better error checking
+        setItems(Array.isArray(itemsData?.items) ? itemsData.items : Array.isArray(itemsData) ? itemsData : []);
+        setEvents(Array.isArray(eventsData) ? eventsData : []);
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching gallery data:', err);
+        setError('Failed to load gallery data');
+        // Fallback to empty arrays
+        setItems([]);
+        setEvents([]);
+        setCategories([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [gallery]);
+
+  const filteredItems = React.useMemo(() => {
+    if (filter === 'all') return items;
+    
+    if (filter.startsWith('event:')) {
+      const eventSlug = filter.replace('event:', '');
+      return items.filter((item) => 
+        item.event_type === 'event' && item.events?.slug === eventSlug
+      );
+    }
+    
+    if (filter.startsWith('podcast:')) {
+      const podcastSlug = filter.replace('podcast:', '');
+      return items.filter((item) => 
+        item.event_type === 'podcast' && item.podcasts?.slug === podcastSlug
+      );
+    }
+    
+    if (filter.startsWith('category:')) {
+      const category = filter.replace('category:', '');
+      return items.filter((item) => item.category === category);
+    }
+    
+    return items;
+  }, [filter, items]);
 
   const openLightbox = (item) => {
     const index = filteredItems.findIndex((i) => i.id === item.id);
@@ -36,6 +89,35 @@ export default function Gallery() {
       prev === null ? null : (prev - 1 + filteredItems.length) % filteredItems.length,
     );
   };
+
+  if (loading) {
+    return (
+      <>
+        <SEO />
+        <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+          <div className="text-center">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-32 mx-auto mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-64 mx-auto"></div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <SEO />
+        <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+          <div className="text-center">
+            <p className="text-red-500">{error}</p>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -59,21 +141,23 @@ export default function Gallery() {
                 : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
             }`}
           >
-            All ({mockGallery.length})
+            All ({items.length})
           </button>
+          
           {events.map((event) => (
             <button
-              key={event}
-              onClick={() => setFilter(`event:${event}`)}
+              key={event.slug}
+              onClick={() => setFilter(`event:${event.slug}`)}
               className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
-                filter === `event:${event}`
+                filter === `event:${event.slug}`
                   ? 'bg-brand-500 text-white'
                   : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
               }`}
             >
-              {event}
+              {event.title}
             </button>
           ))}
+          
           {categories.map((category) => (
             <button
               key={category}
@@ -108,7 +192,7 @@ export default function Gallery() {
             ))
           ) : (
             <div className="col-span-full py-12 text-center text-[var(--color-muted)]">
-              No items found in this filter.
+              {items.length === 0 ? 'No gallery items yet.' : 'No items found in this filter.'}
             </div>
           )}
         </div>
