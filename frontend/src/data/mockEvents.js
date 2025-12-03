@@ -102,10 +102,21 @@ export const formatEventDate = (dateString) => {
 };
 
 export const formatEventDateRange = (startDate, endDate) => {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  if (startDate === endDate) {
-    return formatEventDate(startDate);
+  try {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Check if dates are valid
+    if (isNaN(start.getTime())) {
+      return 'Invalid date';
+    }
+
+    if (!endDate || isNaN(end.getTime()) || startDate === endDate) {
+      return formatEventDate(startDate);
+    }
+
+    return `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+  } catch {
+    return 'Invalid date';
   }
-  return `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
 };

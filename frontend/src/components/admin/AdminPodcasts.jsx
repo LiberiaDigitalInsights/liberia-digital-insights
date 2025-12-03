@@ -46,6 +46,20 @@ const AdminPodcasts = ({ canEdit }) => {
     { id: 'interview-fallback', name: 'Interview' }
   ];
   
+  // Helper function to strip HTML tags
+  const stripHtml = (html) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
+  // Helper function to get category name by ID
+  const getCategoryName = (categoryId) => {
+    if (!categoryId) return 'N/A';
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.name : categoryId;
+  };
+  
   const displayCategories = categories.length > 0 ? categories : fallbackCategories;
   
   const [searchTerm, setSearchTerm] = useState('');
@@ -1073,9 +1087,7 @@ const AdminPodcasts = ({ canEdit }) => {
                       Category
                     </label>
                     <p className="text-[var(--color-text)]">
-                      {selectedPodcast.category_id
-                        ? selectedPodcast.categories?.name || selectedPodcast.category_id
-                        : 'N/A'}
+                      {getCategoryName(selectedPodcast.category_id)}
                     </p>
                   </div>
                   <div>
@@ -1196,7 +1208,7 @@ const AdminPodcasts = ({ canEdit }) => {
                     Transcript
                   </label>
                   <p className="text-[var(--color-text)] text-sm max-h-32 overflow-y-auto">
-                    {selectedPodcast.transcript || 'N/A'}
+                    {selectedPodcast.transcript ? stripHtml(selectedPodcast.transcript) : 'N/A'}
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">

@@ -151,10 +151,14 @@ const AdminEvents = ({ canEdit }) => {
         slug,
         description: formData.description,
         date: formData.date,
+        time: formData.time,
         location: formData.location,
         category: formData.category,
         status: formData.status,
         max_attendees: parseInt(formData.maxAttendees) || 0,
+        price: formData.price ? parseFloat(formData.price) : 0,
+        registration_url: formData.registrationUrl,
+        cover_image_url: formData.coverImage,
       };
 
       await backendApi.events.create(newEvent);
@@ -185,10 +189,14 @@ const AdminEvents = ({ canEdit }) => {
       title: event.title,
       description: event.description || '',
       date: event.date,
+      time: event.time || '',
       location: event.location,
       category: event.category || '',
       status: event.status,
-      maxAttendees: event.maxAttendees?.toString() || '',
+      maxAttendees: event.max_attendees?.toString() || '',
+      price: event.price?.toString() || '',
+      registrationUrl: event.registration_url || '',
+      coverImage: event.cover_image_url || '',
     });
     setShowEditModal(true);
   };
@@ -202,13 +210,16 @@ const AdminEvents = ({ canEdit }) => {
         title: formData.title,
         description: formData.description,
         date: formData.date,
+        time: formData.time || null,
         location: formData.location,
         category: formData.category,
         status: formData.status,
         max_attendees: parseInt(formData.maxAttendees) || 0,
+        price: formData.price ? parseFloat(formData.price) : 0,
+        registration_url: formData.registrationUrl || null,
+        cover_image_url: formData.coverImage || null,
       };
 
-      console.log('Updating event:', selectedEvent.id, updatedEvent);
       await backendApi.events.update(selectedEvent.id, updatedEvent);
       await refetch();
 
@@ -793,9 +804,9 @@ const AdminEvents = ({ canEdit }) => {
                 <div>
                   <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Cover Image</label>
                   <p className="text-[var(--color-text)] text-sm">
-                    {selectedEvent.coverImage ? (
-                      <a href={selectedEvent.coverImage} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                        {selectedEvent.coverImage}
+                    {selectedEvent.cover_image_url ? (
+                      <a href={selectedEvent.cover_image_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {selectedEvent.cover_image_url}
                       </a>
                     ) : 'N/A'}
                   </p>
@@ -803,9 +814,9 @@ const AdminEvents = ({ canEdit }) => {
                 <div>
                   <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Registration URL</label>
                   <p className="text-[var(--color-text)] text-sm">
-                    {selectedEvent.registrationUrl ? (
-                      <a href={selectedEvent.registrationUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                        {selectedEvent.registrationUrl}
+                    {selectedEvent.registration_url ? (
+                      <a href={selectedEvent.registration_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                        {selectedEvent.registration_url}
                       </a>
                     ) : 'N/A'}
                   </p>

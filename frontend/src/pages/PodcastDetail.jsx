@@ -5,7 +5,7 @@ import PodcastPlayer from '../components/podcasts/PodcastPlayer';
 import PodcastCard from '../components/podcasts/PodcastCard';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import SEO from '../components/SEO';
-import { usePodcast, usePodcasts } from '../hooks/useBackendApi';
+import { usePodcast, usePodcasts, useCategories } from '../hooks/useBackendApi';
 
 export default function PodcastDetail() {
   const { slug } = useParams();
@@ -14,9 +14,25 @@ export default function PodcastDetail() {
   // Fetch podcast by slug from backend
   const { data: podcastData, loading: podcastLoading, error: podcastError } = usePodcast(slug);
   const { data: relatedPodcastsData, loading: _relatedLoading } = usePodcasts({ limit: 3 });
+  const { data: categoriesData } = useCategories();
 
   const podcast = podcastData?.podcast;
   const relatedPodcasts = relatedPodcastsData?.podcasts || [];
+  const categories = categoriesData?.data || [];
+
+  // Helper function to strip HTML tags
+  const stripHtml = (html) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
+  // Helper function to get category name by ID
+  const getCategoryName = (categoryId) => {
+    if (!categoryId) return 'N/A';
+    const category = categories.find((cat) => cat.id === categoryId);
+    return category ? category.name : categoryId;
+  };
 
   // Loading state
   if (podcastLoading) {
@@ -76,9 +92,9 @@ export default function PodcastDetail() {
           </Link>
           {' / '}
           <span>
-            {podcast.episode_number && podcast.season_number 
+            {podcast.episode_number && podcast.season_number
               ? `S${podcast.season_number}E${podcast.episode_number}`
-              : podcast.episode_number 
+              : podcast.episode_number
                 ? `Episode ${podcast.episode_number}`
                 : podcast.title}
           </span>
@@ -89,7 +105,7 @@ export default function PodcastDetail() {
           onClick={() => navigate(-1)}
           className="mb-6 text-sm text-[var(--color-muted)] transition-colors duration-200 hover:text-[var(--color-text)]"
         >
-          ← Back
+          ← Back to Podcasts
         </button>
 
         {/* Podcast Player */}
@@ -122,16 +138,17 @@ export default function PodcastDetail() {
                     <div className="text-sm font-medium text-[var(--color-text)]">
                       {podcast.guest}
                     </div>
-                    <div className="text-xs text-[var(--color-muted)]">
-                      Guest Speaker
-                    </div>
+                    <div className="text-xs text-[var(--color-muted)]">Guest Speaker</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
           )}
           {/* Platform Links */}
-          {(podcast.youtube_url || podcast.spotify_url || podcast.apple_podcasts_url || podcast.facebook_url) && (
+          {(podcast.youtube_url ||
+            podcast.spotify_url ||
+            podcast.apple_podcasts_url ||
+            podcast.facebook_url) && (
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
               {podcast.youtube_url && (
                 <a
@@ -234,7 +251,7 @@ export default function PodcastDetail() {
             </CardHeader>
             <CardContent>
               <p className="whitespace-pre-line text-sm text-[var(--color-text)]">
-                {podcast.transcript}
+                {stripHtml(podcast.transcript)}
               </p>
             </CardContent>
           </Card>
@@ -253,7 +270,7 @@ export default function PodcastDetail() {
                   {new Date(podcast.published_at).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
-                    day: 'numeric'
+                    day: 'numeric',
                   })}
                 </span>
               </div>
@@ -274,9 +291,9 @@ export default function PodcastDetail() {
               <div>
                 <span className="font-medium text-[var(--color-text)]">Episode:</span>{' '}
                 <span className="text-[var(--color-muted)]">
-                  {podcast.episode_number && podcast.season_number 
+                  {podcast.episode_number && podcast.season_number
                     ? `S${podcast.season_number}E${podcast.episode_number}`
-                    : podcast.episode_number 
+                    : podcast.episode_number
                       ? `Episode ${podcast.episode_number}`
                       : `Season ${podcast.season_number}`}
                 </span>
@@ -286,7 +303,7 @@ export default function PodcastDetail() {
               <div>
                 <span className="font-medium text-[var(--color-text)]">Category:</span>{' '}
                 <span className="text-[var(--color-muted)]">
-                  {podcast.categories?.name || podcast.category_id}
+                  {getCategoryName(podcast.category_id)}
                 </span>
               </div>
             )}
@@ -294,10 +311,13 @@ export default function PodcastDetail() {
               <div>
                 <span className="font-medium text-[var(--color-text)]">Language:</span>{' '}
                 <span className="text-[var(--color-muted)]">
-                  {podcast.language === 'en' ? 'English' :
-                   podcast.language === 'fr' ? 'French' :
-                   podcast.language === 'es' ? 'Spanish' :
-                   podcast.language}
+                  {podcast.language === 'en'
+                    ? 'English'
+                    : podcast.language === 'fr'
+                      ? 'French'
+                      : podcast.language === 'es'
+                        ? 'Spanish'
+                        : podcast.language}
                 </span>
               </div>
             )}
@@ -317,19 +337,25 @@ export default function PodcastDetail() {
               <div className="grid grid-cols-3 gap-4 pt-2">
                 {podcast.plays_count !== undefined && (
                   <div className="text-center">
-                    <div className="font-medium text-[var(--color-text)]">{podcast.plays_count || 0}</div>
+                    <div className="font-medium text-[var(--color-text)]">
+                      {podcast.plays_count || 0}
+                    </div>
                     <div className="text-xs text-[var(--color-muted)]">Plays</div>
                   </div>
                 )}
                 {podcast.downloads_count !== undefined && (
                   <div className="text-center">
-                    <div className="font-medium text-[var(--color-text)]">{podcast.downloads_count || 0}</div>
+                    <div className="font-medium text-[var(--color-text)]">
+                      {podcast.downloads_count || 0}
+                    </div>
                     <div className="text-xs text-[var(--color-muted)]">Downloads</div>
                   </div>
                 )}
                 {podcast.likes_count !== undefined && (
                   <div className="text-center">
-                    <div className="font-medium text-[var(--color-text)]">{podcast.likes_count || 0}</div>
+                    <div className="font-medium text-[var(--color-text)]">
+                      {podcast.likes_count || 0}
+                    </div>
                     <div className="text-xs text-[var(--color-muted)]">Likes</div>
                   </div>
                 )}

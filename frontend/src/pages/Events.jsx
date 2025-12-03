@@ -76,9 +76,11 @@ export default function Events() {
                               title={event.title}
                               description={event.description}
                               date={event.date}
+                              endDate={event.end_date}
                               location={event.location}
                               image={event.cover_image_url}
                               category={event.category}
+                              registrationUrl={event.registration_url}
                               status={event.status}
                               isPast={tab === 'past'}
                               to={`/event/${event.slug}`}
@@ -113,9 +115,11 @@ export default function Events() {
                               title={event.title}
                               description={event.description}
                               date={event.date}
+                              endDate={event.end_date}
                               location={event.location}
                               image={event.cover_image_url}
                               category={event.category}
+                              registrationUrl={event.registration_url}
                               status={event.status}
                               isPast={tab === 'past'}
                               to={`/event/${event.slug}`}

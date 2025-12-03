@@ -100,9 +100,13 @@ router.post("/", async (req, res) => {
       description,
       cover_image_url,
       date,
+      end_date,
+      time,
       location,
       category,
       max_attendees,
+      price,
+      registration_url,
       status = "upcoming",
     } = req.body;
 
@@ -115,9 +119,13 @@ router.post("/", async (req, res) => {
           description,
           cover_image_url,
           date,
+          end_date,
+          time,
           location,
           category,
           max_attendees,
+          price,
+          registration_url,
           status,
         },
       ])
