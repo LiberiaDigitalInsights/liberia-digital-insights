@@ -15,12 +15,17 @@ import { backendApi } from '../services/backendApi';
 export default function Talent() {
   const [filter, setFilter] = React.useState('All');
   const [page, setPage] = React.useState(1);
-  const { data: talentsData, loading, error, refetch } = useTalents({ 
+  const {
+    data: talentsData,
+    loading,
+    error,
+    refetch,
+  } = useTalents({
     status: 'published',
     category: filter === 'All' ? undefined : filter,
-    page: Number(page)
+    page: Number(page),
   });
-  
+
   const { showToast } = useToast();
 
   const talents = talentsData?.talents || [];
@@ -47,7 +52,7 @@ export default function Talent() {
       // Fallback
       value = String(event);
     }
-    
+
     setFilter(value);
     setPage(1); // Reset to first page when filter changes
   };
@@ -63,7 +68,10 @@ export default function Talent() {
 
     try {
       // Generate slug from name
-      const slug = form.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const slug = form.name
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
 
       const newTalent = {
         name: form.name,
@@ -72,7 +80,7 @@ export default function Talent() {
         category: form.category,
         bio: form.bio,
         links: { website: form.link },
-        status: 'pending' // Changed from 'published' to 'pending' for admin approval
+        status: 'pending', // Changed from 'published' to 'pending' for admin approval
       };
 
       await backendApi.talents.create(newTalent);
@@ -86,13 +94,13 @@ export default function Talent() {
       showToast({
         title: 'Profile Submitted!',
         description: 'Your talent profile has been submitted and is pending admin approval.',
-        variant: 'success'
+        variant: 'success',
       });
     } catch {
       showToast({
         title: 'Error',
         description: 'Failed to submit talent profile.',
-        variant: 'error'
+        variant: 'error',
       });
     } finally {
       setSubmitting(false);
@@ -139,15 +147,13 @@ export default function Talent() {
                   Error loading talents. Please try again.
                 </div>
               ) : talents.length > 0 ? (
-                talents.map((t) => (
-                  <TalentCard key={t.id} {...t} />
-                ))
+                talents.map((t) => <TalentCard key={t.id} {...t} />)
               ) : (
                 <EmptyState
                   title="No talents found"
                   description={
                     filter === 'All'
-                      ? "No talents are available at the moment."
+                      ? 'No talents are available at the moment.'
                       : `No talents found in ${filter} category.`
                   }
                 />
@@ -249,11 +255,11 @@ export default function Talent() {
                   </Field>
                   <Field>
                     <Label htmlFor="link">Link</Label>
-                    <Input 
-                      id="link" 
-                      value={form.link} 
-                      onChange={(e) => setForm({ ...form, link: e.target.value })} 
-                      placeholder="https://" 
+                    <Input
+                      id="link"
+                      value={form.link}
+                      onChange={(e) => setForm({ ...form, link: e.target.value })}
+                      placeholder="https://"
                     />
                     <HelperText>Website, GitHub, or LinkedIn (optional)</HelperText>
                   </Field>

@@ -43,28 +43,28 @@ CREATE TABLE users (
   full_name VARCHAR(101) GENERATED ALWAYS AS (
     COALESCE(first_name, '') || ' ' || COALESCE(last_name, '')
   ) STORED,
-  
+
   -- Authentication
   password_hash VARCHAR(255),
   email_verified BOOLEAN DEFAULT false,
   phone_verified BOOLEAN DEFAULT false,
   two_factor_enabled BOOLEAN DEFAULT false,
-  
+
   -- Profile Information
   bio TEXT,
   avatar_url TEXT,
   avatar_thumbnail TEXT,
   initials VARCHAR(2) GENERATED ALWAYS AS (
-    UPPER(SUBSTRING(COALESCE(first_name, ''), 1, 1) || 
+    UPPER(SUBSTRING(COALESCE(first_name, ''), 1, 1) ||
            SUBSTRING(COALESCE(last_name, ''), 1, 1))
   ) STORED,
-  
+
   -- Location
   city VARCHAR(100),
   country VARCHAR(100),
   coordinates POINT,
   timezone VARCHAR(50) DEFAULT 'UTC',
-  
+
   -- Professional Information
   title VARCHAR(100),
   company VARCHAR(100),
@@ -73,44 +73,44 @@ CREATE TABLE users (
   linkedin TEXT,
   github TEXT,
   twitter TEXT,
-  
+
   -- Preferences
   language VARCHAR(10) DEFAULT 'en',
   theme VARCHAR(20) DEFAULT 'light',
   email_notifications BOOLEAN DEFAULT true,
   push_notifications BOOLEAN DEFAULT false,
   marketing_emails BOOLEAN DEFAULT false,
-  
+
   -- Privacy Settings
-  profile_visibility VARCHAR(20) DEFAULT 'public' 
+  profile_visibility VARCHAR(20) DEFAULT 'public'
     CHECK (profile_visibility IN ('public', 'private', 'connections')),
   show_email BOOLEAN DEFAULT false,
   show_phone BOOLEAN DEFAULT false,
-  
+
   -- Subscription
   subscription_plan VARCHAR(20) DEFAULT 'free'
     CHECK (subscription_plan IN ('free', 'basic', 'premium')),
   subscription_status VARCHAR(20) DEFAULT 'active'
     CHECK (subscription_status IN ('active', 'inactive', 'cancelled', 'expired')),
   subscription_expires_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Security
   last_password_change TIMESTAMP WITH TIME ZONE,
   login_attempts INTEGER DEFAULT 0,
   account_locked_until TIMESTAMP WITH TIME ZONE,
-  
+
   -- Status
   role VARCHAR(20) DEFAULT 'user'
     CHECK (role IN ('user', 'editor', 'admin')),
   status VARCHAR(20) DEFAULT 'active'
     CHECK (status IN ('active', 'inactive', 'suspended')),
-  
+
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   last_seen TIMESTAMP WITH TIME ZONE,
   deleted_at TIMESTAMP WITH TIME ZONE, -- Soft delete
-  
+
   -- Constraints
   CONSTRAINT users_email_check CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
   CONSTRAINT users_username_check CHECK (username ~* '^[a-zA-Z0-9_]{3,50}$')
@@ -149,7 +149,7 @@ CREATE TABLE user_skills (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   skill_name VARCHAR(100) NOT NULL,
-  skill_level VARCHAR(20) NOT NULL 
+  skill_level VARCHAR(20) NOT NULL
     CHECK (skill_level IN ('beginner', 'intermediate', 'advanced', 'expert')),
   years_experience INTEGER CHECK (years_experience >= 0),
   verified BOOLEAN DEFAULT false,
@@ -157,7 +157,7 @@ CREATE TABLE user_skills (
   verified_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
+
   UNIQUE(user_id, skill_name)
 );
 
@@ -205,7 +205,7 @@ CREATE TABLE categories (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   deleted_at TIMESTAMP WITH TIME ZONE,
-  
+
   CONSTRAINT categories_slug_check CHECK (slug ~* '^[a-z0-9-]+$')
 );
 
@@ -227,40 +227,40 @@ CREATE TABLE articles (
   content TEXT NOT NULL,
   featured_image TEXT,
   featured_image_thumbnail TEXT,
-  
+
   -- Author and Category
   author_id UUID NOT NULL REFERENCES users(id),
   category_id UUID REFERENCES categories(id),
-  
+
   -- Metadata
   tags TEXT[], -- PostgreSQL array
   reading_time INTEGER, -- in minutes
   word_count INTEGER,
-  
+
   -- SEO
   meta_title VARCHAR(60),
   meta_description VARCHAR(160),
   focus_keyword VARCHAR(100),
-  
+
   -- Status
   status VARCHAR(20) DEFAULT 'draft'
     CHECK (status IN ('draft', 'review', 'published', 'archived')),
   is_featured BOOLEAN DEFAULT false,
-  
+
   -- Analytics
   views_count INTEGER DEFAULT 0,
   likes_count INTEGER DEFAULT 0,
   comments_count INTEGER DEFAULT 0,
   shares_count INTEGER DEFAULT 0,
-  
+
   -- Publishing
   published_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   deleted_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Constraints
   CONSTRAINT articles_slug_unique UNIQUE(slug),
   CONSTRAINT articles_slug_check CHECK (slug ~* '^[a-z0-9-]+$')
@@ -307,44 +307,44 @@ CREATE TABLE podcasts (
   slug VARCHAR(200) NOT NULL,
   description TEXT,
   transcript TEXT,
-  
+
   -- Media Files
   audio_url TEXT NOT NULL,
   audio_file_size BIGINT, -- in bytes
   audio_duration INTEGER, -- in seconds
   cover_image TEXT,
   cover_image_thumbnail TEXT,
-  
+
   -- Host and Category
   host_id UUID NOT NULL REFERENCES users(id),
   category_id UUID REFERENCES categories(id),
-  
+
   -- Metadata
   tags TEXT[],
   language VARCHAR(10) DEFAULT 'en',
-  
+
   -- Episode Information
   episode_number INTEGER,
   season_number INTEGER,
-  
+
   -- Status
   status VARCHAR(20) DEFAULT 'draft'
     CHECK (status IN ('draft', 'review', 'published', 'archived')),
   is_featured BOOLEAN DEFAULT false,
-  
+
   -- Analytics
   plays_count INTEGER DEFAULT 0,
   downloads_count INTEGER DEFAULT 0,
   likes_count INTEGER DEFAULT 0,
-  
+
   -- Publishing
   published_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   deleted_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Constraints
   CONSTRAINT podcasts_slug_unique UNIQUE(slug),
   CONSTRAINT podcasts_slug_check CHECK (slug ~* '^[a-z0-9-]+$')
@@ -373,7 +373,7 @@ CREATE TABLE podcast_guests (
   guest_bio TEXT,
   guest_avatar TEXT,
   guest_social_links JSONB, -- { twitter: '', linkedin: '', website: '' }
-  role VARCHAR(50) DEFAULT 'guest' 
+  role VARCHAR(50) DEFAULT 'guest'
     CHECK (role IN ('host', 'co-host', 'guest', 'interviewer')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -393,59 +393,59 @@ CREATE TABLE events (
   title VARCHAR(200) NOT NULL,
   slug VARCHAR(200) NOT NULL,
   description TEXT,
-  
+
   -- Event Details
-  event_type VARCHAR(50) NOT NULL 
+  event_type VARCHAR(50) NOT NULL
     CHECK (event_type IN ('workshop', 'conference', 'meetup', 'webinar', 'social')),
   format VARCHAR(20) DEFAULT 'in-person'
     CHECK (format IN ('in-person', 'virtual', 'hybrid')),
-  
+
   -- Schedule
   start_time TIMESTAMP WITH TIME ZONE NOT NULL,
   end_time TIMESTAMP WITH TIME ZONE NOT NULL,
   timezone VARCHAR(50) DEFAULT 'UTC',
-  
+
   -- Location
   venue_name VARCHAR(200),
   venue_address TEXT,
   venue_coordinates POINT,
   virtual_meeting_url TEXT,
   virtual_meeting_id VARCHAR(100),
-  
+
   -- Capacity
   max_attendees INTEGER,
   current_attendees INTEGER DEFAULT 0,
   waiting_list_count INTEGER DEFAULT 0,
-  
+
   -- Pricing
   price DECIMAL(10,2) DEFAULT 0.00,
   currency VARCHAR(3) DEFAULT 'USD',
   early_bird_price DECIMAL(10,2),
   early_bird_deadline TIMESTAMP WITH TIME ZONE,
-  
+
   -- Organizer
   organizer_id UUID NOT NULL REFERENCES users(id),
   category_id UUID REFERENCES categories(id),
-  
+
   -- Media
   cover_image TEXT,
   cover_image_thumbnail TEXT,
   gallery_images TEXT[], -- Array of image URLs
-  
+
   -- Status
   status VARCHAR(20) DEFAULT 'draft'
     CHECK (status IN ('draft', 'review', 'published', 'cancelled', 'completed')),
   is_featured BOOLEAN DEFAULT false,
-  
+
   -- Analytics
   views_count INTEGER DEFAULT 0,
   registrations_count INTEGER DEFAULT 0,
-  
+
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   deleted_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Constraints
   CONSTRAINT events_slug_unique UNIQUE(slug),
   CONSTRAINT events_start_end_check CHECK (end_time > start_time),
@@ -471,34 +471,34 @@ CREATE TABLE event_registrations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  
+
   -- Registration Details
   registration_type VARCHAR(20) DEFAULT 'standard'
     CHECK (registration_type IN ('standard', 'vip', 'speaker', 'organizer')),
   ticket_type VARCHAR(50),
   price_paid DECIMAL(10,2),
-  
+
   -- Status
   status VARCHAR(20) DEFAULT 'registered'
     CHECK (status IN ('registered', 'confirmed', 'cancelled', 'attended', 'no-show')),
-  
+
   -- Payment Information
   payment_method VARCHAR(50),
   payment_id VARCHAR(100),
   payment_status VARCHAR(20) DEFAULT 'pending'
     CHECK (payment_status IN ('pending', 'completed', 'failed', 'refunded')),
-  
+
   -- Additional Information
   dietary_restrictions TEXT[],
   accessibility_needs TEXT,
   special_requests TEXT,
-  
+
   -- Timestamps
   registered_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   confirmed_at TIMESTAMP WITH TIME ZONE,
   cancelled_at TIMESTAMP WITH TIME ZONE,
   attended_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Constraints
   UNIQUE(event_id, user_id) -- One registration per user per event
 );
@@ -521,62 +521,62 @@ CREATE TABLE training_courses (
   slug VARCHAR(200) NOT NULL,
   description TEXT,
   short_description VARCHAR(500),
-  
+
   -- Course Details
-  course_type VARCHAR(50) NOT NULL 
+  course_type VARCHAR(50) NOT NULL
     CHECK (course_type IN ('beginner', 'intermediate', 'advanced', 'workshop', 'certification')),
   format VARCHAR(20) DEFAULT 'online'
     CHECK (format IN ('online', 'in-person', 'hybrid')),
   language VARCHAR(10) DEFAULT 'en',
-  
+
   -- Duration and Schedule
   duration_hours INTEGER,
   duration_weeks INTEGER,
   self_paced BOOLEAN DEFAULT false,
   start_date DATE,
   end_date DATE,
-  
+
   -- Instructor
   instructor_id UUID NOT NULL REFERENCES users(id),
   category_id UUID REFERENCES categories(id),
-  
+
   -- Capacity
   max_students INTEGER,
   current_enrollments INTEGER DEFAULT 0,
-  
+
   -- Pricing
   price DECIMAL(10,2) DEFAULT 0.00,
   currency VARCHAR(3) DEFAULT 'USD',
   has_certificate BOOLEAN DEFAULT false,
   certificate_cost DECIMAL(10,2),
-  
+
   -- Media
   cover_image TEXT,
   cover_image_thumbnail TEXT,
   promotional_video TEXT,
-  
+
   -- Requirements
   prerequisites TEXT[],
   required_materials TEXT[],
   skill_level VARCHAR(20) DEFAULT 'beginner'
     CHECK (skill_level IN ('beginner', 'intermediate', 'advanced')),
-  
+
   -- Status
   status VARCHAR(20) DEFAULT 'draft'
     CHECK (status IN ('draft', 'review', 'published', 'archived', 'cancelled')),
   is_featured BOOLEAN DEFAULT false,
-  
+
   -- Analytics
   enrollments_count INTEGER DEFAULT 0,
   completions_count INTEGER DEFAULT 0,
   average_rating DECIMAL(3,2),
   reviews_count INTEGER DEFAULT 0,
-  
+
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   deleted_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Constraints
   CONSTRAINT training_courses_slug_unique UNIQUE(slug),
   CONSTRAINT training_courses_duration_check CHECK (duration_hours > 0),
@@ -602,7 +602,7 @@ CREATE TABLE course_lessons (
   title VARCHAR(200) NOT NULL,
   description TEXT,
   content TEXT,
-  
+
   -- Lesson Details
   lesson_type VARCHAR(20) DEFAULT 'text'
     CHECK (lesson_type IN ('text', 'video', 'audio', 'quiz', 'assignment')),
@@ -610,25 +610,25 @@ CREATE TABLE course_lessons (
   video_duration INTEGER, -- in seconds
   audio_url TEXT,
   audio_duration INTEGER, -- in seconds
-  
+
   -- Order and Structure
   lesson_order INTEGER NOT NULL,
   module_number INTEGER,
   is_mandatory BOOLEAN DEFAULT true,
-  
+
   -- Resources
   resources JSONB, -- { files: [], links: [], downloads: [] }
-  
+
   -- Status
   status VARCHAR(20) DEFAULT 'draft'
     CHECK (status IN ('draft', 'published', 'archived')),
   is_preview BOOLEAN DEFAULT false,
-  
+
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   deleted_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Constraints
   UNIQUE(course_id, lesson_order)
 );
@@ -647,39 +647,39 @@ CREATE TABLE course_enrollments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   course_id UUID NOT NULL REFERENCES training_courses(id) ON DELETE CASCADE,
   student_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  
+
   -- Enrollment Details
   enrollment_type VARCHAR(20) DEFAULT 'standard'
     CHECK (enrollment_type IN ('standard', 'premium', 'audit')),
   price_paid DECIMAL(10,2),
-  
+
   -- Progress
   progress_percentage DECIMAL(5,2) DEFAULT 0.00 CHECK (progress_percentage >= 0 AND progress_percentage <= 100),
   lessons_completed INTEGER DEFAULT 0,
   total_lessons INTEGER,
   last_accessed_lesson_id UUID REFERENCES course_lessons(id),
-  
+
   -- Status
   status VARCHAR(20) DEFAULT 'active'
     CHECK (status IN ('active', 'completed', 'dropped', 'suspended')),
   completion_date TIMESTAMP WITH TIME ZONE,
-  
+
   -- Certificate
   certificate_issued BOOLEAN DEFAULT false,
   certificate_id VARCHAR(100),
   certificate_url TEXT,
-  
+
   -- Payment Information
   payment_method VARCHAR(50),
   payment_id VARCHAR(100),
   payment_status VARCHAR(20) DEFAULT 'pending'
     CHECK (payment_status IN ('pending', 'completed', 'failed', 'refunded')),
-  
+
   -- Timestamps
   enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   completed_at TIMESTAMP WITH TIME ZONE,
   last_accessed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
+
   -- Constraints
   UNIQUE(course_id, student_id)
 );
@@ -701,48 +701,48 @@ CREATE TABLE gallery_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title VARCHAR(200),
   description TEXT,
-  
+
   -- Media Information
-  file_type VARCHAR(20) NOT NULL 
+  file_type VARCHAR(20) NOT NULL
     CHECK (file_type IN ('image', 'video', 'document')),
   file_url TEXT NOT NULL,
   file_name VARCHAR(255) NOT NULL,
   file_size BIGINT, -- in bytes
   mime_type VARCHAR(100),
-  
+
   -- Image Specific
   width INTEGER,
   height INTEGER,
   thumbnail_url TEXT,
   medium_url TEXT,
-  
+
   -- Video Specific
   duration INTEGER, -- in seconds
   thumbnail_time INTEGER, -- thumbnail at this second
-  
+
   -- Association
   associated_type VARCHAR(50), -- 'article', 'event', 'course', 'user', etc.
   associated_id UUID,
-  
+
   -- Organization
   category_id UUID REFERENCES categories(id),
   tags TEXT[],
   sort_order INTEGER DEFAULT 0,
-  
+
   -- Status
   status VARCHAR(20) DEFAULT 'active'
     CHECK (status IN ('active', 'inactive', 'processing')),
   is_featured BOOLEAN DEFAULT false,
-  
+
   -- Analytics
   views_count INTEGER DEFAULT 0,
   downloads_count INTEGER DEFAULT 0,
-  
+
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   deleted_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Constraints
   CONSTRAINT gallery_items_association_check CHECK (
     (associated_type IS NULL AND associated_id IS NULL) OR
@@ -768,35 +768,35 @@ CREATE INDEX idx_gallery_items_deleted_at ON gallery_items(deleted_at) WHERE del
 CREATE TABLE analytics_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   event_type VARCHAR(50) NOT NULL,
-  
+
   -- User and Session
   user_id UUID REFERENCES users(id),
   session_id VARCHAR(255),
-  
+
   -- Request Information
   url TEXT,
   referrer TEXT,
   user_agent TEXT,
   ip_address INET,
-  
+
   -- Geographic Information
   country VARCHAR(100),
   city VARCHAR(100),
   coordinates POINT,
-  
+
   -- Device Information
   device_type VARCHAR(20) CHECK (device_type IN ('desktop', 'mobile', 'tablet')),
   os VARCHAR(50),
   browser VARCHAR(50),
   browser_version VARCHAR(20),
-  
+
   -- Event Specific Data
   target_type VARCHAR(50), -- 'article', 'podcast', 'event', etc.
   target_id UUID,
   action VARCHAR(100), -- 'view', 'like', 'share', 'download', etc.
   value DECIMAL(10,2),
   properties JSONB, -- Additional event properties
-  
+
   -- Timestamp
   timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -822,18 +822,18 @@ CREATE TABLE analytics_metrics (
   metric_date DATE NOT NULL,
   metric_type VARCHAR(50) NOT NULL, -- 'page_views', 'users', 'sessions', etc.
   metric_value BIGINT NOT NULL,
-  
+
   -- Dimensions
   dimension_type VARCHAR(50), -- 'source', 'device', 'location', etc.
   dimension_value VARCHAR(100),
-  
+
   -- Additional Context
   properties JSONB,
-  
+
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
+
   -- Constraints
   UNIQUE(metric_date, metric_type, dimension_type, dimension_value)
 );
@@ -854,25 +854,25 @@ CREATE TABLE newsletters (
   name VARCHAR(200) NOT NULL,
   subject VARCHAR(200) NOT NULL,
   preview_text VARCHAR(500),
-  
+
   -- Content
   html_content TEXT NOT NULL,
   text_content TEXT,
   template_id UUID REFERENCES newsletter_templates(id),
-  
+
   -- Sending Details
   from_email VARCHAR(255) NOT NULL,
   from_name VARCHAR(100),
   reply_to_email VARCHAR(255),
-  
+
   -- Schedule
   scheduled_at TIMESTAMP WITH TIME ZONE,
   sent_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Status
   status VARCHAR(20) DEFAULT 'draft'
     CHECK (status IN ('draft', 'scheduled', 'sending', 'sent', 'cancelled')),
-  
+
   -- Analytics
   recipients_count INTEGER DEFAULT 0,
   sent_count INTEGER DEFAULT 0,
@@ -881,10 +881,10 @@ CREATE TABLE newsletters (
   clicked_count INTEGER DEFAULT 0,
   bounced_count INTEGER DEFAULT 0,
   unsubscribed_count INTEGER DEFAULT 0,
-  
+
   -- Creator
   created_by UUID NOT NULL REFERENCES users(id),
-  
+
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -907,30 +907,30 @@ CREATE TABLE newsletter_subscribers (
   email VARCHAR(255) UNIQUE NOT NULL,
   first_name VARCHAR(100),
   last_name VARCHAR(100),
-  
+
   -- Subscription Details
   status VARCHAR(20) DEFAULT 'active'
     CHECK (status IN ('active', 'inactive', 'unsubscribed', 'bounced')),
   subscription_source VARCHAR(50), -- 'website', 'import', 'manual', etc.
-  
+
   -- Preferences
   preferences JSONB DEFAULT '{}', -- { articles: true, events: true, courses: false }
-  
+
   -- Analytics
   total_sent INTEGER DEFAULT 0,
   total_opened INTEGER DEFAULT 0,
   total_clicked INTEGER DEFAULT 0,
   last_opened_at TIMESTAMP WITH TIME ZONE,
   last_clicked_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- User Association
   user_id UUID REFERENCES users(id),
-  
+
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   unsubscribed_at TIMESTAMP WITH TIME ZONE,
-  
+
   -- Constraints
   CONSTRAINT newsletter_subscribers_email_check CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
 );
@@ -971,20 +971,20 @@ CREATE TABLE audit_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   table_name VARCHAR(100) NOT NULL,
   record_id UUID NOT NULL,
-  action VARCHAR(20) NOT NULL 
+  action VARCHAR(20) NOT NULL
     CHECK (action IN ('INSERT', 'UPDATE', 'DELETE')),
-  
+
   -- User Information
   user_id UUID REFERENCES users(id),
   user_role VARCHAR(20),
   ip_address INET,
   user_agent TEXT,
-  
+
   -- Changes
   old_values JSONB,
   new_values JSONB,
   changed_columns TEXT[],
-  
+
   -- Timestamp
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -1035,12 +1035,12 @@ BEGIN
   ELSIF TG_OP = 'UPDATE' THEN
     INSERT INTO audit_logs (table_name, record_id, action, old_values, new_values, changed_columns, user_id)
     VALUES (
-      TG_TABLE_NAME, 
-      NEW.id, 
-      'UPDATE', 
-      row_to_json(OLD), 
+      TG_TABLE_NAME,
+      NEW.id,
+      'UPDATE',
+      row_to_json(OLD),
       row_to_json(NEW),
-      (SELECT array_agg(key) FROM jsonb_object_keys(row_to_json(NEW)) 
+      (SELECT array_agg(key) FROM jsonb_object_keys(row_to_json(NEW))
        WHERE row_to_json(NEW)->>key IS DISTINCT FROM row_to_json(OLD)->>key),
       auth.uid()
     );
@@ -1070,7 +1070,7 @@ CREATE TRIGGER audit_articles_trigger AFTER INSERT OR UPDATE OR DELETE ON articl
 
 ```sql
 CREATE VIEW content_analytics AS
-SELECT 
+SELECT
   'article' as content_type,
   a.id,
   a.title,
@@ -1089,7 +1089,7 @@ WHERE a.status = 'published' AND a.deleted_at IS NULL
 
 UNION ALL
 
-SELECT 
+SELECT
   'podcast' as content_type,
   p.id,
   p.title,
@@ -1111,7 +1111,7 @@ WHERE p.status = 'published' AND p.deleted_at IS NULL;
 
 ```sql
 CREATE VIEW user_activity_summary AS
-SELECT 
+SELECT
   u.id,
   u.first_name,
   u.last_name,
@@ -1126,24 +1126,24 @@ SELECT
 FROM users u
 LEFT JOIN (
   SELECT author_id, COUNT(*) as article_count
-  FROM articles 
+  FROM articles
   WHERE status = 'published' AND deleted_at IS NULL
   GROUP BY author_id
 ) article_stats ON u.id = article_stats.author_id
 LEFT JOIN (
   SELECT host_id, COUNT(*) as podcast_count
-  FROM podcasts 
+  FROM podcasts
   WHERE status = 'published' AND deleted_at IS NULL
   GROUP BY host_id
 ) podcast_stats ON u.id = podcast_stats.host_id
 LEFT JOIN (
   SELECT user_id, COUNT(*) as events_attended
-  FROM event_registrations 
+  FROM event_registrations
   WHERE status = 'attended'
   GROUP BY user_id
 ) event_stats ON u.id = event_stats.user_id
 LEFT JOIN (
-  SELECT 
+  SELECT
     student_id,
     COUNT(*) as courses_enrolled,
     COUNT(CASE WHEN status = 'completed' THEN 1 END) as courses_completed

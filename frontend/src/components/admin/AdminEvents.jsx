@@ -404,8 +404,8 @@ const AdminEvents = ({ canEdit }) => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={() => {
                             setSelectedEvent(event);
@@ -537,9 +537,7 @@ const AdminEvents = ({ canEdit }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-              Price
-            </label>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Price</label>
             <Input
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
@@ -613,7 +611,11 @@ const AdminEvents = ({ canEdit }) => {
       </Modal>
 
       {/* Edit Modal */}
-      <Modal open={showEditModal} onClose={() => setShowEditModal(false)} title={`Edit Event: ${selectedEvent?.title}`}>
+      <Modal
+        open={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        title={`Edit Event: ${selectedEvent?.title}`}
+      >
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
@@ -682,9 +684,7 @@ const AdminEvents = ({ canEdit }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-              Price
-            </label>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">Price</label>
             <Input
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
@@ -768,57 +768,93 @@ const AdminEvents = ({ canEdit }) => {
             <>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Title</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Title
+                  </label>
                   <p className="text-[var(--color-text)] font-medium">{selectedEvent.title}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Description</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Description
+                  </label>
                   <p className="text-[var(--color-text)]">{selectedEvent.description || 'N/A'}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Date</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Date
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedEvent.date || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Time</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Time
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedEvent.time || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Location</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Location
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedEvent.location || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Status</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Status
+                    </label>
                     <div>{getStatusBadge(selectedEvent.status)}</div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Attendees</label>
-                    <p className="text-[var(--color-text)]">{selectedEvent.attendees || 0} / {selectedEvent.maxAttendees || 0}</p>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Attendees
+                    </label>
+                    <p className="text-[var(--color-text)]">
+                      {selectedEvent.attendees || 0} / {selectedEvent.maxAttendees || 0}
+                    </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Price</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Price
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedEvent.price || 'Free'}</p>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Cover Image</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Cover Image
+                  </label>
                   <p className="text-[var(--color-text)] text-sm">
                     {selectedEvent.cover_image_url ? (
-                      <a href={selectedEvent.cover_image_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      <a
+                        href={selectedEvent.cover_image_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
                         {selectedEvent.cover_image_url}
                       </a>
-                    ) : 'N/A'}
+                    ) : (
+                      'N/A'
+                    )}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Registration URL</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Registration URL
+                  </label>
                   <p className="text-[var(--color-text)] text-sm">
                     {selectedEvent.registration_url ? (
-                      <a href={selectedEvent.registration_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      <a
+                        href={selectedEvent.registration_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
                         {selectedEvent.registration_url}
                       </a>
-                    ) : 'N/A'}
+                    ) : (
+                      'N/A'
+                    )}
                   </p>
                 </div>
               </div>

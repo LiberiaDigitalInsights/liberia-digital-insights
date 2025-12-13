@@ -14,6 +14,7 @@ Production: https://liberia-digital-insights.vercel.app/api/v1
 ## 📝 API Standards
 
 ### Request Format
+
 - **Content-Type**: `application/json`
 - **Accept**: `application/json`
 - **Authentication**: Bearer token (JWT) for protected endpoints
@@ -67,11 +68,13 @@ Production: https://liberia-digital-insights.vercel.app/api/v1
 ## 🔐 Authentication Endpoints
 
 ### Login
+
 ```http
 POST /auth/login
 ```
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -81,6 +84,7 @@ POST /auth/login
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -101,11 +105,13 @@ POST /auth/login
 ```
 
 ### Register
+
 ```http
 POST /auth/register
 ```
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -117,12 +123,14 @@ POST /auth/register
 ```
 
 ### Refresh Token
+
 ```http
 POST /auth/refresh
 ```
 
 **Request Body:**
-```json
+
+````json
 {
   "refresh_token": "jwt_refresh_token"
 }
@@ -131,15 +139,17 @@ POST /auth/refresh
 ```http
 POST /auth/logout
 Authorization: Bearer {access_token}
-```
+````
 
 ### Forgot Password
+
 ```http
 POST /auth/forgot-password
 ```
 
 **Request Body:**
-```json
+
+````json
 {
   "email": "user@example.com"
 }
@@ -147,10 +157,11 @@ POST /auth/forgot-password
 ### Reset Password
 ```http
 POST /auth/reset-password
-```
+````
 
 **Request Body:**
-```json
+
+````json
 {
   "token": "reset_token",
   "newPassword": "NewPassword123!"
@@ -161,9 +172,10 @@ POST /auth/reset-password
 ### Get Articles
 ```http
 GET /articles?page=1&limit=20&category=tech&status=published&search=react
-```
+````
 
 **Query Parameters:**
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (default: 20)
 - `category` (string): Filter by category
@@ -173,6 +185,7 @@ GET /articles?page=1&limit=20&category=tech&status=published&search=react
 - `tags` (string): Comma-separated tags
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -217,22 +230,26 @@ GET /articles?page=1&limit=20&category=tech&status=published&search=react
 ```
 
 ### Get Article by ID
+
 ```http
 GET /articles/{id}
 ```
 
 ### Get Article by Slug
+
 ```http
 GET /articles/slug/{slug}
 ```
 
 ### Create Article
+
 ```http
 POST /articles
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "title": "New Article Title",
@@ -246,12 +263,14 @@ Authorization: Bearer {access_token}
 ```
 
 ### Update Article
+
 ```http
 PUT /articles/{id}
 Authorization: Bearer {access_token}
 ```
 
 ### Delete Article
+
 ```http
 DELETE /articles/{id}
 Authorization: Bearer {access_token}
@@ -260,11 +279,13 @@ Authorization: Bearer {access_token}
 ## 🎧 Podcasts Endpoints
 
 ### Get Podcasts
+
 ```http
 GET /podcasts?page=1&limit=20&category=tech&status=published
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -312,12 +333,14 @@ GET /podcasts?page=1&limit=20&category=tech&status=published
 ```
 
 ### Create Podcast
+
 ```http
 POST /podcasts
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "title": "New Podcast Episode",
@@ -335,11 +358,13 @@ Authorization: Bearer {access_token}
 ## 📅 Events Endpoints
 
 ### Get Events
+
 ```http
 GET /events?page=1&limit=20&status=upcoming&category=meetup&search=tech
 ```
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `status` (string): upcoming, past, cancelled
@@ -349,6 +374,7 @@ GET /events?page=1&limit=20&status=upcoming&category=meetup&search=tech
 - `end_date` (string): Filter by end date (YYYY-MM-DD)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -400,12 +426,14 @@ GET /events?page=1&limit=20&status=upcoming&category=meetup&search=tech
 ```
 
 ### Register for Event
+
 ```http
 POST /events/{id}/register
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "first_name": "John",
@@ -420,11 +448,13 @@ Authorization: Bearer {access_token}
 ## 🎓 Training Courses Endpoints
 
 ### Get Courses
+
 ```http
 GET /training/courses?page=1&limit=20&category=web-dev&level=beginner&status=active
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -467,12 +497,14 @@ GET /training/courses?page=1&limit=20&category=web-dev&level=beginner&status=act
 ```
 
 ### Enroll in Course
+
 ```http
 POST /training/courses/{id}/enroll
 Authorization: Bearer {access_token}
 ```
 
 ### Get Course Progress
+
 ```http
 GET /training/courses/{id}/progress
 Authorization: Bearer {access_token}
@@ -481,11 +513,13 @@ Authorization: Bearer {access_token}
 ## 👥 Talent Directory Endpoints
 
 ### Get Talent Profiles
+
 ```http
 GET /talents?page=1&limit=20&skills=react&location=monrovia&availability=job_seeking
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -529,11 +563,13 @@ GET /talents?page=1&limit=20&skills=react&location=monrovia&availability=job_see
 ```
 
 ### Search Talent
+
 ```http
 POST /talents/search
 ```
 
 **Request Body:**
+
 ```json
 {
   "keyword": "react developer",
@@ -547,18 +583,21 @@ POST /talents/search
 ## 📧 Newsletter Endpoints
 
 ### Get Newsletters
+
 ```http
 GET /newsletters?page=1&limit=20&status=sent
 Authorization: Bearer {access_token}
 ```
 
 ### Create Newsletter
+
 ```http
 POST /newsletters
 Authorization: Bearer {access_token}
 ```
 
 **Request Body:**
+
 ```json
 {
   "title": "Monthly Tech Newsletter",
@@ -577,12 +616,14 @@ Authorization: Bearer {access_token}
 ```
 
 ### Send Newsletter
+
 ```http
 POST /newsletters/{id}/send
 Authorization: Bearer {access_token}
 ```
 
 ### Get Newsletter Analytics
+
 ```http
 GET /newsletters/{id}/analytics?range=7d
 Authorization: Bearer {access_token}
@@ -591,11 +632,13 @@ Authorization: Bearer {access_token}
 ## 🖼️ Gallery Endpoints
 
 ### Get Gallery Items
+
 ```http
 GET /gallery?page=1&limit=20&type=event&category=tech
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -639,6 +682,7 @@ GET /gallery?page=1&limit=20&type=event&category=tech
 ## 📁 File Upload Endpoints
 
 ### Upload File
+
 ```http
 POST /upload
 Authorization: Bearer {access_token}
@@ -646,12 +690,14 @@ Content-Type: multipart/form-data
 ```
 
 **Request Body:**
+
 ```
 file: [binary file data]
 type: image|audio|video|document
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -668,12 +714,14 @@ type: image|audio|video|document
 ## 📊 Analytics Endpoints
 
 ### Get Dashboard Analytics
+
 ```http
 GET /analytics/dashboard
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -705,11 +753,13 @@ Authorization: Bearer {access_token}
 ## 🏷️ Categories Endpoints
 
 ### Get Categories
+
 ```http
 GET /categories?type=articles
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -732,17 +782,20 @@ GET /categories?type=articles
 ## 🔍 Search Endpoint
 
 ### Global Search
+
 ```http
 GET /search?q=react&type=articles,podcasts&page=1&limit=20
 ```
 
 **Query Parameters:**
+
 - `q` (string): Search query (required)
 - `type` (string): Content types to search (comma-separated)
 - `page` (number): Page number
 - `limit` (number): Results per page
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -769,11 +822,13 @@ GET /search?q=react&type=articles,podcasts&page=1&limit=20
 ## 📋 System Endpoints
 
 ### Health Check
+
 ```http
 GET /health
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -792,6 +847,7 @@ GET /health
 ```
 
 ### System Info
+
 ```http
 GET /system/info
 Authorization: Bearer {access_token}
@@ -799,19 +855,19 @@ Authorization: Bearer {access_token}
 
 ## 📝 Response Codes
 
-| Code | Description |
-|------|-------------|
-| 200 | OK - Request successful |
-| 201 | Created - Resource created successfully |
-| 204 | No Content - Request successful, no content returned |
-| 400 | Bad Request - Invalid request data |
-| 401 | Unauthorized - Authentication required |
-| 403 | Forbidden - Insufficient permissions |
-| 404 | Not Found - Resource not found |
-| 409 | Conflict - Resource already exists |
-| 422 | Unprocessable Entity - Validation failed |
-| 429 | Too Many Requests - Rate limit exceeded |
-| 500 | Internal Server Error - Server error |
+| Code | Description                                          |
+| ---- | ---------------------------------------------------- |
+| 200  | OK - Request successful                              |
+| 201  | Created - Resource created successfully              |
+| 204  | No Content - Request successful, no content returned |
+| 400  | Bad Request - Invalid request data                   |
+| 401  | Unauthorized - Authentication required               |
+| 403  | Forbidden - Insufficient permissions                 |
+| 404  | Not Found - Resource not found                       |
+| 409  | Conflict - Resource already exists                   |
+| 422  | Unprocessable Entity - Validation failed             |
+| 429  | Too Many Requests - Rate limit exceeded              |
+| 500  | Internal Server Error - Server error                 |
 
 ## 🔄 Rate Limiting
 
@@ -823,13 +879,14 @@ Authorization: Bearer {access_token}
 ## 📚 SDK Examples
 
 ### JavaScript/Node.js
+
 ```javascript
 // Using fetch API
 const response = await fetch('/api/v1/articles', {
   headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  },
 });
 const data = await response.json();
 
@@ -839,12 +896,12 @@ import axios from 'axios';
 const api = axios.create({
   baseURL: 'http://localhost:5000/api/v1',
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 });
 
 // Add auth interceptor
-api.interceptors.request.use(config => {
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -854,6 +911,7 @@ api.interceptors.request.use(config => {
 ```
 
 ### Python
+
 ```python
 import requests
 

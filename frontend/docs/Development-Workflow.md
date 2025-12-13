@@ -53,6 +53,7 @@ Follow conventional commits:
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -62,6 +63,7 @@ Follow conventional commits:
 - `chore`: Build process, dependency updates
 
 **Examples:**
+
 ```bash
 feat(auth): add JWT token refresh mechanism
 fix(gallery): resolve image loading timeout issue
@@ -75,6 +77,7 @@ chore(deps): update react to v18.2.0
 ### Workflow Steps
 
 1. **Create Feature Branch**
+
 ```bash
 git checkout develop
 git pull origin develop
@@ -82,6 +85,7 @@ git checkout -b feature/your-feature-name
 ```
 
 2. **Develop Feature**
+
 ```bash
 # Make changes
 git add .
@@ -89,17 +93,20 @@ git commit -m "feat(feature): implement new functionality"
 ```
 
 3. **Push and Create PR**
+
 ```bash
 git push origin feature/your-feature-name
 # Create pull request on GitHub
 ```
 
 4. **Code Review**
+
 - Request review from team members
 - Address feedback
 - Ensure tests pass
 
 5. **Merge to Develop**
+
 ```bash
 git checkout develop
 git pull origin develop
@@ -108,10 +115,12 @@ git push origin develop
 ```
 
 6. **Deploy to Staging**
+
 - Automated deployment from develop branch
 - Test in staging environment
 
 7. **Merge to Main**
+
 ```bash
 git checkout main
 git pull origin main
@@ -124,6 +133,7 @@ git push origin main
 ### JavaScript/React Standards
 
 #### Component Structure
+
 ```jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -176,6 +186,7 @@ export default ComponentName;
 ```
 
 #### Hooks Structure
+
 ```javascript
 // hooks/useArticles.js
 import { useState, useEffect } from 'react';
@@ -189,7 +200,7 @@ export const useArticles = () => {
   const fetchArticles = async (params = {}) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await apiRequest('/v1/articles', { params });
       setArticles(response.items);
@@ -207,7 +218,7 @@ export const useArticles = () => {
         method: 'POST',
         body: JSON.stringify(articleData),
       });
-      setArticles(prev => [...prev, response]);
+      setArticles((prev) => [...prev, response]);
       return response;
     } catch (err) {
       setError(err.message);
@@ -228,6 +239,7 @@ export const useArticles = () => {
 ```
 
 #### API Service Structure
+
 ```javascript
 // services/apiService.js
 import axios from 'axios';
@@ -252,7 +264,7 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor
@@ -264,7 +276,7 @@ apiClient.interceptors.response.use(
       window.location.href = '/login';
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;
@@ -273,26 +285,24 @@ export default apiClient;
 ### CSS/Tailwind Standards
 
 #### Component Styling
+
 ```jsx
 // Use Tailwind classes for styling
 <div className="bg-white rounded-lg shadow-md p-6">
-  <h2 className="text-2xl font-bold text-gray-900 mb-4">
-    Title
-  </h2>
-  <p className="text-gray-600 leading-relaxed">
-    Content
-  </p>
-</div>
+  <h2 className="text-2xl font-bold text-gray-900 mb-4">Title</h2>
+  <p className="text-gray-600 leading-relaxed">Content</p>
+</div>;
 
 // For complex components, use CSS modules with Tailwind
 import styles from './ComponentName.module.css';
 
 <div className={styles.container}>
   <h2 className={styles.title}>Title</h2>
-</div>
+</div>;
 ```
 
 #### Responsive Design
+
 ```jsx
 // Mobile-first approach
 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -310,6 +320,7 @@ import styles from './ComponentName.module.css';
 ### Frontend Testing
 
 #### Unit Tests
+
 ```javascript
 // __tests__/components/ArticleCard.test.jsx
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -327,17 +338,13 @@ const mockArticle = {
 };
 
 const renderWithRouter = (component) => {
-  return render(
-    <BrowserRouter>
-      {component}
-    </BrowserRouter>
-  );
+  return render(<BrowserRouter>{component}</BrowserRouter>);
 };
 
 describe('ArticleCard', () => {
   test('renders article information correctly', () => {
     renderWithRouter(<ArticleCard article={mockArticle} />);
-    
+
     expect(screen.getByText('Test Article')).toBeInTheDocument();
     expect(screen.getByText('Test excerpt')).toBeInTheDocument();
     expect(screen.getByText('Technology')).toBeInTheDocument();
@@ -346,7 +353,7 @@ describe('ArticleCard', () => {
 
   test('navigates to article detail when clicked', () => {
     renderWithRouter(<ArticleCard article={mockArticle} />);
-    
+
     const link = screen.getByRole('link', { name: /test article/i });
     expect(link).toHaveAttribute('href', '/article/test-article');
   });
@@ -354,6 +361,7 @@ describe('ArticleCard', () => {
 ```
 
 #### Hook Tests
+
 ```javascript
 // __tests__/hooks/useArticles.test.jsx
 import { renderHook, waitFor } from '@testing-library/react';
@@ -395,6 +403,7 @@ describe('useArticles', () => {
 ### Backend Testing
 
 #### Route Tests
+
 ```javascript
 // __tests__/routes/articles.test.js
 import request from 'supertest';
@@ -402,9 +411,7 @@ import app from '../../server.js';
 
 describe('Articles API', () => {
   test('GET /v1/articles returns articles list', async () => {
-    const response = await request(app)
-      .get('/v1/articles')
-      .expect(200);
+    const response = await request(app).get('/v1/articles').expect(200);
 
     expect(response.body).toHaveProperty('items');
     expect(response.body).toHaveProperty('pagination');
@@ -418,10 +425,7 @@ describe('Articles API', () => {
       category: 'Technology',
     };
 
-    const response = await request(app)
-      .post('/v1/articles')
-      .send(articleData)
-      .expect(201);
+    const response = await request(app).post('/v1/articles').send(articleData).expect(201);
 
     expect(response.body).toHaveProperty('id');
     expect(response.body.title).toBe(articleData.title);
@@ -513,13 +517,8 @@ module.exports = {
     }
   },
   "lint-staged": {
-    "*.{js,jsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{css,md}": [
-      "prettier --write"
-    ]
+    "*.{js,jsx}": ["eslint --fix", "prettier --write"],
+    "*.{css,md}": ["prettier --write"]
   }
 }
 ```
@@ -529,6 +528,7 @@ module.exports = {
 ### Staging Deployment
 
 1. **Push to Develop Branch**
+
 ```bash
 git checkout develop
 git add .
@@ -537,12 +537,14 @@ git push origin develop
 ```
 
 2. **Automatic Deployment**
+
 - GitHub Actions triggers on push to develop
 - Runs tests and builds application
 - Deploys to staging environment
 - Runs integration tests
 
 3. **Staging Testing**
+
 - Manual testing in staging environment
 - User acceptance testing
 - Performance testing
@@ -550,6 +552,7 @@ git push origin develop
 ### Production Deployment
 
 1. **Merge to Main Branch**
+
 ```bash
 git checkout main
 git merge develop
@@ -557,6 +560,7 @@ git push origin main
 ```
 
 2. **Production Deployment**
+
 - GitHub Actions triggers on push to main
 - Runs comprehensive test suite
 - Builds optimized production assets
@@ -564,6 +568,7 @@ git push origin main
 - Runs smoke tests
 
 3. **Post-deployment**
+
 - Monitor application health
 - Check error logs
 - Verify key functionality
@@ -609,20 +614,24 @@ echo "✅ Deployment completed!"
 
 ```markdown
 ## Description
+
 Brief description of changes made.
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] Integration tests pass
 - [ ] Manual testing completed
 
 ## Checklist
+
 - [ ] Code follows project style guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated
@@ -630,9 +639,11 @@ Brief description of changes made.
 - [ ] Performance considerations addressed
 
 ## Screenshots (if applicable)
+
 Add screenshots for UI changes.
 
 ## Additional Notes
+
 Any additional information for reviewers.
 ```
 
@@ -650,6 +661,7 @@ Any additional information for reviewers.
 ### Frontend Performance
 
 1. **Code Splitting**
+
 ```javascript
 // Lazy load components
 const AdminPanel = lazy(() => import('@/pages/Admin'));
@@ -665,17 +677,14 @@ const routes = [
 ```
 
 2. **Image Optimization**
+
 ```jsx
 // Lazy load images
-<img
-  src={imageUrl}
-  loading="lazy"
-  alt="Description"
-  className="w-full h-auto"
-/>
+<img src={imageUrl} loading="lazy" alt="Description" className="w-full h-auto" />
 ```
 
 3. **Bundle Analysis**
+
 ```bash
 # Analyze bundle size
 npm run build
@@ -685,6 +694,7 @@ npm run analyze
 ### Backend Performance
 
 1. **Database Optimization**
+
 ```sql
 -- Add indexes for frequently queried columns
 CREATE INDEX idx_articles_status ON articles(status);
@@ -692,6 +702,7 @@ CREATE INDEX idx_articles_category ON articles(category);
 ```
 
 2. **API Caching**
+
 ```javascript
 // Implement caching
 const cache = new Map();
@@ -711,16 +722,19 @@ const setCachedData = (key, data, ttl = 300000) => {
 ### Frontend Debugging
 
 1. **React DevTools**
+
 - Inspect component state and props
 - Track component re-renders
 - Profile component performance
 
 2. **Browser DevTools**
+
 - Network tab for API calls
 - Console for errors and logs
 - Performance tab for profiling
 
 3. **Debugging Tools**
+
 ```javascript
 // Debug component
 useEffect(() => {
@@ -739,6 +753,7 @@ const debugApiCall = async (endpoint) => {
 ### Backend Debugging
 
 1. **Logging**
+
 ```javascript
 // Structured logging
 const logger = winston.createLogger({
@@ -754,6 +769,7 @@ logger.info('API request', { method, url, userId });
 ```
 
 2. **Error Handling**
+
 ```javascript
 // Comprehensive error handling
 try {
@@ -768,18 +784,21 @@ try {
 ## 📚 Resources
 
 ### Documentation
+
 - [React Documentation](https://react.dev/)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [Express.js](https://expressjs.com/)
 - [Supabase](https://supabase.com/docs)
 
 ### Tools
+
 - [VS Code](https://code.visualstudio.com/)
 - [Postman](https://www.postman.com/)
 - [Git](https://git-scm.com/)
 - [Node.js](https://nodejs.org/)
 
 ### Learning
+
 - [React Best Practices](https://react.dev/learn/thinking-in-react)
 - [JavaScript Best Practices](https://github.com/ryanmcdermott/clean-code-javascript)
 - [API Design Guidelines](https://restfulapi.net/)

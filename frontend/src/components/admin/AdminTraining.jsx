@@ -31,11 +31,7 @@ const MediaPreview = ({ url, type }) => {
   if (type === 'image') {
     return (
       <div className="mt-2">
-        <img
-          src={url}
-          alt="Preview"
-          className="w-full h-40 object-cover rounded-lg"
-        />
+        <img src={url} alt="Preview" className="w-full h-40 object-cover rounded-lg" />
       </div>
     );
   }
@@ -43,11 +39,7 @@ const MediaPreview = ({ url, type }) => {
   if (type === 'video') {
     return (
       <div className="mt-2">
-        <video
-          src={url}
-          controls
-          className="w-full h-40 object-cover rounded-lg"
-        />
+        <video src={url} controls className="w-full h-40 object-cover rounded-lg" />
       </div>
     );
   }
@@ -70,7 +62,6 @@ const AdminTraining = ({ canEdit }) => {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  
   const itemsPerPage = 10;
 
   // Form state for create/edit
@@ -154,7 +145,10 @@ const AdminTraining = ({ canEdit }) => {
     setSubmitting(true);
     try {
       // Generate slug from title
-      const slug = formData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const slug = formData.title
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
 
       const newCourse = {
         title: formData.title,
@@ -173,11 +167,11 @@ const AdminTraining = ({ canEdit }) => {
       console.log('Creating course:', newCourse);
       await backendApi.training.create(newCourse);
       await refetch();
-      
+
       showToast({
         title: 'Course Created',
         description: 'Training course has been created successfully.',
-        variant: 'success'
+        variant: 'success',
       });
 
       setShowCreateModal(false);
@@ -187,7 +181,7 @@ const AdminTraining = ({ canEdit }) => {
       showToast({
         title: 'Error',
         description: `Failed to create training course: ${error.message}`,
-        variant: 'error'
+        variant: 'error',
       });
     } finally {
       setSubmitting(false);
@@ -216,7 +210,10 @@ const AdminTraining = ({ canEdit }) => {
     setSubmitting(true);
     try {
       // Generate slug from title for consistency
-      const slug = formData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const slug = formData.title
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
 
       const updatedCourse = {
         title: formData.title,
@@ -235,11 +232,11 @@ const AdminTraining = ({ canEdit }) => {
       console.log('Updating course:', selectedCourse.id, updatedCourse);
       await backendApi.training.update(selectedCourse.id, updatedCourse);
       await refetch();
-      
+
       showToast({
         title: 'Course Updated',
         description: 'Training course has been updated successfully.',
-        variant: 'success'
+        variant: 'success',
       });
 
       setShowEditModal(false);
@@ -250,7 +247,7 @@ const AdminTraining = ({ canEdit }) => {
       showToast({
         title: 'Error',
         description: `Failed to update training course: ${error.message}`,
-        variant: 'error'
+        variant: 'error',
       });
     } finally {
       setSubmitting(false);
@@ -269,11 +266,11 @@ const AdminTraining = ({ canEdit }) => {
     try {
       await backendApi.training.delete(selectedCourse.id);
       await refetch();
-      
+
       showToast({
         title: 'Course Deleted',
         description: 'Training course has been deleted successfully.',
-        variant: 'success'
+        variant: 'success',
       });
 
       setShowDeleteModal(false);
@@ -282,7 +279,7 @@ const AdminTraining = ({ canEdit }) => {
       showToast({
         title: 'Error',
         description: 'Failed to delete training course.',
-        variant: 'error'
+        variant: 'error',
       });
     } finally {
       setSubmitting(false);
@@ -458,8 +455,8 @@ const AdminTraining = ({ canEdit }) => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={() => {
                             setSelectedCourse(course);
@@ -811,56 +808,84 @@ const AdminTraining = ({ canEdit }) => {
             <>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Title</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Title
+                  </label>
                   <p className="text-[var(--color-text)] font-medium">{selectedCourse.title}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Description</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Description
+                  </label>
                   <p className="text-[var(--color-text)]">{selectedCourse.description || 'N/A'}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Type</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Type
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedCourse.type || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Status</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Status
+                    </label>
                     <div>{getStatusBadge(selectedCourse.status)}</div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Instructor</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Instructor
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedCourse.instructor || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Duration</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Duration
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedCourse.duration || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Students</label>
-                    <p className="text-[var(--color-text)]">{selectedCourse.students || 0} / {selectedCourse.maxStudents || 0}</p>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Students
+                    </label>
+                    <p className="text-[var(--color-text)]">
+                      {selectedCourse.students || 0} / {selectedCourse.maxStudents || 0}
+                    </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Start Date</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Start Date
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedCourse.startDate || 'N/A'}</p>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Cover Image</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Cover Image
+                  </label>
                   <p className="text-[var(--color-text)] text-sm">
                     {selectedCourse.coverImage ? (
-                      <a href={selectedCourse.coverImage} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      <a
+                        href={selectedCourse.coverImage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
                         {selectedCourse.coverImage}
                       </a>
-                    ) : 'N/A'}
+                    ) : (
+                      'N/A'
+                    )}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Content Preview</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Content Preview
+                  </label>
                   <p className="text-[var(--color-text)] text-sm">
-                    {selectedCourse.content ? 
-                      `${selectedCourse.content.substring(0, 200)}${selectedCourse.content.length > 200 ? '...' : ''}` 
-                      : 'N/A'
-                    }
+                    {selectedCourse.content
+                      ? `${selectedCourse.content.substring(0, 200)}${selectedCourse.content.length > 200 ? '...' : ''}`
+                      : 'N/A'}
                   </p>
                 </div>
               </div>

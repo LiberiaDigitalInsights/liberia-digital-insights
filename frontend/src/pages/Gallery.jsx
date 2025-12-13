@@ -13,23 +13,29 @@ export default function Gallery() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const gallery = useGallery();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch all data in parallel
         const [itemsData, eventsData, categoriesData] = await Promise.all([
           gallery.getItems(),
           gallery.getEvents(),
-          gallery.getCategories()
+          gallery.getCategories(),
         ]);
 
         // Handle different response structures with better error checking
-        setItems(Array.isArray(itemsData?.items) ? itemsData.items : Array.isArray(itemsData) ? itemsData : []);
+        setItems(
+          Array.isArray(itemsData?.items)
+            ? itemsData.items
+            : Array.isArray(itemsData)
+              ? itemsData
+              : [],
+        );
         setEvents(Array.isArray(eventsData) ? eventsData : []);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
         setError(null);
@@ -50,26 +56,24 @@ export default function Gallery() {
 
   const filteredItems = React.useMemo(() => {
     if (filter === 'all') return items;
-    
+
     if (filter.startsWith('event:')) {
       const eventSlug = filter.replace('event:', '');
-      return items.filter((item) => 
-        item.event_type === 'event' && item.events?.slug === eventSlug
-      );
+      return items.filter((item) => item.event_type === 'event' && item.events?.slug === eventSlug);
     }
-    
+
     if (filter.startsWith('podcast:')) {
       const podcastSlug = filter.replace('podcast:', '');
-      return items.filter((item) => 
-        item.event_type === 'podcast' && item.podcasts?.slug === podcastSlug
+      return items.filter(
+        (item) => item.event_type === 'podcast' && item.podcasts?.slug === podcastSlug,
       );
     }
-    
+
     if (filter.startsWith('category:')) {
       const category = filter.replace('category:', '');
       return items.filter((item) => item.category === category);
     }
-    
+
     return items;
   }, [filter, items]);
 
@@ -143,7 +147,7 @@ export default function Gallery() {
           >
             All ({items.length})
           </button>
-          
+
           {events.map((event) => (
             <button
               key={event.slug}
@@ -157,7 +161,7 @@ export default function Gallery() {
               {event.title}
             </button>
           ))}
-          
+
           {categories.map((category) => (
             <button
               key={category}

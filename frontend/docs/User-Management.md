@@ -190,7 +190,7 @@ function UserList() {
   const [filters, setFilters] = useState({});
   const [pagination, setPagination] = useState({ page: 1, limit: 20 });
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { getUsers, updateUserStatus, bulkUpdateUsers } = useUsers();
 
   useEffect(() => {
@@ -203,13 +203,13 @@ function UserList() {
       const response = await getUsers({
         ...filters,
         page: pagination.page,
-        limit: pagination.limit
+        limit: pagination.limit,
       });
       setUsers(response.data.items);
-      setPagination(prev => ({
+      setPagination((prev) => ({
         ...prev,
         total: response.data.pagination.total,
-        totalPages: response.data.pagination.totalPages
+        totalPages: response.data.pagination.totalPages,
       }));
     } catch (error) {
       console.error('Failed to load users:', error);
@@ -219,11 +219,11 @@ function UserList() {
   };
 
   const handleUserSelection = (userId, selected) => {
-    setSelectedUsers(prev => {
+    setSelectedUsers((prev) => {
       if (selected) {
         return [...prev, userId];
       } else {
-        return prev.filter(id => id !== userId);
+        return prev.filter((id) => id !== userId);
       }
     });
   };
@@ -251,26 +251,19 @@ function UserList() {
     <div className="user-management">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-        
+
         <div className="flex space-x-3">
           <button className="bg-brand-500 text-white px-4 py-2 rounded-md hover:bg-brand-600">
             Add New User
           </button>
-          
+
           {selectedUsers.length > 0 && (
-            <BulkActions
-              selectedCount={selectedUsers.length}
-              onAction={handleBulkAction}
-            />
+            <BulkActions selectedCount={selectedUsers.length} onAction={handleBulkAction} />
           )}
         </div>
       </div>
 
-      <UserFilters
-        filters={filters}
-        onFiltersChange={setFilters}
-        className="mb-6"
-      />
+      <UserFilters filters={filters} onFiltersChange={setFilters} className="mb-6" />
 
       {isLoading ? (
         <div className="flex justify-center py-12">
@@ -278,7 +271,7 @@ function UserList() {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {users.map(user => (
+          {users.map((user) => (
             <UserCard
               key={user.id}
               user={user}
@@ -294,7 +287,7 @@ function UserList() {
         <Pagination
           currentPage={pagination.page}
           totalPages={pagination.totalPages}
-          onPageChange={(page) => setPagination(prev => ({ ...prev, page }))}
+          onPageChange={(page) => setPagination((prev) => ({ ...prev, page }))}
           className="mt-8"
         />
       )}
@@ -317,9 +310,13 @@ function UserCard({ user, selected, onSelect, onStatusChange }) {
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border p-4 cursor-pointer transition-all ${
-      selected ? 'border-brand-500 ring-2 ring-brand-200' : 'border-gray-200 hover:border-gray-300'
-    }`}>
+    <div
+      className={`bg-white rounded-lg shadow-sm border p-4 cursor-pointer transition-all ${
+        selected
+          ? 'border-brand-500 ring-2 ring-brand-200'
+          : 'border-gray-200 hover:border-gray-300'
+      }`}
+    >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center space-x-3">
           <input
@@ -328,7 +325,7 @@ function UserCard({ user, selected, onSelect, onStatusChange }) {
             onChange={(e) => onSelect(e.target.checked)}
             className="rounded border-gray-300 text-brand-500 focus:ring-brand-500"
           />
-          
+
           <div className="relative">
             {user.avatar?.url ? (
               <img
@@ -341,13 +338,18 @@ function UserCard({ user, selected, onSelect, onStatusChange }) {
                 {getInitials(user.first_name, user.last_name)}
               </div>
             )}
-            
-            <div className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
-              user.status === 'active' ? 'bg-green-500' :
-              user.status === 'inactive' ? 'bg-yellow-500' : 'bg-red-500'
-            }`}></div>
+
+            <div
+              className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
+                user.status === 'active'
+                  ? 'bg-green-500'
+                  : user.status === 'inactive'
+                    ? 'bg-yellow-500'
+                    : 'bg-red-500'
+              }`}
+            ></div>
           </div>
-          
+
           <div>
             <h3 className="font-medium text-gray-900">
               {user.first_name} {user.last_name}
@@ -355,7 +357,7 @@ function UserCard({ user, selected, onSelect, onStatusChange }) {
             <p className="text-sm text-gray-500">{user.email}</p>
           </div>
         </div>
-        
+
         <div className="flex flex-col items-end space-y-1">
           <RoleBadge role={user.role} />
           <StatusBadge status={user.status} />
@@ -368,25 +370,28 @@ function UserCard({ user, selected, onSelect, onStatusChange }) {
             <span className="font-medium">Title:</span> {user.professional.title}
           </div>
         )}
-        
+
         {user.professional?.company && (
           <div className="text-gray-600">
             <span className="font-medium">Company:</span> {user.professional.company}
           </div>
         )}
-        
+
         {user.location?.city && (
           <div className="text-gray-600">
-            <span className="font-medium">Location:</span> {user.location.city}, {user.location.country}
+            <span className="font-medium">Location:</span> {user.location.city},{' '}
+            {user.location.country}
           </div>
         )}
-        
+
         <div className="text-gray-600">
-          <span className="font-medium">Joined:</span> {new Date(user.created_at).toLocaleDateString()}
+          <span className="font-medium">Joined:</span>{' '}
+          {new Date(user.created_at).toLocaleDateString()}
         </div>
-        
+
         <div className="text-gray-600">
-          <span className="font-medium">Last Seen:</span> {new Date(user.last_seen).toLocaleDateString()}
+          <span className="font-medium">Last Seen:</span>{' '}
+          {new Date(user.last_seen).toLocaleDateString()}
         </div>
       </div>
 
@@ -395,11 +400,9 @@ function UserCard({ user, selected, onSelect, onStatusChange }) {
           <button className="text-brand-500 hover:text-brand-600 text-sm font-medium">
             View Profile
           </button>
-          <button className="text-brand-500 hover:text-brand-600 text-sm font-medium">
-            Edit
-          </button>
+          <button className="text-brand-500 hover:text-brand-600 text-sm font-medium">Edit</button>
         </div>
-        
+
         <select
           value={user.status}
           onChange={(e) => onStatusChange(user.id, e.target.value)}
@@ -431,7 +434,7 @@ export const useUsers = () => {
   const getUsers = useCallback(async (params = {}) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await api.get('/users', { params });
       return response.data;
@@ -446,7 +449,7 @@ export const useUsers = () => {
   const getUser = useCallback(async (userId) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await api.get(`/users/${userId}`);
       return response.data;
@@ -461,7 +464,7 @@ export const useUsers = () => {
   const createUser = useCallback(async (userData) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await api.post('/users', userData);
       return response.data;
@@ -476,7 +479,7 @@ export const useUsers = () => {
   const updateUser = useCallback(async (userId, userData) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await api.put(`/users/${userId}`, userData);
       return response.data;
@@ -491,7 +494,7 @@ export const useUsers = () => {
   const updateUserStatus = useCallback(async (userId, status) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await api.patch(`/users/${userId}/status`, { status });
       return response.data;
@@ -506,12 +509,12 @@ export const useUsers = () => {
   const bulkUpdateUsers = useCallback(async (userIds, action, data) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await api.post('/users/bulk', {
         user_ids: userIds,
         action,
-        data
+        data,
       });
       return response.data;
     } catch (error) {
@@ -525,7 +528,7 @@ export const useUsers = () => {
   const deleteUser = useCallback(async (userId) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       await api.delete(`/users/${userId}`);
     } catch (error) {
@@ -539,11 +542,11 @@ export const useUsers = () => {
   const searchUsers = useCallback(async (query, filters = {}) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await api.post('/users/search', {
         query,
-        filters
+        filters,
       });
       return response.data;
     } catch (error) {
@@ -564,7 +567,7 @@ export const useUsers = () => {
     updateUserStatus,
     bulkUpdateUsers,
     deleteUser,
-    searchUsers
+    searchUsers,
   };
 };
 ```
@@ -595,7 +598,7 @@ router.get('/', authenticateToken, requireRole('admin'), async (req, res) => {
       created_after,
       created_before,
       sort_by = 'created_at',
-      sort_order = 'desc'
+      sort_order = 'desc',
     } = req.query;
 
     const users = await UserService.getUsers({
@@ -607,14 +610,14 @@ router.get('/', authenticateToken, requireRole('admin'), async (req, res) => {
         search,
         location,
         created_after,
-        created_before
+        created_before,
       },
-      sort: { sort_by, sort_order }
+      sort: { sort_by, sort_order },
     });
 
     res.json({
       success: true,
-      data: users
+      data: users,
     });
   } catch (error) {
     console.error('Get users error:', error);
@@ -622,8 +625,8 @@ router.get('/', authenticateToken, requireRole('admin'), async (req, res) => {
       success: false,
       error: {
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to fetch users'
-      }
+        message: 'Failed to fetch users',
+      },
     });
   }
 });
@@ -632,33 +635,33 @@ router.get('/', authenticateToken, requireRole('admin'), async (req, res) => {
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Users can only view their own profile unless they're admin
     if (req.user.role !== 'admin' && req.user.id !== id) {
       return res.status(403).json({
         success: false,
         error: {
           code: 'AUTHORIZATION_ERROR',
-          message: 'Access denied'
-        }
+          message: 'Access denied',
+        },
       });
     }
 
     const user = await UserService.getUserById(id);
-    
+
     if (!user) {
       return res.status(404).json({
         success: false,
         error: {
           code: 'NOT_FOUND',
-          message: 'User not found'
-        }
+          message: 'User not found',
+        },
       });
     }
 
     res.json({
       success: true,
-      data: { user }
+      data: { user },
     });
   } catch (error) {
     console.error('Get user error:', error);
@@ -666,138 +669,153 @@ router.get('/:id', authenticateToken, async (req, res) => {
       success: false,
       error: {
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to fetch user'
-      }
+        message: 'Failed to fetch user',
+      },
     });
   }
 });
 
 // POST /api/v1/users - Create new user (admin only)
-router.post('/', authenticateToken, requireRole('admin'), [
-  body('email').isEmail().normalizeEmail(),
-  body('first_name').trim().isLength({ min: 1, max: 50 }),
-  body('last_name').trim().isLength({ min: 1, max: 50 }),
-  body('role').isIn(['user', 'editor', 'admin'])
-], async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          code: 'VALIDATION_ERROR',
-          message: 'Validation failed',
-          details: errors.array()
-        }
-      });
-    }
-
-    const user = await UserService.createUser(req.body);
-    
-    res.status(201).json({
-      success: true,
-      data: { user },
-      message: 'User created successfully'
-    });
-  } catch (error) {
-    if (error.code === 'DUPLICATE_EMAIL') {
-      return res.status(409).json({
-        success: false,
-        error: {
-          code: 'CONFLICT',
-          message: 'User with this email already exists'
-        }
-      });
-    }
-    
-    console.error('Create user error:', error);
-    res.status(500).json({
-      success: false,
-      error: {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to create user'
+router.post(
+  '/',
+  authenticateToken,
+  requireRole('admin'),
+  [
+    body('email').isEmail().normalizeEmail(),
+    body('first_name').trim().isLength({ min: 1, max: 50 }),
+    body('last_name').trim().isLength({ min: 1, max: 50 }),
+    body('role').isIn(['user', 'editor', 'admin']),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Validation failed',
+            details: errors.array(),
+          },
+        });
       }
-    });
-  }
-});
+
+      const user = await UserService.createUser(req.body);
+
+      res.status(201).json({
+        success: true,
+        data: { user },
+        message: 'User created successfully',
+      });
+    } catch (error) {
+      if (error.code === 'DUPLICATE_EMAIL') {
+        return res.status(409).json({
+          success: false,
+          error: {
+            code: 'CONFLICT',
+            message: 'User with this email already exists',
+          },
+        });
+      }
+
+      console.error('Create user error:', error);
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to create user',
+        },
+      });
+    }
+  },
+);
 
 // PUT /api/v1/users/:id - Update user
-router.put('/:id', authenticateToken, [
-  body('first_name').optional().trim().isLength({ min: 1, max: 50 }),
-  body('last_name').optional().trim().isLength({ min: 1, max: 50 }),
-  body('bio').optional().trim().isLength({ max: 500 })
-], async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    // Users can only update their own profile unless they're admin
-    if (req.user.role !== 'admin' && req.user.id !== id) {
-      return res.status(403).json({
-        success: false,
-        error: {
-          code: 'AUTHORIZATION_ERROR',
-          message: 'Access denied'
-        }
-      });
-    }
+router.put(
+  '/:id',
+  authenticateToken,
+  [
+    body('first_name').optional().trim().isLength({ min: 1, max: 50 }),
+    body('last_name').optional().trim().isLength({ min: 1, max: 50 }),
+    body('bio').optional().trim().isLength({ max: 500 }),
+  ],
+  async (req, res) => {
+    try {
+      const { id } = req.params;
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          code: 'VALIDATION_ERROR',
-          message: 'Validation failed',
-          details: errors.array()
-        }
-      });
-    }
-
-    const user = await UserService.updateUser(id, req.body);
-    
-    res.json({
-      success: true,
-      data: { user },
-      message: 'User updated successfully'
-    });
-  } catch (error) {
-    console.error('Update user error:', error);
-    res.status(500).json({
-      success: false,
-      error: {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to update user'
+      // Users can only update their own profile unless they're admin
+      if (req.user.role !== 'admin' && req.user.id !== id) {
+        return res.status(403).json({
+          success: false,
+          error: {
+            code: 'AUTHORIZATION_ERROR',
+            message: 'Access denied',
+          },
+        });
       }
-    });
-  }
-});
+
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Validation failed',
+            details: errors.array(),
+          },
+        });
+      }
+
+      const user = await UserService.updateUser(id, req.body);
+
+      res.json({
+        success: true,
+        data: { user },
+        message: 'User updated successfully',
+      });
+    } catch (error) {
+      console.error('Update user error:', error);
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update user',
+        },
+      });
+    }
+  },
+);
 
 // PATCH /api/v1/users/:id/status - Update user status (admin only)
-router.patch('/:id/status', authenticateToken, requireRole('admin'), [
-  body('status').isIn(['active', 'inactive', 'suspended'])
-], async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
+router.patch(
+  '/:id/status',
+  authenticateToken,
+  requireRole('admin'),
+  [body('status').isIn(['active', 'inactive', 'suspended'])],
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
 
-    const user = await UserService.updateUserStatus(id, status);
-    
-    res.json({
-      success: true,
-      data: { user },
-      message: `User status updated to ${status}`
-    });
-  } catch (error) {
-    console.error('Update user status error:', error);
-    res.status(500).json({
-      success: false,
-      error: {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to update user status'
-      }
-    });
-  }
-});
+      const user = await UserService.updateUserStatus(id, status);
+
+      res.json({
+        success: true,
+        data: { user },
+        message: `User status updated to ${status}`,
+      });
+    } catch (error) {
+      console.error('Update user status error:', error);
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update user status',
+        },
+      });
+    }
+  },
+);
 
 // POST /api/v1/users/bulk - Bulk user operations (admin only)
 router.post('/bulk', authenticateToken, requireRole('admin'), async (req, res) => {
@@ -809,17 +827,17 @@ router.post('/bulk', authenticateToken, requireRole('admin'), async (req, res) =
         success: false,
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'User IDs array is required'
-        }
+          message: 'User IDs array is required',
+        },
       });
     }
 
     const result = await UserService.bulkUpdateUsers(user_ids, action, data);
-    
+
     res.json({
       success: true,
       data: result,
-      message: `Bulk ${action} completed successfully`
+      message: `Bulk ${action} completed successfully`,
     });
   } catch (error) {
     console.error('Bulk operation error:', error);
@@ -827,8 +845,8 @@ router.post('/bulk', authenticateToken, requireRole('admin'), async (req, res) =
       success: false,
       error: {
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to perform bulk operation'
-      }
+        message: 'Failed to perform bulk operation',
+      },
     });
   }
 });
@@ -839,10 +857,10 @@ router.delete('/:id', authenticateToken, requireRole('admin'), async (req, res) 
     const { id } = req.params;
 
     await UserService.deleteUser(id);
-    
+
     res.json({
       success: true,
-      message: 'User deleted successfully'
+      message: 'User deleted successfully',
     });
   } catch (error) {
     console.error('Delete user error:', error);
@@ -850,8 +868,8 @@ router.delete('/:id', authenticateToken, requireRole('admin'), async (req, res) 
       success: false,
       error: {
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to delete user'
-      }
+        message: 'Failed to delete user',
+      },
     });
   }
 });
@@ -875,7 +893,7 @@ function UserAnalytics() {
   const [timeRange, setTimeRange] = useState('30d');
   const [analytics, setAnalytics] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { getUserAnalytics } = useUserAnalytics();
 
   useEffect(() => {
@@ -906,7 +924,7 @@ function UserAnalytics() {
     <div className="user-analytics">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">User Analytics</h1>
-        
+
         <select
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
@@ -930,7 +948,7 @@ function UserAnalytics() {
               changeType="percentage"
               icon="users"
             />
-            
+
             <MetricCard
               title="Active Users"
               value={analytics.overview.active_users}
@@ -938,7 +956,7 @@ function UserAnalytics() {
               changeType="percentage"
               icon="user-check"
             />
-            
+
             <MetricCard
               title="New Registrations"
               value={analytics.overview.new_registrations}
@@ -946,7 +964,7 @@ function UserAnalytics() {
               changeType="percentage"
               icon="user-plus"
             />
-            
+
             <MetricCard
               title="Retention Rate"
               value={`${analytics.overview.retention_rate}%`}
@@ -962,7 +980,7 @@ function UserAnalytics() {
               <h3 className="text-lg font-medium text-gray-900 mb-4">User Growth</h3>
               <UserGrowthChart data={analytics.growth} />
             </div>
-            
+
             <div className="bg-white p-6 rounded-lg shadow-sm border">
               <h3 className="text-lg font-medium text-gray-900 mb-4">User Activity</h3>
               <UserActivityChart data={analytics.activity} />
@@ -973,7 +991,7 @@ function UserAnalytics() {
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h3 className="text-lg font-medium text-gray-900 mb-4">User Segments</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {analytics.segments.map(segment => (
+              {analytics.segments.map((segment) => (
                 <div key={segment.name} className="text-center p-4 bg-gray-50 rounded-lg">
                   <div className="text-2xl font-bold text-gray-900">{segment.count}</div>
                   <div className="text-sm text-gray-600">{segment.name}</div>

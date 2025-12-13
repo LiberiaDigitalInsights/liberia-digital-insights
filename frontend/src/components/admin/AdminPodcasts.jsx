@@ -21,6 +21,7 @@ import {
   FaTimes,
   FaMicrophone,
 } from 'react-icons/fa';
+import PodcastUpload from './PodcastUpload';
 import { usePodcasts } from '../../hooks/useBackendApi';
 import { backendApi } from '../../services/backendApi';
 import { useToast } from '../../context/ToastContext';
@@ -32,45 +33,140 @@ const AdminPodcasts = ({ canEdit }) => {
   const { data: categoriesData } = useCategories({});
   const podcasts = podcastsData?.podcasts || [];
   const categories = categoriesData?.data || [];
-  
-  // Debug logging for categories
-  console.log('Categories data:', categoriesData);
-  console.log('Categories array:', categories);
-  
+
   // Fallback categories if API fails
   const fallbackCategories = [
     { id: 'technology-fallback', name: 'Technology' },
     { id: 'business-fallback', name: 'Business' },
     { id: 'innovation-fallback', name: 'Innovation' },
     { id: 'leadership-fallback', name: 'Leadership' },
-    { id: 'interview-fallback', name: 'Interview' }
+    { id: 'interview-fallback', name: 'Interview' },
   ];
-  
-  // Helper function to strip HTML tags
-  const stripHtml = (html) => {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
-  };
 
-  // Helper function to get category name by ID
-  const getCategoryName = (categoryId) => {
-    if (!categoryId) return 'N/A';
-    const category = categories.find(cat => cat.id === categoryId);
-    return category ? category.name : categoryId;
-  };
-  
   const displayCategories = categories.length > 0 ? categories : fallbackCategories;
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedPodcast, setSelectedPodcast] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // File upload states
+  const [audioFile, setAudioFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+
+  // File upload handlers
+  const handleAudioUpload = async (file) => {
+    if (!file) return;
+
+    // Check file type
+    const validAudioTypes = ['audio/mp3', 'audio/wav', 'audio/mpeg', 'audio/m4a', 'audio/mp4', 'audio/x-m4a', 'audio/ogg'];
+    if (!validAudioTypes.includes(file.type)) {
+      alert('Please upload a valid audio file (MP3, WAV, M4A, OGG)');
+      return;
+    }
+
+    // Check file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
+      alert('Audio file must be less than 50MB');
+      return;
+    }
+
+    setAudioFile(file);
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', 'audio');
+
+      const response = await fetch('http://localhost:5000/v1/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData((prev) => ({ ...prev, audio_url: data.url }));
+        showToast({
+          title: 'Audio Uploaded',
+          description: 'Audio file uploaded successfully',
+          variant: 'success',
+        });
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error) {
+      console.error('Audio upload error:', error);
+      showToast({
+        title: 'Upload Failed',
+        description: 'Failed to upload audio file',
+        variant: 'error',
+      });
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  const handleVideoUpload = async (file) => {
+    if (!file) return;
+
+    // Check file type
+    const validVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+    if (!validVideoTypes.includes(file.type)) {
+      alert('Please upload a valid video file (MP4, WebM, OGG)');
+      return;
+    }
+
+    // Check file size (max 100MB)
+    if (file.size > 100 * 1024 * 1024) {
+      alert('Video file must be less than 100MB');
+      return;
+    }
+
+    setVideoFile(file);
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', 'video');
+
+      const response = await fetch('http://localhost:5000/v1/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData((prev) => ({ ...prev, video_url: data.url }));
+        showToast({
+          title: 'Video Uploaded',
+          description: 'Video file uploaded successfully',
+          variant: 'success',
+        });
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error) {
+      console.error('Video upload error:', error);
+      showToast({
+        title: 'Upload Failed',
+        description: 'Failed to upload video file',
+        variant: 'error',
+      });
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  };
   const itemsPerPage = 10;
 
   // Form state for create/edit
@@ -83,21 +179,21 @@ const AdminPodcasts = ({ canEdit }) => {
     episode_number: '',
     season_number: '',
     language: 'en',
+    audio_url: '',
+    video_url: '',
     tags: '',
     is_featured: false,
     status: 'draft',
-    audioUrl: '',
     transcript: '',
-    videoUrl: '',
-    youtubeUrl: '',
-    facebookUrl: '',
-    spotifyUrl: '',
-    applePodcastsUrl: '',
-    coverImage: '',
+    youtube_url: '',
+    facebook_url: '',
+    spotify_url: '',
+    apple_podcasts_url: '',
+    cover_image_url: '',
   });
 
   // Handle image upload and convert to base64
-  const handleImageUpload = (e, fieldName = 'coverImage') => {
+  const handleImageUpload = (e, fieldName = 'cover_image_url') => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
 
@@ -148,30 +244,53 @@ const AdminPodcasts = ({ canEdit }) => {
         .replace(/\s+/g, '-')
         .replace(/[^a-z0-9-]/g, '');
 
-      const newPodcast = {
-        title: formData.title,
-        slug,
-        description: formData.description,
-        duration: formData.duration,
-        guest: formData.guest,
-        category_id: formData.category_id || null,
-        episode_number: formData.episode_number || null,
-        season_number: formData.season_number || null,
-        language: formData.language,
-        tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : [],
-        is_featured: formData.is_featured,
-        status: formData.status,
-        audio_url: formData.audioUrl,
-        transcript: formData.transcript,
-        video_url: formData.videoUrl,
-        youtube_url: formData.youtubeUrl,
-        facebook_url: formData.facebookUrl,
-        spotify_url: formData.spotifyUrl,
-        apple_podcasts_url: formData.applePodcastsUrl,
-        cover_image_url: formData.coverImage,
-      };
+      // Create FormData for file upload
+      const formDataToSend = new FormData();
+      
+      // Add all text fields
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('slug', slug);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('duration', formData.duration);
+      formDataToSend.append('guest', formData.guest);
+      formDataToSend.append('category_id', formData.category_id || '');
+      formDataToSend.append('episode_number', formData.episode_number || '');
+      formDataToSend.append('season_number', formData.season_number || '');
+      formDataToSend.append('language', formData.language);
+      formDataToSend.append('tags', JSON.stringify(formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : []));
+      formDataToSend.append('is_featured', formData.is_featured);
+      formDataToSend.append('status', formData.status);
+      formDataToSend.append('transcript', formData.transcript);
+      formDataToSend.append('video_url', formData.video_url);
+      formDataToSend.append('youtube_url', formData.youtube_url);
+      formDataToSend.append('facebook_url', formData.facebook_url);
+      formDataToSend.append('spotify_url', formData.spotify_url);
+      formDataToSend.append('apple_podcasts_url', formData.apple_podcasts_url);
+      
+      // Add existing URLs if provided
+      if (formData.audio_url) formDataToSend.append('audio_url', formData.audio_url);
+      if (formData.cover_image_url) formDataToSend.append('cover_image_url', formData.cover_image_url);
+      
+      // Add files if they exist in state
+      if (audioFile) {
+        formDataToSend.append('audio_file', audioFile);
+      }
+      if (videoFile) {
+        formDataToSend.append('cover_image', videoFile);
+      }
 
-      await backendApi.podcasts.create(newPodcast);
+      // Send FormData directly
+      const response = await fetch('http://localhost:5000/v1/podcasts', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create podcast');
+      }
+
+      await response.json();
       await refetch();
 
       showToast({
@@ -182,10 +301,11 @@ const AdminPodcasts = ({ canEdit }) => {
 
       setShowCreateModal(false);
       resetForm();
-    } catch {
+    } catch (error) {
+      console.error('Create error:', error);
       showToast({
         title: 'Error',
-        description: 'Failed to create podcast.',
+        description: error.message || 'Failed to create podcast.',
         variant: 'error',
       });
     } finally {
@@ -207,14 +327,14 @@ const AdminPodcasts = ({ canEdit }) => {
       tags: podcast.tags ? podcast.tags.join(', ') : '',
       is_featured: podcast.is_featured || false,
       status: podcast.status,
-      audioUrl: podcast.audio_url || '',
+      audio_url: '',
       transcript: podcast.transcript || '',
-      videoUrl: podcast.video_url || '',
-      youtubeUrl: podcast.youtube_url || '',
-      facebookUrl: podcast.facebook_url || '',
-      spotifyUrl: podcast.spotify_url || '',
-      applePodcastsUrl: podcast.apple_podcasts_url || '',
-      coverImage: podcast.cover_image_url || '',
+      video_url: '',
+      youtube_url: podcast.youtube_url || '',
+      facebook_url: podcast.facebook_url || '',
+      spotify_url: podcast.spotify_url || '',
+      apple_podcasts_url: podcast.apple_podcasts_url || '',
+      cover_image_url: podcast.cover_image_url || '',
     });
     setShowEditModal(true);
   };
@@ -224,30 +344,54 @@ const AdminPodcasts = ({ canEdit }) => {
 
     setSubmitting(true);
     try {
-      const updatedPodcast = {
-        title: formData.title,
-        description: formData.description,
-        duration: formData.duration,
-        guest: formData.guest,
-        category_id: formData.category_id || null,
-        episode_number: formData.episode_number || null,
-        season_number: formData.season_number || null,
-        language: formData.language,
-        tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : [],
-        is_featured: formData.is_featured,
-        status: formData.status,
-        audio_url: formData.audioUrl,
-        transcript: formData.transcript,
-        video_url: formData.videoUrl,
-        youtube_url: formData.youtubeUrl,
-        facebook_url: formData.facebookUrl,
-        spotify_url: formData.spotifyUrl,
-        apple_podcasts_url: formData.applePodcastsUrl,
-        cover_image_url: formData.coverImage,
-      };
+      // Create FormData for file upload
+      const formDataToSend = new FormData();
+      
+      // Add all text fields
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('duration', formData.duration);
+      formDataToSend.append('guest', formData.guest);
+      formDataToSend.append('category_id', formData.category_id || '');
+      formDataToSend.append('episode_number', formData.episode_number || '');
+      formDataToSend.append('season_number', formData.season_number || '');
+      formDataToSend.append('language', formData.language);
+      formDataToSend.append('tags', JSON.stringify(formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : []));
+      formDataToSend.append('is_featured', formData.is_featured);
+      formDataToSend.append('status', formData.status);
+      formDataToSend.append('transcript', formData.transcript);
+      formDataToSend.append('video_url', formData.video_url);
+      formDataToSend.append('youtube_url', formData.youtube_url);
+      formDataToSend.append('facebook_url', formData.facebook_url);
+      formDataToSend.append('spotify_url', formData.spotify_url);
+      formDataToSend.append('apple_podcasts_url', formData.apple_podcasts_url);
+      
+      // Add existing URLs if provided
+      if (formData.audio_url) formDataToSend.append('audio_url', formData.audio_url);
+      if (formData.cover_image_url) formDataToSend.append('cover_image_url', formData.cover_image_url);
+      
+      // Add files if they exist in state
+      if (audioFile) {
+        formDataToSend.append('audio_file', audioFile);
+      }
+      if (videoFile) {
+        formDataToSend.append('cover_image', videoFile);
+      }
 
-      console.log('Updating podcast:', selectedPodcast.id, updatedPodcast);
-      await backendApi.podcasts.update(selectedPodcast.id, updatedPodcast);
+      console.log('Updating podcast:', selectedPodcast.id);
+      
+      // Send FormData directly
+      const response = await fetch(`http://localhost:5000/v1/podcasts/${selectedPodcast.id}`, {
+        method: 'PUT',
+        body: formDataToSend,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update podcast');
+      }
+
+      await response.json();
       await refetch();
 
       showToast({
@@ -263,7 +407,7 @@ const AdminPodcasts = ({ canEdit }) => {
       console.error('Update error:', error);
       showToast({
         title: 'Error',
-        description: `Failed to update podcast: ${error.message}`,
+        description: error.message || 'Failed to update podcast.',
         variant: 'error',
       });
     } finally {
@@ -316,14 +460,14 @@ const AdminPodcasts = ({ canEdit }) => {
       tags: '',
       is_featured: false,
       status: 'draft',
-      audioUrl: '',
+      audio_url: '',
       transcript: '',
-      videoUrl: '',
-      youtubeUrl: '',
-      facebookUrl: '',
-      spotifyUrl: '',
-      applePodcastsUrl: '',
-      coverImage: '',
+      video_url: '',
+      youtube_url: '',
+      facebook_url: '',
+      spotify_url: '',
+      apple_podcasts_url: '',
+      cover_image_url: '',
     });
   };
 
@@ -669,8 +813,8 @@ const AdminPodcasts = ({ canEdit }) => {
             </label>
             <div className="flex gap-2">
               <Input
-                value={formData.coverImage}
-                onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                value={formData.cover_image_url}
+                onChange={(e) => setFormData({ ...formData, cover_image_url: e.target.value })}
                 placeholder="https://example.com/cover.jpg"
                 className="flex-1"
               />
@@ -684,7 +828,22 @@ const AdminPodcasts = ({ canEdit }) => {
                 />
               </label>
             </div>
-            <MediaPreview url={formData.coverImage} type="image" />
+            <MediaPreview url={formData.cover_image_url} type="image" />
+
+            <PodcastUpload
+              formData={formData}
+              setFormData={setFormData}
+              uploading={uploading}
+              setUploading={setUploading}
+              audioFile={audioFile}
+              setAudioFile={setAudioFile}
+              videoFile={videoFile}
+              setVideoFile={setVideoFile}
+              uploadProgress={uploadProgress}
+              setUploadProgress={setUploadProgress}
+              handleAudioUpload={handleAudioUpload}
+              handleVideoUpload={handleVideoUpload}
+            />
           </div>
 
           {/* Media Links Section */}
@@ -698,11 +857,11 @@ const AdminPodcasts = ({ canEdit }) => {
                   YouTube URL
                 </label>
                 <Input
-                  value={formData.youtubeUrl}
-                  onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
+                  value={formData.youtube_url}
+                  onChange={(e) => setFormData({ ...formData, youtube_url: e.target.value })}
                   placeholder="https://youtube.com/watch?v=..."
                 />
-                <MediaPreview url={formData.youtubeUrl} type="youtube" />
+                <MediaPreview url={formData.youtube_url} type="youtube" />
               </div>
 
               {/* Facebook */}
@@ -711,11 +870,11 @@ const AdminPodcasts = ({ canEdit }) => {
                   Facebook URL
                 </label>
                 <Input
-                  value={formData.facebookUrl}
-                  onChange={(e) => setFormData({ ...formData, facebookUrl: e.target.value })}
+                  value={formData.facebook_url}
+                  onChange={(e) => setFormData({ ...formData, facebook_url: e.target.value })}
                   placeholder="https://facebook.com/..."
                 />
-                <MediaPreview url={formData.facebookUrl} type="facebook" />
+                <MediaPreview url={formData.facebook_url} type="facebook" />
               </div>
 
               {/* Spotify */}
@@ -724,10 +883,11 @@ const AdminPodcasts = ({ canEdit }) => {
                   Spotify URL
                 </label>
                 <Input
-                  value={formData.spotifyUrl}
-                  onChange={(e) => setFormData({ ...formData, spotifyUrl: e.target.value })}
-                  placeholder="https://open.spotify.com/episode/..."
+                  value={formData.spotify_url}
+                  onChange={(e) => setFormData({ ...formData, spotify_url: e.target.value })}
+                  placeholder="https://spotify.com/..."
                 />
+                <MediaPreview url={formData.spotify_url} type="spotify" />
               </div>
 
               {/* Apple Podcasts */}
@@ -736,66 +896,77 @@ const AdminPodcasts = ({ canEdit }) => {
                   Apple Podcasts URL
                 </label>
                 <Input
-                  value={formData.applePodcastsUrl}
-                  onChange={(e) => setFormData({ ...formData, applePodcastsUrl: e.target.value })}
+                  value={formData.apple_podcasts_url}
+                  onChange={(e) => setFormData({ ...formData, apple_podcasts_url: e.target.value })}
                   placeholder="https://podcasts.apple.com/..."
                 />
+                <MediaPreview url={formData.apple_podcasts_url} type="apple" />
               </div>
+            </div>
+          </div>
 
-              {/* Audio File */}
+          {/* Additional Fields */}
+          <div className="border-t pt-4">
+            <h3 className="text-sm font-medium text-[var(--color-text)] mb-3">Additional Settings</h3>
+            
+            <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-                  Audio File URL
+                  Tags (comma-separated)
                 </label>
                 <Input
-                  value={formData.audioUrl}
-                  onChange={(e) => setFormData({ ...formData, audioUrl: e.target.value })}
-                  placeholder="https://example.com/audio.mp3"
+                  value={formData.tags}
+                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                  placeholder="technology, innovation, africa"
                 />
               </div>
 
-              {/* Video File */}
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-                  Video File URL
+                  Status
                 </label>
-                <Input
-                  value={formData.videoUrl}
-                  onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
-                  placeholder="https://example.com/video.mp4"
+                <Select
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="featured"
+                  checked={formData.is_featured}
+                  onChange={(e) => setFormData({ ...formData, is_featured: e.target.checked })}
+                />
+                <label htmlFor="featured" className="text-sm text-[var(--color-text)]">
+                  Featured Episode
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                  Transcript
+                </label>
+                <Textarea
+                  value={formData.transcript}
+                  onChange={(e) => setFormData({ ...formData, transcript: e.target.value })}
+                  placeholder="Episode transcript..."
+                  rows={5}
                 />
               </div>
             </div>
           </div>
 
-          {/* Transcript */}
-          <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-              Transcript
-            </label>
-            <RichTextEditor
-              value={formData.transcript}
-              onChange={(content) => setFormData({ ...formData, transcript: content })}
-              placeholder="Episode transcript"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-              Status
-            </label>
-            <Select
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+          <div className="flex justify-end gap-2 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowCreateModal(false)}
+              disabled={submitting}
             >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="scheduled">Scheduled</option>
-              <option value="archived">Archived</option>
-            </Select>
-          </div>
-          <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={() => setShowCreateModal(false)}>
               Cancel
             </Button>
             <Button onClick={handleCreate} disabled={submitting}>
@@ -899,8 +1070,8 @@ const AdminPodcasts = ({ canEdit }) => {
             </label>
             <div className="flex gap-2">
               <Input
-                value={formData.coverImage}
-                onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                value={formData.cover_image_url}
+                onChange={(e) => setFormData({ ...formData, cover_image_url: e.target.value })}
                 placeholder="https://example.com/cover.jpg"
                 className="flex-1"
               />
@@ -914,8 +1085,23 @@ const AdminPodcasts = ({ canEdit }) => {
                 />
               </label>
             </div>
-            <MediaPreview url={formData.coverImage} type="image" />
+            <MediaPreview url={formData.cover_image_url} type="image" />
           </div>
+
+          <PodcastUpload
+            formData={formData}
+            setFormData={setFormData}
+            uploading={uploading}
+            setUploading={setUploading}
+            audioFile={audioFile}
+            setAudioFile={setAudioFile}
+            videoFile={videoFile}
+            setVideoFile={setVideoFile}
+            uploadProgress={uploadProgress}
+            setUploadProgress={setUploadProgress}
+            handleAudioUpload={handleAudioUpload}
+            handleVideoUpload={handleVideoUpload}
+          />
 
           {/* Media Links Section */}
           <div className="border-t pt-4">
@@ -928,11 +1114,11 @@ const AdminPodcasts = ({ canEdit }) => {
                   YouTube URL
                 </label>
                 <Input
-                  value={formData.youtubeUrl}
-                  onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
+                  value={formData.youtube_url}
+                  onChange={(e) => setFormData({ ...formData, youtube_url: e.target.value })}
                   placeholder="https://youtube.com/watch?v=..."
                 />
-                <MediaPreview url={formData.youtubeUrl} type="youtube" />
+                <MediaPreview url={formData.youtube_url} type="youtube" />
               </div>
 
               {/* Facebook */}
@@ -941,11 +1127,11 @@ const AdminPodcasts = ({ canEdit }) => {
                   Facebook URL
                 </label>
                 <Input
-                  value={formData.facebookUrl}
-                  onChange={(e) => setFormData({ ...formData, facebookUrl: e.target.value })}
+                  value={formData.facebook_url}
+                  onChange={(e) => setFormData({ ...formData, facebook_url: e.target.value })}
                   placeholder="https://facebook.com/..."
                 />
-                <MediaPreview url={formData.facebookUrl} type="facebook" />
+                <MediaPreview url={formData.facebook_url} type="facebook" />
               </div>
 
               {/* Spotify */}
@@ -954,10 +1140,11 @@ const AdminPodcasts = ({ canEdit }) => {
                   Spotify URL
                 </label>
                 <Input
-                  value={formData.spotifyUrl}
-                  onChange={(e) => setFormData({ ...formData, spotifyUrl: e.target.value })}
-                  placeholder="https://open.spotify.com/episode/..."
+                  value={formData.spotify_url}
+                  onChange={(e) => setFormData({ ...formData, spotify_url: e.target.value })}
+                  placeholder="https://spotify.com/..."
                 />
+                <MediaPreview url={formData.spotify_url} type="spotify" />
               </div>
 
               {/* Apple Podcasts */}
@@ -966,66 +1153,73 @@ const AdminPodcasts = ({ canEdit }) => {
                   Apple Podcasts URL
                 </label>
                 <Input
-                  value={formData.applePodcastsUrl}
-                  onChange={(e) => setFormData({ ...formData, applePodcastsUrl: e.target.value })}
+                  value={formData.apple_podcasts_url}
+                  onChange={(e) => setFormData({ ...formData, apple_podcasts_url: e.target.value })}
                   placeholder="https://podcasts.apple.com/..."
                 />
+                <MediaPreview url={formData.apple_podcasts_url} type="apple" />
               </div>
+            </div>
+          </div>
 
-              {/* Audio File */}
+          {/* Additional Fields */}
+          <div className="border-t pt-4">
+            <h3 className="text-sm font-medium text-[var(--color-text)] mb-3">Additional Settings</h3>
+            
+            <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-                  Audio File URL
+                  Tags (comma-separated)
                 </label>
                 <Input
-                  value={formData.audioUrl}
-                  onChange={(e) => setFormData({ ...formData, audioUrl: e.target.value })}
-                  placeholder="https://example.com/audio.mp3"
+                  value={formData.tags}
+                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                  placeholder="technology, innovation, africa"
                 />
               </div>
 
-              {/* Video File */}
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-                  Video File URL
+                  Status
                 </label>
-                <Input
-                  value={formData.videoUrl}
-                  onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
-                  placeholder="https://example.com/video.mp4"
+                <Select
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="featured"
+                  checked={formData.is_featured}
+                  onChange={(e) => setFormData({ ...formData, is_featured: e.target.checked })}
+                />
+                <label htmlFor="featured" className="text-sm text-[var(--color-text)]">
+                  Featured Episode
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
+                  Transcript
+                </label>
+                <Textarea
+                  value={formData.transcript}
+                  onChange={(e) => setFormData({ ...formData, transcript: e.target.value })}
+                  placeholder="Episode transcript..."
+                  rows={5}
                 />
               </div>
             </div>
           </div>
 
-          {/* Transcript */}
-          <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-              Transcript
-            </label>
-            <RichTextEditor
-              value={formData.transcript}
-              onChange={(content) => setFormData({ ...formData, transcript: content })}
-              placeholder="Episode transcript"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
-              Status
-            </label>
-            <Select
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-            >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="scheduled">Scheduled</option>
-              <option value="archived">Archived</option>
-            </Select>
-          </div>
-          <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={() => setShowEditModal(false)}>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={() => setShowEditModal(false)} disabled={submitting}>
               Cancel
             </Button>
             <Button onClick={handleUpdate} disabled={submitting}>
@@ -1035,268 +1229,57 @@ const AdminPodcasts = ({ canEdit }) => {
         </div>
       </Modal>
 
-      {/* Podcast Details Modal */}
+      {/* Details Modal */}
       <Modal
         open={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}
-        title="Podcast Episode Details"
+        title="Podcast Details"
       >
         <div className="space-y-4">
           {selectedPodcast && (
             <>
-              <div className="space-y-4">
+              <div>
+                <h3 className="font-medium text-[var(--color-text)]">{selectedPodcast.title}</h3>
+                <p className="text-sm text-[var(--color-muted)] mt-1">
+                  {selectedPodcast.description}
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                    Title
-                  </label>
-                  <p className="text-[var(--color-text)] font-medium">{selectedPodcast.title}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                    Description
-                  </label>
-                  <p className="text-[var(--color-text)]">{selectedPodcast.description || 'N/A'}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Duration
-                    </label>
-                    <p className="text-[var(--color-text)]">{selectedPodcast.duration || 'N/A'}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Guest
-                    </label>
-                    <p className="text-[var(--color-text)]">{selectedPodcast.guest || 'N/A'}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Episode
-                    </label>
-                    <p className="text-[var(--color-text)]">
-                      {selectedPodcast.episode_number && selectedPodcast.season_number
-                        ? `S${selectedPodcast.season_number}E${selectedPodcast.episode_number}`
-                        : selectedPodcast.episode_number
-                          ? `Episode ${selectedPodcast.episode_number}`
-                          : 'N/A'}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Category
-                    </label>
-                    <p className="text-[var(--color-text)]">
-                      {getCategoryName(selectedPodcast.category_id)}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Language
-                    </label>
-                    <p className="text-[var(--color-text)]">
-                      {selectedPodcast.language === 'en'
-                        ? 'English'
-                        : selectedPodcast.language === 'fr'
-                          ? 'French'
-                          : selectedPodcast.language === 'es'
-                            ? 'Spanish'
-                            : selectedPodcast.language || 'N/A'}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Status
-                    </label>
-                    <div>
-                      <StatusBadge status={selectedPodcast.status} />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Featured
-                    </label>
-                    <p className="text-[var(--color-text)]">
-                      {selectedPodcast.is_featured ? 'Yes' : 'No'}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Plays
-                    </label>
-                    <p className="text-[var(--color-text)]">{selectedPodcast.plays_count || 0}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Downloads
-                    </label>
-                    <p className="text-[var(--color-text)]">
-                      {selectedPodcast.downloads_count || 0}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Likes
-                    </label>
-                    <p className="text-[var(--color-text)]">{selectedPodcast.likes_count || 0}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Published Date
-                    </label>
-                    <p className="text-[var(--color-text)]">
-                      {selectedPodcast.published_at
-                        ? new Date(selectedPodcast.published_at).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })
-                        : 'N/A'}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                    Tags
-                  </label>
-                  <p className="text-[var(--color-text)]">
-                    {selectedPodcast.tags && selectedPodcast.tags.length > 0
-                      ? selectedPodcast.tags.join(', ')
-                      : 'N/A'}
+                  <p className="text-sm font-medium text-[var(--color-text)]">Guest</p>
+                  <p className="text-sm text-[var(--color-muted)]">
+                    {selectedPodcast.guest || 'N/A'}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                    Cover Image
-                  </label>
-                  <p className="text-[var(--color-text)] text-sm">
-                    {selectedPodcast.cover_image_url ? (
-                      <a
-                        href={selectedPodcast.cover_image_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
-                      >
-                        {selectedPodcast.cover_image_url}
-                      </a>
-                    ) : (
-                      'N/A'
-                    )}
+                  <p className="text-sm font-medium text-[var(--color-text)]">Duration</p>
+                  <p className="text-sm text-[var(--color-muted)]">
+                    {selectedPodcast.duration || 'N/A'}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                    Audio File
-                  </label>
-                  <p className="text-[var(--color-text)] text-sm">
-                    {selectedPodcast.audio_url ? (
-                      <a
-                        href={selectedPodcast.audio_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
-                      >
-                        {selectedPodcast.audio_url}
-                      </a>
-                    ) : (
-                      'N/A'
-                    )}
-                  </p>
+                  <p className="text-sm font-medium text-[var(--color-text)]">Status</p>
+                  <StatusBadge status={selectedPodcast.status} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                    Transcript
-                  </label>
-                  <p className="text-[var(--color-text)] text-sm max-h-32 overflow-y-auto">
-                    {selectedPodcast.transcript ? stripHtml(selectedPodcast.transcript) : 'N/A'}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      YouTube URL
-                    </label>
-                    <p className="text-[var(--color-text)] text-sm">
-                      {selectedPodcast.youtube_url ? (
-                        <a
-                          href={selectedPodcast.youtube_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline"
-                        >
-                          YouTube
-                        </a>
-                      ) : (
-                        'N/A'
-                      )}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Spotify URL
-                    </label>
-                    <p className="text-[var(--color-text)] text-sm">
-                      {selectedPodcast.spotify_url ? (
-                        <a
-                          href={selectedPodcast.spotify_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline"
-                        >
-                          Spotify
-                        </a>
-                      ) : (
-                        'N/A'
-                      )}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Apple Podcasts URL
-                    </label>
-                    <p className="text-[var(--color-text)] text-sm">
-                      {selectedPodcast.apple_podcasts_url ? (
-                        <a
-                          href={selectedPodcast.apple_podcasts_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline"
-                        >
-                          Apple Podcasts
-                        </a>
-                      ) : (
-                        'N/A'
-                      )}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
-                      Facebook URL
-                    </label>
-                    <p className="text-[var(--color-text)] text-sm">
-                      {selectedPodcast.facebook_url ? (
-                        <a
-                          href={selectedPodcast.facebook_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline"
-                        >
-                          Facebook
-                        </a>
-                      ) : (
-                        'N/A'
-                      )}
-                    </p>
-                  </div>
+                  <p className="text-sm font-medium text-[var(--color-text)]">Plays</p>
+                  <p className="text-sm text-[var(--color-muted)]">{selectedPodcast.plays || 0}</p>
                 </div>
               </div>
-              <div className="flex gap-2 justify-end pt-4">
-                <Button variant="outline" onClick={() => setShowDetailsModal(false)}>
-                  Close
-                </Button>
-              </div>
+              {selectedPodcast.audio_url && (
+                <div>
+                  <p className="text-sm font-medium text-[var(--color-text)] mb-2">Audio</p>
+                  <audio controls className="w-full">
+                    <source src={selectedPodcast.audio_url} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              )}
             </>
           )}
+          <div className="flex justify-end pt-4">
+            <Button onClick={() => setShowDetailsModal(false)}>Close</Button>
+          </div>
         </div>
       </Modal>
 
@@ -1304,46 +1287,33 @@ const AdminPodcasts = ({ canEdit }) => {
       <Modal
         open={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
-        title="Delete Podcast Episode"
+        title="Delete Podcast"
       >
         <div className="space-y-4">
-          <p className="text-[var(--color-text)]">
-            Are you sure you want to delete "{selectedPodcast?.title}"? This action cannot be
-            undone.
-          </p>
-          <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+          <div>
+            <p className="text-[var(--color-text)]">
+              Are you sure you want to delete "{selectedPodcast?.title}"? This action cannot be
+              undone.
+            </p>
+          </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteModal(false)}
+              disabled={submitting}
+            >
               Cancel
             </Button>
-            <Button variant="destructive" onClick={confirmDelete} disabled={submitting}>
-              {submitting ? 'Deleting...' : 'Delete Episode'}
+            <Button
+              onClick={confirmDelete}
+              disabled={submitting}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {submitting ? 'Deleting...' : 'Delete'}
             </Button>
           </div>
         </div>
       </Modal>
-
-      {/* Empty State */}
-      {filteredPodcasts.length === 0 && (
-        <Card>
-          <CardContent className="text-center py-12">
-            <FaMicrophone className="w-12 h-12 text-[var(--color-muted)] mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-[var(--color-text)] mb-2">
-              No podcast episodes found
-            </h3>
-            <p className="text-[var(--color-muted)] mb-4">
-              {searchTerm || filterStatus !== 'all'
-                ? 'Try adjusting your search or filter criteria'
-                : 'Get started by creating your first podcast episode'}
-            </p>
-            {canEdit && !searchTerm && filterStatus === 'all' && (
-              <Button onClick={() => setShowCreateModal(true)}>
-                <FaPlus className="mr-2" />
-                Create Episode
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };

@@ -40,9 +40,7 @@ export default function EventsWidget() {
             ))}
           </ul>
         ) : (
-          <div className="text-sm text-[var(--color-muted)]">
-            No upcoming events
-          </div>
+          <div className="text-sm text-[var(--color-muted)]">No upcoming events</div>
         )}
       </CardContent>
     </Card>

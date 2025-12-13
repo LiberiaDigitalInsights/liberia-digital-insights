@@ -47,7 +47,7 @@ export default function EventCard({
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
           {category && (
             <div className="absolute top-3 left-3 rounded-full bg-brand-500 px-2.5 py-1 text-xs font-medium text-white shadow-lg">
-              {category}
+              {typeof category === 'string' ? category : category.name}
             </div>
           )}
           {!isPast && (
@@ -66,7 +66,7 @@ export default function EventCard({
           <div className="text-4xl text-gray-400">📅</div>
           {category && (
             <div className="absolute top-3 left-3 rounded-full bg-brand-500 px-2.5 py-1 text-xs font-medium text-white shadow-lg">
-              {category}
+              {typeof category === 'string' ? category : category.name}
             </div>
           )}
           {!isPast && (
@@ -108,11 +108,15 @@ export default function EventCard({
             </div>
           )}
         </div>
-        {registrationUrl && registrationUrl !== 'null' && registrationUrl !== 'undefined' && registrationUrl !== '#' && !isPast && (
-          <Button as={Link} to={registrationUrl} variant="solid" className="w-full">
-            Register Now
-          </Button>
-        )}
+        {registrationUrl &&
+          registrationUrl !== 'null' &&
+          registrationUrl !== 'undefined' &&
+          registrationUrl !== '#' &&
+          !isPast && (
+            <Button as={Link} to={registrationUrl} variant="solid" className="w-full">
+              Register Now
+            </Button>
+          )}
         {!registrationUrl && !isPast && (
           <Button variant="outline" className="w-full" disabled>
             Registration Unavailable

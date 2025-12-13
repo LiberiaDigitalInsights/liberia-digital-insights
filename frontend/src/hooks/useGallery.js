@@ -9,12 +9,12 @@ const handleResponse = async (response) => {
     const errorMessage = error.error || error.message || `HTTP error! status: ${response.status}`;
     throw new Error(errorMessage);
   }
-  
+
   // Handle 204 No Content responses (common for delete operations)
   if (response.status === 204) {
     return null;
   }
-  
+
   return response.json();
 };
 

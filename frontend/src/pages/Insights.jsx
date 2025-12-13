@@ -9,21 +9,22 @@ import { FaHashtag, FaLightbulb, FaBullhorn } from 'react-icons/fa';
 
 export default function Insights() {
   const [selectedCategory, setSelectedCategory] = React.useState('all');
-  
+
   // Fetch real data from backend
   const { data: insightsData, loading: insightsLoading } = useInsights({ limit: 12 });
   const { data: categoriesData } = useCategories();
-  
+
   const insights = insightsData?.insights || [];
   const categories = categoriesData?.data || [];
 
   // Filter insights based on selected category
-  const filteredInsights = selectedCategory === 'all' 
-    ? insights 
-    : insights.filter(insight => {
-        const category = categories.find(cat => cat.slug === selectedCategory);
-        return category && insight.category_id === category.id;
-      });
+  const filteredInsights =
+    selectedCategory === 'all'
+      ? insights
+      : insights.filter((insight) => {
+          const category = categories.find((cat) => cat.slug === selectedCategory);
+          return category && insight.category_id === category.id;
+        });
 
   const specialFeatures = [
     {
@@ -120,7 +121,10 @@ export default function Insights() {
                   title={insights[0].title}
                   excerpt={insights[0].excerpt || 'Weekly insights from tech experts in Liberia.'}
                   category="#InsightTechThursdays"
-                  author={insights[0].author?.name || "Stephen M. Parteh, IT Manager of Liberia Digital Insights"}
+                  author={
+                    insights[0].author?.name ||
+                    'Stephen M. Parteh, IT Manager of Liberia Digital Insights'
+                  }
                   date={new Date(insights[0].published_at).toLocaleDateString()}
                   readTime={Math.ceil(insights[0].content.length / 1000) + ' min read'}
                   to={`/insight/${insights[0].slug}`}
@@ -203,8 +207,8 @@ export default function Insights() {
             ) : (
               <div className="col-span-full text-center py-12">
                 <p className="text-[var(--color-muted)]">
-                  {selectedCategory === 'all' 
-                    ? 'No insights available yet.' 
+                  {selectedCategory === 'all'
+                    ? 'No insights available yet.'
                     : `No insights found in this category.`}
                 </p>
               </div>

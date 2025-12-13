@@ -7,21 +7,27 @@ The Content Management System (CMS) is the core of Liberia Digital Insights, ena
 ## 🎯 Content Types
 
 ### Articles
+
 Long-form content about technology trends, industry analysis, and thought leadership pieces.
 
 ### Insights
+
 Data-driven reports, trend analysis, and shorter analytical content.
 
 ### Podcasts
+
 Audio content with show notes, transcripts, and guest information.
 
 ### Events
+
 Technology events, workshops, conferences, and networking opportunities.
 
 ### Training Courses
+
 Professional development courses and certification programs.
 
 ### Newsletters
+
 Curated content delivery via email subscriptions.
 
 ## 🏗️ Architecture
@@ -113,38 +119,31 @@ backend/src/routes/
 ### Article Components
 
 #### Article Card
+
 ```jsx
 function ArticleCard({ article, showAuthor = true, showCategory = true }) {
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden">
       {article.featured && (
-        <div className="bg-brand-500 text-white text-sm px-3 py-1">
-          Featured
-        </div>
+        <div className="bg-brand-500 text-white text-sm px-3 py-1">Featured</div>
       )}
-      
+
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
           {showCategory && (
-            <span className="text-sm bg-gray-100 px-2 py-1 rounded">
-              {article.category}
-            </span>
+            <span className="text-sm bg-gray-100 px-2 py-1 rounded">{article.category}</span>
           )}
-          <span className="text-sm text-gray-500">
-            {article.reading_time} min read
-          </span>
+          <span className="text-sm text-gray-500">{article.reading_time} min read</span>
         </div>
-        
+
         <h2 className="text-xl font-bold mb-2 line-clamp-2">
           <Link to={`/article/${article.slug}`} className="hover:text-brand-500">
             {article.title}
           </Link>
         </h2>
-        
-        <p className="text-gray-600 mb-4 line-clamp-3">
-          {article.excerpt}
-        </p>
-        
+
+        <p className="text-gray-600 mb-4 line-clamp-3">{article.excerpt}</p>
+
         {showAuthor && (
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -155,9 +154,7 @@ function ArticleCard({ article, showAuthor = true, showCategory = true }) {
               />
               <span className="text-sm text-gray-700">{article.author}</span>
             </div>
-            <time className="text-sm text-gray-500">
-              {formatDate(article.published_at)}
-            </time>
+            <time className="text-sm text-gray-500">{formatDate(article.published_at)}</time>
           </div>
         )}
       </div>
@@ -167,14 +164,15 @@ function ArticleCard({ article, showAuthor = true, showCategory = true }) {
 ```
 
 #### Article Detail
+
 ```jsx
 function ArticleDetail({ slug }) {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const articles = useArticles();
-  
+
   useEffect(() => {
     const fetchArticle = async () => {
       try {
@@ -186,14 +184,14 @@ function ArticleDetail({ slug }) {
         setLoading(false);
       }
     };
-    
+
     fetchArticle();
   }, [slug, articles]);
-  
+
   if (loading) return <ArticleSkeleton />;
   if (error) return <ErrorMessage error={error} />;
   if (!article) return <NotFound />;
-  
+
   return (
     <article className="max-w-4xl mx-auto">
       <header className="mb-8">
@@ -207,9 +205,9 @@ function ArticleDetail({ slug }) {
             </span>
           )}
         </div>
-        
+
         <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
-        
+
         <div className="flex items-center justify-between text-gray-600">
           <div className="flex items-center">
             <img
@@ -224,23 +222,23 @@ function ArticleDetail({ slug }) {
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             <ShareButton article={article} />
             <BookmarkButton articleId={article.id} />
           </div>
         </div>
       </header>
-      
+
       <div className="prose prose-lg max-w-none">
         <ContentRenderer html={article.content} />
       </div>
-      
+
       {article.tags.length > 0 && (
         <div className="mt-8">
           <h3 className="text-lg font-semibold mb-3">Tags</h3>
           <div className="flex flex-wrap gap-2">
-            {article.tags.map(tag => (
+            {article.tags.map((tag) => (
               <Link
                 key={tag}
                 to={`/tag/${tag}`}
@@ -252,7 +250,7 @@ function ArticleDetail({ slug }) {
           </div>
         </div>
       )}
-      
+
       <RelatedArticles currentArticle={article} />
       <Comments articleId={article.id} />
     </article>
@@ -304,7 +302,7 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
   const [duration, setDuration] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
   const audioRef = useRef(null);
-  
+
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -315,20 +313,20 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
       setIsPlaying(!isPlaying);
     }
   };
-  
+
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       setCurrentTime(audioRef.current.currentTime);
       setDuration(audioRef.current.duration);
     }
   };
-  
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
-  
+
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
       <audio
@@ -338,43 +336,39 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
         onLoadedMetadata={handleTimeUpdate}
         preload="metadata"
       />
-      
+
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-semibold text-lg">{podcast.title}</h3>
           <p className="text-gray-600">{podcast.description}</p>
         </div>
-        
+
         <div className="text-right">
           <div className="text-sm text-gray-500">{formatTime(currentTime)}</div>
           <div className="text-sm text-gray-500">{formatTime(duration)}</div>
         </div>
       </div>
-      
+
       <div className="mb-4">
         <div className="bg-gray-200 rounded-full h-2">
           <div
             className="bg-brand-500 h-2 rounded-full transition-all duration-100"
             style={{
-              width: duration ? `${(currentTime / duration) * 100}%` : '0%'
+              width: duration ? `${(currentTime / duration) * 100}%` : '0%',
             }}
           />
         </div>
       </div>
-      
+
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <button
             onClick={togglePlay}
             className="bg-brand-500 text-white p-3 rounded-full hover:bg-brand-600"
           >
-            {isPlaying ? (
-              <PauseIcon className="w-6 h-6" />
-            ) : (
-              <PlayIcon className="w-6 h-6" />
-            )}
+            {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6" />}
           </button>
-          
+
           <select
             value={playbackRate}
             onChange={(e) => {
@@ -394,7 +388,7 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
             <option value="2">2x</option>
           </select>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <DownloadButton podcast={podcast} />
           <ShareButton podcast={podcast} />
@@ -449,60 +443,61 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
 ### Event Components
 
 #### Event Card
+
 ```jsx
 function EventCard({ event }) {
   const isUpcoming = new Date(event.start_date) > new Date();
-  const isOngoing = new Date(event.start_date) <= new Date() && 
-                   new Date(event.end_date) >= new Date();
-  
+  const isOngoing =
+    new Date(event.start_date) <= new Date() && new Date(event.end_date) >= new Date();
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <span className={`px-3 py-1 rounded-full text-sm ${
-            isOngoing ? 'bg-green-100 text-green-800' :
-            isUpcoming ? 'bg-blue-100 text-blue-800' :
-            'bg-gray-100 text-gray-800'
-          }`}>
+          <span
+            className={`px-3 py-1 rounded-full text-sm ${
+              isOngoing
+                ? 'bg-green-100 text-green-800'
+                : isUpcoming
+                  ? 'bg-blue-100 text-blue-800'
+                  : 'bg-gray-100 text-gray-800'
+            }`}
+          >
             {isOngoing ? 'Live Now' : isUpcoming ? 'Upcoming' : 'Completed'}
           </span>
-          
+
           {event.featured && (
             <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">
               Featured
             </span>
           )}
         </div>
-        
+
         <h3 className="text-xl font-bold mb-2">
           <Link to={`/event/${event.slug}`} className="hover:text-brand-500">
             {event.title}
           </Link>
         </h3>
-        
-        <p className="text-gray-600 mb-4 line-clamp-2">
-          {event.description}
-        </p>
-        
+
+        <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+
         <div className="space-y-2 text-sm text-gray-600">
           <div className="flex items-center">
             <CalendarIcon className="w-4 h-4 mr-2" />
             {formatDate(event.start_date)}
-            {event.start_date !== event.end_date && 
-              ` - ${formatDate(event.end_date)}`
-            }
+            {event.start_date !== event.end_date && ` - ${formatDate(event.end_date)}`}
           </div>
-          
+
           <div className="flex items-center">
             <LocationIcon className="w-4 h-4 mr-2" />
             {event.venue}, {event.location}
           </div>
-          
+
           <div className="flex items-center">
             <UsersIcon className="w-4 h-4 mr-2" />
             {event.current_attendees} / {event.max_attendees} attendees
           </div>
-          
+
           {event.price > 0 && (
             <div className="flex items-center">
               <CurrencyIcon className="w-4 h-4 mr-2" />
@@ -510,7 +505,7 @@ function EventCard({ event }) {
             </div>
           )}
         </div>
-        
+
         <div className="mt-4 flex space-x-2">
           {isUpcoming && event.registration_url && (
             <Button
@@ -523,7 +518,7 @@ function EventCard({ event }) {
               Register Now
             </Button>
           )}
-          
+
           <Button variant="outline" as={Link} to={`/event/${event.slug}`}>
             View Details
           </Button>
@@ -656,11 +651,11 @@ function RichTextEditor({ value, onChange, disabled = false }) {
       onChange({ target: { value: editor.getHTML() } });
     },
   });
-  
+
   if (!editor) {
     return null;
   }
-  
+
   return (
     <div className="rich-text-editor">
       <MenuBar editor={editor} />
@@ -710,7 +705,7 @@ const trackContentView = (contentType, contentId) => {
     content_id: contentId,
     timestamp: new Date().toISOString(),
     user_agent: navigator.userAgent,
-    referrer: document.referrer
+    referrer: document.referrer,
   });
 };
 
@@ -719,7 +714,7 @@ const trackContentEngagement = (contentType, contentId, action) => {
     content_type: contentType,
     content_id: contentId,
     action: action, // comment, share, bookmark, download
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 ```
@@ -792,11 +787,11 @@ test('renders article card correctly', () => {
     category: 'Technology',
     author: 'Test Author',
     reading_time: 5,
-    published_at: '2024-01-01T00:00:00Z'
+    published_at: '2024-01-01T00:00:00Z',
   };
-  
+
   render(<ArticleCard article={mockArticle} />);
-  
+
   expect(screen.getByText('Test Article')).toBeInTheDocument();
   expect(screen.getByText('Test excerpt...')).toBeInTheDocument();
   expect(screen.getByText('Technology')).toBeInTheDocument();

@@ -22,9 +22,11 @@ Authorization: Bearer <your-jwt-token>
 ### Authentication Endpoints
 
 #### POST /v1/auth/register
+
 Register a new user account.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -35,6 +37,7 @@ Register a new user account.
 ```
 
 **Response:**
+
 ```json
 {
   "user": {
@@ -49,9 +52,11 @@ Register a new user account.
 ```
 
 #### POST /v1/auth/login
+
 Authenticate a user and receive a JWT token.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -60,6 +65,7 @@ Authenticate a user and receive a JWT token.
 ```
 
 **Response:**
+
 ```json
 {
   "user": {
@@ -73,14 +79,17 @@ Authenticate a user and receive a JWT token.
 ```
 
 #### POST /v1/auth/verify
+
 Verify a JWT token and get user information.
 
 **Headers:**
+
 ```http
 Authorization: Bearer <jwt-token>
 ```
 
 **Response:**
+
 ```json
 {
   "valid": true,
@@ -98,9 +107,11 @@ Authorization: Bearer <jwt-token>
 ### Articles
 
 #### GET /v1/articles
+
 Get all articles with pagination and filtering.
 
 **Query Parameters:**
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (default: 20)
 - `category` (string): Filter by category
@@ -108,6 +119,7 @@ Get all articles with pagination and filtering.
 - `status` (string): Filter by status (published, draft)
 
 **Response:**
+
 ```json
 {
   "items": [
@@ -136,12 +148,15 @@ Get all articles with pagination and filtering.
 ```
 
 #### GET /v1/articles/:id
+
 Get a single article by ID or slug.
 
 #### POST /v1/articles
+
 Create a new article (requires authentication).
 
 **Request Body:**
+
 ```json
 {
   "title": "New Article Title",
@@ -156,31 +171,39 @@ Create a new article (requires authentication).
 ```
 
 #### PUT /v1/articles/:id
+
 Update an existing article (requires authentication).
 
 #### DELETE /v1/articles/:id
+
 Delete an article (requires authentication).
 
 ### Insights
 
 #### GET /v1/insights
+
 Get all insights with pagination and filtering.
 
 #### POST /v1/insights
+
 Create a new insight (requires authentication).
 
 #### PUT /v1/insights/:id
+
 Update an existing insight (requires authentication).
 
 #### DELETE /v1/insights/:id
+
 Delete an insight (requires authentication).
 
 ### Podcasts
 
 #### GET /v1/podcasts
+
 Get all podcasts with pagination and filtering.
 
 **Response:**
+
 ```json
 {
   "items": [
@@ -209,20 +232,25 @@ Get all podcasts with pagination and filtering.
 ```
 
 #### POST /v1/podcasts
+
 Create a new podcast (requires authentication).
 
 #### PUT /v1/podcasts/:id
+
 Update an existing podcast (requires authentication).
 
 #### DELETE /v1/podcasts/:id
+
 Delete a podcast (requires authentication).
 
 ### Events
 
 #### GET /v1/events
+
 Get all events with pagination and filtering.
 
 **Response:**
+
 ```json
 {
   "items": [
@@ -254,20 +282,25 @@ Get all events with pagination and filtering.
 ```
 
 #### POST /v1/events
+
 Create a new event (requires authentication).
 
 #### PUT /v1/events/:id
+
 Update an existing event (requires authentication).
 
 #### DELETE /v1/events/:id
+
 Delete an event (requires authentication).
 
 ## 🖼️ Gallery Endpoints
 
 #### GET /v1/gallery
+
 Get all gallery items with pagination and filtering.
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `type` (string): Filter by type (image, video)
@@ -276,6 +309,7 @@ Get all gallery items with pagination and filtering.
 - `search` (string): Search in title and description
 
 **Response:**
+
 ```json
 {
   "items": [
@@ -309,18 +343,23 @@ Get all gallery items with pagination and filtering.
 ```
 
 #### GET /v1/gallery/events
+
 Get all events that have gallery items.
 
 #### GET /v1/gallery/podcasts
+
 Get all podcasts that have gallery items.
 
 #### GET /v1/gallery/categories
+
 Get all unique categories from gallery items.
 
 #### POST /v1/gallery
+
 Create a new gallery item (requires authentication).
 
 **Request Body:**
+
 ```json
 {
   "title": "New Gallery Item",
@@ -337,51 +376,65 @@ Create a new gallery item (requires authentication).
 ```
 
 #### PUT /v1/gallery/:id
+
 Update an existing gallery item (requires authentication).
 
 #### DELETE /v1/gallery/:id
+
 Delete a gallery item (requires authentication).
 
 ## 🎓 Training Endpoints
 
 #### GET /v1/training
+
 Get all training courses with pagination and filtering.
 
 #### POST /v1/training
+
 Create a new training course (requires authentication).
 
 #### PUT /v1/training/:id
+
 Update an existing training course (requires authentication).
 
 #### DELETE /v1/training/:id
+
 Delete a training course (requires authentication).
 
 ## 👥 Talent Directory
 
 #### GET /v1/talents
+
 Get all talent profiles with pagination and filtering.
 
 #### POST /v1/talents
+
 Create a new talent profile (requires authentication).
 
 #### PUT /v1/talents/:id
+
 Update an existing talent profile (requires authentication).
 
 #### DELETE /v1/talents/:id
+
 Delete a talent profile (requires authentication).
 
 ## 📧 Newsletter Endpoints
 
 #### GET /v1/newsletters
+
 Get all newsletters with pagination.
 
 #### POST /v1/newsletters
+
 Create a new newsletter (requires authentication).
 
 #### POST /v1/newsletters/subscribe
+
 Subscribe to the newsletter.
 
 **Request Body:**
+
 ```json
 {
   "email": "subscriber@example.com",
@@ -390,9 +443,11 @@ Subscribe to the newsletter.
 ```
 
 #### POST /v1/newsletters/unsubscribe
+
 Unsubscribe from the newsletter.
 
 **Request Body:**
+
 ```json
 {
   "email": "subscriber@example.com"
@@ -402,11 +457,13 @@ Unsubscribe from the newsletter.
 ## 📁 File Upload
 
 #### POST /v1/upload
+
 Upload files to Supabase Storage (requires authentication).
 
 **Request:** Multipart form data with file field.
 
 **Response:**
+
 ```json
 {
   "url": "https://storage.supabase.co/...",
@@ -419,9 +476,11 @@ Upload files to Supabase Storage (requires authentication).
 ## 📊 Categories
 
 #### GET /v1/categories
+
 Get all available categories.
 
 **Response:**
+
 ```json
 {
   "categories": [
@@ -437,20 +496,25 @@ Get all available categories.
 ```
 
 #### POST /v1/categories
+
 Create a new category (requires authentication).
 
 #### PUT /v1/categories/:id
+
 Update an existing category (requires authentication).
 
 #### DELETE /v1/categories/:id
+
 Delete a category (requires authentication).
 
 ## 🔧 System Endpoints
 
 #### GET /health
+
 Health check endpoint.
 
 **Response:**
+
 ```json
 {
   "ok": true,

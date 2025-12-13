@@ -120,7 +120,10 @@ const AdminInsights = ({ canEdit }) => {
     setSubmitting(true);
     try {
       // Generate slug from title
-      const slug = formData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const slug = formData.title
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
 
       const newInsight = {
         title: formData.title,
@@ -142,11 +145,11 @@ const AdminInsights = ({ canEdit }) => {
       console.log('Creating insight:', newInsight);
       await backendApi.insights.create(newInsight);
       await refetch();
-      
+
       showToast({
         title: 'Insight Created',
         description: 'Insight has been created successfully.',
-        variant: 'success'
+        variant: 'success',
       });
 
       setShowCreateModal(false);
@@ -156,7 +159,7 @@ const AdminInsights = ({ canEdit }) => {
       showToast({
         title: 'Error',
         description: `Failed to create insight: ${error.message}`,
-        variant: 'error'
+        variant: 'error',
       });
     } finally {
       setSubmitting(false);
@@ -202,11 +205,11 @@ const AdminInsights = ({ canEdit }) => {
       console.log('Updating insight:', selectedInsight.id, updatedInsight);
       await backendApi.insights.update(selectedInsight.id, updatedInsight);
       await refetch();
-      
+
       showToast({
         title: 'Insight Updated',
         description: 'Insight has been updated successfully.',
-        variant: 'success'
+        variant: 'success',
       });
 
       setShowEditModal(false);
@@ -217,7 +220,7 @@ const AdminInsights = ({ canEdit }) => {
       showToast({
         title: 'Error',
         description: `Failed to update insight: ${error.message}`,
-        variant: 'error'
+        variant: 'error',
       });
     } finally {
       setSubmitting(false);
@@ -236,11 +239,11 @@ const AdminInsights = ({ canEdit }) => {
     try {
       await backendApi.insights.delete(selectedInsight.id);
       await refetch();
-      
+
       showToast({
         title: 'Insight Deleted',
         description: 'Insight has been deleted successfully.',
-        variant: 'success'
+        variant: 'success',
       });
 
       setShowDeleteModal(false);
@@ -250,7 +253,7 @@ const AdminInsights = ({ canEdit }) => {
       showToast({
         title: 'Error',
         description: `Failed to delete insight: ${error.message}`,
-        variant: 'error'
+        variant: 'error',
       });
     } finally {
       setSubmitting(false);
@@ -402,8 +405,8 @@ const AdminInsights = ({ canEdit }) => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={() => {
                             setSelectedInsight(insight);
@@ -576,7 +579,9 @@ const AdminInsights = ({ canEdit }) => {
             <Button variant="outline" onClick={() => setShowCreateModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleCreate} disabled={submitting}>{submitting ? "Creating..." : "Create Insight"}</Button>
+            <Button onClick={handleCreate} disabled={submitting}>
+              {submitting ? 'Creating...' : 'Create Insight'}
+            </Button>
           </div>
         </div>
       </Modal>
@@ -687,7 +692,9 @@ const AdminInsights = ({ canEdit }) => {
             <Button variant="outline" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleUpdate} disabled={submitting}>{submitting ? "Updating..." : "Update Insight"}</Button>
+            <Button onClick={handleUpdate} disabled={submitting}>
+              {submitting ? 'Updating...' : 'Update Insight'}
+            </Button>
           </div>
         </div>
       </Modal>
@@ -703,48 +710,70 @@ const AdminInsights = ({ canEdit }) => {
             <>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Title</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Title
+                  </label>
                   <p className="text-[var(--color-text)] font-medium">{selectedInsight.title}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Excerpt</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Excerpt
+                  </label>
                   <p className="text-[var(--color-text)]">{selectedInsight.excerpt || 'N/A'}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Category</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Category
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedInsight.category || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Status</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Status
+                    </label>
                     <div>{getStatusBadge(selectedInsight.status)}</div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Author</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Author
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedInsight.author || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Date</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Date
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedInsight.date || 'N/A'}</p>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Cover Image</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Cover Image
+                  </label>
                   <p className="text-[var(--color-text)] text-sm">
                     {selectedInsight.coverImage ? (
-                      <a href={selectedInsight.coverImage} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      <a
+                        href={selectedInsight.coverImage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
                         {selectedInsight.coverImage}
                       </a>
-                    ) : 'N/A'}
+                    ) : (
+                      'N/A'
+                    )}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Content Preview</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Content Preview
+                  </label>
                   <p className="text-[var(--color-text)] text-sm">
-                    {selectedInsight.content ? 
-                      `${selectedInsight.content.substring(0, 200)}${selectedInsight.content.length > 200 ? '...' : ''}` 
-                      : 'N/A'
-                    }
+                    {selectedInsight.content
+                      ? `${selectedInsight.content.substring(0, 200)}${selectedInsight.content.length > 200 ? '...' : ''}`
+                      : 'N/A'}
                   </p>
                 </div>
               </div>
@@ -774,7 +803,7 @@ const AdminInsights = ({ canEdit }) => {
               Cancel
             </Button>
             <Button variant="destructive" onClick={confirmDelete} disabled={submitting}>
-              {submitting ? "Deleting..." : "Delete Insight"}
+              {submitting ? 'Deleting...' : 'Delete Insight'}
             </Button>
           </div>
         </div>

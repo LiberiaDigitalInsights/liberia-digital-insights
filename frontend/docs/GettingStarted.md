@@ -12,23 +12,26 @@
 ### 🛠️ Installation & Setup
 
 1. **Clone Repository**
+
    ```bash
    git clone https://github.com/LiberiaDigitalInsights/liberia-digital-insights.git
    cd liberia-digital-insights
    ```
 
 2. **Environment Configuration**
+
    ```bash
    # Backend environment
    cp backend/.env.example backend/.env
    # Configure Supabase credentials in backend/.env
 
-   # Frontend environment  
+   # Frontend environment
    cp frontend/.env.example frontend/.env
    # Configure API endpoints in frontend/.env
    ```
 
 3. **Install Dependencies**
+
    ```bash
    # Use our convenience script (recommended)
    npm run install:all
@@ -45,6 +48,7 @@
    4. Run `backend/supabase/seed-data.sql` for sample content
 
 5. **Start Development Servers**
+
    ```bash
    # Start all services (backend, frontend, docs)
    npm run dev
@@ -64,6 +68,7 @@
 ## 📋 Available Scripts
 
 ### Root Level Scripts
+
 ```bash
 npm run dev              # Start all services (backend, frontend, docs)
 npm run start            # Same as npm run dev
@@ -77,6 +82,7 @@ npm run logs:frontend    # Follow frontend logs
 ```
 
 ### Frontend Scripts (from `frontend/`)
+
 ```bash
 npm run dev              # Start development server
 npm run build            # Build for production
@@ -92,6 +98,7 @@ npm run docs:preview     # Preview documentation
 ```
 
 ### Backend Scripts (from `backend/`)
+
 ```bash
 npm run dev              # Start development server with nodemon
 npm start                # Start production server
@@ -160,6 +167,7 @@ liberia-digital-insights/
 ## 🔧 Key Features & Routes
 
 ### Public Routes
+
 - `/` - Homepage with featured content
 - `/articles` - Articles listing and search
 - `/insights` - Industry insights and analysis
@@ -172,6 +180,7 @@ liberia-digital-insights/
 - `/contact` - Contact form
 
 ### Admin Routes (Protected)
+
 - `/admin` - Comprehensive admin dashboard
   - Content management (articles, insights, podcasts, events)
   - Gallery management
@@ -180,6 +189,7 @@ liberia-digital-insights/
   - System settings
 
 ### API Endpoints
+
 - `GET /health` - Health check endpoint
 - `/v1/auth/*` - Authentication endpoints
 - `/v1/articles/*` - Articles CRUD
@@ -194,12 +204,14 @@ liberia-digital-insights/
 ## 🎨 Development Guidelines
 
 ### Coding Standards
+
 - Follow ESLint and Prettier configurations
 - Use semantic commit messages
 - Write tests for new features
 - Follow React best practices and hooks patterns
 
 ### Component Development
+
 - Use the existing design system and UI components
 - Follow the established file naming conventions
 - Implement proper error handling with ErrorBoundary
@@ -207,6 +219,7 @@ liberia-digital-insights/
 - Implement SEO optimization with SEO component
 
 ### API Integration
+
 - Use the custom hooks in `/src/hooks/` for API calls
 - Follow the established error handling patterns
 - Implement proper loading states and error messages

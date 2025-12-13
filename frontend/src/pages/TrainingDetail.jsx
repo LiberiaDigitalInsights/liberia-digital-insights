@@ -10,7 +10,7 @@ import LazyImage from '../components/LazyImage';
 export default function TrainingDetail() {
   const { id } = useParams();
   const { data: courseData, loading, error } = useTrainingById(id);
-  
+
   // Handle different API response structures
   const training = courseData?.course || courseData?.training || courseData;
 
@@ -51,7 +51,11 @@ export default function TrainingDetail() {
 
   return (
     <>
-      <SEO title={mappedTraining.title} description={mappedTraining.summary} image={mappedTraining.image} />
+      <SEO
+        title={mappedTraining.title}
+        description={mappedTraining.summary}
+        image={mappedTraining.image}
+      />
       <div className="mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-12">
         <Link
           to={`/register?type=training&id=${mappedTraining.id}`}

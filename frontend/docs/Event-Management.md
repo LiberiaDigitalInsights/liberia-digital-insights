@@ -75,24 +75,28 @@ backend/src/routes/events.js  # Event CRUD operations
 ## 🎯 Event Types
 
 ### Conferences
+
 - Large-scale technology conferences
 - Multiple tracks and sessions
 - Keynote speakers and panels
 - Networking opportunities
 
 ### Workshops
+
 - Hands-on training sessions
 - Limited capacity for personalized attention
 - Focus on specific skills or technologies
 - Certificate of completion
 
 ### Meetups
+
 - Informal networking events
 - Community gatherings
 - Knowledge sharing sessions
 - Free or low-cost events
 
 ### Webinars
+
 - Online events and presentations
 - Remote participation
 - Recording availability
@@ -105,17 +109,19 @@ backend/src/routes/events.js  # Event CRUD operations
 ```jsx
 // EventForm.jsx
 function EventForm({ event, onSave, onCancel }) {
-  const [formData, setFormData] = useState(event || {
-    title: '',
-    description: '',
-    start_date: '',
-    end_date: '',
-    location: '',
-    venue: '',
-    max_attendees: 100,
-    price: 0,
-    currency: 'USD'
-  });
+  const [formData, setFormData] = useState(
+    event || {
+      title: '',
+      description: '',
+      start_date: '',
+      end_date: '',
+      location: '',
+      venue: '',
+      max_attendees: 100,
+      price: 0,
+      currency: 'USD',
+    },
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -125,46 +131,40 @@ function EventForm({ event, onSave, onCancel }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Event Title
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Event Title</label>
         <input
           type="text"
           value={formData.title}
-          onChange={(e) => setFormData({...formData, title: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
           required
         />
       </div>
-      
+
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Start Date
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Start Date</label>
           <input
             type="datetime-local"
             value={formData.start_date}
-            onChange={(e) => setFormData({...formData, start_date: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             required
           />
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            End Date
-          </label>
+          <label className="block text-sm font-medium text-gray-700">End Date</label>
           <input
             type="datetime-local"
             value={formData.end_date}
-            onChange={(e) => setFormData({...formData, end_date: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             required
           />
         </div>
       </div>
-      
+
       <div className="flex justify-end space-x-3">
         <button
           type="button"
@@ -195,7 +195,7 @@ function EventRegistration({ event, onRegister }) {
     email: '',
     phone: '',
     organization: '',
-    special_requirements: ''
+    special_requirements: '',
   });
 
   const handleSubmit = async (e) => {
@@ -219,34 +219,30 @@ function EventRegistration({ event, onRegister }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
       <h3 className="text-lg font-semibold mb-4">Register for {event.title}</h3>
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Full Name *
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Full Name *</label>
           <input
             type="text"
             value={formData.name}
-            onChange={(e) => setFormData({...formData, name: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             required
           />
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Email *
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Email *</label>
           <input
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             required
           />
         </div>
-        
+
         <button
           type="submit"
           className="w-full bg-brand-500 text-white py-2 px-4 rounded-md hover:bg-brand-600"
@@ -293,38 +289,40 @@ function EventRegistration({ event, onRegister }) {
 ```jsx
 function EventCard({ event }) {
   const isUpcoming = new Date(event.start_date) > new Date();
-  const isOngoing = new Date(event.start_date) <= new Date() && 
-                   new Date(event.end_date) >= new Date();
-  
+  const isOngoing =
+    new Date(event.start_date) <= new Date() && new Date(event.end_date) >= new Date();
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <span className={`px-3 py-1 rounded-full text-sm ${
-            isOngoing ? 'bg-green-100 text-green-800' :
-            isUpcoming ? 'bg-blue-100 text-blue-800' :
-            'bg-gray-100 text-gray-800'
-          }`}>
+          <span
+            className={`px-3 py-1 rounded-full text-sm ${
+              isOngoing
+                ? 'bg-green-100 text-green-800'
+                : isUpcoming
+                  ? 'bg-blue-100 text-blue-800'
+                  : 'bg-gray-100 text-gray-800'
+            }`}
+          >
             {isOngoing ? 'Live Now' : isUpcoming ? 'Upcoming' : 'Completed'}
           </span>
         </div>
-        
+
         <h3 className="text-xl font-bold mb-2">
           <Link to={`/event/${event.slug}`} className="hover:text-brand-500">
             {event.title}
           </Link>
         </h3>
-        
-        <p className="text-gray-600 mb-4 line-clamp-2">
-          {event.description}
-        </p>
-        
+
+        <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+
         <div className="space-y-2 text-sm text-gray-600">
           <div className="flex items-center">
             <CalendarIcon className="w-4 h-4 mr-2" />
             {formatDate(event.start_date)}
           </div>
-          
+
           <div className="flex items-center">
             <LocationIcon className="w-4 h-4 mr-2" />
             {event.venue}, {event.location}

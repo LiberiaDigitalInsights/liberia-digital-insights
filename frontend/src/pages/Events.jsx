@@ -12,11 +12,11 @@ export default function Events() {
   const [tab, setTab] = React.useState('upcoming');
   const { data: eventsData, loading: eventsLoading } = useEvents({ limit: 20 });
   const allEvents = eventsData?.events || [];
-  
+
   // Split events into upcoming and past based on current date
   const currentDate = new Date();
-  const upcoming = allEvents.filter(event => new Date(event.date) >= currentDate);
-  const past = allEvents.filter(event => new Date(event.date) < currentDate);
+  const upcoming = allEvents.filter((event) => new Date(event.date) >= currentDate);
+  const past = allEvents.filter((event) => new Date(event.date) < currentDate);
 
   return (
     <>

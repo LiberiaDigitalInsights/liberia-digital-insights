@@ -132,7 +132,7 @@
   .VPLocalSearchBox {
     width: 100%;
   }
-  
+
   .VPLocalSearchBox .search-modal {
     margin: 16px;
     max-width: calc(100vw - 32px);
@@ -160,8 +160,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Search footer */
@@ -194,11 +198,11 @@
   .VPLocalSearchBox .search-modal {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   }
-  
+
   .VPLocalSearchResult:hover {
     background-color: rgba(255, 255, 255, 0.05);
   }
-  
+
   .VPLocalSearchResult.selected {
     background-color: rgba(59, 130, 246, 0.2);
   }

@@ -46,7 +46,17 @@ export const newsletterTemplates = [
         </footer>
       </div>
     `,
-    variables: ['month', 'year', 'achievement_1', 'achievement_2', 'achievement_3', 'latest_articles', 'upcoming_training', 'unsubscribe_url', 'preferences_url']
+    variables: [
+      'month',
+      'year',
+      'achievement_1',
+      'achievement_2',
+      'achievement_3',
+      'latest_articles',
+      'upcoming_training',
+      'unsubscribe_url',
+      'preferences_url',
+    ],
   },
   {
     id: 'template-2',
@@ -106,14 +116,24 @@ export const newsletterTemplates = [
         </footer>
       </div>
     `,
-    variables: ['training_title', 'duration', 'start_date', 'location', 'instructor', 'learning_objectives', 'registration_url', 'contact_email', 'unsubscribe_url']
+    variables: [
+      'training_title',
+      'duration',
+      'start_date',
+      'location',
+      'instructor',
+      'learning_objectives',
+      'registration_url',
+      'contact_email',
+      'unsubscribe_url',
+    ],
   },
   {
     id: 'template-3',
     name: 'Event Invitation',
     description: 'Elegant template for inviting subscribers to events',
     category: 'Events',
-    subject: '🎉 You\'re Invited: {{event_title}}',
+    subject: "🎉 You're Invited: {{event_title}}",
     content: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <header style="background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%); color: white; padding: 40px; text-align: center;">
@@ -157,7 +177,16 @@ export const newsletterTemplates = [
         </footer>
       </div>
     `,
-    variables: ['event_title', 'event_date', 'event_time', 'event_location', 'event_description', 'expectations_list', 'rsvp_url', 'unsubscribe_url']
+    variables: [
+      'event_title',
+      'event_date',
+      'event_time',
+      'event_location',
+      'event_description',
+      'expectations_list',
+      'rsvp_url',
+      'unsubscribe_url',
+    ],
   },
   {
     id: 'template-4',
@@ -198,7 +227,14 @@ export const newsletterTemplates = [
         </footer>
       </div>
     `,
-    variables: ['week_date', 'weekly_highlights', 'whats_new', 'upcoming_events', 'weekly_tip', 'unsubscribe_url']
+    variables: [
+      'week_date',
+      'weekly_highlights',
+      'whats_new',
+      'upcoming_events',
+      'weekly_tip',
+      'unsubscribe_url',
+    ],
   },
   {
     id: 'template-5',
@@ -255,8 +291,20 @@ export const newsletterTemplates = [
         </footer>
       </div>
     `,
-    variables: ['story_title', 'story_image', 'challenge_description', 'solution_description', 'results_description', 'testimonial_quote', 'testimonial_name', 'testimonial_role', 'call_to_action_url', 'call_to_action_text', 'unsubscribe_url']
-  }
+    variables: [
+      'story_title',
+      'story_image',
+      'challenge_description',
+      'solution_description',
+      'results_description',
+      'testimonial_quote',
+      'testimonial_name',
+      'testimonial_role',
+      'call_to_action_url',
+      'call_to_action_text',
+      'unsubscribe_url',
+    ],
+  },
 ];
 
 // Sample subscriber data structure
@@ -268,7 +316,7 @@ export const sampleSubscribers = [
     status: 'active',
     createdAt: '2024-01-15T10:00:00Z',
     interests: ['technology', 'training', 'events'],
-    location: 'Monrovia, Liberia'
+    location: 'Monrovia, Liberia',
   },
   {
     id: 'sub-2',
@@ -277,7 +325,7 @@ export const sampleSubscribers = [
     status: 'active',
     createdAt: '2024-02-20T14:30:00Z',
     interests: ['digital-literacy', 'newsletter'],
-    location: 'Buchanan, Liberia'
+    location: 'Buchanan, Liberia',
   },
   {
     id: 'sub-3',
@@ -286,8 +334,8 @@ export const sampleSubscribers = [
     status: 'inactive',
     createdAt: '2024-01-10T09:15:00Z',
     interests: ['business', 'technology'],
-    location: 'Gbarnga, Liberia'
-  }
+    location: 'Gbarnga, Liberia',
+  },
 ];
 
 // Sample newsletter replies data structure
@@ -298,11 +346,12 @@ export const sampleReplies = [
     subscriber: {
       id: 'sub-1',
       name: 'John Doe',
-      email: 'john.doe@example.com'
+      email: 'john.doe@example.com',
     },
-    content: 'Thank you for this informative newsletter! The training opportunities are exactly what I was looking for.',
+    content:
+      'Thank you for this informative newsletter! The training opportunities are exactly what I was looking for.',
     createdAt: '2024-03-15T10:30:00Z',
-    status: 'read'
+    status: 'read',
   },
   {
     id: 'reply-2',
@@ -310,10 +359,11 @@ export const sampleReplies = [
     subscriber: {
       id: 'sub-2',
       name: 'Sarah Johnson',
-      email: 'sarah.j@example.com'
+      email: 'sarah.j@example.com',
     },
-    content: 'I would like to know more about the upcoming events. Can you provide more details about registration?',
+    content:
+      'I would like to know more about the upcoming events. Can you provide more details about registration?',
     createdAt: '2024-03-15T11:45:00Z',
-    status: 'unread'
-  }
+    status: 'unread',
+  },
 ];

@@ -29,8 +29,8 @@ describe('useNewsletterSubscription', () => {
       subscriber: {
         id: '123',
         name: 'John Doe',
-        email: 'john@example.com'
-      }
+        email: 'john@example.com',
+      },
     };
 
     mockBackendApi.newsletters.subscribe.mockResolvedValue(mockResponse);
@@ -42,7 +42,7 @@ describe('useNewsletterSubscription', () => {
       email: 'john@example.com',
       company: 'Tech Corp',
       org: 'Tech Org',
-      position: 'Developer'
+      position: 'Developer',
     };
 
     await act(async () => {
@@ -56,8 +56,8 @@ describe('useNewsletterSubscription', () => {
   });
 
   it('should set loading state during subscription', async () => {
-    mockBackendApi.newsletters.subscribe.mockImplementation(() => 
-      new Promise(resolve => setTimeout(() => resolve({ message: 'Success' }), 100))
+    mockBackendApi.newsletters.subscribe.mockImplementation(
+      () => new Promise((resolve) => setTimeout(() => resolve({ message: 'Success' }), 100)),
     );
 
     const { result } = renderHook(() => useNewsletterSubscription());
@@ -65,7 +65,7 @@ describe('useNewsletterSubscription', () => {
     act(() => {
       result.current.subscribe({
         name: 'John Doe',
-        email: 'john@example.com'
+        email: 'john@example.com',
       });
     });
 
@@ -81,7 +81,7 @@ describe('useNewsletterSubscription', () => {
 
     const subscriberData = {
       name: 'John Doe',
-      email: 'john@example.com'
+      email: 'john@example.com',
     };
 
     await act(async () => {
@@ -107,7 +107,7 @@ describe('useNewsletterSubscription', () => {
       try {
         await result.current.subscribe({
           name: 'John Doe',
-          email: 'john@example.com'
+          email: 'john@example.com',
         });
       } catch (error) {
         expect(error).toBe(mockError);
@@ -120,7 +120,7 @@ describe('useNewsletterSubscription', () => {
   it('should reset error state on successful subscription after error', async () => {
     // First call fails
     mockBackendApi.newsletters.subscribe.mockRejectedValueOnce(new Error('First error'));
-    
+
     const { result } = renderHook(() => useNewsletterSubscription());
 
     // First subscription attempt fails
@@ -128,7 +128,7 @@ describe('useNewsletterSubscription', () => {
       try {
         await result.current.subscribe({
           name: 'John Doe',
-          email: 'john@example.com'
+          email: 'john@example.com',
         });
       } catch {
         // Expected to fail
@@ -139,11 +139,11 @@ describe('useNewsletterSubscription', () => {
 
     // Second call succeeds
     mockBackendApi.newsletters.subscribe.mockResolvedValueOnce({ message: 'Success' });
-    
+
     await act(async () => {
       await result.current.subscribe({
         name: 'Jane Doe',
-        email: 'jane@example.com'
+        email: 'jane@example.com',
       });
     });
 
@@ -157,11 +157,11 @@ describe('useNewsletterSubscription', () => {
 
     mockBackendApi.newsletters.subscribe.mockImplementation((data) => {
       if (data.email === 'first@example.com') {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           resolveFirst = resolve;
         });
       } else if (data.email === 'second@example.com') {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           resolveSecond = resolve;
         });
       }
@@ -174,7 +174,7 @@ describe('useNewsletterSubscription', () => {
     act(() => {
       result.current.subscribe({
         name: 'First User',
-        email: 'first@example.com'
+        email: 'first@example.com',
       });
     });
 
@@ -184,7 +184,7 @@ describe('useNewsletterSubscription', () => {
     act(() => {
       result.current.subscribe({
         name: 'Second User',
-        email: 'second@example.com'
+        email: 'second@example.com',
       });
     });
 
@@ -217,7 +217,7 @@ describe('useNewsletterSubscription', () => {
       email: 'john@example.com',
       company: 'Tech Corp',
       org: 'Tech Org',
-      position: 'Senior Developer'
+      position: 'Senior Developer',
     };
 
     await act(async () => {
@@ -238,7 +238,7 @@ describe('useNewsletterSubscription', () => {
       email: '',
       company: '',
       org: '',
-      position: ''
+      position: '',
     };
 
     await act(async () => {

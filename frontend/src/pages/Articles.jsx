@@ -14,12 +14,16 @@ export default function Articles() {
   const page = Number(searchParams.get('page')) || 1;
 
   // Fetch real data from backend
-  const { data: articlesData, loading, error } = useArticles({ 
-    page, 
+  const {
+    data: articlesData,
+    loading,
+    error,
+  } = useArticles({
+    page,
     limit: 12,
-    ...(category !== 'all' && { category })
+    ...(category !== 'all' && { category }),
   });
-  
+
   const { data: categoriesData } = useCategories();
 
   // Handle loading and error states
@@ -45,8 +49,8 @@ export default function Articles() {
         <div className="text-center py-12">
           <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Articles</h2>
           <p className="text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="px-4 py-2 bg-brand-500 text-white rounded hover:bg-brand-600"
           >
             Try Again
@@ -75,7 +79,7 @@ export default function Articles() {
 
   return (
     <>
-      <SEO 
+      <SEO
         title="Articles - Liberia Digital Insights"
         description="Explore our collection of tech insights, stories, and analysis from Liberia and across Africa"
       />

@@ -154,18 +154,21 @@ From your Supabase project dashboard:
 2. Run the following SQL files in order:
 
 #### Database Schema
+
 ```sql
 -- Run backend/src/supabase/supabase-schema.sql
 -- This creates all the necessary tables
 ```
 
 #### Database Functions
+
 ```sql
 -- Run backend/src/supabase/database-functions.sql
 -- This creates helper functions and triggers
 ```
 
 #### Seed Data
+
 ```sql
 -- Run backend/src/supabase/seed-data.sql
 -- This populates the database with sample data
@@ -219,8 +222,8 @@ CREATE POLICY "Gallery items are viewable by everyone" ON gallery
 CREATE POLICY "Admins can manage all content" ON articles
   FOR ALL USING (
     EXISTS (
-      SELECT 1 FROM users 
-      WHERE users.id = auth.uid() 
+      SELECT 1 FROM users
+      WHERE users.id = auth.uid()
       AND users.role = 'admin'
     )
   );
@@ -389,6 +392,7 @@ SMTP_PASS=your-16-character-app-password
 ### Alternative Email Services
 
 #### SendGrid
+
 ```env
 SMTP_HOST=smtp.sendgrid.net
 SMTP_PORT=587
@@ -397,6 +401,7 @@ SMTP_PASS=your-sendgrid-api-key
 ```
 
 #### Mailgun
+
 ```env
 SMTP_HOST=smtp.mailgun.org
 SMTP_PORT=587
@@ -483,39 +488,39 @@ tail -f docs.log
 
 ### Backend Variables
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `SUPABASE_URL` | Supabase project URL | Yes | - |
-| `SUPABASE_ANON_KEY` | Supabase anonymous key | Yes | - |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | Yes | - |
-| `JWT_SECRET` | JWT signing secret | Yes | - |
-| `JWT_EXPIRES_IN` | JWT expiration time | No | 7d |
-| `PORT` | Backend server port | No | 5000 |
-| `NODE_ENV` | Environment mode | No | development |
-| `SMTP_HOST` | Email SMTP host | No | - |
-| `SMTP_PORT` | Email SMTP port | No | 587 |
-| `SMTP_USER` | Email SMTP username | No | - |
-| `SMTP_PASS` | Email SMTP password | No | - |
-| `EMAIL_FROM` | From email address | No | - |
-| `UPLOAD_MAX_SIZE` | Max file upload size | No | 10485760 |
-| `UPLOAD_ALLOWED_TYPES` | Allowed file types | No | image/*,video/* |
-| `CORS_ORIGIN` | CORS allowed origin | No | http://localhost:5173 |
+| Variable                    | Description               | Required | Default               |
+| --------------------------- | ------------------------- | -------- | --------------------- |
+| `SUPABASE_URL`              | Supabase project URL      | Yes      | -                     |
+| `SUPABASE_ANON_KEY`         | Supabase anonymous key    | Yes      | -                     |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | Yes      | -                     |
+| `JWT_SECRET`                | JWT signing secret        | Yes      | -                     |
+| `JWT_EXPIRES_IN`            | JWT expiration time       | No       | 7d                    |
+| `PORT`                      | Backend server port       | No       | 5000                  |
+| `NODE_ENV`                  | Environment mode          | No       | development           |
+| `SMTP_HOST`                 | Email SMTP host           | No       | -                     |
+| `SMTP_PORT`                 | Email SMTP port           | No       | 587                   |
+| `SMTP_USER`                 | Email SMTP username       | No       | -                     |
+| `SMTP_PASS`                 | Email SMTP password       | No       | -                     |
+| `EMAIL_FROM`                | From email address        | No       | -                     |
+| `UPLOAD_MAX_SIZE`           | Max file upload size      | No       | 10485760              |
+| `UPLOAD_ALLOWED_TYPES`      | Allowed file types        | No       | image/_,video/_       |
+| `CORS_ORIGIN`               | CORS allowed origin       | No       | http://localhost:5173 |
 
 ### Frontend Variables
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `VITE_API_BASE_URL` | Backend API URL | Yes | - |
-| `VITE_API_VERSION` | API version | No | v1 |
-| `VITE_SUPABASE_URL` | Supabase project URL | Yes | - |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes | - |
-| `VITE_APP_NAME` | Application name | No | Liberia Digital Insights |
-| `VITE_APP_URL` | Frontend URL | No | http://localhost:5173 |
-| `VITE_APP_DESCRIPTION` | App description | No | - |
-| `VITE_GA_TRACKING_ID` | Google Analytics ID | No | - |
-| `VITE_GITHUB_URL` | GitHub URL | No | - |
-| `VITE_TWITTER_URL` | Twitter URL | No | - |
-| `VITE_LINKEDIN_URL` | LinkedIn URL | No | - |
+| Variable                 | Description            | Required | Default                  |
+| ------------------------ | ---------------------- | -------- | ------------------------ |
+| `VITE_API_BASE_URL`      | Backend API URL        | Yes      | -                        |
+| `VITE_API_VERSION`       | API version            | No       | v1                       |
+| `VITE_SUPABASE_URL`      | Supabase project URL   | Yes      | -                        |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes      | -                        |
+| `VITE_APP_NAME`          | Application name       | No       | Liberia Digital Insights |
+| `VITE_APP_URL`           | Frontend URL           | No       | http://localhost:5173    |
+| `VITE_APP_DESCRIPTION`   | App description        | No       | -                        |
+| `VITE_GA_TRACKING_ID`    | Google Analytics ID    | No       | -                        |
+| `VITE_GITHUB_URL`        | GitHub URL             | No       | -                        |
+| `VITE_TWITTER_URL`       | Twitter URL            | No       | -                        |
+| `VITE_LINKEDIN_URL`      | LinkedIn URL           | No       | -                        |
 
 ## 🚀 Production Deployment
 

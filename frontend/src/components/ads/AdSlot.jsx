@@ -14,9 +14,9 @@ export default function AdSlot({ position = 'inline', className = '', rotateSeco
 
   // Map advertisement type to position
   const positionMap = {
-    'hero': 'banner',
-    'sidebar': 'sidebar', 
-    'inline': 'featured'
+    hero: 'banner',
+    sidebar: 'sidebar',
+    inline: 'featured',
   };
 
   const visible = advertisements.filter((ad) => {

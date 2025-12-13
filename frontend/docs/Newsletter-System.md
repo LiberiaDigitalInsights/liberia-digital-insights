@@ -164,20 +164,22 @@ backend/src/routes/campaigns.js      # Campaign management
 ```jsx
 // NewsletterEditor.jsx
 function NewsletterEditor({ newsletter, onSave, onPreview, onSendTest }) {
-  const [content, setContent] = useState(newsletter?.content || {
-    header: {
-      logo_url: '',
-      banner_image: '',
-      tagline: ''
+  const [content, setContent] = useState(
+    newsletter?.content || {
+      header: {
+        logo_url: '',
+        banner_image: '',
+        tagline: '',
+      },
+      sections: [],
+      footer: {
+        social_links: [],
+        unsubscribe_url: '',
+        company_info: {},
+      },
     },
-    sections: [],
-    footer: {
-      social_links: [],
-      unsubscribe_url: '',
-      company_info: {}
-    }
-  });
-  
+  );
+
   const [activeSection, setActiveSection] = useState(0);
   const [isPreview, setIsPreview] = useState(false);
 
@@ -187,28 +189,28 @@ function NewsletterEditor({ newsletter, onSave, onPreview, onSendTest }) {
       type,
       title: '',
       content: '',
-      ...getDefaultSectionContent(type)
+      ...getDefaultSectionContent(type),
     };
-    
-    setContent(prev => ({
+
+    setContent((prev) => ({
       ...prev,
-      sections: [...prev.sections, newSection]
+      sections: [...prev.sections, newSection],
     }));
   };
 
   const updateSection = (sectionId, updates) => {
-    setContent(prev => ({
+    setContent((prev) => ({
       ...prev,
-      sections: prev.sections.map(section => 
-        section.id === sectionId ? { ...section, ...updates } : section
-      )
+      sections: prev.sections.map((section) =>
+        section.id === sectionId ? { ...section, ...updates } : section,
+      ),
     }));
   };
 
   const removeSection = (sectionId) => {
-    setContent(prev => ({
+    setContent((prev) => ({
       ...prev,
-      sections: prev.sections.filter(section => section.id !== sectionId)
+      sections: prev.sections.filter((section) => section.id !== sectionId),
     }));
   };
 
@@ -218,7 +220,7 @@ function NewsletterEditor({ newsletter, onSave, onPreview, onSendTest }) {
     { type: 'events', label: 'Events', icon: '📅' },
     { type: 'opportunities', label: 'Opportunities', icon: '💼' },
     { type: 'cta', label: 'Call to Action', icon: '🚀' },
-    { type: 'divider', label: 'Divider', icon: '➖' }
+    { type: 'divider', label: 'Divider', icon: '➖' },
   ];
 
   if (isPreview) {
@@ -249,14 +251,14 @@ function NewsletterEditor({ newsletter, onSave, onPreview, onSendTest }) {
           >
             Preview
           </button>
-          
+
           <button
             onClick={() => onSendTest(content)}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           >
             Send Test
           </button>
-          
+
           <button
             onClick={() => onSave(content)}
             className="px-4 py-2 bg-brand-500 text-white rounded-md hover:bg-brand-600"
@@ -265,61 +267,61 @@ function NewsletterEditor({ newsletter, onSave, onPreview, onSendTest }) {
           </button>
         </div>
       </div>
-      
+
       {/* Header Settings */}
       <div className="mb-8 p-4 border border-gray-200 rounded-lg">
         <h4 className="font-medium mb-3">Header Settings</h4>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Logo URL
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
             <input
               type="url"
               value={content.header.logo_url}
-              onChange={(e) => setContent({
-                ...content,
-                header: { ...content.header, logo_url: e.target.value }
-              })}
+              onChange={(e) =>
+                setContent({
+                  ...content,
+                  header: { ...content.header, logo_url: e.target.value },
+                })
+              }
               className="w-full border-gray-300 rounded-md shadow-sm"
               placeholder="https://example.com/logo.png"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Banner Image
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Banner Image</label>
             <input
               type="url"
               value={content.header.banner_image}
-              onChange={(e) => setContent({
-                ...content,
-                header: { ...content.header, banner_image: e.target.value }
-              })}
+              onChange={(e) =>
+                setContent({
+                  ...content,
+                  header: { ...content.header, banner_image: e.target.value },
+                })
+              }
               className="w-full border-gray-300 rounded-md shadow-sm"
               placeholder="https://example.com/banner.jpg"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Tagline
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tagline</label>
             <input
               type="text"
               value={content.header.tagline}
-              onChange={(e) => setContent({
-                ...content,
-                header: { ...content.header, tagline: e.target.value }
-              })}
+              onChange={(e) =>
+                setContent({
+                  ...content,
+                  header: { ...content.header, tagline: e.target.value },
+                })
+              }
               className="w-full border-gray-300 rounded-md shadow-sm"
               placeholder="Your newsletter tagline"
             />
           </div>
         </div>
       </div>
-      
+
       {/* Sections */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
@@ -336,7 +338,7 @@ function NewsletterEditor({ newsletter, onSave, onPreview, onSendTest }) {
             ))}
           </div>
         </div>
-        
+
         <div className="space-y-4">
           {content.sections.map((section, index) => (
             <SectionEditor
@@ -350,49 +352,51 @@ function NewsletterEditor({ newsletter, onSave, onPreview, onSendTest }) {
             />
           ))}
         </div>
-        
+
         {content.sections.length === 0 && (
           <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
             <p className="text-gray-500 mb-4">No sections added yet</p>
-            <p className="text-sm text-gray-400">Click the buttons above to add your first section</p>
+            <p className="text-sm text-gray-400">
+              Click the buttons above to add your first section
+            </p>
           </div>
         )}
       </div>
-      
+
       {/* Footer Settings */}
       <div className="p-4 border border-gray-200 rounded-lg">
         <h4 className="font-medium mb-3">Footer Settings</h4>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Unsubscribe URL
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Unsubscribe URL</label>
             <input
               type="url"
               value={content.footer.unsubscribe_url}
-              onChange={(e) => setContent({
-                ...content,
-                footer: { ...content.footer, unsubscribe_url: e.target.value }
-              })}
+              onChange={(e) =>
+                setContent({
+                  ...content,
+                  footer: { ...content.footer, unsubscribe_url: e.target.value },
+                })
+              }
               className="w-full border-gray-300 rounded-md shadow-sm"
               placeholder="https://example.com/unsubscribe"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Company Name
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
             <input
               type="text"
               value={content.footer.company_info?.name || ''}
-              onChange={(e) => setContent({
-                ...content,
-                footer: {
-                  ...content.footer,
-                  company_info: { ...content.footer.company_info, name: e.target.value }
-                }
-              })}
+              onChange={(e) =>
+                setContent({
+                  ...content,
+                  footer: {
+                    ...content.footer,
+                    company_info: { ...content.footer.company_info, name: e.target.value },
+                  },
+                })
+              }
               className="w-full border-gray-300 rounded-md shadow-sm"
               placeholder="Your company name"
             />
@@ -415,7 +419,7 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [filter, setFilter] = useState('all');
 
-  const filteredCampaigns = campaigns.filter(campaign => {
+  const filteredCampaigns = campaigns.filter((campaign) => {
     if (filter === 'all') return true;
     if (filter === 'draft') return campaign.status === 'draft';
     if (filter === 'scheduled') return campaign.status === 'scheduled';
@@ -426,24 +430,29 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
   const handleSchedule = (campaignId, scheduledAt) => {
     onUpdateCampaign(campaignId, {
       status: 'scheduled',
-      scheduled_at: scheduledAt
+      scheduled_at: scheduledAt,
     });
   };
 
   const handleSendNow = (campaignId) => {
     onUpdateCampaign(campaignId, {
       status: 'sent',
-      sent_at: new Date().toISOString()
+      sent_at: new Date().toISOString(),
     });
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'draft': return 'bg-gray-100 text-gray-800';
-      case 'scheduled': return 'bg-blue-100 text-blue-800';
-      case 'sent': return 'bg-green-100 text-green-800';
-      case 'archived': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'draft':
+        return 'bg-gray-100 text-gray-800';
+      case 'scheduled':
+        return 'bg-blue-100 text-blue-800';
+      case 'sent':
+        return 'bg-green-100 text-green-800';
+      case 'archived':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -451,7 +460,7 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-bold">Campaign Management</h3>
-        
+
         <div className="flex items-center space-x-3">
           <select
             value={filter}
@@ -463,7 +472,7 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
             <option value="scheduled">Scheduled</option>
             <option value="sent">Sent</option>
           </select>
-          
+
           <button
             onClick={() => setShowCreateModal(true)}
             className="px-4 py-2 bg-brand-500 text-white rounded-md hover:bg-brand-600"
@@ -472,49 +481,51 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
           </button>
         </div>
       </div>
-      
+
       <div className="space-y-4">
-        {filteredCampaigns.map(campaign => (
+        {filteredCampaigns.map((campaign) => (
           <div key={campaign.id} className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-2">
                   <h4 className="font-semibold">{campaign.title}</h4>
-                  <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(campaign.status)}`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${getStatusColor(campaign.status)}`}
+                  >
                     {campaign.status}
                   </span>
                 </div>
-                
+
                 <p className="text-gray-600 mb-2">{campaign.subject}</p>
-                
+
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
                   <span>Created {formatDate(campaign.created_at)}</span>
-                  
+
                   {campaign.scheduled_at && campaign.status === 'scheduled' && (
                     <span>Scheduled for {formatDate(campaign.scheduled_at)}</span>
                   )}
-                  
+
                   {campaign.sent_at && campaign.status === 'sent' && (
                     <span>Sent {formatDate(campaign.sent_at)}</span>
                   )}
-                  
+
                   {campaign.stats.sent_count > 0 && (
                     <span>{campaign.stats.sent_count} recipients</span>
                   )}
                 </div>
-                
+
                 {campaign.status === 'sent' && (
                   <div className="flex items-center space-x-4 mt-3 text-sm">
                     <div className="flex items-center">
                       <MailOpenIcon className="w-4 h-4 mr-1 text-green-500" />
                       <span>{campaign.stats.opened_count} opens</span>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <MousePointerIcon className="w-4 h-4 mr-1 text-blue-500" />
                       <span>{campaign.stats.clicked_count} clicks</span>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <UserMinusIcon className="w-4 h-4 mr-1 text-red-500" />
                       <span>{campaign.stats.unsubscribed_count} unsubscribes</span>
@@ -522,7 +533,7 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex space-x-2">
                 <button
                   onClick={() => setSelectedCampaign(campaign)}
@@ -530,7 +541,7 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
                 >
                   Edit
                 </button>
-                
+
                 {campaign.status === 'draft' && (
                   <>
                     <button
@@ -545,7 +556,7 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
                     >
                       Schedule
                     </button>
-                    
+
                     <button
                       onClick={() => {
                         if (confirm('Send this campaign now?')) {
@@ -558,7 +569,7 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
                     </button>
                   </>
                 )}
-                
+
                 {campaign.status === 'scheduled' && (
                   <button
                     onClick={() => {
@@ -576,7 +587,7 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
           </div>
         ))}
       </div>
-      
+
       {filteredCampaigns.length === 0 && (
         <div className="text-center py-8">
           <p className="text-gray-500 mb-4">No campaigns found</p>
@@ -588,7 +599,7 @@ function CampaignManager({ campaigns, onCreateCampaign, onUpdateCampaign }) {
           </button>
         </div>
       )}
-      
+
       {/* Create Campaign Modal */}
       {showCreateModal && (
         <CreateCampaignModal
@@ -616,25 +627,22 @@ function AnalyticsDashboard({ campaignId }) {
   const [timeRange, setTimeRange] = useState('7d');
 
   useEffect(() => {
-    fetchCampaignAnalytics(campaignId, timeRange).then(data => {
+    fetchCampaignAnalytics(campaignId, timeRange).then((data) => {
       setAnalytics(data);
       setLoading(false);
     });
   }, [campaignId, timeRange]);
 
   if (loading) return <LoadingSpinner />;
-  
-  const openRate = analytics.sent_count > 0 
-    ? (analytics.opened_count / analytics.sent_count) * 100 
-    : 0;
-    
-  const clickRate = analytics.opened_count > 0 
-    ? (analytics.clicked_count / analytics.opened_count) * 100 
-    : 0;
-    
-  const unsubscribeRate = analytics.sent_count > 0 
-    ? (analytics.unsubscribed_count / analytics.sent_count) * 100 
-    : 0;
+
+  const openRate =
+    analytics.sent_count > 0 ? (analytics.opened_count / analytics.sent_count) * 100 : 0;
+
+  const clickRate =
+    analytics.opened_count > 0 ? (analytics.clicked_count / analytics.opened_count) * 100 : 0;
+
+  const unsubscribeRate =
+    analytics.sent_count > 0 ? (analytics.unsubscribed_count / analytics.sent_count) * 100 : 0;
 
   return (
     <div className="space-y-6">
@@ -645,26 +653,26 @@ function AnalyticsDashboard({ campaignId }) {
           <p className="text-2xl font-bold text-gray-900">{analytics.sent_count}</p>
           <p className="text-sm text-gray-600">Total emails sent</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Open Rate</h3>
           <p className="text-2xl font-bold text-gray-900">{openRate.toFixed(1)}%</p>
           <p className="text-sm text-green-600">+5% from last campaign</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Click Rate</h3>
           <p className="text-2xl font-bold text-gray-900">{clickRate.toFixed(1)}%</p>
           <p className="text-sm text-blue-600">Above average</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Unsubscribe Rate</h3>
           <p className="text-2xl font-bold text-gray-900">{unsubscribeRate.toFixed(1)}%</p>
           <p className="text-sm text-gray-600">Industry standard</p>
         </div>
       </div>
-      
+
       {/* Time Range Selector */}
       <div className="flex justify-end">
         <select
@@ -678,26 +686,29 @@ function AnalyticsDashboard({ campaignId }) {
           <option value="90d">Last 90 Days</option>
         </select>
       </div>
-      
+
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4">Email Opens Over Time</h3>
           <LineChart data={analytics.opens_over_time} />
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4">Link Clicks</h3>
           <BarChart data={analytics.link_clicks} />
         </div>
       </div>
-      
+
       {/* Top Links */}
       <div className="bg-white p-6 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-4">Most Clicked Links</h3>
         <div className="space-y-3">
           {analytics.top_links.map((link, index) => (
-            <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+            <div
+              key={index}
+              className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+            >
               <div className="flex-1">
                 <p className="font-medium">{link.url}</p>
                 <p className="text-sm text-gray-500">{link.text}</p>
@@ -710,7 +721,7 @@ function AnalyticsDashboard({ campaignId }) {
           ))}
         </div>
       </div>
-      
+
       {/* Geographic Data */}
       <div className="bg-white p-6 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-4">Geographic Distribution</h3>
@@ -740,7 +751,7 @@ function TemplateGallery({ onSelectTemplate }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchNewsletterTemplates().then(data => {
+    fetchNewsletterTemplates().then((data) => {
       setTemplates(data);
       setLoading(false);
     });
@@ -751,10 +762,10 @@ function TemplateGallery({ onSelectTemplate }) {
     { id: 'newsletter', label: 'Newsletter' },
     { id: 'marketing', label: 'Marketing' },
     { id: 'events', label: 'Events' },
-    { id: 'updates', label: 'Updates' }
+    { id: 'updates', label: 'Updates' },
   ];
 
-  const filteredTemplates = templates.filter(template => {
+  const filteredTemplates = templates.filter((template) => {
     if (selectedCategory === 'all') return true;
     return template.category === selectedCategory;
   });
@@ -765,9 +776,9 @@ function TemplateGallery({ onSelectTemplate }) {
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-bold">Template Gallery</h3>
-        
+
         <div className="flex space-x-2">
-          {categories.map(category => (
+          {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
@@ -782,10 +793,13 @@ function TemplateGallery({ onSelectTemplate }) {
           ))}
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTemplates.map(template => (
-          <div key={template.id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+        {filteredTemplates.map((template) => (
+          <div
+            key={template.id}
+            className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+          >
             <div className="aspect-w-4 aspect-h-3 bg-gray-100">
               <img
                 src={template.preview_image}
@@ -793,16 +807,16 @@ function TemplateGallery({ onSelectTemplate }) {
                 className="w-full h-48 object-cover"
               />
             </div>
-            
+
             <div className="p-4">
               <h4 className="font-semibold mb-2">{template.name}</h4>
               <p className="text-sm text-gray-600 mb-3">{template.description}</p>
-              
+
               <div className="flex items-center justify-between">
                 <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
                   {template.category}
                 </span>
-                
+
                 <div className="flex space-x-2">
                   <button
                     onClick={() => {
@@ -813,7 +827,7 @@ function TemplateGallery({ onSelectTemplate }) {
                   >
                     Preview
                   </button>
-                  
+
                   <button
                     onClick={() => onSelectTemplate(template)}
                     className="text-sm bg-brand-500 text-white px-3 py-1 rounded hover:bg-brand-600"
@@ -826,7 +840,7 @@ function TemplateGallery({ onSelectTemplate }) {
           </div>
         ))}
       </div>
-      
+
       {filteredTemplates.length === 0 && (
         <div className="text-center py-8">
           <p className="text-gray-500">No templates found in this category</p>
@@ -944,7 +958,7 @@ export const useSubscribers = () => {
     import: async (file) => {
       const formData = new FormData();
       formData.append('file', file);
-      
+
       return await apiRequest('/v1/subscribers/import', {
         method: 'POST',
         body: formData,

@@ -17,7 +17,7 @@ class AppError extends Error {
     this.code = code;
     this.details = details;
     this.isOperational = true;
-    
+
     Error.captureStackTrace(this, this.constructor);
   }
 }
@@ -93,8 +93,8 @@ const errorHandler = (err, req, res, next) => {
       url: req.url,
       ip: req.ip,
       userAgent: req.get('User-Agent'),
-      user: req.user?.id
-    }
+      user: req.user?.id,
+    },
   });
 
   // Mongoose bad ObjectId
@@ -113,9 +113,9 @@ const errorHandler = (err, req, res, next) => {
 
   // Mongoose validation error
   if (err.name === 'ValidationError') {
-    const errors = Object.values(err.errors).map(val => ({
+    const errors = Object.values(err.errors).map((val) => ({
       field: val.path,
-      message: val.message
+      message: val.message,
     }));
     error = new ValidationError('Validation failed', errors);
   }
@@ -148,9 +148,9 @@ const errorHandler = (err, req, res, next) => {
       code: error.code,
       message: error.message,
       ...(error.details && { details: error.details }),
-      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack }),
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 
@@ -179,49 +179,49 @@ const AppError = require('../utils/AppError');
 
 const getArticle = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  
+
   const article = await Article.findById(id).populate('author');
-  
+
   if (!article) {
     return next(new NotFoundError('Article'));
   }
-  
+
   if (article.status !== 'published' && article.author.id !== req.user.id) {
     return next(new AuthorizationError('Access to this article is restricted'));
   }
-  
+
   res.json({
     success: true,
-    data: { article }
+    data: { article },
   });
 });
 
 const createArticle = catchAsync(async (req, res, next) => {
   const { title, content, category_id } = req.body;
-  
+
   // Validation
   if (!title || !content) {
     return next(new ValidationError('Title and content are required'));
   }
-  
+
   // Check category exists
   const category = await Category.findById(category_id);
   if (!category) {
     return next(new NotFoundError('Category'));
   }
-  
+
   try {
     const article = await Article.create({
       title,
       content,
       category_id,
-      author_id: req.user.id
+      author_id: req.user.id,
     });
-    
+
     res.status(201).json({
       success: true,
       data: { article },
-      message: 'Article created successfully'
+      message: 'Article created successfully',
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -253,7 +253,7 @@ class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     this.setState({
       error: error,
-      errorInfo: errorInfo
+      errorInfo: errorInfo,
     });
 
     // Log error to service
@@ -263,7 +263,7 @@ class ErrorBoundary extends React.Component {
   logError = (error, errorInfo) => {
     // Send to error reporting service
     console.error('Error caught by boundary:', error, errorInfo);
-    
+
     // Example: Send to Sentry, LogRocket, etc.
     if (window.Sentry) {
       window.Sentry.captureException(error, { extra: errorInfo });
@@ -283,16 +283,14 @@ class ErrorBoundary extends React.Component {
               <div className="mb-4">
                 <ExclamationTriangleIcon className="mx-auto h-12 w-12 text-red-500" />
               </div>
-              
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                Something went wrong
-              </h1>
-              
+
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h1>
+
               <p className="text-gray-600 mb-6">
-                We're sorry, but something unexpected happened. 
-                Our team has been notified and is working on a fix.
+                We're sorry, but something unexpected happened. Our team has been notified and is
+                working on a fix.
               </p>
-              
+
               <div className="space-y-3">
                 <button
                   onClick={this.handleReset}
@@ -300,15 +298,15 @@ class ErrorBoundary extends React.Component {
                 >
                   Try Again
                 </button>
-                
+
                 <button
-                  onClick={() => window.location.href = '/'}
+                  onClick={() => (window.location.href = '/')}
                   className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50"
                 >
                   Go Home
                 </button>
               </div>
-              
+
               {process.env.NODE_ENV === 'development' && (
                 <details className="mt-6 text-left">
                   <summary className="text-sm text-gray-500 cursor-pointer">
@@ -345,7 +343,7 @@ export const useApiError = () => {
 
   const handleError = useCallback((error) => {
     console.error('API Error:', error);
-    
+
     let errorMessage = 'An unexpected error occurred';
     let errorCode = 'UNKNOWN_ERROR';
     let details = null;
@@ -370,7 +368,7 @@ export const useApiError = () => {
       code: errorCode,
       message: errorMessage,
       details,
-      originalError: error
+      originalError: error,
     });
 
     // Log to error service
@@ -381,27 +379,30 @@ export const useApiError = () => {
     setError(null);
   }, []);
 
-  const executeRequest = useCallback(async (requestFn) => {
-    setIsLoading(true);
-    clearError();
-    
-    try {
-      const result = await requestFn();
-      setIsLoading(false);
-      return result;
-    } catch (error) {
-      handleError(error);
-      setIsLoading(false);
-      throw error;
-    }
-  }, [handleError, clearError]);
+  const executeRequest = useCallback(
+    async (requestFn) => {
+      setIsLoading(true);
+      clearError();
+
+      try {
+        const result = await requestFn();
+        setIsLoading(false);
+        return result;
+      } catch (error) {
+        handleError(error);
+        setIsLoading(false);
+        throw error;
+      }
+    },
+    [handleError, clearError],
+  );
 
   return {
     error,
     isLoading,
     handleError,
     clearError,
-    executeRequest
+    executeRequest,
   };
 };
 ```
@@ -448,15 +449,11 @@ const ErrorDisplay = ({ error, onRetry, onDismiss }) => {
   return (
     <div className={`rounded-lg border p-4 mb-4 ${getErrorColor(error.code)}`}>
       <div className="flex items-start">
-        <div className="flex-shrink-0">
-          {getErrorIcon(error.code)}
-        </div>
-        
+        <div className="flex-shrink-0">{getErrorIcon(error.code)}</div>
+
         <div className="ml-3 flex-1">
-          <h3 className="text-sm font-medium">
-            {error.message}
-          </h3>
-          
+          <h3 className="text-sm font-medium">{error.message}</h3>
+
           {error.details && (
             <div className="mt-2 text-sm">
               <ul className="list-disc list-inside space-y-1">
@@ -470,34 +467,25 @@ const ErrorDisplay = ({ error, onRetry, onDismiss }) => {
               </ul>
             </div>
           )}
-          
+
           <div className="mt-3 flex space-x-2">
             {onRetry && (
-              <button
-                onClick={onRetry}
-                className="text-sm underline hover:no-underline"
-              >
+              <button onClick={onRetry} className="text-sm underline hover:no-underline">
                 Try Again
               </button>
             )}
-            
+
             {onDismiss && (
-              <button
-                onClick={onDismiss}
-                className="text-sm underline hover:no-underline"
-              >
+              <button onClick={onDismiss} className="text-sm underline hover:no-underline">
                 Dismiss
               </button>
             )}
           </div>
         </div>
-        
+
         {onDismiss && (
           <div className="ml-auto pl-3">
-            <button
-              onClick={onDismiss}
-              className="inline-flex text-gray-400 hover:text-gray-600"
-            >
+            <button onClick={onDismiss} className="inline-flex text-gray-400 hover:text-gray-600">
               <XMarkIcon className="h-5 w-5" />
             </button>
           </div>
@@ -523,64 +511,73 @@ export const useFormValidation = (initialValues, validationSchema) => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-  const validateField = useCallback((name, value) => {
-    if (!validationSchema[name]) return '';
-    
-    const schema = validationSchema[name];
-    
-    if (schema.required && (!value || value.toString().trim() === '')) {
-      return schema.requiredMessage || `${name} is required`;
-    }
-    
-    if (schema.minLength && value.length < schema.minLength) {
-      return `${name} must be at least ${schema.minLength} characters`;
-    }
-    
-    if (schema.maxLength && value.length > schema.maxLength) {
-      return `${name} must not exceed ${schema.maxLength} characters`;
-    }
-    
-    if (schema.pattern && !schema.pattern.test(value)) {
-      return schema.patternMessage || `${name} format is invalid`;
-    }
-    
-    if (schema.custom && !schema.custom(value)) {
-      return schema.customMessage || `${name} is invalid`;
-    }
-    
-    return '';
-  }, [validationSchema]);
+  const validateField = useCallback(
+    (name, value) => {
+      if (!validationSchema[name]) return '';
+
+      const schema = validationSchema[name];
+
+      if (schema.required && (!value || value.toString().trim() === '')) {
+        return schema.requiredMessage || `${name} is required`;
+      }
+
+      if (schema.minLength && value.length < schema.minLength) {
+        return `${name} must be at least ${schema.minLength} characters`;
+      }
+
+      if (schema.maxLength && value.length > schema.maxLength) {
+        return `${name} must not exceed ${schema.maxLength} characters`;
+      }
+
+      if (schema.pattern && !schema.pattern.test(value)) {
+        return schema.patternMessage || `${name} format is invalid`;
+      }
+
+      if (schema.custom && !schema.custom(value)) {
+        return schema.customMessage || `${name} is invalid`;
+      }
+
+      return '';
+    },
+    [validationSchema],
+  );
 
   const validateForm = useCallback(() => {
     const newErrors = {};
     let isValid = true;
-    
-    Object.keys(validationSchema).forEach(name => {
+
+    Object.keys(validationSchema).forEach((name) => {
       const error = validateField(name, values[name]);
       if (error) {
         newErrors[name] = error;
         isValid = false;
       }
     });
-    
+
     setErrors(newErrors);
     return isValid;
   }, [values, validationSchema, validateField]);
 
-  const handleChange = useCallback((name, value) => {
-    setValues(prev => ({ ...prev, [name]: value }));
-    
-    if (touched[name]) {
-      const error = validateField(name, value);
-      setErrors(prev => ({ ...prev, [name]: error }));
-    }
-  }, [touched, validateField]);
+  const handleChange = useCallback(
+    (name, value) => {
+      setValues((prev) => ({ ...prev, [name]: value }));
 
-  const handleBlur = useCallback((name) => {
-    setTouched(prev => ({ ...prev, [name]: true }));
-    const error = validateField(name, values[name]);
-    setErrors(prev => ({ ...prev, [name]: error }));
-  }, [values, validateField]);
+      if (touched[name]) {
+        const error = validateField(name, value);
+        setErrors((prev) => ({ ...prev, [name]: error }));
+      }
+    },
+    [touched, validateField],
+  );
+
+  const handleBlur = useCallback(
+    (name) => {
+      setTouched((prev) => ({ ...prev, [name]: true }));
+      const error = validateField(name, values[name]);
+      setErrors((prev) => ({ ...prev, [name]: error }));
+    },
+    [values, validateField],
+  );
 
   const resetForm = useCallback(() => {
     setValues(initialValues);
@@ -596,7 +593,7 @@ export const useFormValidation = (initialValues, validationSchema) => {
     handleBlur,
     validateForm,
     resetForm,
-    isValid: Object.keys(errors).length === 0
+    isValid: Object.keys(errors).length === 0,
   };
 };
 ```
@@ -614,42 +611,41 @@ const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
-    winston.format.json()
+    winston.format.json(),
   ),
   defaultMeta: {
     service: 'liberia-digital-insights',
-    version: process.env.APP_VERSION || '1.0.0'
+    version: process.env.APP_VERSION || '1.0.0',
   },
   transports: [
     // Write all logs to console
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      )
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
     }),
-    
+
     // Write error logs to file
     new winston.transports.File({
       filename: 'logs/error.log',
-      level: 'error'
+      level: 'error',
     }),
-    
+
     // Write all logs to file
     new winston.transports.File({
-      filename: 'logs/combined.log'
-    })
-  ]
+      filename: 'logs/combined.log',
+    }),
+  ],
 });
 
 // Add external logging services in production
 if (process.env.NODE_ENV === 'production') {
   // Add Sentry, DataDog, etc.
-  logger.add(new winston.transports.Http({
-    host: 'logs.example.com',
-    port: 8080,
-    path: '/logs'
-  }));
+  logger.add(
+    new winston.transports.Http({
+      host: 'logs.example.com',
+      port: 8080,
+      path: '/logs',
+    }),
+  );
 }
 
 module.exports = logger;
@@ -672,8 +668,8 @@ class ErrorReportingService {
         method: context.method,
         userId: context.userId,
         timestamp: new Date().toISOString(),
-        ...context
-      }
+        ...context,
+      },
     };
 
     // Log locally
@@ -694,7 +690,7 @@ class ErrorReportingService {
     if (process.env.SENTRY_DSN) {
       const Sentry = require('@sentry/node');
       Sentry.captureException(new Error(errorData.message), {
-        extra: errorData
+        extra: errorData,
       });
     }
   }
@@ -716,28 +712,23 @@ const validateArticle = [
     .trim()
     .isLength({ min: 3, max: 200 })
     .withMessage('Title must be between 3 and 200 characters'),
-  
+
   body('content')
     .trim()
     .isLength({ min: 10 })
     .withMessage('Content must be at least 10 characters'),
-  
-  body('category_id')
-    .isUUID()
-    .withMessage('Invalid category ID'),
-  
-  body('tags')
-    .optional()
-    .isArray()
-    .withMessage('Tags must be an array'),
-  
+
+  body('category_id').isUUID().withMessage('Invalid category ID'),
+
+  body('tags').optional().isArray().withMessage('Tags must be an array'),
+
   body('tags.*')
     .optional()
     .isString()
     .trim()
     .isLength({ min: 1, max: 50 })
     .withMessage('Each tag must be between 1 and 50 characters'),
-  
+
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -746,16 +737,16 @@ const validateArticle = [
         error: {
           code: 'VALIDATION_ERROR',
           message: 'Validation failed',
-          details: errors.array().map(error => ({
+          details: errors.array().map((error) => ({
             field: error.path,
             message: error.msg,
-            value: error.value
-          }))
-        }
+            value: error.value,
+          })),
+        },
       });
     }
     next();
-  }
+  },
 ];
 
 module.exports = validateArticle;
@@ -769,10 +760,7 @@ const { createClient } = require('@supabase/supabase-js');
 
 class DatabaseService {
   static async withTransaction(callback) {
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_KEY
-    );
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
     try {
       const result = await callback(supabase);
@@ -789,12 +777,12 @@ class DatabaseService {
       return { success: true, data: result };
     } catch (error) {
       logger.error('Database operation failed', { error: error.message });
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: {
           code: 'DATABASE_ERROR',
-          message: 'Database operation failed'
-        }
+          message: 'Database operation failed',
+        },
       };
     }
   }
@@ -836,19 +824,19 @@ module.exports = DatabaseService;
 
 ### Error Codes Reference
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| VALIDATION_ERROR | 400 | Request validation failed |
-| AUTHENTICATION_ERROR | 401 | Authentication required or failed |
-| AUTHORIZATION_ERROR | 403 | Insufficient permissions |
-| NOT_FOUND | 404 | Resource not found |
-| CONFLICT | 409 | Resource conflict (duplicate, etc.) |
-| RATE_LIMIT_EXCEEDED | 429 | Too many requests |
-| DATABASE_ERROR | 500 | Database operation failed |
-| EXTERNAL_SERVICE_ERROR | 502 | External service unavailable |
-| NETWORK_ERROR | N/A | Client-side network issue |
-| CLIENT_ERROR | N/A | Client-side error |
-| INTERNAL_SERVER_ERROR | 500 | Unexpected server error |
+| Code                   | HTTP Status | Description                         |
+| ---------------------- | ----------- | ----------------------------------- |
+| VALIDATION_ERROR       | 400         | Request validation failed           |
+| AUTHENTICATION_ERROR   | 401         | Authentication required or failed   |
+| AUTHORIZATION_ERROR    | 403         | Insufficient permissions            |
+| NOT_FOUND              | 404         | Resource not found                  |
+| CONFLICT               | 409         | Resource conflict (duplicate, etc.) |
+| RATE_LIMIT_EXCEEDED    | 429         | Too many requests                   |
+| DATABASE_ERROR         | 500         | Database operation failed           |
+| EXTERNAL_SERVICE_ERROR | 502         | External service unavailable        |
+| NETWORK_ERROR          | N/A         | Client-side network issue           |
+| CLIENT_ERROR           | N/A         | Client-side error                   |
+| INTERNAL_SERVER_ERROR  | 500         | Unexpected server error             |
 
 ## 🔄 Retry Mechanisms
 
@@ -863,38 +851,35 @@ class RetryService {
       baseDelay = 1000,
       maxDelay = 10000,
       factor = 2,
-      retryCondition = () => true
+      retryCondition = () => true,
     } = options;
 
     let lastError;
-    
+
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         const result = await operation();
         return result;
       } catch (error) {
         lastError = error;
-        
+
         if (attempt === maxAttempts || !retryCondition(error)) {
           throw error;
         }
-        
-        const delay = Math.min(
-          baseDelay * Math.pow(factor, attempt - 1),
-          maxDelay
-        );
-        
-        await new Promise(resolve => setTimeout(resolve, delay));
+
+        const delay = Math.min(baseDelay * Math.pow(factor, attempt - 1), maxDelay);
+
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
-    
+
     throw lastError;
   }
 
   static shouldRetry(error) {
     // Retry on network errors and 5xx server errors
     if (!error.response) return true; // Network error
-    
+
     const status = error.response.status;
     return status >= 500 || status === 429;
   }

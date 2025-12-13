@@ -210,6 +210,7 @@ components/
 ### Frontend Configuration
 
 #### `vite.config.js`
+
 ```javascript
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -244,13 +245,11 @@ export default defineConfig({
 ```
 
 #### `tailwind.config.js`
+
 ```javascript
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -268,10 +267,11 @@ export default {
     },
   },
   plugins: [],
-}
+};
 ```
 
 #### `package.json` (Frontend)
+
 ```json
 {
   "name": "liberia-digital-insights-frontend",
@@ -320,6 +320,7 @@ export default {
 ### Backend Configuration
 
 #### `package.json` (Backend)
+
 ```json
 {
   "name": "liberia-digital-insights-backend",
@@ -478,17 +479,17 @@ import { ComponentProps } from './types';
 function ComponentName({ prop1, prop2 }: ComponentProps) {
   // Hooks
   const [state, setState] = useState();
-  
+
   // Effects
   useEffect(() => {
     // Effect logic
   }, []);
-  
+
   // Event handlers
   const handleClick = () => {
     // Handler logic
   };
-  
+
   // Render
   return (
     <div>

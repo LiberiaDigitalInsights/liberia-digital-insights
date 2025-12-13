@@ -12,11 +12,11 @@ import EmptyState from '../components/ui/EmptyState';
 export default function TrainingCourses() {
   const { data: trainingData, loading, error } = useTraining({});
   const allTraining = trainingData?.training || [];
-  
+
   // Filter training and courses based on type
-  const trainings = allTraining.filter(item => item.type === 'training');
-  const courses = allTraining.filter(item => item.type === 'course');
-  
+  const trainings = allTraining.filter((item) => item.type === 'training');
+  const courses = allTraining.filter((item) => item.type === 'course');
+
   // Map backend data to the expected format for the UI
   const mapTrainingToUI = (item) => ({
     ...item,
@@ -30,10 +30,10 @@ export default function TrainingCourses() {
     image: item.coverImage || item.image || '/LDI_favicon.png',
     registrationUrl: item.registrationUrl || '/register',
   });
-  
+
   const mappedTrainings = trainings.map(mapTrainingToUI);
   const mappedCourses = courses.map(mapTrainingToUI);
-  
+
   // For now, we'll show all items as "upcoming" since the API doesn't provide date filtering
   // This can be enhanced later with date-based filtering
   const pastTrainings = [];
@@ -47,7 +47,9 @@ export default function TrainingCourses() {
 
   const allLocations = [
     'All',
-    ...Array.from(new Set([...mappedTrainings, ...mappedCourses].map((x) => x.location || 'Unknown'))),
+    ...Array.from(
+      new Set([...mappedTrainings, ...mappedCourses].map((x) => x.location || 'Unknown')),
+    ),
   ];
   const allModalities = [
     'All',

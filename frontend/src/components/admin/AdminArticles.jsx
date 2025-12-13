@@ -392,7 +392,11 @@ const AdminArticles = ({ canEdit }) => {
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <span className="text-sm text-[var(--color-text)]">{article.category}</span>
+                        <span className="text-sm text-[var(--color-text)]">
+                          {typeof article.category === 'string'
+                            ? article.category
+                            : article.category?.name || 'N/A'}
+                        </span>
                       </td>
                       <td className="py-3 px-4">{getStatusBadge(article.status)}</td>
                       <td className="py-3 px-4">
@@ -400,8 +404,8 @@ const AdminArticles = ({ canEdit }) => {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex gap-2">
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="sm"
                             onClick={() => {
                               setSelectedArticle(article);
@@ -712,48 +716,74 @@ const AdminArticles = ({ canEdit }) => {
             <>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Title</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Title
+                  </label>
                   <p className="text-[var(--color-text)] font-medium">{selectedArticle.title}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Excerpt</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Excerpt
+                  </label>
                   <p className="text-[var(--color-text)]">{selectedArticle.excerpt || 'N/A'}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Category</label>
-                    <p className="text-[var(--color-text)]">{selectedArticle.category || 'N/A'}</p>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Category
+                    </label>
+                    <p className="text-[var(--color-text)]">
+                      {typeof selectedArticle.category === 'string'
+                        ? selectedArticle.category
+                        : selectedArticle.category?.name || 'N/A'}
+                    </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Status</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Status
+                    </label>
                     <div>{getStatusBadge(selectedArticle.status)}</div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Author</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Author
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedArticle.author || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Date</label>
+                    <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                      Date
+                    </label>
                     <p className="text-[var(--color-text)]">{selectedArticle.date || 'N/A'}</p>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Cover Image</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Cover Image
+                  </label>
                   <p className="text-[var(--color-text)] text-sm">
                     {selectedArticle.coverImage ? (
-                      <a href={selectedArticle.coverImage} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      <a
+                        href={selectedArticle.coverImage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
                         {selectedArticle.coverImage}
                       </a>
-                    ) : 'N/A'}
+                    ) : (
+                      'N/A'
+                    )}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">Content Preview</label>
+                  <label className="block text-sm font-medium text-[var(--color-muted)] mb-1">
+                    Content Preview
+                  </label>
                   <p className="text-[var(--color-text)] text-sm">
-                    {selectedArticle.content ? 
-                      `${selectedArticle.content.substring(0, 200)}${selectedArticle.content.length > 200 ? '...' : ''}` 
-                      : 'N/A'
-                    }
+                    {selectedArticle.content
+                      ? `${selectedArticle.content.substring(0, 200)}${selectedArticle.content.length > 200 ? '...' : ''}`
+                      : 'N/A'}
                   </p>
                 </div>
               </div>

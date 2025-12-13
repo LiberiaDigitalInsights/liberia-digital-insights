@@ -105,9 +105,9 @@ function Gallery() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const gallery = useGallery();
-  
+
   // Fetch data and handle interactions
 }
 ```
@@ -128,18 +128,10 @@ function GalleryItem({ item, onClick }) {
       </div>
       <div className="p-4">
         <h3 className="font-semibold truncate">{item.title}</h3>
-        <p className="text-sm text-gray-600 line-clamp-2">
-          {item.description}
-        </p>
+        <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
         <div className="flex items-center justify-between mt-2">
-          <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-            {item.type}
-          </span>
-          {item.category && (
-            <span className="text-xs text-gray-500">
-              {item.category}
-            </span>
-          )}
+          <span className="text-xs bg-gray-100 px-2 py-1 rounded">{item.type}</span>
+          {item.category && <span className="text-xs text-gray-500">{item.category}</span>}
         </div>
       </div>
     </div>
@@ -153,21 +145,21 @@ function GalleryItem({ item, onClick }) {
 // Lightbox.jsx - Full-screen media viewer
 function Lightbox({ items, currentIndex, onClose, onNext, onPrevious }) {
   const currentItem = items[currentIndex];
-  
+
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-90">
       <button onClick={onClose} className="absolute top-4 right-4 text-white">
         <XIcon />
       </button>
-      
+
       <button onClick={onPrevious} className="absolute left-4 top-1/2 text-white">
         <ChevronLeftIcon />
       </button>
-      
+
       <button onClick={onNext} className="absolute right-4 top-1/2 text-white">
         <ChevronRightIcon />
       </button>
-      
+
       <div className="flex items-center justify-center h-full">
         {currentItem.type === 'image' ? (
           <img
@@ -176,11 +168,7 @@ function Lightbox({ items, currentIndex, onClose, onNext, onPrevious }) {
             className="max-w-full max-h-full object-contain"
           />
         ) : (
-          <video
-            src={currentItem.url}
-            controls
-            className="max-w-full max-h-full"
-          />
+          <video src={currentItem.url} controls className="max-w-full max-h-full" />
         )}
       </div>
     </div>
@@ -234,17 +222,17 @@ function AdminGallery() {
   const [categories, setCategories] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
-  
+
   const gallery = useGallery();
-  
+
   const handleUpload = async (files) => {
     // Handle file upload and gallery item creation
   };
-  
+
   const handleBulkDelete = async () => {
     // Handle bulk deletion
   };
-  
+
   const handleEditItem = async (id, updates) => {
     // Handle item editing
   };
@@ -398,26 +386,24 @@ The gallery system integrates with the platform's theme system:
 // Search functionality
 const filteredItems = React.useMemo(() => {
   if (filter === 'all') return items;
-  
+
   if (filter.startsWith('event:')) {
     const eventSlug = filter.replace('event:', '');
-    return items.filter((item) => 
-      item.event_type === 'event' && item.events?.slug === eventSlug
-    );
+    return items.filter((item) => item.event_type === 'event' && item.events?.slug === eventSlug);
   }
-  
+
   if (filter.startsWith('podcast:')) {
     const podcastSlug = filter.replace('podcast:', '');
-    return items.filter((item) => 
-      item.event_type === 'podcast' && item.podcasts?.slug === podcastSlug
+    return items.filter(
+      (item) => item.event_type === 'podcast' && item.podcasts?.slug === podcastSlug,
     );
   }
-  
+
   if (filter.startsWith('category:')) {
     const category = filter.replace('category:', '');
     return items.filter((item) => item.category === category);
   }
-  
+
   return items;
 }, [filter, items]);
 ```
@@ -459,11 +445,11 @@ test('renders gallery item correctly', () => {
     title: 'Test Image',
     type: 'image',
     url: 'https://example.com/image.jpg',
-    thumbnail_url: 'https://example.com/thumb.jpg'
+    thumbnail_url: 'https://example.com/thumb.jpg',
   };
-  
+
   render(<GalleryItem item={mockItem} onClick={jest.fn()} />);
-  
+
   expect(screen.getByText('Test Image')).toBeInTheDocument();
   expect(screen.getByRole('img')).toHaveAttribute('src', mockItem.thumbnail_url);
 });
@@ -475,11 +461,11 @@ test('renders gallery item correctly', () => {
 // Gallery.test.jsx
 test('loads and displays gallery items', async () => {
   render(<Gallery />);
-  
+
   await waitFor(() => {
     expect(screen.getByText('Gallery')).toBeInTheDocument();
   });
-  
+
   // Test filtering, search, and lightbox functionality
 });
 ```
@@ -500,14 +486,14 @@ test('loads and displays gallery items', async () => {
 const trackGalleryView = (itemId) => {
   analytics.track('gallery_item_viewed', {
     item_id: itemId,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 
 const trackFilterUsage = (filterType, filterValue) => {
   analytics.track('gallery_filter_used', {
     filter_type: filterType,
-    filter_value: filterValue
+    filter_value: filterValue,
   });
 };
 ```

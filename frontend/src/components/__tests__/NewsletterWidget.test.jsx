@@ -19,15 +19,15 @@ describe('NewsletterWidget', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     mockUseToast.mockReturnValue({
-      showToast: mockShowToast
+      showToast: mockShowToast,
     });
 
     mockUseNewsletterSubscription.mockReturnValue({
       subscribe: mockSubscribe,
       loading: false,
-      error: null
+      error: null,
     });
   });
 
@@ -35,7 +35,7 @@ describe('NewsletterWidget', () => {
     return render(
       <BrowserRouter>
         <NewsletterWidget />
-      </BrowserRouter>
+      </BrowserRouter>,
     );
   };
 
@@ -61,7 +61,7 @@ describe('NewsletterWidget', () => {
       expect(mockShowToast).toHaveBeenCalledWith({
         title: 'Validation Error',
         description: 'Please correct the highlighted fields.',
-        variant: 'danger'
+        variant: 'danger',
       });
     });
   });
@@ -81,7 +81,7 @@ describe('NewsletterWidget', () => {
       expect(mockShowToast).toHaveBeenCalledWith({
         title: 'Validation Error',
         description: 'Please correct the highlighted fields.',
-        variant: 'danger'
+        variant: 'danger',
       });
     });
 
@@ -113,7 +113,7 @@ describe('NewsletterWidget', () => {
         email: 'john@example.com',
         company: 'Tech Corp',
         org: 'Tech Org',
-        position: 'Developer'
+        position: 'Developer',
       });
     });
 
@@ -121,7 +121,7 @@ describe('NewsletterWidget', () => {
       expect(mockShowToast).toHaveBeenCalledWith({
         title: 'Subscribed',
         description: 'Thanks for subscribing to our newsletter!',
-        variant: 'success'
+        variant: 'success',
       });
     });
 
@@ -147,17 +147,17 @@ describe('NewsletterWidget', () => {
       expect(mockShowToast).toHaveBeenCalledWith({
         title: 'Error',
         description: 'Network error',
-        variant: 'danger'
+        variant: 'danger',
       });
     });
   });
 
   it('shows loading state during submission', async () => {
-    mockSubscribe.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
+    mockSubscribe.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
     mockUseNewsletterSubscription.mockReturnValue({
       subscribe: mockSubscribe,
       loading: true,
-      error: null
+      error: null,
     });
 
     renderComponent();
@@ -200,7 +200,9 @@ describe('NewsletterWidget', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText("You're all set! Check your inbox for a welcome email.")).toBeInTheDocument();
+      expect(
+        screen.getByText("You're all set! Check your inbox for a welcome email."),
+      ).toBeInTheDocument();
     });
   });
 
@@ -221,7 +223,7 @@ describe('NewsletterWidget', () => {
       expect(mockShowToast).toHaveBeenCalledWith({
         title: 'Error',
         description: 'Failed to subscribe. Please try again.',
-        variant: 'danger'
+        variant: 'danger',
       });
     });
   });

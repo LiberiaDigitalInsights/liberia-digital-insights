@@ -59,7 +59,7 @@ export default function FooterNewsletterWidget() {
       // Handle specific error cases
       let errorMessage = 'Failed to subscribe. Please try again.';
       let errorTitle = 'Error';
-      
+
       if (err.message?.includes('Email already subscribed')) {
         errorTitle = 'Already Subscribed';
         errorMessage = 'This email is already subscribed to our newsletter.';
@@ -76,7 +76,7 @@ export default function FooterNewsletterWidget() {
         errorMessage = err.message;
         setStatus('error');
       }
-      
+
       showToast({
         title: errorTitle,
         description: errorMessage,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { H1, H2, Muted } from '../components/ui/Typography';
 import PodcastPlayer from '../components/podcasts/PodcastPlayer';
@@ -10,6 +10,7 @@ import { usePodcast, usePodcasts, useCategories } from '../hooks/useBackendApi';
 export default function PodcastDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [isTranscriptExpanded, setIsTranscriptExpanded] = useState(false);
 
   // Fetch podcast by slug from backend
   const { data: podcastData, loading: podcastLoading, error: podcastError } = usePodcast(slug);
@@ -144,52 +145,87 @@ export default function PodcastDetail() {
               </CardContent>
             </Card>
           )}
-          {/* Platform Links */}
+          {/* External Links */}
           {(podcast.youtube_url ||
             podcast.spotify_url ||
             podcast.apple_podcasts_url ||
             podcast.facebook_url) && (
-            <div className="mt-4 flex flex-wrap gap-3 text-sm">
-              {podcast.youtube_url && (
-                <a
-                  href={podcast.youtube_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-brand-500 hover:underline"
-                >
-                  Watch on YouTube
-                </a>
-              )}
-              {podcast.spotify_url && (
-                <a
-                  href={podcast.spotify_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-brand-500 hover:underline"
-                >
-                  Listen on Spotify
-                </a>
-              )}
-              {podcast.apple_podcasts_url && (
-                <a
-                  href={podcast.apple_podcasts_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-brand-500 hover:underline"
-                >
-                  Listen on Apple Podcasts
-                </a>
-              )}
-              {podcast.facebook_url && (
-                <a
-                  href={podcast.facebook_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-brand-500 hover:underline"
-                >
-                  Listen on Facebook
-                </a>
-              )}
+            <div className="mt-6">
+              <H2 className="mb-4 text-xl font-semibold">Listen on Your Favorite Platform</H2>
+              <div className="grid gap-3 md:grid-cols-2">
+                {podcast.youtube_url && (
+                  <a
+                    href={podcast.youtube_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 transition-all hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:shadow-md"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded bg-red-600 text-white">
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-medium text-[var(--color-text)]">YouTube</div>
+                      <div className="text-sm text-[var(--color-muted)]">Watch video version</div>
+                    </div>
+                  </a>
+                )}
+                {podcast.spotify_url && (
+                  <a
+                    href={podcast.spotify_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 transition-all hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:shadow-md"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded bg-green-600 text-white">
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.569-.88.851-1.449.611-3.966-1.531-8.361-1.871-12.706-1.028-.569.12-1.131-.24-1.27-.849-.12-.569.24-1.131.849-1.27 4.681-.902 9.486-.542 13.771 1.068.568.24.851.881.61 1.45l-.005.018zm1.448-3.22c-.301.721-1.131 1.051-1.831.75-4.521-1.771-11.412-2.281-16.713-1.249-.721.15-1.431-.3-1.571-1.021-.15-1.15.41-2.35 1.05-3.11z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-medium text-[var(--color-text)]">Spotify</div>
+                      <div className="text-sm text-[var(--color-muted)]">Stream on Spotify</div>
+                    </div>
+                  </a>
+                )}
+                {podcast.apple_podcasts_url && (
+                  <a
+                    href={podcast.apple_podcasts_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 transition-all hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:shadow-md"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded bg-gray-900 text-white">
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-medium text-[var(--color-text)]">Apple Podcasts</div>
+                      <div className="text-sm text-[var(--color-muted)]">Listen on Apple</div>
+                    </div>
+                  </a>
+                )}
+                {podcast.facebook_url && (
+                  <a
+                    href={podcast.facebook_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 transition-all hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)] hover:shadow-md"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded bg-blue-600 text-white">
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-medium text-[var(--color-text)]">Facebook</div>
+                      <div className="text-sm text-[var(--color-muted)]">Watch on Facebook</div>
+                    </div>
+                  </a>
+                )}
+              </div>
             </div>
           )}
           {/* Inline Embeds */}
@@ -250,9 +286,29 @@ export default function PodcastDetail() {
               <CardTitle>Transcript</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="whitespace-pre-line text-sm text-[var(--color-text)]">
-                {stripHtml(podcast.transcript)}
-              </p>
+              {(() => {
+                const plainText = stripHtml(podcast.transcript);
+                const isLong = plainText.length > 500;
+                const displayText = isLong && !isTranscriptExpanded 
+                  ? plainText.substring(0, 500) + '...' 
+                  : plainText;
+                
+                return (
+                  <div>
+                    <p className="whitespace-pre-line text-sm text-[var(--color-text)]">
+                      {displayText}
+                    </p>
+                    {isLong && (
+                      <button
+                        onClick={() => setIsTranscriptExpanded(!isTranscriptExpanded)}
+                        className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                      >
+                        {isTranscriptExpanded ? 'Read less' : 'Read more'}
+                      </button>
+                    )}
+                  </div>
+                );
+              })()}
             </CardContent>
           </Card>
         )}

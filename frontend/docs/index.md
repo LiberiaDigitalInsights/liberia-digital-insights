@@ -30,22 +30,26 @@ Liberia Digital Insights is a full-stack web application featuring:
 ## 📚 Documentation Sections
 
 ### Getting Started
+
 - [Setup Guide](./GettingStarted.md) - Installation and configuration
 - [Contributing](./Contributing.md) - Development guidelines
 - [Changelog](./Changelog.md) - Version history and updates
 
 ### Design & Development
+
 - [Design System](./DesignSystem.md) - UI components and styling guidelines
 - [Components](./Components.md) - Reusable component library
 - [Categories](./Categories.md) - Content categorization system
 
 ### Platform Features
+
 - [Admin Guide](./AdminGuide.md) - Admin panel documentation
 - [Platform Overview](./Liberia_Digital_Insights_Website_Documentation.md) - Complete feature documentation
 
 ## 🌐 Live Services
 
 When running locally:
+
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:5000
 - **Documentation**: http://localhost:5174
@@ -94,16 +98,16 @@ export default {
             translations: {
               button: {
                 buttonText: 'Search Documentation',
-                buttonAriaLabel: 'Search Documentation'
+                buttonAriaLabel: 'Search Documentation',
               },
               modal: {
                 noResultsText: 'No results found',
-                resetButtonTitle: 'Clear search'
-              }
-            }
-          }
-        }
-      }
+                resetButtonTitle: 'Clear search',
+              },
+            },
+          },
+        },
+      },
     },
   },
 };

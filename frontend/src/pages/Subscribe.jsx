@@ -68,7 +68,7 @@ export default function Subscribe() {
       };
 
       await subscribe(subscriptionData);
-      
+
       setIsSuccess(true);
 
       showToast({
@@ -91,7 +91,7 @@ export default function Subscribe() {
       // Handle specific error cases
       let errorMessage = 'Failed to subscribe. Please try again.';
       let errorTitle = 'Error';
-      
+
       if (err.message?.includes('Email already subscribed')) {
         errorTitle = 'Already Subscribed';
         errorMessage = 'This email is already subscribed to our newsletter.';
@@ -104,7 +104,7 @@ export default function Subscribe() {
       } else if (err.message) {
         errorMessage = err.message;
       }
-      
+
       showToast({
         title: errorTitle,
         description: errorMessage,

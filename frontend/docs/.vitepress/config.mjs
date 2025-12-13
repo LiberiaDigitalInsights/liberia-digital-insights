@@ -100,7 +100,7 @@ export default {
             translations: {
               button: {
                 buttonText: 'Search Documentation',
-                buttonAriaLabel: 'Search Documentation'
+                buttonAriaLabel: 'Search Documentation',
               },
               modal: {
                 noResultsText: 'No results found',
@@ -112,13 +112,13 @@ export default {
                   navigateText: 'to navigate',
                   navigateUpKeyAriaLabel: 'to navigate up',
                   navigateDownKeyAriaLabel: 'to navigate down',
-                  closeText: 'to close'
-                }
-              }
-            }
-          }
-        }
-      }
+                  closeText: 'to close',
+                },
+              },
+            },
+          },
+        },
+      },
     },
     socialLinks: [
       {
@@ -127,7 +127,7 @@ export default {
       },
     ],
     footer: {
-      message: 'Built with ❤️ for Liberia\'s Digital Future',
+      message: "Built with ❤️ for Liberia's Digital Future",
       copyright: `Copyright © ${new Date().getFullYear()} Liberia Digital Insights Team`,
     },
   },

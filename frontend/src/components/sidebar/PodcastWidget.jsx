@@ -33,13 +33,16 @@ export default function PodcastWidget({ podcasts = [], loading = false }) {
       <CardContent className="space-y-3">
         {latestPodcast ? (
           <div className="space-y-1">
-            <div className="text-sm font-medium">EP.{latestPodcast.episode_number} {latestPodcast.title}</div>
+            <div className="text-sm font-medium">
+              EP.{latestPodcast.episode_number} {latestPodcast.title}
+            </div>
             <div className="text-xs text-[var(--color-muted)]">
-              {new Date(latestPodcast.published_at).toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric', 
-                year: 'numeric' 
-              })}, Liberia Digital Insights Podcast
+              {new Date(latestPodcast.published_at).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+              , Liberia Digital Insights Podcast
             </div>
             <div className="text-xs text-[var(--color-muted)]">{latestPodcast.duration}</div>
           </div>
@@ -48,8 +51,8 @@ export default function PodcastWidget({ podcasts = [], loading = false }) {
             No podcasts available
           </div>
         )}
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="w-full"
           onClick={() => latestPodcast?.audio_url && window.open(latestPodcast.audio_url, '_blank')}
           disabled={!latestPodcast}

@@ -54,7 +54,9 @@ const NewsletterSystem = ({ canEdit }) => {
   } = useNewsletters({});
   const { data: templatesData, error: templatesError } = useNewsletterTemplates();
   const { data: subscribersData, error: subscribersError } = useNewsletterSubscribers({});
-  const { data: subscribersListData, refetch: refetchSubscribers } = useNewsletterSubscribersList({});
+  const { data: subscribersListData, refetch: refetchSubscribers } = useNewsletterSubscribersList(
+    {},
+  );
   const { data: analyticsData } = useNewsletterAnalytics();
 
   // Check if we're using fallback data
@@ -100,7 +102,8 @@ const NewsletterSystem = ({ canEdit }) => {
     },
   ];
   const templates = templatesData?.templates || newsletterTemplates;
-  const subscribers = subscribersListData?.subscribers || subscribersData?.subscribers || sampleSubscribers;
+  const subscribers =
+    subscribersListData?.subscribers || subscribersData?.subscribers || sampleSubscribers;
 
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -327,27 +330,16 @@ const NewsletterSystem = ({ canEdit }) => {
           </Select>
         </div>
         <div className="flex gap-2">
-          <Button 
-            variant="outline" 
-            type="button"
-            onClick={openSubscribersModal}
-          >
+          <Button variant="outline" type="button" onClick={openSubscribersModal}>
             <FaUsers className="w-4 h-4 mr-2" />
             Manage Subscribers
           </Button>
-          <Button 
-            variant="outline" 
-            type="button"
-            onClick={openTemplateModal}
-          >
+          <Button variant="outline" type="button" onClick={openTemplateModal}>
             <FaFileAlt className="w-4 h-4 mr-2" />
             Templates
           </Button>
           {canEdit && (
-            <Button 
-              type="button"
-              onClick={openCreateModal}
-            >
+            <Button type="button" onClick={openCreateModal}>
               <FaPlus className="w-4 h-4 mr-2" />
               Create Newsletter
             </Button>
@@ -397,7 +389,9 @@ const NewsletterSystem = ({ canEdit }) => {
                 <p className="text-2xl font-bold text-[var(--color-text)]">
                   {analyticsData?.subscribers?.growthRate || '12'}%
                 </p>
-                <p className="text-sm text-green-600">+{analyticsData?.subscribers?.growthRate || '2.1'}% from last month</p>
+                <p className="text-sm text-green-600">
+                  +{analyticsData?.subscribers?.growthRate || '2.1'}% from last month
+                </p>
               </div>
               <FaChartBar className="w-8 h-8 text-purple-500" />
             </div>
@@ -411,7 +405,9 @@ const NewsletterSystem = ({ canEdit }) => {
                 <p className="text-2xl font-bold text-[var(--color-text)]">
                   {analyticsData?.metrics?.unsubscribeRate || '3.2'}%
                 </p>
-                <p className="text-sm text-red-600">-{analyticsData?.subscribers?.recentUnsubscriptions || '5'} this month</p>
+                <p className="text-sm text-red-600">
+                  -{analyticsData?.subscribers?.recentUnsubscriptions || '5'} this month
+                </p>
               </div>
               <FaEye className="w-8 h-8 text-green-500" />
             </div>
@@ -802,7 +798,9 @@ const NewsletterSystem = ({ canEdit }) => {
                     </td>
                     <td className="px-4 py-2 text-sm text-[var(--color-muted)]">
                       {subscriber.subscribed_at || subscriber.createdAt
-                        ? new Date(subscriber.subscribed_at || subscriber.createdAt).toLocaleDateString()
+                        ? new Date(
+                            subscriber.subscribed_at || subscriber.createdAt,
+                          ).toLocaleDateString()
                         : 'N/A'}
                     </td>
                     <td className="px-4 py-2 text-sm text-right">
@@ -811,7 +809,9 @@ const NewsletterSystem = ({ canEdit }) => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleUpdateSubscriberStatus(subscriber.id, 'unsubscribed')}
+                            onClick={() =>
+                              handleUpdateSubscriberStatus(subscriber.id, 'unsubscribed')
+                            }
                           >
                             Unsubscribe
                           </Button>

@@ -168,6 +168,7 @@ backend/src/routes/talents.js  # Talent directory CRUD operations
 ## 🎯 Profile Categories
 
 ### Developers
+
 - **Frontend Developers**: React, Vue, Angular specialists
 - **Backend Developers**: Node.js, Python, Java specialists
 - **Full Stack Developers**: End-to-end development expertise
@@ -175,12 +176,14 @@ backend/src/routes/talents.js  # Talent directory CRUD operations
 - **DevOps Engineers**: Cloud, CI/CD, infrastructure
 
 ### Designers
+
 - **UI/UX Designers**: User interface and experience design
 - **Graphic Designers**: Visual design and branding
 - **Product Designers**: Product strategy and design systems
 - **Web Designers**: Frontend design and implementation
 
 ### Other Tech Roles
+
 - **Data Scientists**: Analytics, machine learning, AI
 - **Project Managers**: Agile, Scrum, project coordination
 - **Technical Writers**: Documentation, content creation
@@ -193,33 +196,35 @@ backend/src/routes/talents.js  # Talent directory CRUD operations
 ```jsx
 // ProfileForm.jsx
 function ProfileForm({ profile, onSave, onCancel }) {
-  const [formData, setFormData] = useState(profile || {
-    first_name: '',
-    last_name: '',
-    professional_title: '',
-    bio: '',
-    location: {
-      city: '',
-      country: 'Liberia',
-      remote_work: false,
-      relocation: false
+  const [formData, setFormData] = useState(
+    profile || {
+      first_name: '',
+      last_name: '',
+      professional_title: '',
+      bio: '',
+      location: {
+        city: '',
+        country: 'Liberia',
+        remote_work: false,
+        relocation: false,
+      },
+      contact_info: {
+        email: '',
+        phone: '',
+        linkedin: '',
+        github: '',
+        website: '',
+        portfolio: '',
+      },
+      skills: [],
+      availability: {
+        job_seeking: true,
+        freelance: false,
+        collaboration: false,
+        consulting: false,
+      },
     },
-    contact_info: {
-      email: '',
-      phone: '',
-      linkedin: '',
-      github: '',
-      website: '',
-      portfolio: ''
-    },
-    skills: [],
-    availability: {
-      job_seeking: true,
-      freelance: false,
-      collaboration: false,
-      consulting: false
-    }
-  });
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -230,85 +235,79 @@ function ProfileForm({ profile, onSave, onCancel }) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            First Name *
-          </label>
+          <label className="block text-sm font-medium text-gray-700">First Name *</label>
           <input
             type="text"
             value={formData.first_name}
-            onChange={(e) => setFormData({...formData, first_name: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             required
           />
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Last Name *
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Last Name *</label>
           <input
             type="text"
             value={formData.last_name}
-            onChange={(e) => setFormData({...formData, last_name: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             required
           />
         </div>
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Professional Title *
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Professional Title *</label>
         <input
           type="text"
           value={formData.professional_title}
-          onChange={(e) => setFormData({...formData, professional_title: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, professional_title: e.target.value })}
           placeholder="e.g., Full Stack Developer"
           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
           required
         />
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Professional Bio *
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Professional Bio *</label>
         <textarea
           value={formData.bio}
-          onChange={(e) => setFormData({...formData, bio: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
           rows={4}
           placeholder="Tell us about your professional background and expertise..."
           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
           required
         />
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Location
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <input
               type="text"
               value={formData.location.city}
-              onChange={(e) => setFormData({
-                ...formData,
-                location: {...formData.location, city: e.target.value}
-              })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  location: { ...formData.location, city: e.target.value },
+                })
+              }
               placeholder="City"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
-          
+
           <div>
             <select
               value={formData.location.country}
-              onChange={(e) => setFormData({
-                ...formData,
-                location: {...formData.location, country: e.target.value}
-              })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  location: { ...formData.location, country: e.target.value },
+                })
+              }
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             >
               <option value="Liberia">Liberia</option>
@@ -316,95 +315,105 @@ function ProfileForm({ profile, onSave, onCancel }) {
             </select>
           </div>
         </div>
-        
+
         <div className="flex space-x-4 mt-3">
           <label className="flex items-center">
             <input
               type="checkbox"
               checked={formData.location.remote_work}
-              onChange={(e) => setFormData({
-                ...formData,
-                location: {...formData.location, remote_work: e.target.checked}
-              })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  location: { ...formData.location, remote_work: e.target.checked },
+                })
+              }
               className="mr-2"
             />
             Open to remote work
           </label>
-          
+
           <label className="flex items-center">
             <input
               type="checkbox"
               checked={formData.location.relocation}
-              onChange={(e) => setFormData({
-                ...formData,
-                location: {...formData.location, relocation: e.target.checked}
-              })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  location: { ...formData.location, relocation: e.target.checked },
+                })
+              }
               className="mr-2"
             />
             Open to relocation
           </label>
         </div>
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Contact Information
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Contact Information</label>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <input
               type="email"
               value={formData.contact_info.email}
-              onChange={(e) => setFormData({
-                ...formData,
-                contact_info: {...formData.contact_info, email: e.target.value}
-              })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  contact_info: { ...formData.contact_info, email: e.target.value },
+                })
+              }
               placeholder="Email"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
-          
+
           <div>
             <input
               type="tel"
               value={formData.contact_info.phone}
-              onChange={(e) => setFormData({
-                ...formData,
-                contact_info: {...formData.contact_info, phone: e.target.value}
-              })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  contact_info: { ...formData.contact_info, phone: e.target.value },
+                })
+              }
               placeholder="Phone"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
-          
+
           <div>
             <input
               type="url"
               value={formData.contact_info.linkedin}
-              onChange={(e) => setFormData({
-                ...formData,
-                contact_info: {...formData.contact_info, linkedin: e.target.value}
-              })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  contact_info: { ...formData.contact_info, linkedin: e.target.value },
+                })
+              }
               placeholder="LinkedIn URL"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
-          
+
           <div>
             <input
               type="url"
               value={formData.contact_info.github}
-              onChange={(e) => setFormData({
-                ...formData,
-                contact_info: {...formData.contact_info, github: e.target.value}
-              })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  contact_info: { ...formData.contact_info, github: e.target.value },
+                })
+              }
               placeholder="GitHub URL"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
         </div>
       </div>
-      
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Availability Preferences
@@ -414,16 +423,18 @@ function ProfileForm({ profile, onSave, onCancel }) {
             { key: 'job_seeking', label: 'Open to job opportunities' },
             { key: 'freelance', label: 'Available for freelance work' },
             { key: 'collaboration', label: 'Open to project collaboration' },
-            { key: 'consulting', label: 'Available for consulting' }
+            { key: 'consulting', label: 'Available for consulting' },
           ].map(({ key, label }) => (
             <label key={key} className="flex items-center">
               <input
                 type="checkbox"
                 checked={formData.availability[key]}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  availability: {...formData.availability, [key]: e.target.checked}
-                })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    availability: { ...formData.availability, [key]: e.target.checked },
+                  })
+                }
                 className="mr-2"
               />
               {label}
@@ -431,7 +442,7 @@ function ProfileForm({ profile, onSave, onCancel }) {
           ))}
         </div>
       </div>
-      
+
       <div className="flex justify-end space-x-3">
         <button
           type="button"
@@ -462,14 +473,14 @@ function SkillsManager({ skills, onUpdate }) {
   const [newSkill, setNewSkill] = useState({
     name: '',
     level: 'intermediate',
-    years_experience: 1
+    years_experience: 1,
   });
 
   const skillLevels = [
     { value: 'beginner', label: 'Beginner' },
     { value: 'intermediate', label: 'Intermediate' },
     { value: 'advanced', label: 'Advanced' },
-    { value: 'expert', label: 'Expert' }
+    { value: 'expert', label: 'Expert' },
   ];
 
   const addSkill = () => {
@@ -478,7 +489,7 @@ function SkillsManager({ skills, onUpdate }) {
         ...newSkill,
         id: Date.now().toString(),
         endorsements: 0,
-        verified: false
+        verified: false,
       };
       onUpdate([...skills, skill]);
       setNewSkill({ name: '', level: 'intermediate', years_experience: 1 });
@@ -486,19 +497,17 @@ function SkillsManager({ skills, onUpdate }) {
   };
 
   const removeSkill = (skillId) => {
-    onUpdate(skills.filter(skill => skill.id !== skillId));
+    onUpdate(skills.filter((skill) => skill.id !== skillId));
   };
 
   const updateSkill = (skillId, updates) => {
-    onUpdate(skills.map(skill => 
-      skill.id === skillId ? { ...skill, ...updates } : skill
-    ));
+    onUpdate(skills.map((skill) => (skill.id === skillId ? { ...skill, ...updates } : skill)));
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h3 className="text-lg font-semibold mb-4">Skills & Expertise</h3>
-      
+
       {/* Add new skill */}
       <div className="mb-6 p-4 border border-gray-200 rounded-lg">
         <h4 className="font-medium mb-3">Add New Skill</h4>
@@ -506,33 +515,35 @@ function SkillsManager({ skills, onUpdate }) {
           <input
             type="text"
             value={newSkill.name}
-            onChange={(e) => setNewSkill({...newSkill, name: e.target.value})}
+            onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
             placeholder="Skill name (e.g., JavaScript, React)"
             className="flex-1 border-gray-300 rounded-md shadow-sm"
           />
-          
+
           <select
             value={newSkill.level}
-            onChange={(e) => setNewSkill({...newSkill, level: e.target.value})}
+            onChange={(e) => setNewSkill({ ...newSkill, level: e.target.value })}
             className="border-gray-300 rounded-md shadow-sm"
           >
-            {skillLevels.map(level => (
+            {skillLevels.map((level) => (
               <option key={level.value} value={level.value}>
                 {level.label}
               </option>
             ))}
           </select>
-          
+
           <input
             type="number"
             value={newSkill.years_experience}
-            onChange={(e) => setNewSkill({...newSkill, years_experience: parseInt(e.target.value)})}
+            onChange={(e) =>
+              setNewSkill({ ...newSkill, years_experience: parseInt(e.target.value) })
+            }
             placeholder="Years"
             min="0"
             max="50"
             className="w-20 border-gray-300 rounded-md shadow-sm"
           />
-          
+
           <button
             onClick={addSkill}
             className="px-4 py-2 bg-brand-500 text-white rounded-md hover:bg-brand-600"
@@ -541,36 +552,44 @@ function SkillsManager({ skills, onUpdate }) {
           </button>
         </div>
       </div>
-      
+
       {/* Existing skills */}
       <div className="space-y-3">
-        {skills.map(skill => (
-          <div key={skill.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+        {skills.map((skill) => (
+          <div
+            key={skill.id}
+            className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+          >
             <div className="flex-1">
               <div className="flex items-center space-x-3">
                 <h4 className="font-medium">{skill.name}</h4>
-                <span className={`px-2 py-1 rounded-full text-xs ${
-                  skill.level === 'expert' ? 'bg-purple-100 text-purple-800' :
-                  skill.level === 'advanced' ? 'bg-blue-100 text-blue-800' :
-                  skill.level === 'intermediate' ? 'bg-green-100 text-green-800' :
-                  'bg-gray-100 text-gray-800'
-                }`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs ${
+                    skill.level === 'expert'
+                      ? 'bg-purple-100 text-purple-800'
+                      : skill.level === 'advanced'
+                        ? 'bg-blue-100 text-blue-800'
+                        : skill.level === 'intermediate'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-gray-100 text-gray-800'
+                  }`}
+                >
                   {skill.level}
                 </span>
-                
+
                 {skill.verified && (
                   <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">
                     ✓ Verified
                   </span>
                 )}
               </div>
-              
+
               <div className="flex items-center space-x-4 mt-1 text-sm text-gray-600">
                 <span>{skill.years_experience} years experience</span>
                 <span>{skill.endorsements} endorsements</span>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => removeSkill(skill.id)}
@@ -582,7 +601,7 @@ function SkillsManager({ skills, onUpdate }) {
           </div>
         ))}
       </div>
-      
+
       {skills.length === 0 && (
         <div className="text-center py-8 text-gray-500">
           No skills added yet. Add your first skill above.
@@ -608,7 +627,7 @@ function TalentSearch({ onSearch }) {
     availability: [],
     experience_level: [],
     company_size: [],
-    industry: []
+    industry: [],
   });
 
   const [suggestions, setSuggestions] = useState([]);
@@ -628,50 +647,55 @@ function TalentSearch({ onSearch }) {
 
   const handleSkillChange = (skill) => {
     if (searchFilters.skills.includes(skill)) {
-      setSearchFilters(prev => ({
+      setSearchFilters((prev) => ({
         ...prev,
-        skills: prev.skills.filter(s => s !== skill)
+        skills: prev.skills.filter((s) => s !== skill),
       }));
     } else {
-      setSearchFilters(prev => ({
+      setSearchFilters((prev) => ({
         ...prev,
-        skills: [...prev.skills, skill]
+        skills: [...prev.skills, skill],
       }));
     }
   };
 
   const commonSkills = [
-    'JavaScript', 'React', 'Node.js', 'Python', 'Java',
-    'UI/UX Design', 'Project Management', 'Data Science',
-    'DevOps', 'Mobile Development', 'AWS', 'MongoDB'
+    'JavaScript',
+    'React',
+    'Node.js',
+    'Python',
+    'Java',
+    'UI/UX Design',
+    'Project Management',
+    'Data Science',
+    'DevOps',
+    'Mobile Development',
+    'AWS',
+    'MongoDB',
   ];
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h3 className="text-lg font-semibold mb-4">Search Talent</h3>
-      
+
       <div className="space-y-4">
         {/* Keyword search */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Keywords
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Keywords</label>
           <input
             type="text"
             value={searchFilters.keyword}
-            onChange={(e) => setSearchFilters({...searchFilters, keyword: e.target.value})}
+            onChange={(e) => setSearchFilters({ ...searchFilters, keyword: e.target.value })}
             placeholder="Search by title, skills, or bio..."
             className="w-full border-gray-300 rounded-md shadow-sm"
           />
         </div>
-        
+
         {/* Skills filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Skills
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Skills</label>
           <div className="flex flex-wrap gap-2">
-            {commonSkills.map(skill => (
+            {commonSkills.map((skill) => (
               <button
                 key={skill}
                 onClick={() => handleSkillChange(skill)}
@@ -686,32 +710,28 @@ function TalentSearch({ onSearch }) {
             ))}
           </div>
         </div>
-        
+
         {/* Location filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Location
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
           <input
             type="text"
             value={searchFilters.location}
-            onChange={(e) => setSearchFilters({...searchFilters, location: e.target.value})}
+            onChange={(e) => setSearchFilters({ ...searchFilters, location: e.target.value })}
             placeholder="City or country..."
             className="w-full border-gray-300 rounded-md shadow-sm"
           />
         </div>
-        
+
         {/* Availability filters */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Availability
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Availability</label>
           <div className="flex flex-wrap gap-2">
             {[
               { key: 'job_seeking', label: 'Job Seeking' },
               { key: 'freelance', label: 'Freelance' },
               { key: 'collaboration', label: 'Collaboration' },
-              { key: 'consulting', label: 'Consulting' }
+              { key: 'consulting', label: 'Consulting' },
             ].map(({ key, label }) => (
               <label key={key} className="flex items-center">
                 <input
@@ -719,14 +739,14 @@ function TalentSearch({ onSearch }) {
                   checked={searchFilters.availability.includes(key)}
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setSearchFilters(prev => ({
+                      setSearchFilters((prev) => ({
                         ...prev,
-                        availability: [...prev.availability, key]
+                        availability: [...prev.availability, key],
                       }));
                     } else {
-                      setSearchFilters(prev => ({
+                      setSearchFilters((prev) => ({
                         ...prev,
-                        availability: prev.availability.filter(a => a !== key)
+                        availability: prev.availability.filter((a) => a !== key),
                       }));
                     }
                   }}
@@ -737,38 +757,42 @@ function TalentSearch({ onSearch }) {
             ))}
           </div>
         </div>
-        
+
         {/* Remote work filter */}
         <div>
           <label className="flex items-center">
             <input
               type="checkbox"
               checked={searchFilters.remote_work}
-              onChange={(e) => setSearchFilters({...searchFilters, remote_work: e.target.checked})}
+              onChange={(e) =>
+                setSearchFilters({ ...searchFilters, remote_work: e.target.checked })
+              }
               className="mr-2"
             />
             Open to remote work
           </label>
         </div>
-        
+
         {/* Search button */}
         <div className="flex justify-end space-x-3">
           <button
-            onClick={() => setSearchFilters({
-              keyword: '',
-              skills: [],
-              location: '',
-              remote_work: false,
-              availability: [],
-              experience_level: [],
-              company_size: [],
-              industry: []
-            })}
+            onClick={() =>
+              setSearchFilters({
+                keyword: '',
+                skills: [],
+                location: '',
+                remote_work: false,
+                availability: [],
+                experience_level: [],
+                company_size: [],
+                industry: [],
+              })
+            }
             className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
           >
             Clear Filters
           </button>
-          
+
           <button
             onClick={handleSearch}
             disabled={loading}
@@ -815,42 +839,43 @@ function TalentCard({ talent }) {
             alt={`${talent.first_name} ${talent.last_name}`}
             className="w-16 h-16 rounded-full object-cover"
           />
-          
+
           <div className="flex-1">
             <h3 className="text-xl font-bold mb-1">
               {talent.first_name} {talent.last_name}
             </h3>
             <p className="text-gray-600 mb-2">{talent.professional_title}</p>
-            <p className="text-sm text-gray-500 line-clamp-2">
-              {talent.bio}
-            </p>
+            <p className="text-sm text-gray-500 line-clamp-2">{talent.bio}</p>
           </div>
-          
+
           <div className="text-right">
             {talent.verification_status.identity_verified && (
               <div className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs mb-2">
                 ✓ Verified
               </div>
             )}
-            
+
             <div className="text-sm text-gray-500">
               {talent.location.city}, {talent.location.country}
             </div>
           </div>
         </div>
-        
+
         {/* Skills */}
         <div className="mb-4">
           <h4 className="text-sm font-medium text-gray-700 mb-2">Top Skills</h4>
           <div className="flex flex-wrap gap-2">
-            {talent.skills.slice(0, 5).map(skill => (
+            {talent.skills.slice(0, 5).map((skill) => (
               <span
                 key={skill.id}
                 className={`px-2 py-1 rounded-full text-xs ${
-                  skill.level === 'expert' ? 'bg-purple-100 text-purple-800' :
-                  skill.level === 'advanced' ? 'bg-blue-100 text-blue-800' :
-                  skill.level === 'intermediate' ? 'bg-green-100 text-green-800' :
-                  'bg-gray-100 text-gray-800'
+                  skill.level === 'expert'
+                    ? 'bg-purple-100 text-purple-800'
+                    : skill.level === 'advanced'
+                      ? 'bg-blue-100 text-blue-800'
+                      : skill.level === 'intermediate'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-gray-100 text-gray-800'
                 }`}
               >
                 {skill.name}
@@ -862,7 +887,7 @@ function TalentCard({ talent }) {
             )}
           </div>
         </div>
-        
+
         {/* Experience */}
         <div className="mb-4">
           <h4 className="text-sm font-medium text-gray-700 mb-2">Experience</h4>
@@ -877,7 +902,7 @@ function TalentCard({ talent }) {
             )}
           </div>
         </div>
-        
+
         {/* Availability */}
         <div className="mb-4">
           <div className="flex flex-wrap gap-2">
@@ -898,19 +923,21 @@ function TalentCard({ talent }) {
             )}
           </div>
         </div>
-        
+
         {/* Stats */}
         <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
           <div className="flex items-center space-x-4">
             <span>{talent.stats.profile_views} views</span>
-            <span>{talent.skills.reduce((sum, skill) => sum + skill.endorsements, 0)} endorsements</span>
+            <span>
+              {talent.skills.reduce((sum, skill) => sum + skill.endorsements, 0)} endorsements
+            </span>
           </div>
-          
+
           <div className="text-xs text-gray-400">
             Last active {formatDate(talent.stats.last_active)}
           </div>
         </div>
-        
+
         {/* Actions */}
         <div className="flex space-x-2">
           <button
@@ -919,7 +946,7 @@ function TalentCard({ talent }) {
           >
             Connect
           </button>
-          
+
           <button
             onClick={handleFollow}
             className={`px-3 py-2 rounded-md text-sm ${
@@ -930,13 +957,13 @@ function TalentCard({ talent }) {
           >
             {isFollowing ? 'Following' : 'Follow'}
           </button>
-          
+
           <Button variant="outline" size="sm" as={Link} to={`/talent/${talent.id}`}>
             View Profile
           </Button>
         </div>
       </div>
-      
+
       {/* Message Modal */}
       {showMessageModal && (
         <MessageModal
@@ -1037,14 +1064,14 @@ function TalentAnalytics() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchTalentAnalytics().then(data => {
+    fetchTalentAnalytics().then((data) => {
       setAnalytics(data);
       setLoading(false);
     });
   }, []);
 
   if (loading) return <LoadingSpinner />;
-  
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -1053,33 +1080,33 @@ function TalentAnalytics() {
           <p className="text-2xl font-bold text-gray-900">{analytics.profile_views}</p>
           <p className="text-sm text-green-600">+20% from last month</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Connection Requests</h3>
           <p className="text-2xl font-bold text-gray-900">{analytics.connection_requests}</p>
           <p className="text-sm text-blue-600">This month</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Messages Received</h3>
           <p className="text-2xl font-bold text-gray-900">{analytics.messages_received}</p>
           <p className="text-sm text-green-600">+5 from last week</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Skill Endorsements</h3>
           <p className="text-2xl font-bold text-gray-900">{analytics.endorsements}</p>
           <p className="text-sm text-blue-600">Total</p>
         </div>
       </div>
-      
+
       {/* Charts and additional analytics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4">Profile Views Trend</h3>
           {/* Chart component */}
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4">Popular Skills</h3>
           {/* Skills chart */}

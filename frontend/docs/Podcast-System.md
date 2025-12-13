@@ -161,24 +161,24 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
-      
+
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-semibold text-lg">{podcast.title}</h3>
           <p className="text-gray-600">{podcast.description}</p>
           {podcast.guests && podcast.guests.length > 0 && (
             <p className="text-sm text-gray-500">
-              Guest: {podcast.guests.map(g => g.name).join(', ')}
+              Guest: {podcast.guests.map((g) => g.name).join(', ')}
             </p>
           )}
         </div>
-        
+
         <div className="text-right">
           <div className="text-sm text-gray-500">{formatTime(currentTime)}</div>
           <div className="text-sm text-gray-500">{formatTime(duration)}</div>
         </div>
       </div>
-      
+
       <div className="mb-4">
         <div className="bg-gray-200 rounded-full h-2">
           <div
@@ -195,20 +195,16 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
           className="w-full mt-2"
         />
       </div>
-      
+
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <button
             onClick={togglePlay}
             className="bg-brand-500 text-white p-3 rounded-full hover:bg-brand-600 transition-colors"
           >
-            {isPlaying ? (
-              <PauseIcon className="w-6 h-6" />
-            ) : (
-              <PlayIcon className="w-6 h-6" />
-            )}
+            {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6" />}
           </button>
-          
+
           <div className="flex items-center space-x-2">
             <VolumeIcon className="w-4 h-4 text-gray-500" />
             <input
@@ -222,7 +218,7 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
             />
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <select
             value={playbackRate}
@@ -236,7 +232,7 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
             <option value="1.5">1.5x</option>
             <option value="2">2x</option>
           </select>
-          
+
           <button
             onClick={() => {
               const audio = audioRef.current;
@@ -248,7 +244,7 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
           >
             <RewindIcon className="w-4 h-4" />
           </button>
-          
+
           <button
             onClick={() => {
               const audio = audioRef.current;
@@ -274,17 +270,19 @@ function PodcastPlayer({ podcast, autoPlay = false }) {
 ```jsx
 // PodcastForm.jsx
 function PodcastForm({ podcast, onSave, onCancel }) {
-  const [formData, setFormData] = useState(podcast || {
-    title: '',
-    description: '',
-    content: '',
-    episode_number: '',
-    season_number: '',
-    guests: [],
-    tags: [],
-    status: 'draft'
-  });
-  
+  const [formData, setFormData] = useState(
+    podcast || {
+      title: '',
+      description: '',
+      content: '',
+      episode_number: '',
+      season_number: '',
+      guests: [],
+      tags: [],
+      status: 'draft',
+    },
+  );
+
   const [audioFile, setAudioFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -293,14 +291,14 @@ function PodcastForm({ podcast, onSave, onCancel }) {
     try {
       const formData = new FormData();
       formData.append('audio', file);
-      
+
       const response = await fetch('/api/upload/audio', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
-      
+
       const result = await response.json();
-      setFormData(prev => ({ ...prev, audio_url: result.url }));
+      setFormData((prev) => ({ ...prev, audio_url: result.url }));
     } catch (error) {
       console.error('Upload failed:', error);
     } finally {
@@ -316,61 +314,51 @@ function PodcastForm({ podcast, onSave, onCancel }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Episode Title *
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Episode Title *</label>
         <input
           type="text"
           value={formData.title}
-          onChange={(e) => setFormData({...formData, title: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
           required
         />
       </div>
-      
+
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Episode Number
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Episode Number</label>
           <input
             type="number"
             value={formData.episode_number}
-            onChange={(e) => setFormData({...formData, episode_number: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, episode_number: e.target.value })}
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
           />
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Season Number
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Season Number</label>
           <input
             type="number"
             value={formData.season_number}
-            onChange={(e) => setFormData({...formData, season_number: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, season_number: e.target.value })}
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
           />
         </div>
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Description *
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Description *</label>
         <textarea
           value={formData.description}
-          onChange={(e) => setFormData({...formData, description: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           rows={3}
           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
           required
         />
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Audio File *
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Audio File *</label>
         <input
           type="file"
           accept="audio/*"
@@ -378,24 +366,20 @@ function PodcastForm({ podcast, onSave, onCancel }) {
           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
           required={!podcast}
         />
-        {isUploading && (
-          <p className="text-sm text-gray-500 mt-1">Uploading audio...</p>
-        )}
+        {isUploading && <p className="text-sm text-gray-500 mt-1">Uploading audio...</p>}
         {formData.audio_url && (
           <p className="text-sm text-green-600 mt-1">Audio uploaded successfully</p>
         )}
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Show Notes / Transcript
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Show Notes / Transcript</label>
         <RichTextEditor
           value={formData.content}
-          onChange={(value) => setFormData({...formData, content: value})}
+          onChange={(value) => setFormData({ ...formData, content: value })}
         />
       </div>
-      
+
       <div className="flex justify-end space-x-3">
         <button
           type="button"
@@ -431,18 +415,18 @@ function GuestProfile({ guest }) {
           alt={guest.name}
           className="w-16 h-16 rounded-full object-cover"
         />
-        
+
         <div className="flex-1">
           <h3 className="text-lg font-semibold">{guest.name}</h3>
           <p className="text-gray-600">{guest.title}</p>
           <p className="text-gray-500">{guest.company}</p>
-          
+
           {guest.bio && (
             <div className="mt-3">
               <p className="text-sm text-gray-700">{guest.bio}</p>
             </div>
           )}
-          
+
           {guest.social_links && (
             <div className="mt-3 flex space-x-3">
               {guest.social_links.twitter && (
@@ -494,14 +478,14 @@ function PodcastAnalytics({ podcastId }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchPodcastAnalytics(podcastId).then(data => {
+    fetchPodcastAnalytics(podcastId).then((data) => {
       setAnalytics(data);
       setLoading(false);
     });
   }, [podcastId]);
 
   if (loading) return <LoadingSpinner />;
-  
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -510,26 +494,26 @@ function PodcastAnalytics({ podcastId }) {
           <p className="text-2xl font-bold text-gray-900">{analytics.total_plays}</p>
           <p className="text-sm text-green-600">+15% from last month</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Unique Listeners</h3>
           <p className="text-2xl font-bold text-gray-900">{analytics.unique_listeners}</p>
           <p className="text-sm text-blue-600">Above average</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Completion Rate</h3>
           <p className="text-2xl font-bold text-gray-900">{analytics.completion_rate}%</p>
           <p className="text-sm text-green-600">Excellent</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Avg. Duration</h3>
           <p className="text-2xl font-bold text-gray-900">{analytics.avg_duration}</p>
           <p className="text-sm text-gray-600">minutes</p>
         </div>
       </div>
-      
+
       {/* Additional analytics charts and data */}
     </div>
   );
@@ -543,7 +527,9 @@ function PodcastAnalytics({ podcastId }) {
 ```javascript
 // Generate RSS feed for podcast platforms
 const generateRSSFeed = async (podcasts) => {
-  const rssItems = podcasts.map(podcast => `
+  const rssItems = podcasts
+    .map(
+      (podcast) => `
     <item>
       <title>${podcast.title}</title>
       <description><![CDATA[${podcast.description}]]></description>
@@ -553,10 +539,12 @@ const generateRSSFeed = async (podcasts) => {
       <enclosure url="${podcast.audio_url}" type="audio/mpeg" length="${podcast.audio_file_size}" />
       <itunes:duration>${podcast.duration}</itunes:duration>
       <itunes:author>${podcast.host}</itunes:author>
-      ${podcast.guests.map(guest => `<itunes:author>${guest.name}</itunes:author>`).join('')}
+      ${podcast.guests.map((guest) => `<itunes:author>${guest.name}</itunes:author>`).join('')}
     </item>
-  `).join('');
-  
+  `,
+    )
+    .join('');
+
   const rssFeed = `
     <?xml version="1.0" encoding="UTF-8"?>
     <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
@@ -579,7 +567,7 @@ const generateRSSFeed = async (podcasts) => {
       </channel>
     </rss>
   `;
-  
+
   return rssFeed;
 };
 ```
@@ -592,7 +580,7 @@ const generateRSSFeed = async (podcasts) => {
 // PodcastCard.jsx
 function PodcastCard({ podcast }) {
   const [isPlaying, setIsPlaying] = useState(false);
-  
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="p-6">
@@ -601,29 +589,25 @@ function PodcastCard({ podcast }) {
             <div className="bg-brand-100 text-brand-700 px-3 py-1 rounded-full text-sm">
               Episode {podcast.episode_number}
             </div>
-            
+
             {podcast.featured && (
               <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">
                 Featured
               </span>
             )}
           </div>
-          
-          <div className="text-sm text-gray-500">
-            {podcast.duration}
-          </div>
+
+          <div className="text-sm text-gray-500">{podcast.duration}</div>
         </div>
-        
+
         <h3 className="text-xl font-bold mb-2">
           <Link to={`/podcast/${podcast.slug}`} className="hover:text-brand-500">
             {podcast.title}
           </Link>
         </h3>
-        
-        <p className="text-gray-600 mb-4 line-clamp-2">
-          {podcast.description}
-        </p>
-        
+
+        <p className="text-gray-600 mb-4 line-clamp-2">{podcast.description}</p>
+
         {podcast.guests && podcast.guests.length > 0 && (
           <div className="mb-4">
             <p className="text-sm text-gray-500">Guest(s):</p>
@@ -636,22 +620,18 @@ function PodcastCard({ podcast }) {
             </div>
           </div>
         )}
-        
+
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 text-sm text-gray-500">
             <span>{podcast.play_count} plays</span>
             <span>{podcast.download_count} downloads</span>
           </div>
-          
+
           <div className="flex space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsPlaying(!isPlaying)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setIsPlaying(!isPlaying)}>
               {isPlaying ? 'Pause' : 'Play'}
             </Button>
-            
+
             <Button variant="outline" size="sm" as={Link} to={`/podcast/${podcast.slug}`}>
               Details
             </Button>
@@ -737,29 +717,29 @@ const processAudioUpload = async (file) => {
   // Validate file type and size
   const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/m4a'];
   const maxSize = 100 * 1024 * 1024; // 100MB
-  
+
   if (!allowedTypes.includes(file.type)) {
     throw new Error('Invalid audio file type');
   }
-  
+
   if (file.size > maxSize) {
     throw new Error('File too large');
   }
-  
+
   // Upload to storage
   const formData = new FormData();
   formData.append('audio', file);
-  
+
   const response = await fetch('/api/upload/audio', {
     method: 'POST',
-    body: formData
+    body: formData,
   });
-  
+
   const result = await response.json();
-  
+
   // Process audio (generate waveform, extract metadata)
   await processAudioMetadata(result.url);
-  
+
   return result;
 };
 ```

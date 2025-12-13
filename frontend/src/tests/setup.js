@@ -24,7 +24,7 @@ globalThis.ResizeObserver = mockResizeObserver;
 // Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: jest.fn().mockImplementation(query => ({
+  value: jest.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -60,8 +60,8 @@ globalThis.sessionStorage = sessionStorageMock;
 // Mock environment variables
 globalThis.process = {
   env: {
-    VITE_API_URL: 'http://localhost:3000'
-  }
+    VITE_API_URL: 'http://localhost:3000',
+  },
 };
 
 // Suppress console warnings in tests
