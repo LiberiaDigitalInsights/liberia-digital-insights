@@ -27,6 +27,7 @@ import {
 import { useTalents } from '../../hooks/useBackendApi';
 import { backendApi } from '../../services/backendApi';
 import { useToast } from '../../context/ToastContext';
+import { uploadFile } from '../../utils/uploadClient';
 
 const AdminTalent = () => {
   const { showToast } = useToast();

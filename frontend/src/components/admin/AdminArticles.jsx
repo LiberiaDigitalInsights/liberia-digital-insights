@@ -15,6 +15,7 @@ import { FaPlus, FaEdit, FaTrash, FaEye, FaSearch, FaTimes } from 'react-icons/f
 import { useArticles } from '../../hooks/useBackendApi';
 import { backendApi } from '../../services/backendApi';
 import { useToast } from '../../context/ToastContext';
+import { uploadFile } from '../../utils/uploadClient';
 
 const AdminArticles = ({ canEdit }) => {
   const { showToast } = useToast();
@@ -57,30 +58,26 @@ const AdminArticles = ({ canEdit }) => {
     coverImage: '',
   });
 
-  // Handle image upload and convert to base64
-  const handleImageUpload = (e, fieldName = 'coverImage') => {
+  // Handle image upload using shared upload client
+  const handleImageUpload = async (e, fieldName = 'coverImage') => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
 
-    // Check file size (limit to 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Image size must be less than 5MB');
-      return;
-    }
-
-    // Check file type
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+      showToast({ title: 'Invalid file', description: 'Please select an image file.', variant: 'error' });
+      e.currentTarget.value = '';
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result;
-      setFormData({ ...formData, [fieldName]: base64 });
-    };
-    reader.readAsDataURL(file);
-    e.currentTarget.value = ''; // Reset input
+    try {
+      const { url } = await uploadFile(file, { type: 'images', path: 'articles' });
+      setFormData((prev) => ({ ...prev, [fieldName]: url }));
+      showToast({ title: 'Uploaded', description: 'Image uploaded successfully.', variant: 'success' });
+    } catch (err) {
+      showToast({ title: 'Upload failed', description: err.message || 'Could not upload image.', variant: 'error' });
+    } finally {
+      e.currentTarget.value = '';
+    }
   };
 
   // Filter articles
