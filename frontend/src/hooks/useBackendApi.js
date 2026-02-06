@@ -218,7 +218,7 @@ export const useNewsletters = (params = {}) => {
     } finally {
       setLoading(false);
     }
-  }, [paramsString, params]);
+  }, [paramsString]);
 
   useEffect(() => {
     refetch();
@@ -277,7 +277,7 @@ export const useNewsletterSubscribers = (params = {}) => {
     };
 
     fetchSubscribers();
-  }, [paramsString, params]);
+  }, [paramsString]);
 
   return { data, loading, error };
 };
