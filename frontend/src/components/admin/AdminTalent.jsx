@@ -142,30 +142,26 @@ const AdminTalent = () => {
     }
   };
 
-  // Handle image upload
-  const handleImageUpload = (e) => {
+  // Handle image upload using shared upload client
+  const handleImageUpload = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Image size must be less than 5MB');
-      return;
-    }
-
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+      showToast({ title: 'Invalid file', description: 'Please select an image file.', variant: 'error' });
+      e.currentTarget.value = '';
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setFormData(prev => ({
-        ...prev,
-        avatar_url: reader.result,
-      }));
-    };
-    reader.readAsDataURL(file);
-    e.currentTarget.value = '';
+    try {
+      const { url } = await uploadFile(file, { type: 'images', path: 'talents' });
+      setFormData((prev) => ({ ...prev, avatar_url: url }));
+      showToast({ title: 'Uploaded', description: 'Avatar image uploaded successfully.', variant: 'success' });
+    } catch (err) {
+      showToast({ title: 'Upload failed', description: err.message || 'Could not upload avatar image.', variant: 'error' });
+    } finally {
+      e.currentTarget.value = '';
+    }
   };
 
   // Filter talents

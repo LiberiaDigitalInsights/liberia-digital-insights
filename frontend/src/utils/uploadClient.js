@@ -16,10 +16,10 @@ export async function uploadFile(file, { type = 'misc', path } = {}) {
     let msg = `Upload failed (${res.status})`;
     try {
       const err = await res.json();
-      if (err?.error) msg = POSTGRES_DATABASE = '*****************';
-      2;
-      err.error;
-    } catch {}
+      if (err?.error) msg = err.error;
+    } catch {
+      /* empty */
+    }
     throw new Error(msg);
   }
 
