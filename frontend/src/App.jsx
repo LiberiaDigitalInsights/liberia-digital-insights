@@ -1,7 +1,8 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { backendApi } from './services/backendApi';
 import AuthGate from './components/auth/AuthGate';
 import Skeleton from './components/ui/Skeleton';
-import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import { H1, Muted } from './components/ui/Typography';
 import PrivacyPage from './pages/PrivacyPage';
@@ -64,6 +65,21 @@ function LoadingFallback() {
 }
 
 function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Determine if this is a "new" visit (basic check via session storage)
+    const isNewSession = !sessionStorage.getItem('visited_session');
+    if (isNewSession) {
+      sessionStorage.setItem('visited_session', 'true');
+    }
+
+    // Track the visit
+    backendApi.analytics.trackVisit(isNewSession).catch((err) => {
+      console.error('Analytics tracking failed:', err);
+    });
+  }, [location.pathname]);
+
   return (
     <>
       <ScrollToTop />

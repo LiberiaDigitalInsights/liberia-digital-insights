@@ -17,6 +17,8 @@ import AdminNewsletter from '../components/admin/AdminNewsletter';
 import AdminGallery from '../components/admin/AdminGallery';
 import { generateArticleGrid } from '../data/mockArticles';
 
+import { backendApi } from '../services/backendApi';
+
 export default function Admin() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -148,7 +150,9 @@ export default function Admin() {
   ]);
 
   // Stats for dashboard
-  const stats = {
+  // Stats for dashboard
+  // Stats for dashboard
+  const [stats, setStats] = useState({
     articles: articles.length,
     insights: insights.length,
     podcasts: podcasts.length,
@@ -156,7 +160,37 @@ export default function Admin() {
     users: 1247,
     advertisements: advertisements.length,
     newsletters: newsletters.length,
-  };
+  });
+
+  const [recentActivity, setRecentActivity] = useState([]);
+
+  React.useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [statsData, activityData] = await Promise.all([
+          backendApi.analytics.getStats(),
+          backendApi.analytics.getRecentActivity(),
+        ]);
+
+        setStats((prev) => ({
+          ...prev,
+          articles: statsData.articles || 0,
+          podcasts: statsData.podcasts || 0,
+          events: statsData.events || 0,
+          users: statsData.users !== undefined ? statsData.users : prev.users,
+          subscribers: statsData.subscribers || 0,
+          pendingReviews: statsData.pendingReviews || 0,
+        }));
+
+        if (Array.isArray(activityData)) {
+          setRecentActivity(activityData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch admin stats:', error);
+      }
+    };
+    fetchStats();
+  }, []);
 
   // Tab configuration
   const tabs = [
@@ -178,7 +212,13 @@ export default function Admin() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <AdminDashboard stats={stats} setActiveTab={setActiveTab} />;
+        return (
+          <AdminDashboard
+            stats={stats}
+            recentActivity={recentActivity}
+            setActiveTab={setActiveTab}
+          />
+        );
       case 'articles':
         return <AdminArticles articles={articles} canEdit={canEdit} />;
       case 'insights':

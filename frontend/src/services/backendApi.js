@@ -474,6 +474,32 @@ export const healthApi = {
   },
 };
 
+// Analytics API
+export const analyticsApi = {
+  // Get daily traffic stats
+  async getTraffic(days = 30) {
+    return apiRequest(`/v1/analytics/traffic?days=${days}`);
+  },
+
+  // Get aggregated stats
+  async getStats() {
+    return apiRequest('/v1/analytics/stats');
+  },
+
+  // Get recent activity
+  async getRecentActivity() {
+    return apiRequest('/v1/analytics/activity');
+  },
+
+  // Track a visit
+  async trackVisit(isNewVisit = false) {
+    return apiRequest('/v1/analytics/track', {
+      method: 'POST',
+      body: JSON.stringify({ isNewVisit }),
+    });
+  },
+};
+
 // Export all APIs
 export const backendApi = {
   auth: authApi,
@@ -488,6 +514,7 @@ export const backendApi = {
   health: healthApi,
   advertisements: advertisementsApi,
   talents: talentsApi,
+  analytics: analyticsApi,
 };
 
 export default backendApi;

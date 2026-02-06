@@ -15,6 +15,7 @@ import galleryRouter from "./src/routes/gallery.js";
 import seedRouter from "./src/routes/seed.js";
 import mockRouter from "./src/routes/mock.js";
 import audioRouter from "./src/routes/audio.js";
+import analyticsRouter from "./src/routes/analytics.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,11 +27,11 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", process.env.CORS_ORIGIN || "*");
   res.header(
     "Access-Control-Allow-Methods",
-    "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+    "GET,POST,PUT,PATCH,DELETE,OPTIONS",
   );
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin,X-Requested-With,Content-Type,Accept,Authorization"
+    "Origin,X-Requested-With,Content-Type,Accept,Authorization",
   );
   if (req.method === "OPTIONS") {
     res.sendStatus(200);
@@ -61,6 +62,7 @@ app.use("/v1/talents", talentsRouter);
 app.use("/v1/gallery", galleryRouter);
 app.use("/v1/seed", seedRouter);
 app.use("/v1/audio", audioRouter);
+app.use("/v1/analytics", analyticsRouter);
 app.use("/v1", uploadRouter);
 app.use("/v1", mockRouter); // Mock data as fallback for testing
 
@@ -81,5 +83,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () =>
-  console.log(`API listening on http://localhost:${PORT}`)
+  console.log(`API listening on http://localhost:${PORT}`),
 );

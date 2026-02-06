@@ -14,7 +14,7 @@ import {
   FaCog,
 } from 'react-icons/fa';
 
-const AdminDashboard = ({ stats, setActiveTab }) => {
+const AdminDashboard = ({ stats, recentActivity, setActiveTab }) => {
   const statCards = [
     {
       title: 'Total Articles',
@@ -42,7 +42,7 @@ const AdminDashboard = ({ stats, setActiveTab }) => {
     },
     {
       title: 'Total Users',
-      value: '1,247',
+      value: stats.users || '0',
       icon: FaUsers,
       color: 'bg-orange-500',
       change: '+23%',
@@ -99,25 +99,35 @@ const AdminDashboard = ({ stats, setActiveTab }) => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span className="text-sm text-[var(--color-text)]">New article published</span>
-              <span className="text-xs text-[var(--color-muted)]">2 hours ago</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-sm text-[var(--color-text)]">New user registration</span>
-              <span className="text-xs text-[var(--color-muted)]">4 hours ago</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="text-sm text-[var(--color-text)]">Podcast uploaded</span>
-              <span className="text-xs text-[var(--color-muted)]">6 hours ago</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-              <span className="text-sm text-[var(--color-text)]">Event created</span>
-              <span className="text-xs text-[var(--color-muted)]">1 day ago</span>
+            <div className="space-y-4">
+              {recentActivity && recentActivity.length > 0 ? (
+                recentActivity.map((activity, index) => {
+                  let color = 'bg-gray-500';
+                  if (activity.type === 'article') color = 'bg-green-500';
+                  if (activity.type === 'user') color = 'bg-blue-500';
+                  if (activity.type === 'podcast') color = 'bg-purple-500';
+                  if (activity.type === 'event') color = 'bg-orange-500';
+
+                  return (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className={`w-2 h-2 ${color} rounded-full`}></div>
+                      <div className="flex-1">
+                        <span className="text-sm text-[var(--color-text)] block">
+                          {activity.message}
+                        </span>
+                        <span className="text-xs text-[var(--color-muted)] block truncate">
+                          {activity.detail}
+                        </span>
+                      </div>
+                      <span className="text-xs text-[var(--color-muted)] whitespace-nowrap">
+                        {new Date(activity.time).toLocaleDateString()}
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-sm text-[var(--color-muted)]">No recent activity</div>
+              )}
             </div>
           </div>
         </CardContent>

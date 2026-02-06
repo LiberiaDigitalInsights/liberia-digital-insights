@@ -6,15 +6,37 @@ import Table from '../components/ui/Table';
 import SidebarLayout from '../components/layouts/SidebarLayout';
 import TrafficChart from '../components/charts/TrafficChart';
 
+import { backendApi } from '../services/backendApi';
+
 export default function Dashboard() {
   const [traffic, setTraffic] = React.useState(null);
+  const [stats, setStats] = React.useState({
+    articles: 0,
+    subscribers: 0,
+    pendingReviews: 0,
+  });
   const [error, setError] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    fetch('/traffic.json')
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('Failed to load'))))
-      .then((d) => setTraffic(d))
-      .catch((e) => setError(e.message));
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [trafficData, statsData] = await Promise.all([
+          backendApi.analytics.getTraffic(30),
+          backendApi.analytics.getStats(),
+        ]);
+        setTraffic(trafficData.data);
+        setStats(statsData);
+      } catch (err) {
+        console.error('Failed to load dashboard data:', err);
+        setError('Failed to load analytics data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -51,8 +73,12 @@ export default function Dashboard() {
             <CardTitle>Total Articles</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">128</div>
-            <div className="text-xs text-[var(--color-muted)]">+12% vs last month</div>
+            {loading ? (
+              <div className="h-9 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            ) : (
+              <div className="text-3xl font-bold">{stats.articles}</div>
+            )}
+            <div className="text-xs text-(--color-muted)">Total published articles</div>
           </CardContent>
         </Card>
 
@@ -61,8 +87,12 @@ export default function Dashboard() {
             <CardTitle>Subscribers</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">4,203</div>
-            <div className="text-xs text-[var(--color-muted)]">+3% vs last week</div>
+            {loading ? (
+              <div className="h-9 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            ) : (
+              <div className="text-3xl font-bold">{stats.subscribers.toLocaleString()}</div>
+            )}
+            <div className="text-xs text-[var(--color-muted)]">Active newsletter subscribers</div>
           </CardContent>
         </Card>
 
@@ -72,8 +102,12 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <div className="text-3xl font-bold">7</div>
-              <Badge variant="warning">Needs attention</Badge>
+              {loading ? (
+                <div className="h-9 w-8 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+              ) : (
+                <div className="text-3xl font-bold">{stats.pendingReviews}</div>
+              )}
+              {stats.pendingReviews > 0 && <Badge variant="warning">Needs attention</Badge>}
             </div>
           </CardContent>
         </Card>
@@ -107,7 +141,7 @@ export default function Dashboard() {
           <CardContent>
             {error && <div className="text-sm text-red-500">{error}</div>}
             {!traffic && !error && (
-              <div className="h-48 animate-pulse rounded-[var(--radius-md)] bg-[color-mix(in_oklab,var(--color-surface),white_6%)]" />
+              <div className="h-48 animate-pulse rounded-(--radius-md) bg-[color-mix(in_oklab,var(--color-surface),white_6%)]" />
             )}
             {traffic && <TrafficChart data={traffic} height={192} />}
           </CardContent>
