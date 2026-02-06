@@ -7,41 +7,18 @@ const router = Router();
 // GET /v1/newsletters/templates - Get newsletter templates
 router.get("/templates", async (req, res) => {
   try {
-    // For now, return default templates. In a real app, this might come from a database
-    const templates = [
-      {
-        id: 'default-welcome',
-        name: 'Welcome Template',
-        subject: 'Welcome to Our Newsletter!',
-        preview: 'Thank you for subscribing to our newsletter.',
-        content: `
-          <h1>Welcome to Our Newsletter!</h1>
-          <p>Thank you for subscribing. We're excited to share our latest updates and insights with you.</p>
-          <p>Best regards,<br>The Team</p>
-        `,
-        category: 'welcome',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 'default-update',
-        name: 'Monthly Update',
-        subject: 'Monthly Newsletter - {month}',
-        preview: 'Catch up on our latest news and updates.',
-        content: `
-          <h1>Monthly Update - {month}</h1>
-          <p>Here's what's been happening this month...</p>
-          <h2>Highlights</h2>
-          <ul>
-            <li>Update 1</li>
-            <li>Update 2</li>
-            <li>Update 3</li>
-          </ul>
-          <p>Stay tuned for more updates!</p>
-        `,
-        category: 'update',
-        created_at: new Date().toISOString()
+    const { data: templates, error } = await supabase
+      .from("newsletter_templates")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      // Return defaults if table doesn't exist (graceful fallback)
+      if (error.code === "42P01") {
+        return res.json({ templates: [] });
       }
-    ];
+      throw error;
+    }
 
     res.json({ templates });
   } catch (error) {
@@ -57,21 +34,29 @@ router.post("/templates", async (req, res) => {
 
     // Validate required fields
     if (!name || !subject || !content) {
-      return res.status(400).json({ error: "Name, subject, and content are required" });
+      return res
+        .status(400)
+        .json({ error: "Name, subject, and content are required" });
     }
 
-    // For now, just return the created template. In a real app, this would be saved to database
-    const template = {
-      id: Date.now().toString(),
-      name,
-      subject,
-      preview: preview || '',
-      content,
-      category: category || 'custom',
-      created_at: new Date().toISOString()
-    };
+    const { data, error } = await supabase
+      .from("newsletter_templates")
+      .insert([
+        {
+          name,
+          subject,
+          content,
+          category: category || "custom",
+          // preview field might not exist in schema yet, adding it to migration or omitting if not critical
+          // schema had: id, name, subject, content, category, created_at
+        },
+      ])
+      .select()
+      .single();
 
-    res.status(201).json(template);
+    if (error) throw error;
+
+    res.status(201).json(data);
   } catch (error) {
     console.error("Create template error:", error);
     res.status(500).json({ error: error.message });
@@ -89,20 +74,24 @@ router.get("/analytics", async (req, res) => {
     if (subscribersError) throw subscribersError;
 
     const totalSubscribers = subscribers.length;
-    const activeSubscribers = subscribers.filter(s => s.status === 'active').length;
-    const unsubscribedSubscribers = subscribers.filter(s => s.status === 'unsubscribed').length;
-    
+    const activeSubscribers = subscribers.filter(
+      (s) => s.status === "active",
+    ).length;
+    const unsubscribedSubscribers = subscribers.filter(
+      (s) => s.status === "unsubscribed",
+    ).length;
+
     // Recent subscriptions (last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
+
     const recentSubscriptions = subscribers.filter(
-      s => new Date(s.subscribed_at) >= thirtyDaysAgo
+      (s) => new Date(s.subscribed_at) >= thirtyDaysAgo,
     ).length;
 
     // Recent unsubscriptions (last 30 days)
     const recentUnsubscriptions = subscribers.filter(
-      s => s.unsubscribed_at && new Date(s.unsubscribed_at) >= thirtyDaysAgo
+      (s) => s.unsubscribed_at && new Date(s.unsubscribed_at) >= thirtyDaysAgo,
     ).length;
 
     // Newsletter statistics
@@ -112,12 +101,21 @@ router.get("/analytics", async (req, res) => {
 
     if (newslettersError) throw newslettersError;
 
-    const sentNewsletters = newsletters.filter(n => n.status === 'sent').length;
-    const draftNewsletters = newsletters.filter(n => n.status === 'draft').length;
-    const scheduledNewsletters = newsletters.filter(n => n.status === 'scheduled').length;
+    const sentNewsletters = newsletters.filter(
+      (n) => n.status === "sent",
+    ).length;
+    const draftNewsletters = newsletters.filter(
+      (n) => n.status === "draft",
+    ).length;
+    const scheduledNewsletters = newsletters.filter(
+      (n) => n.status === "scheduled",
+    ).length;
 
     // Calculate total recipients
-    const totalRecipients = newsletters.reduce((sum, n) => sum + (n.subscriber_count || 0), 0);
+    const totalRecipients = newsletters.reduce(
+      (sum, n) => sum + (n.subscriber_count || 0),
+      0,
+    );
 
     res.json({
       subscribers: {
@@ -126,7 +124,10 @@ router.get("/analytics", async (req, res) => {
         unsubscribed: unsubscribedSubscribers,
         recentSubscriptions,
         recentUnsubscriptions,
-        growthRate: totalSubscribers > 0 ? (recentSubscriptions / totalSubscribers * 100).toFixed(1) : 0,
+        growthRate:
+          totalSubscribers > 0
+            ? ((recentSubscriptions / totalSubscribers) * 100).toFixed(1)
+            : 0,
       },
       newsletters: {
         total: newsletters.length,
@@ -136,9 +137,15 @@ router.get("/analytics", async (req, res) => {
         totalRecipients,
       },
       metrics: {
-        averageSubscribersPerNewsletter: sentNewsletters > 0 ? Math.round(totalRecipients / sentNewsletters) : 0,
-        unsubscribeRate: totalSubscribers > 0 ? (unsubscribedSubscribers / totalSubscribers * 100).toFixed(1) : 0,
-      }
+        averageSubscribersPerNewsletter:
+          sentNewsletters > 0
+            ? Math.round(totalRecipients / sentNewsletters)
+            : 0,
+        unsubscribeRate:
+          totalSubscribers > 0
+            ? ((unsubscribedSubscribers / totalSubscribers) * 100).toFixed(1)
+            : 0,
+      },
     });
   } catch (error) {
     console.error("Newsletter analytics error:", error);
@@ -579,23 +586,23 @@ router.get("/templates", async (req, res) => {
     // For now, return default templates. In a real app, this might come from a database
     const templates = [
       {
-        id: 'default-welcome',
-        name: 'Welcome Template',
-        subject: 'Welcome to Our Newsletter!',
-        preview: 'Thank you for subscribing to our newsletter.',
+        id: "default-welcome",
+        name: "Welcome Template",
+        subject: "Welcome to Our Newsletter!",
+        preview: "Thank you for subscribing to our newsletter.",
         content: `
           <h1>Welcome to Our Newsletter!</h1>
           <p>Thank you for subscribing. We're excited to share our latest updates and insights with you.</p>
           <p>Best regards,<br>The Team</p>
         `,
-        category: 'welcome',
-        created_at: new Date().toISOString()
+        category: "welcome",
+        created_at: new Date().toISOString(),
       },
       {
-        id: 'default-update',
-        name: 'Monthly Update',
-        subject: 'Monthly Newsletter - {month}',
-        preview: 'Catch up on our latest news and updates.',
+        id: "default-update",
+        name: "Monthly Update",
+        subject: "Monthly Newsletter - {month}",
+        preview: "Catch up on our latest news and updates.",
         content: `
           <h1>Monthly Update - {month}</h1>
           <p>Here's what's been happening this month...</p>
@@ -607,9 +614,9 @@ router.get("/templates", async (req, res) => {
           </ul>
           <p>Stay tuned for more updates!</p>
         `,
-        category: 'update',
-        created_at: new Date().toISOString()
-      }
+        category: "update",
+        created_at: new Date().toISOString(),
+      },
     ];
 
     res.json({ templates });
@@ -626,7 +633,9 @@ router.post("/templates", async (req, res) => {
 
     // Validate required fields
     if (!name || !subject || !content) {
-      return res.status(400).json({ error: "Name, subject, and content are required" });
+      return res
+        .status(400)
+        .json({ error: "Name, subject, and content are required" });
     }
 
     // For now, just return the created template. In a real app, this would be saved to database
@@ -634,10 +643,10 @@ router.post("/templates", async (req, res) => {
       id: Date.now().toString(),
       name,
       subject,
-      preview: preview || '',
+      preview: preview || "",
       content,
-      category: category || 'custom',
-      created_at: new Date().toISOString()
+      category: category || "custom",
+      created_at: new Date().toISOString(),
     };
 
     res.status(201).json(template);
@@ -658,20 +667,24 @@ router.get("/analytics", async (req, res) => {
     if (subscribersError) throw subscribersError;
 
     const totalSubscribers = subscribers.length;
-    const activeSubscribers = subscribers.filter(s => s.status === 'active').length;
-    const unsubscribedSubscribers = subscribers.filter(s => s.status === 'unsubscribed').length;
-    
+    const activeSubscribers = subscribers.filter(
+      (s) => s.status === "active",
+    ).length;
+    const unsubscribedSubscribers = subscribers.filter(
+      (s) => s.status === "unsubscribed",
+    ).length;
+
     // Recent subscriptions (last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
+
     const recentSubscriptions = subscribers.filter(
-      s => new Date(s.subscribed_at) >= thirtyDaysAgo
+      (s) => new Date(s.subscribed_at) >= thirtyDaysAgo,
     ).length;
 
     // Recent unsubscriptions (last 30 days)
     const recentUnsubscriptions = subscribers.filter(
-      s => s.unsubscribed_at && new Date(s.unsubscribed_at) >= thirtyDaysAgo
+      (s) => s.unsubscribed_at && new Date(s.unsubscribed_at) >= thirtyDaysAgo,
     ).length;
 
     // Newsletter statistics
@@ -681,12 +694,21 @@ router.get("/analytics", async (req, res) => {
 
     if (newslettersError) throw newslettersError;
 
-    const sentNewsletters = newsletters.filter(n => n.status === 'sent').length;
-    const draftNewsletters = newsletters.filter(n => n.status === 'draft').length;
-    const scheduledNewsletters = newsletters.filter(n => n.status === 'scheduled').length;
+    const sentNewsletters = newsletters.filter(
+      (n) => n.status === "sent",
+    ).length;
+    const draftNewsletters = newsletters.filter(
+      (n) => n.status === "draft",
+    ).length;
+    const scheduledNewsletters = newsletters.filter(
+      (n) => n.status === "scheduled",
+    ).length;
 
     // Calculate total recipients
-    const totalRecipients = newsletters.reduce((sum, n) => sum + (n.subscriber_count || 0), 0);
+    const totalRecipients = newsletters.reduce(
+      (sum, n) => sum + (n.subscriber_count || 0),
+      0,
+    );
 
     res.json({
       subscribers: {
@@ -695,7 +717,10 @@ router.get("/analytics", async (req, res) => {
         unsubscribed: unsubscribedSubscribers,
         recentSubscriptions,
         recentUnsubscriptions,
-        growthRate: totalSubscribers > 0 ? (recentSubscriptions / totalSubscribers * 100).toFixed(1) : 0,
+        growthRate:
+          totalSubscribers > 0
+            ? ((recentSubscriptions / totalSubscribers) * 100).toFixed(1)
+            : 0,
       },
       newsletters: {
         total: newsletters.length,
@@ -705,9 +730,15 @@ router.get("/analytics", async (req, res) => {
         totalRecipients,
       },
       metrics: {
-        averageSubscribersPerNewsletter: sentNewsletters > 0 ? Math.round(totalRecipients / sentNewsletters) : 0,
-        unsubscribeRate: totalSubscribers > 0 ? (unsubscribedSubscribers / totalSubscribers * 100).toFixed(1) : 0,
-      }
+        averageSubscribersPerNewsletter:
+          sentNewsletters > 0
+            ? Math.round(totalRecipients / sentNewsletters)
+            : 0,
+        unsubscribeRate:
+          totalSubscribers > 0
+            ? ((unsubscribedSubscribers / totalSubscribers) * 100).toFixed(1)
+            : 0,
+      },
     });
   } catch (error) {
     console.error("Newsletter analytics error:", error);
@@ -738,7 +769,9 @@ router.post("/:id/reply", async (req, res) => {
 
     // Validate required fields
     if (!subscriberId || !content) {
-      return res.status(400).json({ error: "Subscriber ID and content are required" });
+      return res
+        .status(400)
+        .json({ error: "Subscriber ID and content are required" });
     }
 
     // For now, just return success. In a real app, this would save the reply and send an email
@@ -749,8 +782,8 @@ router.post("/:id/reply", async (req, res) => {
         newsletterId: id,
         subscriberId,
         content,
-        createdAt: new Date().toISOString()
-      }
+        createdAt: new Date().toISOString(),
+      },
     });
   } catch (error) {
     console.error("Reply to subscriber error:", error);
@@ -762,36 +795,89 @@ router.post("/:id/reply", async (req, res) => {
 router.post("/:id/send", async (req, res) => {
   try {
     const { id } = req.params;
-    const { recipients, scheduleType, scheduledAt } = req.body;
+    const { recipients, scheduleType, scheduledAt, customRecipients } = req.body;
 
-    // Update newsletter status based on schedule type
-    const updateData = {};
-    if (scheduleType === 'immediate') {
-      updateData.status = 'sent';
-      updateData.sent_date = new Date().toISOString();
-    } else if (scheduleType === 'scheduled') {
-      updateData.status = 'scheduled';
-      updateData.scheduled_date = scheduledAt;
-    }
-
-    const { data, error } = await supabase
+    // Fetch the newsletter content
+    const { data: newsletter, error: newsletterError } = await supabase
       .from("newsletters")
-      .update(updateData)
+      .select("*")
       .eq("id", id)
-      .select()
       .single();
 
-    if (error) throw error;
-
-    if (!data) {
+    if (newsletterError || !newsletter) {
       return res.status(404).json({ error: "Newsletter not found" });
     }
 
-    // For now, just return success. In a real app, this would actually send emails
-    res.json({
-      message: `Newsletter ${scheduleType === 'immediate' ? 'sent' : 'scheduled'} successfully`,
-      newsletter: data
-    });
+    // Determine recipients
+    let subscribersQuery = supabase
+      .from("newsletter_subscribers")
+      .select("*");
+
+    if (recipients === 'active') { 
+       subscribersQuery = subscribersQuery.eq('status', 'active');
+    } else if (recipients === 'custom' && customRecipients && customRecipients.length > 0) {
+       subscribersQuery = subscribersQuery.in('id', customRecipients);
+    }
+    
+    if (recipients !== 'custom') {
+        subscribersQuery = subscribersQuery.neq('status', 'unsubscribed');
+    }
+
+    const { data: subscribers, error: subscribersError } = await subscribersQuery;
+
+    if (subscribersError) {
+       throw subscribersError;
+    }
+
+    if (scheduleType === 'immediate') {
+      // Send immediately
+      console.log(`Sending newsletter "${newsletter.subject}" to ${subscribers.length} recipients...`);
+      
+      // Use email service to send
+      const results = await emailService.sendNewsletter(newsletter, subscribers);
+      
+      const successCount = results.filter(r => r.status === 'sent').length;
+
+      // Update newsletter status
+      const { data: updatedNewsletter, error: updateError } = await supabase
+        .from("newsletters")
+        .update({ 
+            status: 'sent', 
+            sent_date: new Date().toISOString(),
+            subscriber_count: successCount 
+        })
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (updateError) throw updateError;
+
+      res.json({
+        message: `Newsletter sent successfully to ${successCount} recipients`,
+        newsletter: updatedNewsletter,
+        results
+      });
+
+    } else if (scheduleType === 'scheduled') {
+      // Just update status to scheduled
+       const { data, error } = await supabase
+        .from("newsletters")
+        .update({
+          status: 'scheduled',
+          scheduled_date: scheduledAt
+        })
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      res.json({
+        message: 'Newsletter scheduled successfully',
+        newsletter: data
+      });
+    }
+
   } catch (error) {
     console.error("Send newsletter error:", error);
     res.status(500).json({ error: error.message });

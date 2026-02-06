@@ -1,18 +1,18 @@
 // Email service for newsletter system
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 // Configure email transporter (use environment variables in production)
 let transporter;
 
-console.log('Checking SMTP configuration...');
-console.log('SMTP_USER:', process.env.SMTP_USER ? 'SET' : 'NOT SET');
-console.log('SMTP_PASS:', process.env.SMTP_PASS ? 'SET' : 'NOT SET');
+console.log("Checking SMTP configuration...");
+console.log("SMTP_USER:", process.env.SMTP_USER ? "SET" : "NOT SET");
+console.log("SMTP_PASS:", process.env.SMTP_PASS ? "SET" : "NOT SET");
 
 // Only create transporter if SMTP credentials are provided
 if (process.env.SMTP_USER && process.env.SMTP_PASS) {
-  console.log('Creating real SMTP transporter...');
+  console.log("Creating real SMTP transporter...");
   transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    host: process.env.SMTP_HOST || "smtp.gmail.com",
     port: process.env.SMTP_PORT || 587,
     secure: false,
     auth: {
@@ -21,16 +21,16 @@ if (process.env.SMTP_USER && process.env.SMTP_PASS) {
     },
   });
 } else {
-  console.log('SMTP credentials not found, using mock transporter...');
+  console.log("SMTP credentials not found, using mock transporter...");
   // Create a mock transporter for development/testing
   transporter = {
     sendMail: async (options) => {
-      console.log('📧 Email would be sent:', {
+      console.log("📧 Email would be sent:", {
         to: options.to,
         subject: options.subject,
         from: options.from,
       });
-      return { messageId: 'mock-' + Date.now() };
+      return { messageId: "mock-" + Date.now() };
     },
   };
 }
@@ -38,9 +38,9 @@ if (process.env.SMTP_USER && process.env.SMTP_PASS) {
 class EmailService {
   async sendWelcomeEmail(subscriber) {
     const mailOptions = {
-      from: process.env.FROM_EMAIL || 'noreply@liberiadigitalinsights.com',
+      from: process.env.FROM_EMAIL || "noreply@liberiadigitalinsights.com",
       to: subscriber.email,
-      subject: 'Welcome to Liberia Digital Insights Newsletter!',
+      subject: "Welcome to Liberia Digital Insights Newsletter!",
       html: this.generateWelcomeTemplate(subscriber),
     };
 
@@ -49,7 +49,7 @@ class EmailService {
       console.log(`Welcome email sent to ${subscriber.email}`);
       return true;
     } catch (error) {
-      console.error('Failed to send welcome email:', error);
+      console.error("Failed to send welcome email:", error);
       // Don't throw the error, just log it and return false
       // This prevents the subscription from failing if email sending fails
       return false;
@@ -58,12 +58,12 @@ class EmailService {
 
   async sendNewsletter(newsletter, subscribers) {
     const results = [];
-    
+
     for (const subscriber of subscribers) {
-      if (subscriber.status !== 'active') continue;
-      
+      if (subscriber.status !== "active") continue;
+
       const mailOptions = {
-        from: process.env.FROM_EMAIL || 'noreply@liberiadigitalinsights.com',
+        from: process.env.FROM_EMAIL || "noreply@liberiadigitalinsights.com",
         to: subscriber.email,
         subject: newsletter.subject,
         html: this.generateNewsletterTemplate(newsletter, subscriber),
@@ -71,19 +71,57 @@ class EmailService {
 
       try {
         await transporter.sendMail(mailOptions);
-        results.push({ email: subscriber.email, status: 'sent' });
+        results.push({ email: subscriber.email, status: "sent" });
       } catch (error) {
-        console.error(`Failed to send newsletter to ${subscriber.email}:`, error);
-        results.push({ email: subscriber.email, status: 'failed', error: error.message });
+        console.error(
+          `Failed to send newsletter to ${subscriber.email}:`,
+          error,
+        );
+        results.push({
+          email: subscriber.email,
+          status: "failed",
+          error: error.message,
+        });
       }
     }
 
     return results;
   }
 
+  async sendTalentSubmissionNotification(talent) {
+    // Notify admin about new talent submission
+    const adminEmail =
+      process.env.ADMIN_EMAIL || process.env.SMTP_USER || "admin@example.com";
+
+    const mailOptions = {
+      from: process.env.FROM_EMAIL || "noreply@liberiadigitalinsights.com",
+      to: adminEmail,
+      subject: `New Talent Submission: ${talent.name}`,
+      html: `
+            <h2>New Talent Profile Submitted</h2>
+            <p><strong>Name:</strong> ${talent.name}</p>
+            <p><strong>Role:</strong> ${talent.role}</p>
+            <p><strong>Category:</strong> ${talent.category}</p>
+            <p><strong>Bio:</strong> ${talent.bio}</p>
+            <p><strong>Status:</strong> ${talent.status}</p>
+            <br>
+            <p><a href="${process.env.FRONTEND_URL || "http://localhost:5173"}/admin/talent">Review in Admin Panel</a></p>
+        `,
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log(`Talent submission notification sent to ${adminEmail}`);
+      return true;
+    } catch (error) {
+      console.error("Failed to send talent notification:", error);
+      return false;
+    }
+  }
+
   generateWelcomeTemplate(subscriber) {
-    const unsubscribeUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/unsubscribe?token=${subscriber.unsubscribe_token}`;
-    
+    const unsubscribeUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/unsubscribe?token=${subscriber.unsubscribe_token}`;
+
     return `
       <!DOCTYPE html>
       <html>
@@ -120,7 +158,7 @@ class EmailService {
             <p>Stay tuned for our next newsletter where we'll bring you the latest updates from Liberia's tech scene.</p>
             
             <div style="text-align: center;">
-              <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}" class="button">Visit Our Website</a>
+              <a href="${process.env.FRONTEND_URL || "http://localhost:5173"}" class="button">Visit Our Website</a>
             </div>
             
             <p>If you have any questions or topics you'd like us to cover, feel free to reply to this email.</p>
@@ -129,7 +167,7 @@ class EmailService {
           </div>
           <div class="footer">
             <p>You're receiving this email because you subscribed to Liberia Digital Insights newsletter.</p>
-            <p><a href="${unsubscribeUrl}">Unsubscribe</a> | <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/privacy">Privacy Policy</a></p>
+            <p><a href="${unsubscribeUrl}">Unsubscribe</a> | <a href="${process.env.FRONTEND_URL || "http://localhost:5173"}/privacy">Privacy Policy</a></p>
           </div>
         </div>
       </body>
@@ -138,8 +176,8 @@ class EmailService {
   }
 
   generateNewsletterTemplate(newsletter, subscriber) {
-    const unsubscribeUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/unsubscribe?token=${subscriber.unsubscribe_token}`;
-    
+    const unsubscribeUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/unsubscribe?token=${subscriber.unsubscribe_token}`;
+
     return `
       <!DOCTYPE html>
       <html>
@@ -162,21 +200,21 @@ class EmailService {
             <h1>Liberia Digital Insights</h1>
           </div>
           <div class="content">
-            ${newsletter.cover_image_url ? `<img src="${newsletter.cover_image_url}" style="width: 100%; max-width: 600px; height: auto; border-radius: 8px; margin-bottom: 20px;">` : ''}
+            ${newsletter.cover_image_url ? `<img src="${newsletter.cover_image_url}" style="width: 100%; max-width: 600px; height: auto; border-radius: 8px; margin-bottom: 20px;">` : ""}
             
             <h2>${newsletter.subject}</h2>
             
             <div>${newsletter.content}</div>
             
             <div style="text-align: center; margin-top: 30px;">
-              <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}" class="button">Read More on Our Website</a>
+              <a href="${process.env.FRONTEND_URL || "http://localhost:5173"}" class="button">Read More on Our Website</a>
             </div>
             
             <p>Best regards,<br>The Liberia Digital Insights Team</p>
           </div>
           <div class="footer">
             <p>You're receiving this email because you subscribed to Liberia Digital Insights newsletter.</p>
-            <p><a href="${unsubscribeUrl}">Unsubscribe</a> | <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/privacy">Privacy Policy</a></p>
+            <p><a href="${unsubscribeUrl}">Unsubscribe</a> | <a href="${process.env.FRONTEND_URL || "http://localhost:5173"}/privacy">Privacy Policy</a></p>
           </div>
         </div>
       </body>
