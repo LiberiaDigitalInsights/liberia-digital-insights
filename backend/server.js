@@ -84,6 +84,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () =>
-  console.log(`API listening on http://localhost:${PORT}`),
-);
+// Start server
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
+});
