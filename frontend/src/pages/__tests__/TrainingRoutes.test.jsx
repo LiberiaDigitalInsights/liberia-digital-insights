@@ -5,6 +5,57 @@ import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from '../../context/ThemeContext';
 import { ToastProvider } from '../../context/ToastContext';
 import App from '../../App';
+import { vi } from 'vitest';
+
+// Mock API
+vi.mock('../../services/backendApi', () => ({
+  backendApi: {
+    analytics: {
+      trackVisit: vi.fn().mockResolvedValue({}),
+    },
+    articles: { list: vi.fn().mockResolvedValue({ articles: [] }) },
+    podcasts: { list: vi.fn().mockResolvedValue({ podcasts: [] }) },
+    insights: { list: vi.fn().mockResolvedValue({ insights: [] }) },
+    events: { list: vi.fn().mockResolvedValue({ events: [] }) },
+    categories: { list: vi.fn().mockResolvedValue({ data: [] }) },
+    training: {
+      list: vi.fn().mockResolvedValue([]),
+      getById: vi.fn().mockImplementation((id) => {
+        console.log('MOCK getById called with:', id);
+        if (id === '123e4567-e89b-12d3-a456-426614174000') {
+          return Promise.resolve({
+            training: {
+              id: '123e4567-e89b-12d3-a456-426614174000',
+              title: 'Full-Stack Web Development Bootcamp',
+              type: 'training',
+              status: 'upcoming',
+              date: '2024-05-01',
+              duration: '12 weeks',
+              location: 'Monrovia',
+              summary: 'Learn full-stack web development.',
+            },
+          });
+        }
+        if (id === '123e4567-e89b-12d3-a456-426614174001') {
+          return Promise.resolve({
+            course: {
+              id: '123e4567-e89b-12d3-a456-426614174001',
+              title: 'Foundations of Cybersecurity',
+              type: 'course',
+              status: 'upcoming',
+              date: '2024-06-01',
+              duration: '8 weeks',
+              location: 'Online',
+              summary: 'Learn cybersecurity foundations.',
+            },
+          });
+        }
+        console.log('MOCK getById returning NOT FOUND for:', id);
+        return Promise.reject(new Error('Not found'));
+      }),
+    },
+  },
+}));
 
 function renderAt(pathname) {
   return render(
@@ -29,7 +80,8 @@ describe('Training & Courses routes', () => {
   });
 
   it('renders training detail', async () => {
-    renderAt('/training/1');
+    const trainingId = '123e4567-e89b-12d3-a456-426614174000';
+    renderAt(`/training/${trainingId}`);
     // Title from mock training item 1
     await screen.findByRole('heading', { name: /full-stack web development bootcamp/i });
     // Register CTA should be present
@@ -38,16 +90,20 @@ describe('Training & Courses routes', () => {
   }, 20000);
 
   it('renders course detail', async () => {
-    renderAt('/course/1');
+    const courseId = '123e4567-e89b-12d3-a456-426614174001';
+    renderAt(`/course/${courseId}`);
     await screen.findByRole('heading', { name: /foundations of cybersecurity/i });
     const register = await screen.findByRole('link', { name: /^register$/i }, { timeout: 10000 });
     expect(register).toBeInTheDocument();
   }, 20000);
 
   it('renders register page with type/id context', async () => {
-    renderAt('/register?type=training&id=1');
+    const trainingId = '123e4567-e89b-12d3-a456-426614174000';
+    renderAt(`/register?type=training&id=${trainingId}`);
     await screen.findByRole('heading', { name: /registration/i }, { timeout: 10000 });
     const context = await screen.findByText(/you are registering for:/i);
-    expect(context).toHaveTextContent(/you are registering for:\s*training\s*#1/i);
+    expect(context).toHaveTextContent(
+      /you are registering for:\s*training\s*#123e4567-e89b-12d3-a456-426614174000/i,
+    );
   });
 });

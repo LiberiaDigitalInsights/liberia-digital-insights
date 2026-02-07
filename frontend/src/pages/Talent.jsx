@@ -66,6 +66,23 @@ export default function Talent() {
     setSubmitting(true);
     setErrors({});
 
+    const newErrors = {};
+    if (!form.name) newErrors.name = 'Name is required';
+    if (!form.role) newErrors.role = 'Role is required';
+    if (!form.category) newErrors.category = 'Category is required';
+    if (form.bio.length < 10) newErrors.bio = 'Bio must be at least 10 characters';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      showToast({
+        title: 'Validation Error',
+        description: 'Please fix the form fields.',
+        variant: 'danger',
+      });
+      setSubmitting(false);
+      return;
+    }
+
     try {
       // Generate slug from name
       const slug = form.name
@@ -123,8 +140,15 @@ export default function Talent() {
 
             {/* Filter */}
             <div className="flex items-center gap-4">
-              <label className="text-sm font-medium">Filter by category:</label>
-              <Select value={filter} onChange={handleFilterChange} className="w-48">
+              <label htmlFor="category-filter" className="text-sm font-medium">
+                Filter by category:
+              </label>
+              <Select
+                id="category-filter"
+                value={filter}
+                onChange={handleFilterChange}
+                className="w-48"
+              >
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
@@ -193,7 +217,7 @@ export default function Talent() {
                 <CardTitle>Submit Your Profile</CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                   <Field>
                     <Label htmlFor="name">Name *</Label>
                     <Input

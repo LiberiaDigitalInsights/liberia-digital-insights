@@ -8,19 +8,18 @@ import ToastViewport from '../../ui/Toast';
 
 // Ensure deterministic success for subscribeNewsletter in tests
 // Note: path is relative to this test file location
-vi.mock('../../../lib/newsletter', () => ({
-  subscribeNewsletter: vi.fn().mockResolvedValue({ ok: true }),
+// Mock hook
+vi.mock('../../../hooks/useBackendApi', () => ({
+  useNewsletterSubscription: () => ({
+    subscribe: vi.fn().mockResolvedValue({ ok: true }),
+    loading: false,
+  }),
 }));
 
 describe('NewsletterWidget', () => {
   it('validates required fields and submits successfully', async () => {
     const user = userEvent.setup();
-    renderWithProviders(
-      <>
-        <NewsletterWidget />
-        <ToastViewport />
-      </>,
-    );
+    renderWithProviders(<NewsletterWidget />);
 
     // Try submit empty
     await user.click(screen.getByRole('button', { name: /sign up/i }));
@@ -33,6 +32,7 @@ describe('NewsletterWidget', () => {
     await user.click(screen.getByRole('button', { name: /sign up/i }));
 
     // Expect success toast
-    expect(await screen.findByText(/subscribed/i)).toBeInTheDocument();
+    // Expect success toast or success message in form
+    expect(await screen.findByText(/Thanks for subscribing/i)).toBeInTheDocument();
   });
 });

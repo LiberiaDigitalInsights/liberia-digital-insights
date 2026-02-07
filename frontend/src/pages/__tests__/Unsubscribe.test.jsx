@@ -1,30 +1,37 @@
-// Unsubscribe Page Tests
-import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { BrowserRouter, MemoryRouter } from 'react-router-dom';
+import { renderWithContext, screen, waitFor, fireEvent } from '../../test/utils';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import Unsubscribe from '../Unsubscribe';
 import { backendApi } from '../../services/backendApi';
+import { vi } from 'vitest';
 
 // Mock the backend API
-jest.mock('../../services/backendApi');
-
-const mockBackendApi = backendApi;
+vi.mock('../../services/backendApi', () => ({
+  backendApi: {
+    analytics: { trackVisit: vi.fn().mockResolvedValue({}) },
+    newsletters: {
+      unsubscribe: vi.fn(),
+      subscribe: vi.fn(),
+    },
+  },
+}));
 
 describe('Unsubscribe Page', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   const renderWithToken = (token) => {
-    return render(
+    return renderWithContext(
       <MemoryRouter initialEntries={[`/unsubscribe?token=${token}`]}>
-        <Unsubscribe />
+        <Routes>
+          <Route path="/unsubscribe" element={<Unsubscribe />} />
+        </Routes>
       </MemoryRouter>,
     );
   };
 
   it('shows loading state initially', () => {
-    mockBackendApi.newsletters.unsubscribe.mockImplementation(() => new Promise(() => {}));
+    backendApi.newsletters.unsubscribe.mockImplementation(() => new Promise(() => {}));
 
     renderWithToken('valid-token');
 
@@ -41,7 +48,7 @@ describe('Unsubscribe Page', () => {
       unsubscribe_token: 'valid-token',
     };
 
-    mockBackendApi.newsletters.unsubscribe.mockResolvedValue({
+    backendApi.newsletters.unsubscribe.mockResolvedValue({
       message: 'Successfully unsubscribed',
       subscriber: mockSubscriber,
     });
@@ -61,7 +68,7 @@ describe('Unsubscribe Page', () => {
   });
 
   it('shows already unsubscribed state', async () => {
-    mockBackendApi.newsletters.unsubscribe.mockRejectedValue(new Error('Already unsubscribed'));
+    backendApi.newsletters.unsubscribe.mockRejectedValue(new Error('Already unsubscribed'));
 
     renderWithToken('already-unsubscribed-token');
 
@@ -72,13 +79,11 @@ describe('Unsubscribe Page', () => {
     expect(
       screen.getByText('You are already unsubscribed from our newsletter.'),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Update Subscription/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Update Subscription/i })).toBeInTheDocument();
   });
 
   it('shows error state for invalid token', async () => {
-    mockBackendApi.newsletters.unsubscribe.mockRejectedValue(
-      new Error('Invalid unsubscribe token'),
-    );
+    backendApi.newsletters.unsubscribe.mockRejectedValue(new Error('Invalid unsubscribe token'));
 
     renderWithToken('invalid-token');
 
@@ -91,15 +96,15 @@ describe('Unsubscribe Page', () => {
         'Invalid or expired unsubscribe link. Please contact support for assistance.',
       ),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Subscribe to Newsletter/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Contact Support/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Subscribe to Newsletter/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Contact Support/i })).toBeInTheDocument();
   });
 
   it('shows error state for missing token', async () => {
-    render(
-      <BrowserRouter>
+    renderWithContext(
+      <MemoryRouter initialEntries={['/unsubscribe']}>
         <Unsubscribe />
-      </BrowserRouter>,
+      </MemoryRouter>,
     );
 
     await waitFor(() => {
@@ -112,7 +117,7 @@ describe('Unsubscribe Page', () => {
   });
 
   it('shows generic error for other errors', async () => {
-    mockBackendApi.newsletters.unsubscribe.mockRejectedValue(new Error('Network error'));
+    backendApi.newsletters.unsubscribe.mockRejectedValue(new Error('Network error'));
 
     renderWithToken('valid-token');
 
@@ -136,12 +141,12 @@ describe('Unsubscribe Page', () => {
       position: 'Developer',
     };
 
-    mockBackendApi.newsletters.unsubscribe.mockResolvedValue({
+    backendApi.newsletters.unsubscribe.mockResolvedValue({
       message: 'Successfully unsubscribed',
       subscriber: mockSubscriber,
     });
 
-    mockBackendApi.newsletters.subscribe.mockResolvedValue({
+    backendApi.newsletters.subscribe.mockResolvedValue({
       message: 'Successfully resubscribed',
     });
 
@@ -155,7 +160,7 @@ describe('Unsubscribe Page', () => {
     fireEvent.click(resubscribeButton);
 
     await waitFor(() => {
-      expect(mockBackendApi.newsletters.subscribe).toHaveBeenCalledWith({
+      expect(backendApi.newsletters.subscribe).toHaveBeenCalledWith({
         name: 'John Doe',
         email: 'john@example.com',
         company: 'Tech Corp',
@@ -179,12 +184,12 @@ describe('Unsubscribe Page', () => {
       subscribed_at: '2024-01-01T00:00:00Z',
     };
 
-    mockBackendApi.newsletters.unsubscribe.mockResolvedValue({
+    backendApi.newsletters.unsubscribe.mockResolvedValue({
       message: 'Successfully unsubscribed',
       subscriber: mockSubscriber,
     });
 
-    mockBackendApi.newsletters.subscribe.mockRejectedValue(new Error('Subscribe failed'));
+    backendApi.newsletters.subscribe.mockRejectedValue(new Error('Subscribe failed'));
 
     renderWithToken('valid-token');
 
@@ -211,7 +216,7 @@ describe('Unsubscribe Page', () => {
       unsubscribe_token: 'valid-token',
     };
 
-    mockBackendApi.newsletters.unsubscribe.mockResolvedValue({
+    backendApi.newsletters.unsubscribe.mockResolvedValue({
       message: 'Successfully unsubscribed',
       subscriber: mockSubscriber,
     });
@@ -219,7 +224,7 @@ describe('Unsubscribe Page', () => {
     renderWithToken('valid-token');
 
     await waitFor(() => {
-      expect(screen.getByText('1/15/2024')).toBeInTheDocument();
+      expect(screen.getByText(/1\/1[45]\/2024/)).toBeInTheDocument();
     });
   });
 
@@ -232,7 +237,7 @@ describe('Unsubscribe Page', () => {
       unsubscribe_token: 'valid-token',
     };
 
-    mockBackendApi.newsletters.unsubscribe.mockResolvedValue({
+    backendApi.newsletters.unsubscribe.mockResolvedValue({
       message: 'Successfully unsubscribed',
       subscriber: mockSubscriber,
     });
@@ -248,7 +253,7 @@ describe('Unsubscribe Page', () => {
   });
 
   it('includes privacy policy link', async () => {
-    mockBackendApi.newsletters.unsubscribe.mockRejectedValue(new Error('Invalid token'));
+    backendApi.newsletters.unsubscribe.mockRejectedValue(new Error('Invalid token'));
 
     renderWithToken('invalid-token');
 

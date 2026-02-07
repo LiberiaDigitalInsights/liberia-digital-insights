@@ -1,20 +1,24 @@
 // useNewsletterSubscription Hook Tests
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { useNewsletterSubscription } from '../useBackendApi';
 import { backendApi } from '../../services/backendApi';
 
 // Mock the backend API
-jest.mock('../../services/backendApi');
-
-const mockBackendApi = backendApi;
+vi.mock('../../services/backendApi', () => ({
+  backendApi: {
+    newsletters: {
+      subscribe: vi.fn(),
+    },
+  },
+}));
 
 describe('useNewsletterSubscription', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should initialize with default state', () => {
-    mockBackendApi.newsletters.subscribe.mockResolvedValue({ message: 'Success' });
+    backendApi.newsletters.subscribe.mockResolvedValue({ message: 'Success' });
 
     const { result } = renderHook(() => useNewsletterSubscription());
 
@@ -33,7 +37,7 @@ describe('useNewsletterSubscription', () => {
       },
     };
 
-    mockBackendApi.newsletters.subscribe.mockResolvedValue(mockResponse);
+    backendApi.newsletters.subscribe.mockResolvedValue(mockResponse);
 
     const { result } = renderHook(() => useNewsletterSubscription());
 
@@ -50,13 +54,13 @@ describe('useNewsletterSubscription', () => {
       expect(response).toEqual(mockResponse);
     });
 
-    expect(mockBackendApi.newsletters.subscribe).toHaveBeenCalledWith(subscriberData);
+    expect(backendApi.newsletters.subscribe).toHaveBeenCalledWith(subscriberData);
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBe(null);
   });
 
   it('should set loading state during subscription', async () => {
-    mockBackendApi.newsletters.subscribe.mockImplementation(
+    backendApi.newsletters.subscribe.mockImplementation(
       () => new Promise((resolve) => setTimeout(() => resolve({ message: 'Success' }), 100)),
     );
 
@@ -69,13 +73,13 @@ describe('useNewsletterSubscription', () => {
       });
     });
 
-    expect(result.current.loading).toBe(true);
+    await waitFor(() => expect(result.current.loading).toBe(true));
     expect(result.current.error).toBe(null);
   });
 
   it('should handle subscription error', async () => {
     const mockError = new Error('Network error');
-    mockBackendApi.newsletters.subscribe.mockRejectedValue(mockError);
+    backendApi.newsletters.subscribe.mockRejectedValue(mockError);
 
     const { result } = renderHook(() => useNewsletterSubscription());
 
@@ -92,14 +96,14 @@ describe('useNewsletterSubscription', () => {
       }
     });
 
-    expect(mockBackendApi.newsletters.subscribe).toHaveBeenCalledWith(subscriberData);
+    expect(backendApi.newsletters.subscribe).toHaveBeenCalledWith(subscriberData);
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBe('Network error');
   });
 
   it('should handle error without message', async () => {
     const mockError = new Error();
-    mockBackendApi.newsletters.subscribe.mockRejectedValue(mockError);
+    backendApi.newsletters.subscribe.mockRejectedValue(mockError);
 
     const { result } = renderHook(() => useNewsletterSubscription());
 
@@ -119,7 +123,7 @@ describe('useNewsletterSubscription', () => {
 
   it('should reset error state on successful subscription after error', async () => {
     // First call fails
-    mockBackendApi.newsletters.subscribe.mockRejectedValueOnce(new Error('First error'));
+    backendApi.newsletters.subscribe.mockRejectedValueOnce(new Error('First error'));
 
     const { result } = renderHook(() => useNewsletterSubscription());
 
@@ -138,7 +142,7 @@ describe('useNewsletterSubscription', () => {
     expect(result.current.error).toBe('First error');
 
     // Second call succeeds
-    mockBackendApi.newsletters.subscribe.mockResolvedValueOnce({ message: 'Success' });
+    backendApi.newsletters.subscribe.mockResolvedValueOnce({ message: 'Success' });
 
     await act(async () => {
       await result.current.subscribe({
@@ -155,7 +159,7 @@ describe('useNewsletterSubscription', () => {
     let resolveFirst;
     let resolveSecond;
 
-    mockBackendApi.newsletters.subscribe.mockImplementation((data) => {
+    backendApi.newsletters.subscribe.mockImplementation((data) => {
       if (data.email === 'first@example.com') {
         return new Promise((resolve) => {
           resolveFirst = resolve;
@@ -178,7 +182,7 @@ describe('useNewsletterSubscription', () => {
       });
     });
 
-    expect(result.current.loading).toBe(true);
+    await waitFor(() => expect(result.current.loading).toBe(true));
 
     // Start second subscription while first is still loading
     act(() => {
@@ -188,7 +192,7 @@ describe('useNewsletterSubscription', () => {
       });
     });
 
-    expect(result.current.loading).toBe(true);
+    await waitFor(() => expect(result.current.loading).toBe(true));
 
     // Resolve second subscription first
     await act(async () => {
@@ -208,7 +212,7 @@ describe('useNewsletterSubscription', () => {
   });
 
   it('should pass subscriber data correctly to API', async () => {
-    mockBackendApi.newsletters.subscribe.mockResolvedValue({ message: 'Success' });
+    backendApi.newsletters.subscribe.mockResolvedValue({ message: 'Success' });
 
     const { result } = renderHook(() => useNewsletterSubscription());
 
@@ -224,12 +228,12 @@ describe('useNewsletterSubscription', () => {
       await result.current.subscribe(subscriberData);
     });
 
-    expect(mockBackendApi.newsletters.subscribe).toHaveBeenCalledWith(subscriberData);
-    expect(mockBackendApi.newsletters.subscribe).toHaveBeenCalledTimes(1);
+    expect(backendApi.newsletters.subscribe).toHaveBeenCalledWith(subscriberData);
+    expect(backendApi.newsletters.subscribe).toHaveBeenCalledTimes(1);
   });
 
   it('should handle empty subscriber data', async () => {
-    mockBackendApi.newsletters.subscribe.mockResolvedValue({ message: 'Success' });
+    backendApi.newsletters.subscribe.mockResolvedValue({ message: 'Success' });
 
     const { result } = renderHook(() => useNewsletterSubscription());
 
@@ -245,7 +249,7 @@ describe('useNewsletterSubscription', () => {
       await result.current.subscribe(emptyData);
     });
 
-    expect(mockBackendApi.newsletters.subscribe).toHaveBeenCalledWith(emptyData);
+    expect(backendApi.newsletters.subscribe).toHaveBeenCalledWith(emptyData);
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBe(null);
   });

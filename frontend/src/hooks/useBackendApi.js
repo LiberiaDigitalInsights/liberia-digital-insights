@@ -336,11 +336,11 @@ export const useNewsletterSubscribersList = (params = {}) => {
 
 // Hook for newsletter subscription
 export const useNewsletterSubscription = () => {
-  const [loading, setLoading] = useState(false);
+  const [activeRequests, setActiveRequests] = useState(0);
   const [error, setError] = useState(null);
 
   const subscribe = useCallback(async (subscriberData) => {
-    setLoading(true);
+    setActiveRequests((prev) => prev + 1);
     setError(null);
     try {
       const result = await backendApi.newsletters.subscribe(subscriberData);
@@ -349,13 +349,13 @@ export const useNewsletterSubscription = () => {
       setError(err.message || 'Failed to subscribe to newsletter');
       throw err;
     } finally {
-      setLoading(false);
+      setActiveRequests((prev) => prev - 1);
     }
   }, []);
 
   return {
     subscribe,
-    loading,
+    loading: activeRequests > 0,
     error,
   };
 };
