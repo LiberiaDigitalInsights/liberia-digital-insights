@@ -27,7 +27,8 @@ export default function PodcastPlayer({
 
       // Check if it's a direct audio file or a sharing link
       // Handle both file extensions and common storage service URLs
-      const isDirectAudio = /\.(mp3|wav|m4a|ogg|webm)(\?.*)?$/i.test(audioUrl) ||
+      const isDirectAudio =
+        /\.(mp3|wav|m4a|ogg|webm)(\?.*)?$/i.test(audioUrl) ||
         /\/storage\/v1\/object\/public\//i.test(audioUrl) || // Supabase storage
         /\/storage\.googleapis\.com\//i.test(audioUrl) || // Google Cloud Storage
         /\/s3\.amazonaws\.com\//i.test(audioUrl) || // AWS S3
@@ -179,7 +180,7 @@ export default function PodcastPlayer({
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             )}
-            
+
             {/* Waveform */}
             {extractedUrl && (
               <AudioWaveform
@@ -189,7 +190,7 @@ export default function PodcastPlayer({
                 onSeek={handleSeek}
               />
             )}
-            
+
             <div className="flex items-center gap-3">
               <Button
                 variant="solid"

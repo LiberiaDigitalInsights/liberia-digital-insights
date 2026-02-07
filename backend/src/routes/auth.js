@@ -4,7 +4,8 @@ import jwt from "jsonwebtoken";
 import { supabase } from "../supabaseClient.js";
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET =
+  process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
 // POST /v1/auth/register - Register new user
 router.post("/register", async (req, res) => {
@@ -66,7 +67,9 @@ router.post("/login", async (req, res) => {
     // Find user
     const { data: user, error } = await supabase
       .from("users")
-      .select("id, email, password_hash, first_name, last_name, role, is_active")
+      .select(
+        "id, email, password_hash, first_name, last_name, role, is_active",
+      )
       .eq("email", email)
       .single();
 
@@ -93,12 +96,13 @@ router.post("/login", async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       {
-        userId: user.id,
+        id: user.id,
+        userId: user.id, // Keep both for safety
         email: user.email,
         role: user.role,
       },
       JWT_SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "24h" },
     );
 
     // Remove password hash from response

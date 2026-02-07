@@ -8,6 +8,7 @@ import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import { ThemeProvider } from './context/ThemeContext.jsx';
 import { ToastProvider } from './context/ToastContext.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
 import { ErrorBoundary } from './components/ErrorBoundary.jsx';
 import ToastViewport from './components/ui/Toast.jsx';
 import { AnalyticsProvider } from './utils/analytics.js';
@@ -22,22 +23,24 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <HelmetProvider>
         <ThemeProvider>
           <ToastProvider>
-            <AnalyticsProvider>
-              <BrowserRouter>
-                <a
-                  href="#main-content"
-                  className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:m-4 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-black"
-                >
-                  Skip to content
-                </a>
-                <Navbar />
-                <main id="main-content" className="outline-none focus:outline-none">
-                  <App />
-                </main>
-                <Footer />
-                <ToastViewport />
-              </BrowserRouter>
-            </AnalyticsProvider>
+            <AuthProvider>
+              <AnalyticsProvider>
+                <BrowserRouter>
+                  <a
+                    href="#main-content"
+                    className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:m-4 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-black"
+                  >
+                    Skip to content
+                  </a>
+                  <Navbar />
+                  <main id="main-content" className="outline-none focus:outline-none">
+                    <App />
+                  </main>
+                  <Footer />
+                  <ToastViewport />
+                </BrowserRouter>
+              </AnalyticsProvider>
+            </AuthProvider>
           </ToastProvider>
         </ThemeProvider>
       </HelmetProvider>

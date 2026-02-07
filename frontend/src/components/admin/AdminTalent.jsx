@@ -119,7 +119,7 @@ const AdminTalent = () => {
     const { name, value } = e.target;
     if (name.startsWith('links.')) {
       const linkField = name.split('.')[1];
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         links: {
           ...prev.links,
@@ -127,7 +127,7 @@ const AdminTalent = () => {
         },
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
@@ -135,7 +135,7 @@ const AdminTalent = () => {
 
     // Auto-generate slug when name changes
     if (name === 'name') {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         slug: generateSlug(value),
       }));
@@ -148,7 +148,11 @@ const AdminTalent = () => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      showToast({ title: 'Invalid file', description: 'Please select an image file.', variant: 'error' });
+      showToast({
+        title: 'Invalid file',
+        description: 'Please select an image file.',
+        variant: 'error',
+      });
       e.currentTarget.value = '';
       return;
     }
@@ -156,9 +160,17 @@ const AdminTalent = () => {
     try {
       const { url } = await uploadFile(file, { type: 'images', path: 'talents' });
       setFormData((prev) => ({ ...prev, avatar_url: url }));
-      showToast({ title: 'Uploaded', description: 'Avatar image uploaded successfully.', variant: 'success' });
+      showToast({
+        title: 'Uploaded',
+        description: 'Avatar image uploaded successfully.',
+        variant: 'success',
+      });
     } catch (err) {
-      showToast({ title: 'Upload failed', description: err.message || 'Could not upload avatar image.', variant: 'error' });
+      showToast({
+        title: 'Upload failed',
+        description: err.message || 'Could not upload avatar image.',
+        variant: 'error',
+      });
     } finally {
       e.currentTarget.value = '';
     }
@@ -166,9 +178,10 @@ const AdminTalent = () => {
 
   // Filter talents
   const filteredTalents = talents.filter((talent) => {
-    const matchesSearch = talent.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         talent.role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         talent.bio?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      talent.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      talent.role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      talent.bio?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || talent.status === filterStatus;
     const matchesCategory = filterCategory === 'all' || talent.category === filterCategory;
     return matchesSearch && matchesStatus && matchesCategory;
@@ -182,7 +195,12 @@ const AdminTalent = () => {
     try {
       const talentData = {
         ...formData,
-        skills: formData.skills ? formData.skills.split(',').map(s => s.trim()).filter(s => s) : [],
+        skills: formData.skills
+          ? formData.skills
+              .split(',')
+              .map((s) => s.trim())
+              .filter((s) => s)
+          : [],
       };
 
       await backendApi.talents.create(talentData);
@@ -215,7 +233,7 @@ const AdminTalent = () => {
       role: talent.role || '',
       bio: talent.bio || '',
       category: talent.category || '',
-      skills: Array.isArray(talent.skills) ? talent.skills.join(', ') : (talent.skills || ''),
+      skills: Array.isArray(talent.skills) ? talent.skills.join(', ') : talent.skills || '',
       experience: talent.experience || '',
       location: talent.location || '',
       availability: talent.availability || '',
@@ -239,7 +257,12 @@ const AdminTalent = () => {
     try {
       const talentData = {
         ...formData,
-        skills: formData.skills ? formData.skills.split(',').map(s => s.trim()).filter(s => s) : [],
+        skills: formData.skills
+          ? formData.skills
+              .split(',')
+              .map((s) => s.trim())
+              .filter((s) => s)
+          : [],
       };
 
       await backendApi.talents.update(selectedTalent.id, talentData);
@@ -354,8 +377,10 @@ const AdminTalent = () => {
         </Select>
         <Select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
           <option value="all">All Categories</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
           ))}
         </Select>
       </div>
@@ -364,7 +389,9 @@ const AdminTalent = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-[var(--color-text)]">{filteredTalents.length}</div>
+            <div className="text-2xl font-bold text-[var(--color-text)]">
+              {filteredTalents.length}
+            </div>
             <div className="text-sm text-[var(--color-muted)]">Total Talents</div>
           </CardContent>
         </Card>
@@ -586,7 +613,11 @@ const AdminTalent = () => {
       )}
 
       {/* Create Modal */}
-      <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} title="Add New Talent">
+      <Modal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        title="Add New Talent"
+      >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <Input
@@ -605,7 +636,7 @@ const AdminTalent = () => {
               readOnly
             />
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <Input
               name="role"
@@ -621,8 +652,10 @@ const AdminTalent = () => {
               onChange={handleInputChange}
             >
               <option value="">Select category</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
               ))}
             </Select>
           </div>
@@ -670,12 +703,7 @@ const AdminTalent = () => {
             />
           </div>
 
-          <Select
-            name="status"
-            label="Status"
-            value={formData.status}
-            onChange={handleInputChange}
-          >
+          <Select name="status" label="Status" value={formData.status} onChange={handleInputChange}>
             <option value="pending">Pending</option>
             <option value="published">Published</option>
             <option value="rejected">Rejected</option>
@@ -702,9 +730,7 @@ const AdminTalent = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-              Links
-            </label>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Links</label>
             <div className="grid grid-cols-2 gap-4">
               <Input
                 name="links.website"
@@ -757,10 +783,7 @@ const AdminTalent = () => {
             >
               {submitting ? 'Creating...' : 'Create Talent'}
             </Button>
-            <Button
-              variant="subtle"
-              onClick={() => setShowCreateModal(false)}
-            >
+            <Button variant="subtle" onClick={() => setShowCreateModal(false)}>
               Cancel
             </Button>
           </div>
@@ -787,7 +810,7 @@ const AdminTalent = () => {
               readOnly
             />
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <Input
               name="role"
@@ -803,8 +826,10 @@ const AdminTalent = () => {
               onChange={handleInputChange}
             >
               <option value="">Select category</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
               ))}
             </Select>
           </div>
@@ -852,12 +877,7 @@ const AdminTalent = () => {
             />
           </div>
 
-          <Select
-            name="status"
-            label="Status"
-            value={formData.status}
-            onChange={handleInputChange}
-          >
+          <Select name="status" label="Status" value={formData.status} onChange={handleInputChange}>
             <option value="pending">Pending</option>
             <option value="published">Published</option>
             <option value="rejected">Rejected</option>
@@ -884,9 +904,7 @@ const AdminTalent = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-              Links
-            </label>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Links</label>
             <div className="grid grid-cols-2 gap-4">
               <Input
                 name="links.website"
@@ -939,10 +957,7 @@ const AdminTalent = () => {
             >
               {submitting ? 'Updating...' : 'Update Talent'}
             </Button>
-            <Button
-              variant="subtle"
-              onClick={() => setShowEditModal(false)}
-            >
+            <Button variant="subtle" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>
           </div>

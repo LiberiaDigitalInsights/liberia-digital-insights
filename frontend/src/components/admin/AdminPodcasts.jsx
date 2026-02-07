@@ -66,7 +66,15 @@ const AdminPodcasts = ({ canEdit }) => {
     if (!file) return;
 
     // Check file type
-    const validAudioTypes = ['audio/mp3', 'audio/wav', 'audio/mpeg', 'audio/m4a', 'audio/mp4', 'audio/x-m4a', 'audio/ogg'];
+    const validAudioTypes = [
+      'audio/mp3',
+      'audio/wav',
+      'audio/mpeg',
+      'audio/m4a',
+      'audio/mp4',
+      'audio/x-m4a',
+      'audio/ogg',
+    ];
     if (!validAudioTypes.includes(file.type)) {
       alert('Please upload a valid audio file (MP3, WAV, M4A, OGG)');
       return;
@@ -246,7 +254,7 @@ const AdminPodcasts = ({ canEdit }) => {
 
       // Create FormData for file upload
       const formDataToSend = new FormData();
-      
+
       // Add all text fields
       formDataToSend.append('title', formData.title);
       formDataToSend.append('slug', slug);
@@ -257,7 +265,10 @@ const AdminPodcasts = ({ canEdit }) => {
       formDataToSend.append('episode_number', formData.episode_number || '');
       formDataToSend.append('season_number', formData.season_number || '');
       formDataToSend.append('language', formData.language);
-      formDataToSend.append('tags', JSON.stringify(formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : []));
+      formDataToSend.append(
+        'tags',
+        JSON.stringify(formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : []),
+      );
       formDataToSend.append('is_featured', formData.is_featured);
       formDataToSend.append('status', formData.status);
       formDataToSend.append('transcript', formData.transcript);
@@ -266,11 +277,12 @@ const AdminPodcasts = ({ canEdit }) => {
       formDataToSend.append('facebook_url', formData.facebook_url);
       formDataToSend.append('spotify_url', formData.spotify_url);
       formDataToSend.append('apple_podcasts_url', formData.apple_podcasts_url);
-      
+
       // Add existing URLs if provided
       if (formData.audio_url) formDataToSend.append('audio_url', formData.audio_url);
-      if (formData.cover_image_url) formDataToSend.append('cover_image_url', formData.cover_image_url);
-      
+      if (formData.cover_image_url)
+        formDataToSend.append('cover_image_url', formData.cover_image_url);
+
       // Add files if they exist in state
       if (audioFile) {
         formDataToSend.append('audio_file', audioFile);
@@ -346,7 +358,7 @@ const AdminPodcasts = ({ canEdit }) => {
     try {
       // Create FormData for file upload
       const formDataToSend = new FormData();
-      
+
       // Add all text fields
       formDataToSend.append('title', formData.title);
       formDataToSend.append('description', formData.description);
@@ -356,7 +368,10 @@ const AdminPodcasts = ({ canEdit }) => {
       formDataToSend.append('episode_number', formData.episode_number || '');
       formDataToSend.append('season_number', formData.season_number || '');
       formDataToSend.append('language', formData.language);
-      formDataToSend.append('tags', JSON.stringify(formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : []));
+      formDataToSend.append(
+        'tags',
+        JSON.stringify(formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : []),
+      );
       formDataToSend.append('is_featured', formData.is_featured);
       formDataToSend.append('status', formData.status);
       formDataToSend.append('transcript', formData.transcript);
@@ -365,11 +380,12 @@ const AdminPodcasts = ({ canEdit }) => {
       formDataToSend.append('facebook_url', formData.facebook_url);
       formDataToSend.append('spotify_url', formData.spotify_url);
       formDataToSend.append('apple_podcasts_url', formData.apple_podcasts_url);
-      
+
       // Add existing URLs if provided
       if (formData.audio_url) formDataToSend.append('audio_url', formData.audio_url);
-      if (formData.cover_image_url) formDataToSend.append('cover_image_url', formData.cover_image_url);
-      
+      if (formData.cover_image_url)
+        formDataToSend.append('cover_image_url', formData.cover_image_url);
+
       // Add files if they exist in state
       if (audioFile) {
         formDataToSend.append('audio_file', audioFile);
@@ -379,7 +395,7 @@ const AdminPodcasts = ({ canEdit }) => {
       }
 
       console.log('Updating podcast:', selectedPodcast.id);
-      
+
       // Send FormData directly
       const response = await fetch(`http://localhost:5000/v1/podcasts/${selectedPodcast.id}`, {
         method: 'PUT',
@@ -907,8 +923,10 @@ const AdminPodcasts = ({ canEdit }) => {
 
           {/* Additional Fields */}
           <div className="border-t pt-4">
-            <h3 className="text-sm font-medium text-[var(--color-text)] mb-3">Additional Settings</h3>
-            
+            <h3 className="text-sm font-medium text-[var(--color-text)] mb-3">
+              Additional Settings
+            </h3>
+
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text)] mb-1">
@@ -1164,8 +1182,10 @@ const AdminPodcasts = ({ canEdit }) => {
 
           {/* Additional Fields */}
           <div className="border-t pt-4">
-            <h3 className="text-sm font-medium text-[var(--color-text)] mb-3">Additional Settings</h3>
-            
+            <h3 className="text-sm font-medium text-[var(--color-text)] mb-3">
+              Additional Settings
+            </h3>
+
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text)] mb-1">

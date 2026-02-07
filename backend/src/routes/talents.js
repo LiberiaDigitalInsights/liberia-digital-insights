@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { supabase } from "../supabaseClient.js";
 import emailService from "../services/emailService.js";
+import { verifyToken, authorize } from "../middleware/rbacMiddleware.js";
 
 const router = Router();
 
@@ -171,36 +172,41 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT /v1/talents/:id - Update talent
-router.put("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updateData = {
-      ...req.body,
-      updated_at: new Date().toISOString(),
-    };
+// PUT /v1/talents/:id - Update talent (Admin/Editor only)
+router.put(
+  "/:id",
+  verifyToken,
+  authorize(["admin", "editor"]),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = {
+        ...req.body,
+        updated_at: new Date().toISOString(),
+      };
 
-    const { data, error } = await supabase
-      .from("talents")
-      .update(updateData)
-      .eq("id", id)
-      .select()
-      .single();
+      const { data, error } = await supabase
+        .from("talents")
+        .update(updateData)
+        .eq("id", id)
+        .select()
+        .single();
 
-    if (error) throw error;
+      if (error) throw error;
 
-    if (!data) {
-      return res.status(404).json({ error: "Talent not found" });
+      if (!data) {
+        return res.status(404).json({ error: "Talent not found" });
+      }
+
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
+  },
+);
 
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// DELETE /v1/talents/:id - Delete talent
-router.delete("/:id", async (req, res) => {
+// DELETE /v1/talents/:id - Delete talent (Admin only)
+router.delete("/:id", verifyToken, authorize(["admin"]), async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -214,8 +220,8 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// POST /v1/talents/seed - Seed talents table
-router.post("/seed", async (req, res) => {
+// POST /v1/talents/seed - Seed talents table (Admin only)
+router.post("/seed", verifyToken, authorize(["admin"]), async (req, res) => {
   try {
     console.log("🌱 Seeding talents...");
 

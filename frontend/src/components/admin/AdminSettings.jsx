@@ -11,6 +11,8 @@ import {
   FaRocket,
 } from 'react-icons/fa';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
+import { backendApi } from '../../services/backendApi';
 
 const AdminSettings = () => {
   const { showToast } = useToast();
@@ -180,309 +182,411 @@ const AdminSettings = () => {
     </div>
   );
 
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+
+  const PasswordChangeSection = () => {
+    const [passData, setPassData] = useState({ current: '', new: '', confirm: '' });
+    const [passLoading, setPassLoading] = useState(false);
+
+    const handlePasswordChange = async (e) => {
+      e.preventDefault();
+      if (passData.new !== passData.confirm) {
+        showToast({ title: 'Error', description: 'New passwords do not match', variant: 'error' });
+        return;
+      }
+      if (passData.new.length < 6) {
+        showToast({
+          title: 'Error',
+          description: 'Password must be at least 6 characters',
+          variant: 'error',
+        });
+        return;
+      }
+
+      setPassLoading(true);
+      try {
+        await backendApi.users.changePassword(passData.current, passData.new);
+        showToast({
+          title: 'Success',
+          description: 'Password updated successfully',
+          variant: 'success',
+        });
+        setPassData({ current: '', new: '', confirm: '' });
+      } catch (err) {
+        showToast({
+          title: 'Error',
+          description: err.message || 'Failed to update password',
+          variant: 'error',
+        });
+      } finally {
+        setPassLoading(false);
+      }
+    };
+
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FaRocket /> Account Security
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handlePasswordChange} className="space-y-4">
+            <p className="text-sm text-[var(--color-muted)] mb-4">
+              Update your password to secure your account.
+            </p>
+            <div>
+              <label className="block text-sm font-medium mb-1">Current Password</label>
+              <Input
+                type="password"
+                value={passData.current}
+                onChange={(e) => setPassData({ ...passData, current: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">New Password</label>
+              <Input
+                type="password"
+                value={passData.new}
+                onChange={(e) => setPassData({ ...passData, new: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Confirm New Password</label>
+              <Input
+                type="password"
+                value={passData.confirm}
+                onChange={(e) => setPassData({ ...passData, confirm: e.target.value })}
+                required
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={passLoading}
+              className="w-full bg-brand-500 hover:bg-brand-600"
+            >
+              {passLoading ? 'Updating...' : 'Update Password'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-[var(--color-text)]">Settings</h1>
-          <p className="text-[var(--color-muted)]">
-            Manage your site configuration and preferences
-          </p>
+          <p className="text-[var(--color-muted)]">Manage your account and site configuration</p>
         </div>
-        <div className="flex gap-3">
-          {hasChanges && <Badge className="bg-yellow-100 text-yellow-700">Unsaved Changes</Badge>}
-          <Button variant="subtle" onClick={handleReset} className="flex items-center gap-2">
-            <FaUndo />
-            Reset
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={loading || !hasChanges}
-            className="flex items-center gap-2 bg-brand-500 hover:bg-brand-600"
-          >
-            <FaSave />
-            {loading ? 'Saving...' : 'Save Settings'}
-          </Button>
-        </div>
+        {isAdmin && (
+          <div className="flex gap-3">
+            {hasChanges && <Badge className="bg-yellow-100 text-yellow-700">Unsaved Changes</Badge>}
+            <Button variant="subtle" onClick={handleReset} className="flex items-center gap-2">
+              <FaUndo />
+              Reset
+            </Button>
+            <Button
+              onClick={handleSave}
+              disabled={loading || !hasChanges}
+              className="flex items-center gap-2 bg-brand-500 hover:bg-brand-600"
+            >
+              <FaSave />
+              {loading ? 'Saving...' : 'Save Settings'}
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* General Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FaCog />
-              General Settings
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Site Name
-              </label>
-              <Input
-                value={settings.siteName}
-                onChange={(e) => handleInputChange('siteName', e.target.value)}
-                placeholder="Enter site name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Site Description
-              </label>
-              <Textarea
-                value={settings.siteDescription}
-                onChange={(e) => handleInputChange('siteDescription', e.target.value)}
-                placeholder="Enter site description"
-                rows={3}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Contact Email
-              </label>
-              <Input
-                type="email"
-                value={settings.contactEmail}
-                onChange={(e) => handleInputChange('contactEmail', e.target.value)}
-                placeholder="contact@example.com"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Admin Email
-              </label>
-              <Input
-                type="email"
-                value={settings.adminEmail}
-                onChange={(e) => handleInputChange('adminEmail', e.target.value)}
-                placeholder="admin@example.com"
-              />
-            </div>
-          </CardContent>
-        </Card>
+        {/* Always show Password Change */}
+        <PasswordChangeSection />
 
-        {/* Performance Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FaRocket />
-              Performance Settings
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <ToggleSwitch
-              checked={settings.enableCaching}
-              onChange={() => handleToggle('enableCaching')}
-              label="Enable Caching"
-              description="Improve page load times"
-            />
-            <ToggleSwitch
-              checked={settings.imageOptimization}
-              onChange={() => handleToggle('imageOptimization')}
-              label="Image Optimization"
-              description="Auto-optimize uploaded images"
-            />
-            <ToggleSwitch
-              checked={settings.analyticsTracking}
-              onChange={() => handleToggle('analyticsTracking')}
-              label="Analytics Tracking"
-              description="Enable user analytics"
-            />
-            <ToggleSwitch
-              checked={settings.lazyLoading}
-              onChange={() => handleToggle('lazyLoading')}
-              label="Lazy Loading"
-              description="Load images as needed"
-            />
-          </CardContent>
-        </Card>
+        {/* Site Settings - Admin Only */}
+        {isAdmin && (
+          <>
+            {/* General Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FaCog />
+                  General Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Site Name
+                  </label>
+                  <Input
+                    value={settings.siteName}
+                    onChange={(e) => handleInputChange('siteName', e.target.value)}
+                    placeholder="Enter site name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Site Description
+                  </label>
+                  <Textarea
+                    value={settings.siteDescription}
+                    onChange={(e) => handleInputChange('siteDescription', e.target.value)}
+                    placeholder="Enter site description"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Contact Email
+                  </label>
+                  <Input
+                    type="email"
+                    value={settings.contactEmail}
+                    onChange={(e) => handleInputChange('contactEmail', e.target.value)}
+                    placeholder="contact@example.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Admin Email
+                  </label>
+                  <Input
+                    type="email"
+                    value={settings.adminEmail}
+                    onChange={(e) => handleInputChange('adminEmail', e.target.value)}
+                    placeholder="admin@example.com"
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* SEO Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FaSearch />
-              SEO Settings
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Meta Description
-              </label>
-              <Textarea
-                value={settings.metaDescription}
-                onChange={(e) => handleInputChange('metaDescription', e.target.value)}
-                placeholder="Enter meta description"
-                rows={3}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Keywords
-              </label>
-              <Input
-                value={settings.keywords}
-                onChange={(e) => handleInputChange('keywords', e.target.value)}
-                placeholder="technology, liberia, innovation"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Google Analytics ID
-              </label>
-              <Input
-                value={settings.googleAnalyticsId}
-                onChange={(e) => handleInputChange('googleAnalyticsId', e.target.value)}
-                placeholder="G-XXXXXXXXXX"
-              />
-            </div>
-          </CardContent>
-        </Card>
+            {/* Performance Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FaRocket />
+                  Performance Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <ToggleSwitch
+                  checked={settings.enableCaching}
+                  onChange={() => handleToggle('enableCaching')}
+                  label="Enable Caching"
+                  description="Improve page load times"
+                />
+                <ToggleSwitch
+                  checked={settings.imageOptimization}
+                  onChange={() => handleToggle('imageOptimization')}
+                  label="Image Optimization"
+                  description="Auto-optimize uploaded images"
+                />
+                <ToggleSwitch
+                  checked={settings.analyticsTracking}
+                  onChange={() => handleToggle('analyticsTracking')}
+                  label="Analytics Tracking"
+                  description="Enable user analytics"
+                />
+                <ToggleSwitch
+                  checked={settings.lazyLoading}
+                  onChange={() => handleToggle('lazyLoading')}
+                  label="Lazy Loading"
+                  description="Load images as needed"
+                />
+              </CardContent>
+            </Card>
 
-        {/* Social Media Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FaGlobe />
-              Social Media
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Facebook
-              </label>
-              <Input
-                value={settings.facebook}
-                onChange={(e) => handleInputChange('facebook', e.target.value)}
-                placeholder="https://facebook.com/page"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Twitter/X
-              </label>
-              <Input
-                value={settings.twitter}
-                onChange={(e) => handleInputChange('twitter', e.target.value)}
-                placeholder="https://x.com/handle"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                LinkedIn
-              </label>
-              <Input
-                value={settings.linkedin}
-                onChange={(e) => handleInputChange('linkedin', e.target.value)}
-                placeholder="https://linkedin.com/company/page"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                YouTube
-              </label>
-              <Input
-                value={settings.youtube}
-                onChange={(e) => handleInputChange('youtube', e.target.value)}
-                placeholder="https://youtube.com/channel"
-              />
-            </div>
-          </CardContent>
-        </Card>
+            {/* SEO Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FaSearch />
+                  SEO Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Meta Description
+                  </label>
+                  <Textarea
+                    value={settings.metaDescription}
+                    onChange={(e) => handleInputChange('metaDescription', e.target.value)}
+                    placeholder="Enter meta description"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Keywords
+                  </label>
+                  <Input
+                    value={settings.keywords}
+                    onChange={(e) => handleInputChange('keywords', e.target.value)}
+                    placeholder="technology, liberia, innovation"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Google Analytics ID
+                  </label>
+                  <Input
+                    value={settings.googleAnalyticsId}
+                    onChange={(e) => handleInputChange('googleAnalyticsId', e.target.value)}
+                    placeholder="G-XXXXXXXXXX"
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* Email Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Email Settings</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                SMTP Host
-              </label>
-              <Input
-                value={settings.smtpHost}
-                onChange={(e) => handleInputChange('smtpHost', e.target.value)}
-                placeholder="smtp.example.com"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                SMTP Port
-              </label>
-              <Input
-                value={settings.smtpPort}
-                onChange={(e) => handleInputChange('smtpPort', e.target.value)}
-                placeholder="587"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                SMTP User
-              </label>
-              <Input
-                value={settings.smtpUser}
-                onChange={(e) => handleInputChange('smtpUser', e.target.value)}
-                placeholder="user@example.com"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                SMTP Password
-              </label>
-              <Input
-                type="password"
-                value={settings.smtpPassword}
-                onChange={(e) => handleInputChange('smtpPassword', e.target.value)}
-                placeholder="Enter password"
-              />
-            </div>
-            <ToggleSwitch
-              checked={settings.smtpSecure}
-              onChange={() => handleToggle('smtpSecure')}
-              label="Use TLS/SSL"
-              description="Enable secure connection"
-            />
-          </CardContent>
-        </Card>
+            {/* Social Media Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FaGlobe />
+                  Social Media
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Facebook
+                  </label>
+                  <Input
+                    value={settings.facebook}
+                    onChange={(e) => handleInputChange('facebook', e.target.value)}
+                    placeholder="https://facebook.com/page"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Twitter/X
+                  </label>
+                  <Input
+                    value={settings.twitter}
+                    onChange={(e) => handleInputChange('twitter', e.target.value)}
+                    placeholder="https://x.com/handle"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    LinkedIn
+                  </label>
+                  <Input
+                    value={settings.linkedin}
+                    onChange={(e) => handleInputChange('linkedin', e.target.value)}
+                    placeholder="https://linkedin.com/company/page"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    YouTube
+                  </label>
+                  <Input
+                    value={settings.youtube}
+                    onChange={(e) => handleInputChange('youtube', e.target.value)}
+                    placeholder="https://youtube.com/channel"
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* Theme Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Theme Settings</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Primary Color
-              </label>
-              <Input
-                type="color"
-                value={settings.primaryColor}
-                onChange={(e) => handleInputChange('primaryColor', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Accent Color
-              </label>
-              <Input
-                type="color"
-                value={settings.accentColor}
-                onChange={(e) => handleInputChange('accentColor', e.target.value)}
-              />
-            </div>
-            <ToggleSwitch
-              checked={settings.darkMode}
-              onChange={() => handleToggle('darkMode')}
-              label="Dark Mode"
-              description="Enable dark theme"
-            />
-          </CardContent>
-        </Card>
+            {/* Email Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Email Settings</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    SMTP Host
+                  </label>
+                  <Input
+                    value={settings.smtpHost}
+                    onChange={(e) => handleInputChange('smtpHost', e.target.value)}
+                    placeholder="smtp.example.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    SMTP Port
+                  </label>
+                  <Input
+                    value={settings.smtpPort}
+                    onChange={(e) => handleInputChange('smtpPort', e.target.value)}
+                    placeholder="587"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    SMTP User
+                  </label>
+                  <Input
+                    value={settings.smtpUser}
+                    onChange={(e) => handleInputChange('smtpUser', e.target.value)}
+                    placeholder="user@example.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    SMTP Password
+                  </label>
+                  <Input
+                    type="password"
+                    value={settings.smtpPassword}
+                    onChange={(e) => handleInputChange('smtpPassword', e.target.value)}
+                    placeholder="Enter password"
+                  />
+                </div>
+                <ToggleSwitch
+                  checked={settings.smtpSecure}
+                  onChange={() => handleToggle('smtpSecure')}
+                  label="Use TLS/SSL"
+                  description="Enable secure connection"
+                />
+              </CardContent>
+            </Card>
+
+            {/* Theme Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Theme Settings</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Primary Color
+                  </label>
+                  <Input
+                    type="color"
+                    value={settings.primaryColor}
+                    onChange={(e) => handleInputChange('primaryColor', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Accent Color
+                  </label>
+                  <Input
+                    type="color"
+                    value={settings.accentColor}
+                    onChange={(e) => handleInputChange('accentColor', e.target.value)}
+                  />
+                </div>
+                <ToggleSwitch
+                  checked={settings.darkMode}
+                  onChange={() => handleToggle('darkMode')}
+                  label="Dark Mode"
+                  description="Enable dark theme"
+                />
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );

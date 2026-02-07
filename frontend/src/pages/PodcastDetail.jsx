@@ -289,10 +289,9 @@ export default function PodcastDetail() {
               {(() => {
                 const plainText = stripHtml(podcast.transcript);
                 const isLong = plainText.length > 500;
-                const displayText = isLong && !isTranscriptExpanded 
-                  ? plainText.substring(0, 500) + '...' 
-                  : plainText;
-                
+                const displayText =
+                  isLong && !isTranscriptExpanded ? plainText.substring(0, 500) + '...' : plainText;
+
                 return (
                   <div>
                     <p className="whitespace-pre-line text-sm text-[var(--color-text)]">

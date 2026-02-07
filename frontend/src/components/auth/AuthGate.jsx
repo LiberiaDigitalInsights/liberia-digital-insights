@@ -1,38 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/Card';
-import { H2, Muted } from '../ui/Typography';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
+import { Muted } from '../ui/Typography';
+import { useAuth } from '../../context/AuthContext';
 
 export default function AuthGate({ children, requiredRole = 'admin' }) {
-  const [authed, setAuthed] = React.useState(false);
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [error, setError] = React.useState('');
-  const [role, setRole] = React.useState('admin');
+  const { user, login, loading: authLoading, isAuthenticated } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  React.useEffect(() => {
-    const v = localStorage.getItem('auth_admin');
-    const r = localStorage.getItem('auth_role') || 'viewer';
-    const ok = v === '1' && (!requiredRole || r === requiredRole);
-    setAuthed(ok);
-  }, [requiredRole]);
-
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    // Simple demo gate. Replace with real auth later.
-    if (username && password === 'admin') {
-      localStorage.setItem('auth_admin', '1');
-      localStorage.setItem('auth_role', role);
-      const ok = !requiredRole || role === requiredRole;
-      setAuthed(ok);
-    } else {
-      setError('Invalid credentials. Hint: password is "admin" for demo.');
+    setLoginLoading(true);
+
+    try {
+      await login(email, password);
+    } catch (err) {
+      setError(err.message || 'Invalid credentials');
+    } finally {
+      setLoginLoading(false);
     }
+  };
+
+  if (authLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+      </div>
+    );
   }
 
-  if (authed) return children;
+  // Check authentication and role
+  if (isAuthenticated) {
+    // Basic admin panel access roles
+    const adminPanelRoles = ['admin', 'editor', 'moderator', 'viewer'];
+    const hasRole =
+      !requiredRole ||
+      user.role === requiredRole ||
+      user.role === 'admin' ||
+      (requiredRole === 'editor' && adminPanelRoles.includes(user.role));
+
+    // Improved logic: If user is admin, always allow.
+    // Otherwise, if they have the specific role OR if the required role is a basic admin role and they have one.
+    const isAuthorized =
+      user.role === 'admin' ||
+      user.role === requiredRole ||
+      (requiredRole === 'admin' && adminPanelRoles.includes(user.role)); // Allow any admin role to access the basic /admin gate
+
+    if (isAuthorized) {
+      return children;
+    } else {
+      return (
+        <div className="mx-auto max-w-md px-4 py-16 text-center">
+          <Card>
+            <CardHeader>
+              <CardTitle>Access Denied</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4">You do not have the required permissions to access this page.</p>
+              <Muted>Required role: {requiredRole}</Muted>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+  }
 
   return (
     <div className="mx-auto max-w-md px-4 py-16">
@@ -43,13 +79,16 @@ export default function AuthGate({ children, requiredRole = 'admin' }) {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="admin-username" className="mb-1 block text-sm font-medium">
-                Username
+              <label htmlFor="admin-email" className="mb-1 block text-sm font-medium">
+                Email Address
               </label>
               <Input
-                id="admin-username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="admin-email"
+                type="email"
+                placeholder="email@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
             <div>
@@ -59,29 +98,18 @@ export default function AuthGate({ children, requiredRole = 'admin' }) {
               <Input
                 id="admin-password"
                 type="password"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
-            <div>
-              <label htmlFor="admin-role" className="mb-1 block text-sm font-medium">
-                Role
-              </label>
-              <select
-                id="admin-role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-2"
-              >
-                <option value="admin">Admin</option>
-                <option value="editor">Editor</option>
-                <option value="viewer">Viewer</option>
-              </select>
-            </div>
             {error ? <div className="text-sm text-red-500">{error}</div> : null}
-            <Button type="submit">Sign In</Button>
-            <Muted className="block pt-2">
-              Demo access only. Replace with real authentication.
+            <Button type="submit" className="w-full" disabled={loginLoading}>
+              {loginLoading ? 'Signing in...' : 'Sign In'}
+            </Button>
+            <Muted className="block pt-2 text-center text-xs">
+              Secure administration access for Liberia Digital Insights.
             </Muted>
           </form>
         </CardContent>

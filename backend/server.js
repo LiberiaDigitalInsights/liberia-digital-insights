@@ -16,6 +16,7 @@ import seedRouter from "./src/routes/seed.js";
 import mockRouter from "./src/routes/mock.js";
 import audioRouter from "./src/routes/audio.js";
 import analyticsRouter from "./src/routes/analytics.js";
+import usersRouter from "./src/routes/users.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -63,6 +64,7 @@ app.use("/v1/gallery", galleryRouter);
 app.use("/v1/seed", seedRouter);
 app.use("/v1/audio", audioRouter);
 app.use("/v1/analytics", analyticsRouter);
+app.use("/v1/users", usersRouter);
 app.use("/v1", uploadRouter);
 app.use("/v1", mockRouter); // Mock data as fallback for testing
 

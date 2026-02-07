@@ -500,6 +500,47 @@ export const analyticsApi = {
   },
 };
 
+// Users Management API (Admin only)
+export const usersApi = {
+  async list() {
+    return apiRequest('/v1/users');
+  },
+
+  async create(userData) {
+    return apiRequest('/v1/users', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+  },
+
+  async updateRole(id, role) {
+    return apiRequest(`/v1/users/${id}/role`, {
+      method: 'PUT',
+      body: JSON.stringify({ role }),
+    });
+  },
+
+  async updateStatus(id, is_active) {
+    return apiRequest(`/v1/users/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ is_active }),
+    });
+  },
+
+  async delete(id) {
+    return apiRequest(`/v1/users/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async changePassword(currentPassword, newPassword) {
+    return apiRequest('/v1/users/change-password', {
+      method: 'PUT',
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+  },
+};
+
 // Export all APIs
 export const backendApi = {
   auth: authApi,
@@ -515,6 +556,7 @@ export const backendApi = {
   advertisements: advertisementsApi,
   talents: talentsApi,
   analytics: analyticsApi,
+  users: usersApi,
 };
 
 export default backendApi;

@@ -15,7 +15,15 @@ export default function PodcastUpload({ formData, setFormData, uploading, setUpl
     console.log('File name:', file.name);
     console.log('File size:', file.size);
 
-    const validAudioTypes = ['audio/mp3', 'audio/wav', 'audio/mpeg', 'audio/m4a', 'audio/mp4', 'audio/x-m4a', 'audio/ogg'];
+    const validAudioTypes = [
+      'audio/mp3',
+      'audio/wav',
+      'audio/mpeg',
+      'audio/m4a',
+      'audio/mp4',
+      'audio/x-m4a',
+      'audio/ogg',
+    ];
     if (!validAudioTypes.includes(file.type)) {
       console.error('Invalid file type:', file.type);
       alert(`Please upload a valid audio file (MP3, WAV, M4A, OGG). Your file type: ${file.type}`);

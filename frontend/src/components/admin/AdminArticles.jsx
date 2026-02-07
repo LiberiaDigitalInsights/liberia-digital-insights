@@ -64,7 +64,11 @@ const AdminArticles = ({ canEdit }) => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      showToast({ title: 'Invalid file', description: 'Please select an image file.', variant: 'error' });
+      showToast({
+        title: 'Invalid file',
+        description: 'Please select an image file.',
+        variant: 'error',
+      });
       e.currentTarget.value = '';
       return;
     }
@@ -72,9 +76,17 @@ const AdminArticles = ({ canEdit }) => {
     try {
       const { url } = await uploadFile(file, { type: 'images', path: 'articles' });
       setFormData((prev) => ({ ...prev, [fieldName]: url }));
-      showToast({ title: 'Uploaded', description: 'Image uploaded successfully.', variant: 'success' });
+      showToast({
+        title: 'Uploaded',
+        description: 'Image uploaded successfully.',
+        variant: 'success',
+      });
     } catch (err) {
-      showToast({ title: 'Upload failed', description: err.message || 'Could not upload image.', variant: 'error' });
+      showToast({
+        title: 'Upload failed',
+        description: err.message || 'Could not upload image.',
+        variant: 'error',
+      });
     } finally {
       e.currentTarget.value = '';
     }

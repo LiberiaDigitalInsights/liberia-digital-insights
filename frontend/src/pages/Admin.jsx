@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import SEO from '../components/SEO';
 import { H1 } from '../components/ui/Typography';
 import AdminSidebar from '../components/admin/AdminSidebar';
@@ -14,20 +14,18 @@ import AdminSettings from '../components/admin/AdminSettings';
 import AdminInsights from '../components/admin/AdminInsights';
 import AdminAdvertisements from '../components/admin/AdminAdvertisements';
 import AdminNewsletter from '../components/admin/AdminNewsletter';
+import AdminUsers from '../components/admin/AdminUsers';
 import AdminGallery from '../components/admin/AdminGallery';
 import { generateArticleGrid } from '../data/mockArticles';
+import { useAuth } from '../context/AuthContext';
 
 import { backendApi } from '../services/backendApi';
 
 export default function Admin() {
+  const { user } = useAuth();
+  const role = user?.role || 'viewer';
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [role, setRole] = useState('viewer');
-
-  // Initialize role from localStorage
-  React.useEffect(() => {
-    setRole(localStorage.getItem('auth_role') || 'viewer');
-  }, []);
 
   const canEdit = role === 'admin' || role === 'editor';
 
@@ -192,21 +190,54 @@ export default function Admin() {
     fetchStats();
   }, []);
 
-  // Tab configuration
-  const tabs = [
-    { id: 'dashboard', label: 'Dashboard' },
-    { id: 'articles', label: 'Articles' },
-    { id: 'insights', label: 'Insights' },
-    { id: 'podcasts', label: 'Podcasts' },
-    { id: 'events', label: 'Events' },
-    { id: 'gallery', label: 'Gallery' },
-    { id: 'talents', label: 'Talent Hub' },
-    { id: 'training', label: 'Training' },
-    { id: 'advertisements', label: 'Advertisements' },
-    { id: 'newsletter', label: 'Newsletter' },
-    { id: 'analytics', label: 'Analytics' },
-    { id: 'settings', label: 'Settings' },
-  ];
+  // Tab configuration with role-based filtering
+  const tabs = useMemo(() => {
+    const allTabs = [
+      { id: 'dashboard', label: 'Dashboard' },
+      { id: 'articles', label: 'Articles' },
+      { id: 'insights', label: 'Insights' },
+      { id: 'podcasts', label: 'Podcasts' },
+      { id: 'events', label: 'Events' },
+      { id: 'gallery', label: 'Gallery' },
+      { id: 'talents', label: 'Talent Hub' },
+      { id: 'training', label: 'Training' },
+      { id: 'advertisements', label: 'Advertisements' },
+      { id: 'newsletter', label: 'Newsletter' },
+      { id: 'analytics', label: 'Analytics' },
+      { id: 'users', label: 'Manage Users' },
+      { id: 'settings', label: 'Settings' },
+    ];
+
+    const rolePermissions = {
+      admin: allTabs.map((t) => t.id),
+      editor: [
+        'dashboard',
+        'articles',
+        'insights',
+        'podcasts',
+        'events',
+        'gallery',
+        'talents',
+        'training',
+        'newsletter',
+        'settings',
+      ],
+      moderator: [
+        'dashboard',
+        'articles',
+        'insights',
+        'podcasts',
+        'events',
+        'gallery',
+        'talents',
+        'settings',
+      ],
+      viewer: ['dashboard', 'articles', 'insights', 'podcasts', 'settings'],
+    };
+
+    const allowed = rolePermissions[role] || rolePermissions.viewer;
+    return allTabs.filter((t) => allowed.includes(t.id));
+  }, [role]);
 
   // Render active tab content
   const renderTabContent = () => {
@@ -236,7 +267,9 @@ export default function Admin() {
       case 'advertisements':
         return <AdminAdvertisements advertisements={advertisements} canEdit={canEdit} />;
       case 'newsletter':
-        return <AdminNewsletter newsletters={newsletters} canEdit={canEdit} />;
+        return <AdminNewsletter />;
+      case 'users':
+        return <AdminUsers />;
       case 'analytics':
         return <AdminAnalytics />;
       case 'settings':
@@ -258,6 +291,7 @@ export default function Admin() {
             setActiveTab={setActiveTab}
             isCollapsed={isCollapsed}
             setIsCollapsed={setIsCollapsed}
+            tabs={tabs}
           />
 
           {/* Main Content */}

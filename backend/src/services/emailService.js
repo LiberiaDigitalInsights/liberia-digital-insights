@@ -221,6 +221,82 @@ class EmailService {
       </html>
     `;
   }
+
+  async sendInvitationEmail(user, password) {
+    const mailOptions = {
+      from: process.env.FROM_EMAIL || "noreply@liberiadigitalinsights.com",
+      to: user.email,
+      subject: "You've been invited to Liberia Digital Insights Admin Panel",
+      html: this.generateInvitationTemplate(user, password),
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log(`Invitation email sent to ${user.email}`);
+      return true;
+    } catch (error) {
+      console.error("Failed to send invitation email:", error);
+      return false;
+    }
+  }
+
+  generateInvitationTemplate(user, password) {
+    const loginUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/admin`;
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Invitation - Liberia Digital Insights</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #1e293b; color: white; padding: 20px; text-align: center; }
+          .content { padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; }
+          .footer { padding: 20px; text-align: center; font-size: 12px; color: #64748b; }
+          .button { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
+          .credentials { background: #f1f5f9; padding: 15px; border-radius: 4px; border-left: 4px solid #2563eb; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Liberia Digital Insights</h1>
+          </div>
+          <div class="content">
+            <h2>Welcome to the Team!</h2>
+            <p>Hi ${user.first_name || "there"},</p>
+            <p>You have been added as a <strong>${user.role}</strong> to the Liberia Digital Insights administration panel.</p>
+            
+            <p>You can now access your dedicated dashboard using the credentials below:</p>
+            
+            <div class="credentials">
+              <p><strong>Email:</strong> ${user.email}</p>
+              <p><strong>Temporary Password:</strong> ${password}</p>
+            </div>
+            
+            <p style="color: #64748b; font-size: 14px; margin-top: 10px;">
+              Please log in and change your password as soon as possible for security reasons.
+            </p>
+            
+            <div style="text-align: center;">
+              <a href="${loginUrl}" class="button">Access Admin Dashboard</a>
+            </div>
+            
+            <p>If you have any questions, please contact the system administrator.</p>
+            
+            <p>Best regards,<br>The Liberia Digital Insights Team</p>
+          </div>
+          <div class="footer">
+            <p>This is an automated invitation email from Liberia Digital Insights.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  }
 }
 
 export default new EmailService();
