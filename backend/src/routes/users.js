@@ -11,6 +11,11 @@ const router = Router();
 router.post("/", verifyToken, authorize("admin"), async (req, res) => {
   try {
     const { email, first_name, last_name, role = "editor" } = req.body;
+    const validRoles = ["admin", "editor", "moderator", "viewer", "user"];
+
+    if (!validRoles.includes(role)) {
+      return res.status(400).json({ error: "Invalid role provided" });
+    }
 
     if (!email || !first_name || !last_name) {
       return res
