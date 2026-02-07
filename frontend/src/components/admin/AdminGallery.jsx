@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Card,
   CardContent,
@@ -115,11 +115,7 @@ export default function AdminGallery() {
   const podcastsApi = usePodcastsApi();
   const { showToast } = useToast();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       const [itemsData, eventsData, podcastsData, categoriesData] = await Promise.all([
@@ -158,7 +154,11 @@ export default function AdminGallery() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [gallery, eventsApi, podcastsApi, showToast]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

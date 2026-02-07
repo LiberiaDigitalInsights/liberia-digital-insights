@@ -1,5 +1,6 @@
 // useNewsletterSubscription Hook Tests
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { vi } from 'vitest';
 import { useNewsletterSubscription } from '../useBackendApi';
 import { backendApi } from '../../services/backendApi';
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { backendApi, authApi } from '../services/backendApi';
 
 // Generic hook for API data fetching
@@ -205,11 +205,14 @@ export const useNewsletters = (params = {}) => {
   const [error, setError] = useState(null);
   const paramsString = JSON.stringify(params);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const memoParams = useMemo(() => params, [paramsString]);
+
   const refetch = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const result = await backendApi.newsletters.list(params);
+      const result = await backendApi.newsletters.list(memoParams);
       setData(result);
       return result;
     } catch (err) {
@@ -218,7 +221,7 @@ export const useNewsletters = (params = {}) => {
     } finally {
       setLoading(false);
     }
-  }, [paramsString]);
+  }, [memoParams]);
 
   useEffect(() => {
     refetch();
@@ -261,12 +264,15 @@ export const useNewsletterSubscribers = (params = {}) => {
   const [error, setError] = useState(null);
   const paramsString = JSON.stringify(params);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const memoParams = useMemo(() => params, [paramsString]);
+
   useEffect(() => {
     const fetchSubscribers = async () => {
       setLoading(true);
       setError(null);
       try {
-        const result = await backendApi.newsletters.getSubscribers(params);
+        const result = await backendApi.newsletters.getSubscribers(memoParams);
         setData(result);
       } catch (err) {
         setError(err.message || 'Failed to fetch subscribers');
@@ -277,7 +283,7 @@ export const useNewsletterSubscribers = (params = {}) => {
     };
 
     fetchSubscribers();
-  }, [paramsString]);
+  }, [memoParams]);
 
   return { data, loading, error };
 };

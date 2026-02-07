@@ -38,12 +38,6 @@ export default function AuthGate({ children, requiredRole = 'admin' }) {
   if (isAuthenticated) {
     // Basic admin panel access roles
     const adminPanelRoles = ['admin', 'editor', 'moderator', 'viewer'];
-    const hasRole =
-      !requiredRole ||
-      user.role === requiredRole ||
-      user.role === 'admin' ||
-      (requiredRole === 'editor' && adminPanelRoles.includes(user.role));
-
     // Improved logic: If user is admin, always allow.
     // Otherwise, if they have the specific role OR if the required role is a basic admin role and they have one.
     const isAuthorized =

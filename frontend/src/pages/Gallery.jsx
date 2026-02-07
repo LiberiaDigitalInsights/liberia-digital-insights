@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { H1 } from '../components/ui/Typography';
 import GalleryItem from '../components/gallery/GalleryItem';
 import Lightbox from '../components/gallery/Lightbox';
@@ -16,43 +16,43 @@ export default function Gallery() {
 
   const gallery = useGallery();
 
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      // Fetch all data in parallel
+      const [itemsData, eventsData, categoriesData] = await Promise.all([
+        gallery.getItems(),
+        gallery.getEvents(),
+        gallery.getCategories(),
+      ]);
+
+      // Handle different response structures with better error checking
+      setItems(
+        Array.isArray(itemsData?.items)
+          ? itemsData.items
+          : Array.isArray(itemsData)
+            ? itemsData
+            : [],
+      );
+      setEvents(Array.isArray(eventsData) ? eventsData : []);
+      setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching gallery data:', err);
+      setError('Failed to load gallery data');
+      // Fallback to empty arrays
+      setItems([]);
+      setEvents([]);
+      setCategories([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [gallery]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        // Fetch all data in parallel
-        const [itemsData, eventsData, categoriesData] = await Promise.all([
-          gallery.getItems(),
-          gallery.getEvents(),
-          gallery.getCategories(),
-        ]);
-
-        // Handle different response structures with better error checking
-        setItems(
-          Array.isArray(itemsData?.items)
-            ? itemsData.items
-            : Array.isArray(itemsData)
-              ? itemsData
-              : [],
-        );
-        setEvents(Array.isArray(eventsData) ? eventsData : []);
-        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching gallery data:', err);
-        setError('Failed to load gallery data');
-        // Fallback to empty arrays
-        setItems([]);
-        setEvents([]);
-        setCategories([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, []); // Remove gallery dependency to prevent infinite re-renders
+  }, [fetchData]);
 
   const filteredItems = React.useMemo(() => {
     if (filter === 'all') return items;

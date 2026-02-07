@@ -8,6 +8,7 @@ const LazyImage = ({ src, alt, className = '', placeholder = '/placeholder.jpg',
   const imgRef = useRef();
 
   useEffect(() => {
+    const node = imgRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -21,13 +22,13 @@ const LazyImage = ({ src, alt, className = '', placeholder = '/placeholder.jpg',
       },
     );
 
-    if (imgRef.current) {
-      observer.observe(imgRef.current);
+    if (node) {
+      observer.observe(node);
     }
 
     return () => {
-      if (imgRef.current) {
-        observer.unobserve(imgRef.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
   }, []);
@@ -60,7 +61,7 @@ const LazyImage = ({ src, alt, className = '', placeholder = '/placeholder.jpg',
   );
 };
 
-// Performance monitoring utility
+// eslint-disable-next-line react-refresh/only-export-components
 export const performanceMonitor = {
   // Measure page load time
   measurePageLoad: () => {
@@ -108,7 +109,7 @@ export const performanceMonitor = {
   },
 };
 
-// Image optimization utility
+// eslint-disable-next-line react-refresh/only-export-components
 export const optimizeImage = (src, options = {}) => {
   const { width, height, quality = 80, format = 'auto' } = options;
 
@@ -128,7 +129,7 @@ export const optimizeImage = (src, options = {}) => {
   return `${src}${separator}${params.toString()}`;
 };
 
-// Preload critical resources
+// eslint-disable-next-line react-refresh/only-export-components
 export const preloadResource = (href, as, type = null) => {
   if (typeof document !== 'undefined') {
     const link = document.createElement('link');
@@ -140,14 +141,14 @@ export const preloadResource = (href, as, type = null) => {
   }
 };
 
-// Preload critical images
+// eslint-disable-next-line react-refresh/only-export-components
 export const preloadCriticalImages = (imageUrls) => {
   imageUrls.forEach((src) => {
     preloadResource(src, 'image');
   });
 };
 
-// Code splitting helper
+// eslint-disable-next-line react-refresh/only-export-components
 export const loadComponent = (importFn) => {
   return React.lazy(() => {
     return importFn().then((module) => ({
@@ -156,7 +157,7 @@ export const loadComponent = (importFn) => {
   });
 };
 
-// Debounce utility for performance
+// eslint-disable-next-line react-refresh/only-export-components
 export const debounce = (func, wait) => {
   let timeout;
   return function executedFunction(...args) {
@@ -169,7 +170,7 @@ export const debounce = (func, wait) => {
   };
 };
 
-// Throttle utility for scroll events
+// eslint-disable-next-line react-refresh/only-export-components
 export const throttle = (func, limit) => {
   let inThrottle;
   return function () {

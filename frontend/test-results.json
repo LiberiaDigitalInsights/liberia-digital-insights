@@ -1,0 +1,1156 @@
+{
+  "numTotalTestSuites": 67,
+  "numPassedTestSuites": 50,
+  "numFailedTestSuites": 17,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 87,
+  "numPassedTests": 84,
+  "numFailedTests": 3,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1770435793405,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["App routes"],
+          "fullName": "App routes renders Home at /",
+          "status": "passed",
+          "title": "renders Home at /",
+          "duration": 559.1631550000002,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["App routes"],
+          "fullName": "App routes renders Contact at /contact",
+          "status": "passed",
+          "title": "renders Contact at /contact",
+          "duration": 358.3555729999998,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["App routes"],
+          "fullName": "App routes renders NotFound on unknown route",
+          "status": "passed",
+          "title": "renders NotFound on unknown route",
+          "duration": 325.8469640000003,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435839851,
+      "endTime": 1770435841093.847,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/__tests__/AppRoutes.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ErrorBoundary"],
+          "fullName": "ErrorBoundary renders children when there is no error",
+          "status": "passed",
+          "title": "renders children when there is no error",
+          "duration": 73.35958200000005,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ErrorBoundary"],
+          "fullName": "ErrorBoundary renders fallback UI when a child throws",
+          "status": "passed",
+          "title": "renders fallback UI when a child throws",
+          "duration": 53.95712800000001,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435851285,
+      "endTime": 1770435851412.957,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/ErrorBoundary.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/Navbar.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget renders newsletter signup form",
+          "status": "passed",
+          "title": "renders newsletter signup form",
+          "duration": 690.489372,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget shows validation errors for empty required fields",
+          "status": "passed",
+          "title": "shows validation errors for empty required fields",
+          "duration": 68.238155,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget shows validation error for invalid email",
+          "status": "failed",
+          "title": "shows validation error for invalid email",
+          "duration": 92.03073200000017,
+          "failureMessages": [
+            "TestingLibraryElementError: Unable to find an element with the text: Please enter a valid email address. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4\"\u001b[39m\n    \u001b[36m>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"mb-3 flex items-center justify-between\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<h3\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"text-base font-semibold\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mNEWSLETTER SIGNUP\u001b[0m\n        \u001b[36m</h3>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"text-sm text-[var(--color-muted)]\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<p\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"mb-4 text-sm text-[var(--color-muted)]\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mSign up for our weekly newsletter and get the latest industry insights right in your inbox.\u001b[0m\n        \u001b[36m</p>\u001b[39m\n        \u001b[36m<form\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"space-y-3\"\u001b[39m\n          \u001b[33mnovalidate\u001b[39m=\u001b[32m\"\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mName\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Your name\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"John Doe\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name-help\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mEnter your full name\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mYour Email\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33maria-describedby\u001b[39m=\u001b[32m\"newsletter-email-error\"\u001b[39m\n              \u001b[33maria-invalid\u001b[39m=\u001b[32m\"true\"\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"you@example.com\"\u001b[39m\n              \u001b[33mtype\u001b[39m=\u001b[32m\"email\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"invalid-email\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email-error\"\u001b[39m\n              \u001b[33mvariant\u001b[39m=\u001b[32m\"error\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mEnter a valid email address\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mCompany\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Company\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mOrganization\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Organization\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mPosition\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Position\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<button\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-4 py-2 text-sm bg-brand-500 hover:cursor-pointer text-white hover:bg-brand-600 w-full\"\u001b[39m\n            \u001b[33mtype\u001b[39m=\u001b[32m\"submit\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[0mSign Up\u001b[0m\n          \u001b[36m</button>\u001b[39m\n        \u001b[36m</form>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Object.getElementError (/home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/config.js:37:19)\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/NewsletterWidget.test.jsx:88:19\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:533:5\n    at runTest (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1056:11)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runFiles (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1262:5)"
+          ],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget submits form successfully with valid data",
+          "status": "passed",
+          "title": "submits form successfully with valid data",
+          "duration": 125.58417499999996,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget handles subscription error",
+          "status": "passed",
+          "title": "handles subscription error",
+          "duration": 60.18395700000019,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget shows loading state during submission",
+          "status": "failed",
+          "title": "shows loading state during submission",
+          "duration": 149.72202599999991,
+          "failureMessages": [
+            "TestingLibraryElementError: Unable to find an accessible element with the role \"button\" and name `/Sign Up/i`\n\nHere are the accessible roles:\n\n  heading:\n\n  Name \"NEWSLETTER SIGNUP\":\n  \u001b[36m<h3\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"text-base font-semibold\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  --------------------------------------------------\n  paragraph:\n\n  Name \"\":\n  \u001b[36m<p\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"mb-4 text-sm text-[var(--color-muted)]\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"\":\n  \u001b[36m<p\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name-help\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"\":\n  \u001b[36m<p\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  --------------------------------------------------\n  textbox:\n\n  Name \"Name\":\n  \u001b[36m<input\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n    \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Your name\"\u001b[39m\n    \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"Your Email\":\n  \u001b[36m<input\u001b[39m\n    \u001b[33maria-describedby\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n    \u001b[33mplaceholder\u001b[39m=\u001b[32m\"you@example.com\"\u001b[39m\n    \u001b[33mtype\u001b[39m=\u001b[32m\"email\"\u001b[39m\n    \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"Company\":\n  \u001b[36m<input\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n    \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Company\"\u001b[39m\n    \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"Organization\":\n  \u001b[36m<input\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n    \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Organization\"\u001b[39m\n    \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"Position\":\n  \u001b[36m<input\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n    \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Position\"\u001b[39m\n    \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  --------------------------------------------------\n  button:\n\n  Name \"Submitting...\":\n  \u001b[36m<button\u001b[39m\n    \u001b[33maria-busy\u001b[39m=\u001b[32m\"true\"\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-4 py-2 text-sm bg-brand-500 hover:cursor-pointer text-white hover:bg-brand-600 w-full\"\u001b[39m\n    \u001b[33mdisabled\u001b[39m=\u001b[32m\"\"\u001b[39m\n    \u001b[33mtype\u001b[39m=\u001b[32m\"submit\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  --------------------------------------------------\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4\"\u001b[39m\n    \u001b[36m>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"mb-3 flex items-center justify-between\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<h3\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"text-base font-semibold\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mNEWSLETTER SIGNUP\u001b[0m\n        \u001b[36m</h3>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"text-sm text-[var(--color-muted)]\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<p\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"mb-4 text-sm text-[var(--color-muted)]\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mSign up for our weekly newsletter and get the latest industry insights right in your inbox.\u001b[0m\n        \u001b[36m</p>\u001b[39m\n        \u001b[36m<form\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"space-y-3\"\u001b[39m\n          \u001b[33mnovalidate\u001b[39m=\u001b[32m\"\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mName\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Your name\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name-help\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mEnter your full name\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mYour Email\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33maria-describedby\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"you@example.com\"\u001b[39m\n              \u001b[33mtype\u001b[39m=\u001b[32m\"email\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mWe’ll never share your email\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mCompany\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Company\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mOrganization\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Organization\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mPosition\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Position\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<button\u001b[39m\n            \u001b[33maria-busy\u001b[39m=\u001b[32m\"true\"\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-4 py-2 text-sm bg-brand-500 hover:cursor-pointer text-white hover:bg-brand-600 w-full\"\u001b[39m\n            \u001b[33mdisabled\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[33mtype\u001b[39m=\u001b[32m\"submit\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<span\u001b[39m\n              \u001b[33maria-hidden\u001b[39m=\u001b[32m\"true\"\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[0mSubmitting...\u001b[0m\n          \u001b[36m</button>\u001b[39m\n        \u001b[36m</form>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Object.getElementError (/home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/config.js:37:19)\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/NewsletterWidget.test.jsx:165:33\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:146:14\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:533:11\n    at runWithTimeout (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:39:7)\n    at runTest (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1056:17)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)"
+          ],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget clears validation errors when user types",
+          "status": "passed",
+          "title": "clears validation errors when user types",
+          "duration": 45.56792899999982,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget shows success message after successful submission",
+          "status": "failed",
+          "title": "shows success message after successful submission",
+          "duration": 1064.588566,
+          "failureMessages": [
+            "Error: Unable to find an element with the text: You're all set! Check your inbox for a welcome email.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4\"\u001b[39m\n    \u001b[36m>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"mb-3 flex items-center justify-between\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<h3\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"text-base font-semibold\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mNEWSLETTER SIGNUP\u001b[0m\n        \u001b[36m</h3>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"text-sm text-[var(--color-muted)]\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<p\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"mb-4 text-sm text-[var(--color-muted)]\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mSign up for our weekly newsletter and get the latest industry insights right in your inbox.\u001b[0m\n        \u001b[36m</p>\u001b[39m\n        \u001b[36m<form\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"space-y-3\"\u001b[39m\n          \u001b[33mnovalidate\u001b[39m=\u001b[32m\"\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mName\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Your name\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name-help\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mEnter your full name\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mYour Email\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33maria-describedby\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"you@example.com\"\u001b[39m\n              \u001b[33mtype\u001b[39m=\u001b[32m\"email\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mWe’ll never share your email\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mCompany\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Company\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mOrganization\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Organization\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mPosition\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Position\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<button\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-4 py-2 text-sm bg-brand-500 hover:cursor-pointer text-white hover:bg-brand-600 w-full\"\u001b[39m\n            \u001b[33mtype\u001b[39m=\u001b[32m\"submit\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[0mSign Up\u001b[0m\n          \u001b[36m</button>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"text-sm text-green-600\"\u001b[39m\n            \u001b[33mrole\u001b[39m=\u001b[32m\"status\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[0mYou’re all set! Check your inbox for a welcome email.\u001b[0m\n          \u001b[36m</div>\u001b[39m\n        \u001b[36m</form>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Proxy.waitForWrapper (/home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/wait-for.js:163:27)\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/NewsletterWidget.test.jsx:202:11\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:146:14\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:533:11\n    at runWithTimeout (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:39:7)\n    at runTest (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1056:17)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runFiles (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1262:5)\n    at startTests (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1271:3)"
+          ],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget shows generic error message when no specific error provided",
+          "status": "passed",
+          "title": "shows generic error message when no specific error provided",
+          "duration": 269.5792959999999,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435797760,
+      "endTime": 1770435800326.5793,
+      "status": "failed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/NewsletterWidget.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["SEO component"],
+          "fullName": "SEO component sets title and meta on home route",
+          "status": "passed",
+          "title": "sets title and meta on home route",
+          "duration": 138.30860899999993,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["SEO component"],
+          "fullName": "SEO component sets title and meta on contact route",
+          "status": "passed",
+          "title": "sets title and meta on contact route",
+          "duration": 48.03360199999997,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435843055,
+      "endTime": 1770435843242.0337,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/SEO.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Search"],
+          "fullName": "Search renders search input",
+          "status": "passed",
+          "title": "renders search input",
+          "duration": 86.83093899999994,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Search"],
+          "fullName": "Search shows suggestions when typing 3+ characters",
+          "status": "passed",
+          "title": "shows suggestions when typing 3+ characters",
+          "duration": 301.79582500000015,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Search"],
+          "fullName": "Search hides suggestions when input is less than 3 characters",
+          "status": "passed",
+          "title": "hides suggestions when input is less than 3 characters",
+          "duration": 13.441757000000052,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Search"],
+          "fullName": "Search debounces search input",
+          "status": "passed",
+          "title": "debounces search input",
+          "duration": 273.0083989999998,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Search"],
+          "fullName": "Search calls onResults callback when results are found",
+          "status": "passed",
+          "title": "calls onResults callback when results are found",
+          "duration": 271.32822699999997,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435826708,
+      "endTime": 1770435827654.3281,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/Search.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ThemeContext"],
+          "fullName": "ThemeContext provides theme context",
+          "status": "passed",
+          "title": "provides theme context",
+          "duration": 75.1284700000001,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ThemeContext"],
+          "fullName": "ThemeContext defaults to dark theme",
+          "status": "passed",
+          "title": "defaults to dark theme",
+          "duration": 11.5381610000004,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ThemeContext"],
+          "fullName": "ThemeContext toggles theme",
+          "status": "passed",
+          "title": "toggles theme",
+          "duration": 59.996901999999864,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ThemeContext"],
+          "fullName": "ThemeContext persists theme in localStorage",
+          "status": "passed",
+          "title": "persists theme in localStorage",
+          "duration": 10.364052999999785,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435831947,
+      "endTime": 1770435832104.364,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/context/__tests__/ThemeContext.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ToastContext"],
+          "fullName": "ToastContext provides toast context",
+          "status": "passed",
+          "title": "provides toast context",
+          "duration": 66.7779109999999,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ToastContext"],
+          "fullName": "ToastContext shows toast when showToast is called",
+          "status": "passed",
+          "title": "shows toast when showToast is called",
+          "duration": 50.29442800000015,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ToastContext"],
+          "fullName": "ToastContext removes toast after duration",
+          "status": "passed",
+          "title": "removes toast after duration",
+          "duration": 24.564241000000038,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435824721,
+      "endTime": 1770435824862.5642,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/context/__tests__/ToastContext.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should initialize with default state",
+          "status": "passed",
+          "title": "should initialize with default state",
+          "duration": 52.495177999999896,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should handle successful subscription",
+          "status": "passed",
+          "title": "should handle successful subscription",
+          "duration": 12.350250000000187,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should set loading state during subscription",
+          "status": "passed",
+          "title": "should set loading state during subscription",
+          "duration": 13.723021000000244,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should handle subscription error",
+          "status": "passed",
+          "title": "should handle subscription error",
+          "duration": 9.597985999999764,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should handle error without message",
+          "status": "passed",
+          "title": "should handle error without message",
+          "duration": 8.662299000000075,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should reset error state on successful subscription after error",
+          "status": "passed",
+          "title": "should reset error state on successful subscription after error",
+          "duration": 8.115512999999737,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should maintain loading state correctly with multiple concurrent calls",
+          "status": "passed",
+          "title": "should maintain loading state correctly with multiple concurrent calls",
+          "duration": 9.936433999999736,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should pass subscriber data correctly to API",
+          "status": "passed",
+          "title": "should pass subscriber data correctly to API",
+          "duration": 7.811280999999781,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should handle empty subscriber data",
+          "status": "passed",
+          "title": "should handle empty subscriber data",
+          "duration": 3.9800340000001597,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435802535,
+      "endTime": 1770435802662.98,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/hooks/__tests__/useNewsletterSubscription.test.js"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["subscribeNewsletter"],
+          "fullName": "subscribeNewsletter resolves on valid input",
+          "status": "passed",
+          "title": "resolves on valid input",
+          "duration": 6.267984999999953,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["subscribeNewsletter"],
+          "fullName": "subscribeNewsletter rejects with NETWORK_ERROR when API fails",
+          "status": "passed",
+          "title": "rejects with NETWORK_ERROR when API fails",
+          "duration": 13.398551999999881,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["subscribeNewsletter"],
+          "fullName": "subscribeNewsletter rejects with VALIDATION_ERROR for invalid input",
+          "status": "passed",
+          "title": "rejects with VALIDATION_ERROR for invalid input",
+          "duration": 1.6082030000000032,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435834003,
+      "endTime": 1770435834024.6082,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/lib/__tests__/newsletter.test.js"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/About.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Articles.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Categories.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Category route (smoke)"],
+          "fullName": "Category route (smoke) renders category heading for /category/technology",
+          "status": "passed",
+          "title": "renders category heading for /category/technology",
+          "duration": 498.707357,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435857377,
+      "endTime": 1770435857875.7073,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Category.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Contact.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Events.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Gallery.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Home.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["InsightDetail route (smoke)"],
+          "fullName": "InsightDetail route (smoke) renders H1 for insight detail at /insight/123e4567-e89b-12d3-a456-426614174002",
+          "status": "passed",
+          "title": "renders H1 for insight detail at /insight/123e4567-e89b-12d3-a456-426614174002",
+          "duration": 562.140316,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435822329,
+      "endTime": 1770435822891.1404,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/InsightDetail.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Insights.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["PodcastDetail"],
+          "fullName": "PodcastDetail renders external links and embeds when links exist",
+          "status": "passed",
+          "title": "renders external links and embeds when links exist",
+          "duration": 612.1720300000002,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435815526,
+      "endTime": 1770435816138.172,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/PodcastDetail.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Podcasts.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Failed to resolve import \"../Signup\" from \"src/pages/__tests__/Signup.smoke.test.jsx\". Does the file exist?",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Signup.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Tag route (smoke)"],
+          "fullName": "Tag route (smoke) renders tag heading for /tag/insighttechthursdays",
+          "status": "passed",
+          "title": "renders tag heading for /tag/insighttechthursdays",
+          "duration": 519.0226529999998,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435859826,
+      "endTime": 1770435860345.0227,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Tag.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Talent.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/TrainingCourses.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Training & Courses routes"],
+          "fullName": "Training & Courses routes renders hub at /training-courses",
+          "status": "passed",
+          "title": "renders hub at /training-courses",
+          "duration": 563.729578,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Training & Courses routes"],
+          "fullName": "Training & Courses routes renders training detail",
+          "status": "passed",
+          "title": "renders training detail",
+          "duration": 376.00982699999986,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Training & Courses routes"],
+          "fullName": "Training & Courses routes renders course detail",
+          "status": "passed",
+          "title": "renders course detail",
+          "duration": 352.4213639999998,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Training & Courses routes"],
+          "fullName": "Training & Courses routes renders register page with type/id context",
+          "status": "passed",
+          "title": "renders register page with type/id context",
+          "duration": 339.46589399999993,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435806926,
+      "endTime": 1770435808557.4658,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/TrainingRoutes.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Unsubscribe.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["sanitizeHtml"],
+          "fullName": "sanitizeHtml strips dangerous tags and attributes",
+          "status": "passed",
+          "title": "strips dangerous tags and attributes",
+          "duration": 39.825154999999995,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["sanitizeHtml"],
+          "fullName": "sanitizeHtml preserves allowed content",
+          "status": "passed",
+          "title": "preserves allowed content",
+          "duration": 6.726722000000109,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435863488,
+      "endTime": 1770435863534.7268,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/utils/__tests__/sanitizeHtml.test.js"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770435793405,
+      "endTime": 1770435793405,
+      "status": "failed",
+      "message": "Transform failed with 4 errors:\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:9: ERROR: Multiple exports with the same name \"screen\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:17: ERROR: Multiple exports with the same name \"fireEvent\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:28: ERROR: Multiple exports with the same name \"waitFor\"\n/home/iskalo/Templates/liberia-digital-insights/frontend/src/test/utils.jsx:27:37: ERROR: Multiple exports with the same name \"act\"",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/sidebar/__tests__/NewsletterWidget.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Accordion"],
+          "fullName": "Accordion toggles sections and updates aria-expanded",
+          "status": "passed",
+          "title": "toggles sections and updates aria-expanded",
+          "duration": 646.0249489999999,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435848829,
+      "endTime": 1770435849475.025,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Accordion.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Badge"],
+          "fullName": "Badge renders badge text",
+          "status": "passed",
+          "title": "renders badge text",
+          "duration": 52.109999000000016,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Badge"],
+          "fullName": "Badge applies variant classes",
+          "status": "passed",
+          "title": "applies variant classes",
+          "duration": 6.412014999999883,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Badge"],
+          "fullName": "Badge applies default variant when none specified",
+          "status": "passed",
+          "title": "applies default variant when none specified",
+          "duration": 6.578936999999996,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Badge"],
+          "fullName": "Badge applies custom className",
+          "status": "passed",
+          "title": "applies custom className",
+          "duration": 8.244347000000062,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435855455,
+      "endTime": 1770435855528.2444,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Badge.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button renders with text",
+          "status": "passed",
+          "title": "renders with text",
+          "duration": 68.31849999999986,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button handles click events",
+          "status": "passed",
+          "title": "handles click events",
+          "duration": 15.19748699999991,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button shows loading state",
+          "status": "passed",
+          "title": "shows loading state",
+          "duration": 115.95511399999987,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button disables when loading",
+          "status": "passed",
+          "title": "disables when loading",
+          "duration": 13.157918999999765,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button disables when disabled prop is true",
+          "status": "passed",
+          "title": "disables when disabled prop is true",
+          "duration": 11.730531000000155,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button applies variant classes",
+          "status": "passed",
+          "title": "applies variant classes",
+          "duration": 5.09586599999966,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button applies size classes",
+          "status": "passed",
+          "title": "applies size classes",
+          "duration": 3.4745560000001205,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button renders as custom component when using as prop",
+          "status": "passed",
+          "title": "renders as custom component when using as prop",
+          "duration": 14.552699999999732,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button renders with left icon",
+          "status": "passed",
+          "title": "renders with left icon",
+          "duration": 5.471230999999989,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button renders with right icon",
+          "status": "passed",
+          "title": "renders with right icon",
+          "duration": 4.086465999999746,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435818512,
+      "endTime": 1770435818770.0864,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Button.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Card"],
+          "fullName": "Card renders children",
+          "status": "passed",
+          "title": "renders children",
+          "duration": 57.18937200000005,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Card"],
+          "fullName": "Card applies custom className",
+          "status": "passed",
+          "title": "applies custom className",
+          "duration": 5.906170999999858,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Card"],
+          "fullName": "Card passes through props",
+          "status": "passed",
+          "title": "passes through props",
+          "duration": 6.266931999999997,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435868935,
+      "endTime": 1770435869004.2668,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Card.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ContentRenderer"],
+          "fullName": "ContentRenderer renders sanitized HTML",
+          "status": "passed",
+          "title": "renders sanitized HTML",
+          "duration": 87.53577299999984,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ContentRenderer"],
+          "fullName": "ContentRenderer renders default message when empty",
+          "status": "passed",
+          "title": "renders default message when empty",
+          "duration": 14.675310999999965,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435867164,
+      "endTime": 1770435867266.6753,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/ContentRenderer.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Form Components", "Field"],
+          "fullName": "Form Components Field renders children",
+          "status": "passed",
+          "title": "renders children",
+          "duration": 53.64069100000006,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "Field"],
+          "fullName": "Form Components Field applies custom className",
+          "status": "passed",
+          "title": "applies custom className",
+          "duration": 5.0336560000000645,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "Label"],
+          "fullName": "Form Components Label renders label text",
+          "status": "passed",
+          "title": "renders label text",
+          "duration": 11.893245999999863,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "Label"],
+          "fullName": "Form Components Label associates with input via htmlFor",
+          "status": "passed",
+          "title": "associates with input via htmlFor",
+          "duration": 10.339914000000135,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "HelperText"],
+          "fullName": "Form Components HelperText renders helper text",
+          "status": "passed",
+          "title": "renders helper text",
+          "duration": 7.647857000000158,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "HelperText"],
+          "fullName": "Form Components HelperText applies custom className",
+          "status": "passed",
+          "title": "applies custom className",
+          "duration": 3.82792500000005,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "ErrorText"],
+          "fullName": "Form Components ErrorText renders error text",
+          "status": "passed",
+          "title": "renders error text",
+          "duration": 4.812477000000172,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "ErrorText"],
+          "fullName": "Form Components ErrorText applies error styling",
+          "status": "passed",
+          "title": "applies error styling",
+          "duration": 3.004758000000038,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435829371,
+      "endTime": 1770435829473.0046,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Form.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input renders input element",
+          "status": "passed",
+          "title": "renders input element",
+          "duration": 150.2681809999999,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input renders email input as input field",
+          "status": "passed",
+          "title": "renders email input as input field",
+          "duration": 18.03848999999991,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input handles value changes",
+          "status": "passed",
+          "title": "handles value changes",
+          "duration": 21.767094999999927,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input displays placeholder",
+          "status": "passed",
+          "title": "displays placeholder",
+          "duration": 7.412950000000137,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input applies custom className",
+          "status": "passed",
+          "title": "applies custom className",
+          "duration": 7.05628999999999,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input supports different input types",
+          "status": "passed",
+          "title": "supports different input types",
+          "duration": 10.786511000000019,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input can be disabled",
+          "status": "passed",
+          "title": "can be disabled",
+          "duration": 10.971074000000044,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435835819,
+      "endTime": 1770435836045.9712,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Input.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Modal"],
+          "fullName": "Modal renders when open and closes on close button and backdrop",
+          "status": "passed",
+          "title": "renders when open and closes on close button and backdrop",
+          "duration": 258.33770700000014,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435846687,
+      "endTime": 1770435846945.3376,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Modal.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Tabs"],
+          "fullName": "Tabs switches visible content when clicking tabs",
+          "status": "passed",
+          "title": "switches visible content when clicking tabs",
+          "duration": 276.9714120000001,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770435853247,
+      "endTime": 1770435853523.9714,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Tabs.test.jsx"
+    }
+  ]
+}

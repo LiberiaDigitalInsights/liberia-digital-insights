@@ -1,0 +1,1500 @@
+{
+  "numTotalTestSuites": 81,
+  "numPassedTestSuites": 72,
+  "numFailedTestSuites": 9,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 123,
+  "numPassedTests": 117,
+  "numFailedTests": 6,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1770475908399,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["App routes"],
+          "fullName": "App routes renders Home at /",
+          "status": "passed",
+          "title": "renders Home at /",
+          "duration": 742.2387279999998,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["App routes"],
+          "fullName": "App routes renders Contact at /contact",
+          "status": "passed",
+          "title": "renders Contact at /contact",
+          "duration": 353.38122999999996,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["App routes"],
+          "fullName": "App routes renders NotFound on unknown route",
+          "status": "passed",
+          "title": "renders NotFound on unknown route",
+          "duration": 341.9727090000001,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475971853,
+      "endTime": 1770475973290.9727,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/__tests__/AppRoutes.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ErrorBoundary"],
+          "fullName": "ErrorBoundary renders children when there is no error",
+          "status": "passed",
+          "title": "renders children when there is no error",
+          "duration": 161.60303199999998,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ErrorBoundary"],
+          "fullName": "ErrorBoundary renders fallback UI when a child throws",
+          "status": "passed",
+          "title": "renders fallback UI when a child throws",
+          "duration": 76.74437699999999,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475987252,
+      "endTime": 1770475987490.7444,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/ErrorBoundary.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Navbar dropdown accessibility"],
+          "fullName": "Navbar dropdown accessibility toggles aria-expanded on click and shows menu",
+          "status": "passed",
+          "title": "toggles aria-expanded on click and shows menu",
+          "duration": 903.8081149999998,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Navbar dropdown accessibility"],
+          "fullName": "Navbar dropdown accessibility opens with Enter/Space and closes with Escape, restoring focus",
+          "status": "passed",
+          "title": "opens with Enter/Space and closes with Escape, restoring focus",
+          "duration": 133.0311529999999,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Navbar dropdown accessibility"],
+          "fullName": "Navbar dropdown accessibility closes when clicking outside",
+          "status": "passed",
+          "title": "closes when clicking outside",
+          "duration": 269.8966489999998,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475949649,
+      "endTime": 1770475950955.8967,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/Navbar.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget renders newsletter signup form",
+          "status": "passed",
+          "title": "renders newsletter signup form",
+          "duration": 250.3318079999999,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget shows validation errors for empty required fields",
+          "status": "passed",
+          "title": "shows validation errors for empty required fields",
+          "duration": 62.54082600000038,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget shows validation error for invalid email",
+          "status": "failed",
+          "title": "shows validation error for invalid email",
+          "duration": 85.76009400000021,
+          "failureMessages": [
+            "TestingLibraryElementError: Unable to find an element with the text: Please enter a valid email address. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4\"\u001b[39m\n    \u001b[36m>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"mb-3 flex items-center justify-between\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<h3\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"text-base font-semibold\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mNEWSLETTER SIGNUP\u001b[0m\n        \u001b[36m</h3>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"text-sm text-[var(--color-muted)]\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<p\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"mb-4 text-sm text-[var(--color-muted)]\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mSign up for our weekly newsletter and get the latest industry insights right in your inbox.\u001b[0m\n        \u001b[36m</p>\u001b[39m\n        \u001b[36m<form\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"space-y-3\"\u001b[39m\n          \u001b[33mnovalidate\u001b[39m=\u001b[32m\"\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mName\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Your name\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"John Doe\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name-help\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mEnter your full name\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mYour Email\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33maria-describedby\u001b[39m=\u001b[32m\"newsletter-email-error\"\u001b[39m\n              \u001b[33maria-invalid\u001b[39m=\u001b[32m\"true\"\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"you@example.com\"\u001b[39m\n              \u001b[33mtype\u001b[39m=\u001b[32m\"email\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"invalid-email\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email-error\"\u001b[39m\n              \u001b[33mvariant\u001b[39m=\u001b[32m\"error\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mEnter a valid email address\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mCompany\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Company\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mOrganization\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Organization\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mPosition\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Position\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<button\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-4 py-2 text-sm bg-brand-500 hover:cursor-pointer text-white hover:bg-brand-600 w-full\"\u001b[39m\n            \u001b[33mtype\u001b[39m=\u001b[32m\"submit\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[0mSign Up\u001b[0m\n          \u001b[36m</button>\u001b[39m\n        \u001b[36m</form>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Object.getElementError (/home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/config.js:37:19)\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/NewsletterWidget.test.jsx:88:19\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:533:5\n    at runTest (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1056:11)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runFiles (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1262:5)"
+          ],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget submits form successfully with valid data",
+          "status": "passed",
+          "title": "submits form successfully with valid data",
+          "duration": 146.2232009999998,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget handles subscription error",
+          "status": "passed",
+          "title": "handles subscription error",
+          "duration": 75.47477799999979,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget shows loading state during submission",
+          "status": "failed",
+          "title": "shows loading state during submission",
+          "duration": 163.3067229999997,
+          "failureMessages": [
+            "TestingLibraryElementError: Unable to find an accessible element with the role \"button\" and name `/Sign Up/i`\n\nHere are the accessible roles:\n\n  heading:\n\n  Name \"NEWSLETTER SIGNUP\":\n  \u001b[36m<h3\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"text-base font-semibold\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  --------------------------------------------------\n  paragraph:\n\n  Name \"\":\n  \u001b[36m<p\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"mb-4 text-sm text-[var(--color-muted)]\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"\":\n  \u001b[36m<p\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name-help\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"\":\n  \u001b[36m<p\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  --------------------------------------------------\n  textbox:\n\n  Name \"Name\":\n  \u001b[36m<input\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n    \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Your name\"\u001b[39m\n    \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"Your Email\":\n  \u001b[36m<input\u001b[39m\n    \u001b[33maria-describedby\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n    \u001b[33mplaceholder\u001b[39m=\u001b[32m\"you@example.com\"\u001b[39m\n    \u001b[33mtype\u001b[39m=\u001b[32m\"email\"\u001b[39m\n    \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"Company\":\n  \u001b[36m<input\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n    \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Company\"\u001b[39m\n    \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"Organization\":\n  \u001b[36m<input\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n    \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Organization\"\u001b[39m\n    \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  Name \"Position\":\n  \u001b[36m<input\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n    \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n    \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Position\"\u001b[39m\n    \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  --------------------------------------------------\n  button:\n\n  Name \"Submitting...\":\n  \u001b[36m<button\u001b[39m\n    \u001b[33maria-busy\u001b[39m=\u001b[32m\"true\"\u001b[39m\n    \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-4 py-2 text-sm bg-brand-500 hover:cursor-pointer text-white hover:bg-brand-600 w-full\"\u001b[39m\n    \u001b[33mdisabled\u001b[39m=\u001b[32m\"\"\u001b[39m\n    \u001b[33mtype\u001b[39m=\u001b[32m\"submit\"\u001b[39m\n  \u001b[36m/>\u001b[39m\n\n  --------------------------------------------------\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4\"\u001b[39m\n    \u001b[36m>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"mb-3 flex items-center justify-between\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<h3\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"text-base font-semibold\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mNEWSLETTER SIGNUP\u001b[0m\n        \u001b[36m</h3>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"text-sm text-[var(--color-muted)]\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<p\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"mb-4 text-sm text-[var(--color-muted)]\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mSign up for our weekly newsletter and get the latest industry insights right in your inbox.\u001b[0m\n        \u001b[36m</p>\u001b[39m\n        \u001b[36m<form\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"space-y-3\"\u001b[39m\n          \u001b[33mnovalidate\u001b[39m=\u001b[32m\"\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mName\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Your name\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name-help\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mEnter your full name\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mYour Email\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33maria-describedby\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"you@example.com\"\u001b[39m\n              \u001b[33mtype\u001b[39m=\u001b[32m\"email\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mWe’ll never share your email\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mCompany\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Company\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mOrganization\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Organization\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mPosition\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Position\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<button\u001b[39m\n            \u001b[33maria-busy\u001b[39m=\u001b[32m\"true\"\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-4 py-2 text-sm bg-brand-500 hover:cursor-pointer text-white hover:bg-brand-600 w-full\"\u001b[39m\n            \u001b[33mdisabled\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[33mtype\u001b[39m=\u001b[32m\"submit\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<span\u001b[39m\n              \u001b[33maria-hidden\u001b[39m=\u001b[32m\"true\"\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[0mSubmitting...\u001b[0m\n          \u001b[36m</button>\u001b[39m\n        \u001b[36m</form>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Object.getElementError (/home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/config.js:37:19)\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/NewsletterWidget.test.jsx:165:33\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:146:14\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:533:11\n    at runWithTimeout (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:39:7)\n    at runTest (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1056:17)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)"
+          ],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget clears validation errors when user types",
+          "status": "passed",
+          "title": "clears validation errors when user types",
+          "duration": 52.29350299999987,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget shows success message after successful submission",
+          "status": "failed",
+          "title": "shows success message after successful submission",
+          "duration": 1074.7082259999997,
+          "failureMessages": [
+            "Error: Unable to find an element with the text: You're all set! Check your inbox for a welcome email.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4\"\u001b[39m\n    \u001b[36m>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"mb-3 flex items-center justify-between\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<h3\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"text-base font-semibold\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mNEWSLETTER SIGNUP\u001b[0m\n        \u001b[36m</h3>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"text-sm text-[var(--color-muted)]\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<p\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"mb-4 text-sm text-[var(--color-muted)]\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mSign up for our weekly newsletter and get the latest industry insights right in your inbox.\u001b[0m\n        \u001b[36m</p>\u001b[39m\n        \u001b[36m<form\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"space-y-3\"\u001b[39m\n          \u001b[33mnovalidate\u001b[39m=\u001b[32m\"\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mName\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Your name\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name-help\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mEnter your full name\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mYour Email\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33maria-describedby\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"you@example.com\"\u001b[39m\n              \u001b[33mtype\u001b[39m=\u001b[32m\"email\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email-help\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mWe’ll never share your email\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mCompany\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Company\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mOrganization\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Organization\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mPosition\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Position\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<button\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-4 py-2 text-sm bg-brand-500 hover:cursor-pointer text-white hover:bg-brand-600 w-full\"\u001b[39m\n            \u001b[33mtype\u001b[39m=\u001b[32m\"submit\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[0mSign Up\u001b[0m\n          \u001b[36m</button>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"text-sm text-green-600\"\u001b[39m\n            \u001b[33mrole\u001b[39m=\u001b[32m\"status\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[0mYou’re all set! Check your inbox for a welcome email.\u001b[0m\n          \u001b[36m</div>\u001b[39m\n        \u001b[36m</form>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Proxy.waitForWrapper (/home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/wait-for.js:163:27)\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/NewsletterWidget.test.jsx:202:11\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:146:14\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:533:11\n    at runWithTimeout (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:39:7)\n    at runTest (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1056:17)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runFiles (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1262:5)\n    at startTests (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1271:3)"
+          ],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget shows generic error message when no specific error provided",
+          "status": "passed",
+          "title": "shows generic error message when no specific error provided",
+          "duration": 199.90272800000002,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475916409,
+      "endTime": 1770475918519.9028,
+      "status": "failed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/NewsletterWidget.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["SEO component"],
+          "fullName": "SEO component sets title and meta on home route",
+          "status": "passed",
+          "title": "sets title and meta on home route",
+          "duration": 124.46956899999986,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["SEO component"],
+          "fullName": "SEO component sets title and meta on contact route",
+          "status": "passed",
+          "title": "sets title and meta on contact route",
+          "duration": 44.86684699999978,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475975307,
+      "endTime": 1770475975476.867,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/SEO.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Search"],
+          "fullName": "Search renders search input",
+          "status": "passed",
+          "title": "renders search input",
+          "duration": 66.88008200000013,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Search"],
+          "fullName": "Search shows suggestions when typing 3+ characters",
+          "status": "passed",
+          "title": "shows suggestions when typing 3+ characters",
+          "duration": 299.9406919999999,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Search"],
+          "fullName": "Search hides suggestions when input is less than 3 characters",
+          "status": "passed",
+          "title": "hides suggestions when input is less than 3 characters",
+          "duration": 18.80954299999985,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Search"],
+          "fullName": "Search debounces search input",
+          "status": "passed",
+          "title": "debounces search input",
+          "duration": 271.761489,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Search"],
+          "fullName": "Search calls onResults callback when results are found",
+          "status": "passed",
+          "title": "calls onResults callback when results are found",
+          "duration": 267.4653949999997,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475957526,
+      "endTime": 1770475958451.4653,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/__tests__/Search.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ThemeContext"],
+          "fullName": "ThemeContext provides theme context",
+          "status": "passed",
+          "title": "provides theme context",
+          "duration": 60.83576900000003,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ThemeContext"],
+          "fullName": "ThemeContext defaults to dark theme",
+          "status": "passed",
+          "title": "defaults to dark theme",
+          "duration": 8.869429000000082,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ThemeContext"],
+          "fullName": "ThemeContext toggles theme",
+          "status": "passed",
+          "title": "toggles theme",
+          "duration": 31.792446000000155,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ThemeContext"],
+          "fullName": "ThemeContext persists theme in localStorage",
+          "status": "passed",
+          "title": "persists theme in localStorage",
+          "duration": 9.211078000000043,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475962217,
+      "endTime": 1770475962328.2112,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/context/__tests__/ThemeContext.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ToastContext"],
+          "fullName": "ToastContext provides toast context",
+          "status": "passed",
+          "title": "provides toast context",
+          "duration": 67.301064,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ToastContext"],
+          "fullName": "ToastContext shows toast when showToast is called",
+          "status": "passed",
+          "title": "shows toast when showToast is called",
+          "duration": 34.94714400000021,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ToastContext"],
+          "fullName": "ToastContext removes toast after duration",
+          "status": "passed",
+          "title": "removes toast after duration",
+          "duration": 19.532193000000007,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475955466,
+      "endTime": 1770475955587.5322,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/context/__tests__/ToastContext.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should initialize with default state",
+          "status": "passed",
+          "title": "should initialize with default state",
+          "duration": 34.29107900000008,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should handle successful subscription",
+          "status": "passed",
+          "title": "should handle successful subscription",
+          "duration": 15.934782000000268,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should set loading state during subscription",
+          "status": "passed",
+          "title": "should set loading state during subscription",
+          "duration": 13.271302000000105,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should handle subscription error",
+          "status": "passed",
+          "title": "should handle subscription error",
+          "duration": 6.523560999999972,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should handle error without message",
+          "status": "passed",
+          "title": "should handle error without message",
+          "duration": 7.584324999999808,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should reset error state on successful subscription after error",
+          "status": "passed",
+          "title": "should reset error state on successful subscription after error",
+          "duration": 4.951567000000068,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should maintain loading state correctly with multiple concurrent calls",
+          "status": "passed",
+          "title": "should maintain loading state correctly with multiple concurrent calls",
+          "duration": 13.241165000000365,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should pass subscriber data correctly to API",
+          "status": "passed",
+          "title": "should pass subscriber data correctly to API",
+          "duration": 3.5099119999999857,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useNewsletterSubscription"],
+          "fullName": "useNewsletterSubscription should handle empty subscriber data",
+          "status": "passed",
+          "title": "should handle empty subscriber data",
+          "duration": 4.094344999999976,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475921227,
+      "endTime": 1770475921330.0942,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/hooks/__tests__/useNewsletterSubscription.test.js"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["subscribeNewsletter"],
+          "fullName": "subscribeNewsletter resolves on valid input",
+          "status": "passed",
+          "title": "resolves on valid input",
+          "duration": 6.505933000000141,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["subscribeNewsletter"],
+          "fullName": "subscribeNewsletter rejects with NETWORK_ERROR when API fails",
+          "status": "passed",
+          "title": "rejects with NETWORK_ERROR when API fails",
+          "duration": 12.806227000000035,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["subscribeNewsletter"],
+          "fullName": "subscribeNewsletter rejects with VALIDATION_ERROR for invalid input",
+          "status": "passed",
+          "title": "rejects with VALIDATION_ERROR for invalid input",
+          "duration": 2.123258000000078,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475963951,
+      "endTime": 1770475963973.1233,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/lib/__tests__/newsletter.test.js"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["About page (smoke)"],
+          "fullName": "About page (smoke) renders a heading",
+          "status": "passed",
+          "title": "renders a heading",
+          "duration": 395.6470690000001,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476031171,
+      "endTime": 1770476031566.647,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/About.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Articles page (smoke)"],
+          "fullName": "Articles page (smoke) renders without crashing and shows at least one heading",
+          "status": "failed",
+          "title": "renders without crashing and shows at least one heading",
+          "duration": 11.665223999999398,
+          "failureMessages": [
+            "ReferenceError: Articles is not defined\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Articles.smoke.test.jsx:18:26\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:146:14\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:533:11\n    at runWithTimeout (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:39:7)\n    at runTest (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1056:17)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runFiles (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1262:5)\n    at startTests (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1271:3)"
+          ],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476008749,
+      "endTime": 1770476008760.6653,
+      "status": "failed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Articles.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Categories page (smoke)"],
+          "fullName": "Categories page (smoke) renders and shows Categories heading",
+          "status": "passed",
+          "title": "renders and shows Categories heading",
+          "duration": 279.5519180000001,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476026078,
+      "endTime": 1770476026357.552,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Categories.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Category route (smoke)"],
+          "fullName": "Category route (smoke) renders category heading for /category/technology",
+          "status": "passed",
+          "title": "renders category heading for /category/technology",
+          "duration": 572.7851379999997,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476000111,
+      "endTime": 1770476000683.7852,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Category.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Contact Page"],
+          "fullName": "Contact Page renders contact form",
+          "status": "passed",
+          "title": "renders contact form",
+          "duration": 491.52635999999984,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Contact Page"],
+          "fullName": "Contact Page shows validation errors on empty submit",
+          "status": "passed",
+          "title": "shows validation errors on empty submit",
+          "duration": 363.15387999999984,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Contact Page"],
+          "fullName": "Contact Page validates email format",
+          "status": "passed",
+          "title": "validates email format",
+          "duration": 1701.3964739999997,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Contact Page"],
+          "fullName": "Contact Page validates message length",
+          "status": "passed",
+          "title": "validates message length",
+          "duration": 236.94112399999995,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Contact Page"],
+          "fullName": "Contact Page submits form with valid data",
+          "status": "passed",
+          "title": "submits form with valid data",
+          "duration": 2359.809384,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Contact Page"],
+          "fullName": "Contact Page clears error when user starts typing",
+          "status": "passed",
+          "title": "clears error when user starts typing",
+          "duration": 326.13130999999885,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475924528,
+      "endTime": 1770475930007.1313,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Contact.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Events page (smoke)"],
+          "fullName": "Events page (smoke) renders and shows Events heading",
+          "status": "passed",
+          "title": "renders and shows Events heading",
+          "duration": 285.6148629999998,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476034093,
+      "endTime": 1770476034378.6147,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Events.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Gallery page (smoke)"],
+          "fullName": "Gallery page (smoke) renders and shows Gallery heading",
+          "status": "failed",
+          "title": "renders and shows Gallery heading",
+          "duration": 344.9873429999998,
+          "failureMessages": [
+            "TestingLibraryElementError: Unable to find an accessible element with the role \"heading\" and name `/gallery/i`\n\nThere are no accessible roles. But there might be some inaccessible roles. If you wish to access them, then set the `hidden` option to `true`. Learn more about this here: https://testing-library.com/docs/dom-testing-library/api-queries#byrole\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12\"\u001b[39m\n    \u001b[36m>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"text-center\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<div\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"animate-pulse\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"h-8 bg-gray-200 rounded w-32 mx-auto mb-4\"\u001b[39m\n          \u001b[36m/>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"h-4 bg-gray-200 rounded w-64 mx-auto\"\u001b[39m\n          \u001b[36m/>\u001b[39m\n        \u001b[36m</div>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"pointer-events-none fixed right-4 top-4 z-50 flex w-80 flex-col gap-2\"\u001b[39m\n    \u001b[36m/>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at Object.getElementError (/home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/config.js:37:19)\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Gallery.smoke.test.jsx:8:19\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:146:14\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:533:11\n    at runWithTimeout (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:39:7)\n    at runTest (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1056:17)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476028594,
+      "endTime": 1770476028938.9873,
+      "status": "failed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Gallery.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Home Page"],
+          "fullName": "Home Page renders homepage sections",
+          "status": "passed",
+          "title": "renders homepage sections",
+          "duration": 253.98417699999982,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Home Page"],
+          "fullName": "Home Page renders article cards",
+          "status": "passed",
+          "title": "renders article cards",
+          "duration": 224.6731709999999,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Home Page"],
+          "fullName": "Home Page renders sidebar widgets",
+          "status": "passed",
+          "title": "renders sidebar widgets",
+          "duration": 121.39456199999995,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476013446,
+      "endTime": 1770476014046.3945,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Home.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["InsightDetail route (smoke)"],
+          "fullName": "InsightDetail route (smoke) renders H1 for insight detail at /insight/123e4567-e89b-12d3-a456-426614174002",
+          "status": "passed",
+          "title": "renders H1 for insight detail at /insight/123e4567-e89b-12d3-a456-426614174002",
+          "duration": 568.84656,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475953084,
+      "endTime": 1770475953652.8467,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/InsightDetail.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Insights page (smoke)"],
+          "fullName": "Insights page (smoke) renders without crashing and shows at least one heading",
+          "status": "passed",
+          "title": "renders without crashing and shows at least one heading",
+          "duration": 449.6474549999998,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476021056,
+      "endTime": 1770476021505.6475,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Insights.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["PodcastDetail"],
+          "fullName": "PodcastDetail renders external links and embeds when links exist",
+          "status": "passed",
+          "title": "renders external links and embeds when links exist",
+          "duration": 661.2180729999998,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475944047,
+      "endTime": 1770475944708.218,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/PodcastDetail.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Podcasts page (smoke)"],
+          "fullName": "Podcasts page (smoke) renders and shows at least one heading",
+          "status": "passed",
+          "title": "renders and shows at least one heading",
+          "duration": 283.87743899999987,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476023641,
+      "endTime": 1770476023924.8774,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Podcasts.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1770475908399,
+      "endTime": 1770475908399,
+      "status": "failed",
+      "message": "Failed to resolve import \"../Signup\" from \"src/pages/__tests__/Signup.smoke.test.jsx\". Does the file exist?",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Signup.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Tag route (smoke)"],
+          "fullName": "Tag route (smoke) renders tag heading for /tag/insighttechthursdays",
+          "status": "passed",
+          "title": "renders tag heading for /tag/insighttechthursdays",
+          "duration": 1143.636352,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476003192,
+      "endTime": 1770476004335.6362,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Tag.smoke.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Talent Hub"],
+          "fullName": "Talent Hub renders list and can filter",
+          "status": "passed",
+          "title": "renders list and can filter",
+          "duration": 499.26023399999985,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Talent Hub"],
+          "fullName": "Talent Hub validates and submits new talent",
+          "status": "passed",
+          "title": "validates and submits new talent",
+          "duration": 1552.653999,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475939972,
+      "endTime": 1770475942024.654,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Talent.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["TrainingCourses page"],
+          "fullName": "TrainingCourses page renders headings and basic sections",
+          "status": "passed",
+          "title": "renders headings and basic sections",
+          "duration": 498.6023620000001,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["TrainingCourses page"],
+          "fullName": "TrainingCourses page shows filters and allows changing them",
+          "status": "passed",
+          "title": "shows filters and allows changing them",
+          "duration": 191.33134100000007,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["TrainingCourses page"],
+          "fullName": "TrainingCourses page paginates training and courses lists when needed",
+          "status": "passed",
+          "title": "paginates training and courses lists when needed",
+          "duration": 182.68574799999988,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475936242,
+      "endTime": 1770475937115.6858,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/TrainingCourses.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Training & Courses routes"],
+          "fullName": "Training & Courses routes renders hub at /training-courses",
+          "status": "passed",
+          "title": "renders hub at /training-courses",
+          "duration": 641.2039209999998,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Training & Courses routes"],
+          "fullName": "Training & Courses routes renders training detail",
+          "status": "passed",
+          "title": "renders training detail",
+          "duration": 394.730458,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Training & Courses routes"],
+          "fullName": "Training & Courses routes renders course detail",
+          "status": "passed",
+          "title": "renders course detail",
+          "duration": 353.4987719999999,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Training & Courses routes"],
+          "fullName": "Training & Courses routes renders register page with type/id context",
+          "status": "passed",
+          "title": "renders register page with type/id context",
+          "duration": 341.54730599999994,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475932361,
+      "endTime": 1770475934091.5474,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/TrainingRoutes.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page shows loading state initially",
+          "status": "passed",
+          "title": "shows loading state initially",
+          "duration": 117.64146999999957,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page shows success state for valid token",
+          "status": "passed",
+          "title": "shows success state for valid token",
+          "duration": 312.7841940000003,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page shows already unsubscribed state",
+          "status": "passed",
+          "title": "shows already unsubscribed state",
+          "duration": 85.45367699999997,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page shows error state for invalid token",
+          "status": "passed",
+          "title": "shows error state for invalid token",
+          "duration": 62.078042000000096,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page shows error state for missing token",
+          "status": "passed",
+          "title": "shows error state for missing token",
+          "duration": 66.46111900000005,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page shows generic error for other errors",
+          "status": "passed",
+          "title": "shows generic error for other errors",
+          "duration": 41.29076699999996,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page handles resubscribe successfully",
+          "status": "passed",
+          "title": "handles resubscribe successfully",
+          "duration": 111.71034999999983,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page handles resubscribe error",
+          "status": "passed",
+          "title": "handles resubscribe error",
+          "duration": 102.51107899999988,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page displays formatted subscription date",
+          "status": "passed",
+          "title": "displays formatted subscription date",
+          "duration": 62.91460900000038,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page shows additional information for successful unsubscribe",
+          "status": "passed",
+          "title": "shows additional information for successful unsubscribe",
+          "duration": 41.069188999999824,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Unsubscribe Page"],
+          "fullName": "Unsubscribe Page includes privacy policy link",
+          "status": "passed",
+          "title": "includes privacy policy link",
+          "duration": 24.412952000000132,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475911232,
+      "endTime": 1770475912261.4128,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/pages/__tests__/Unsubscribe.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["sanitizeHtml"],
+          "fullName": "sanitizeHtml strips dangerous tags and attributes",
+          "status": "passed",
+          "title": "strips dangerous tags and attributes",
+          "duration": 53.49954400000024,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["sanitizeHtml"],
+          "fullName": "sanitizeHtml preserves allowed content",
+          "status": "passed",
+          "title": "preserves allowed content",
+          "duration": 8.487994999999955,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476010914,
+      "endTime": 1770476010975.488,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/utils/__tests__/sanitizeHtml.test.js"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["NewsletterWidget"],
+          "fullName": "NewsletterWidget validates required fields and submits successfully",
+          "status": "failed",
+          "title": "validates required fields and submits successfully",
+          "duration": 1311.808396,
+          "failureMessages": [
+            "Error: Found multiple elements with the text: /validation error/i\n\nHere are the matching elements:\n\nIgnored nodes: comments, script, style\n\u001b[36m<div\u001b[39m\n  \u001b[33mclass\u001b[39m=\u001b[32m\"font-semibold\"\u001b[39m\n\u001b[36m>\u001b[39m\n  \u001b[0mValidation Error\u001b[0m\n\u001b[36m</div>\u001b[39m\n\nIgnored nodes: comments, script, style\n\u001b[36m<div\u001b[39m\n  \u001b[33mclass\u001b[39m=\u001b[32m\"font-semibold\"\u001b[39m\n\u001b[36m>\u001b[39m\n  \u001b[0mValidation Error\u001b[0m\n\u001b[36m</div>\u001b[39m\n\n(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).\n\nIgnored nodes: comments, script, style\n\u001b[36m<body>\u001b[39m\n  \u001b[36m<div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4\"\u001b[39m\n    \u001b[36m>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"mb-3 flex items-center justify-between\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<h3\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"text-base font-semibold\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mNEWSLETTER SIGNUP\u001b[0m\n        \u001b[36m</h3>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"text-sm text-[var(--color-muted)]\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<p\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"mb-4 text-sm text-[var(--color-muted)]\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[0mSign up for our weekly newsletter and get the latest industry insights right in your inbox.\u001b[0m\n        \u001b[36m</p>\u001b[39m\n        \u001b[36m<form\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"space-y-3\"\u001b[39m\n          \u001b[33mnovalidate\u001b[39m=\u001b[32m\"\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mName\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33maria-describedby\u001b[39m=\u001b[32m\"newsletter-name-error\"\u001b[39m\n              \u001b[33maria-invalid\u001b[39m=\u001b[32m\"true\"\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Your name\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-name-error\"\u001b[39m\n              \u001b[33mvariant\u001b[39m=\u001b[32m\"error\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mName is required\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mYour Email\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33maria-describedby\u001b[39m=\u001b[32m\"newsletter-email-error\"\u001b[39m\n              \u001b[33maria-invalid\u001b[39m=\u001b[32m\"true\"\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"you@example.com\"\u001b[39m\n              \u001b[33mtype\u001b[39m=\u001b[32m\"email\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n            \u001b[36m<p\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mt-1 text-xs text-[var(--color-muted)]\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-email-error\"\u001b[39m\n              \u001b[33mvariant\u001b[39m=\u001b[32m\"error\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mEmail is required\u001b[0m\n            \u001b[36m</p>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mCompany\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-company\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Company\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mOrganization\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-org\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Organization\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"w-full\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<label\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"mb-1 block text-sm font-medium\"\u001b[39m\n              \u001b[33mfor\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mPosition\u001b[0m\n            \u001b[36m</label>\u001b[39m\n            \u001b[36m<input\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] placeholder:text-[var(--color-muted)] outline-none focus:ring-2 focus:ring-brand-500\"\u001b[39m\n              \u001b[33mid\u001b[39m=\u001b[32m\"newsletter-position\"\u001b[39m\n              \u001b[33mplaceholder\u001b[39m=\u001b[32m\"Position\"\u001b[39m\n              \u001b[33mvalue\u001b[39m=\u001b[32m\"\"\u001b[39m\n            \u001b[36m/>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<button\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-4 py-2 text-sm bg-brand-500 hover:cursor-pointer text-white hover:bg-brand-600 w-full\"\u001b[39m\n            \u001b[33mtype\u001b[39m=\u001b[32m\"submit\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[0mSign Up\u001b[0m\n          \u001b[36m</button>\u001b[39m\n        \u001b[36m</form>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"pointer-events-none fixed right-4 top-4 z-50 flex w-80 flex-col gap-2\"\u001b[39m\n    \u001b[36m>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"pointer-events-auto overflow-hidden rounded-[var(--radius-md)] border p-3 text-sm shadow border-red-500/40 bg-red-500/10\"\u001b[39m\n        \u001b[33mrole\u001b[39m=\u001b[32m\"status\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<div\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"flex items-start gap-3\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"flex-1\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<div\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"font-semibold\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mValidation Error\u001b[0m\n            \u001b[36m</div>\u001b[39m\n            \u001b[36m<div\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"text-[var(--color-muted)]\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mPlease correct the highlighted fields.\u001b[0m\n            \u001b[36m</div>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<button\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-3 py-1.5 text-xs bg-[var(--color-surface)] hover:cursor-pointer text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_5%)]\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[0mDismiss\u001b[0m\n          \u001b[36m</button>\u001b[39m\n        \u001b[36m</div>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n    \u001b[36m<div\u001b[39m\n      \u001b[33mclass\u001b[39m=\u001b[32m\"pointer-events-none fixed right-4 top-4 z-50 flex w-80 flex-col gap-2\"\u001b[39m\n    \u001b[36m>\u001b[39m\n      \u001b[36m<div\u001b[39m\n        \u001b[33mclass\u001b[39m=\u001b[32m\"pointer-events-auto overflow-hidden rounded-[var(--radius-md)] border p-3 text-sm shadow border-red-500/40 bg-red-500/10\"\u001b[39m\n        \u001b[33mrole\u001b[39m=\u001b[32m\"status\"\u001b[39m\n      \u001b[36m>\u001b[39m\n        \u001b[36m<div\u001b[39m\n          \u001b[33mclass\u001b[39m=\u001b[32m\"flex items-start gap-3\"\u001b[39m\n        \u001b[36m>\u001b[39m\n          \u001b[36m<div\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"flex-1\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[36m<div\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"font-semibold\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mValidation Error\u001b[0m\n            \u001b[36m</div>\u001b[39m\n            \u001b[36m<div\u001b[39m\n              \u001b[33mclass\u001b[39m=\u001b[32m\"text-[var(--color-muted)]\"\u001b[39m\n            \u001b[36m>\u001b[39m\n              \u001b[0mPlease correct the highlighted fields.\u001b[0m\n            \u001b[36m</div>\u001b[39m\n          \u001b[36m</div>\u001b[39m\n          \u001b[36m<button\u001b[39m\n            \u001b[33mclass\u001b[39m=\u001b[32m\"inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50 disabled:pointer-events-none px-3 py-1.5 text-xs bg-[var(--color-surface)] hover:cursor-pointer text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_5%)]\"\u001b[39m\n          \u001b[36m>\u001b[39m\n            \u001b[0mDismiss\u001b[0m\n          \u001b[36m</button>\u001b[39m\n        \u001b[36m</div>\u001b[39m\n      \u001b[36m</div>\u001b[39m\n    \u001b[36m</div>\u001b[39m\n  \u001b[36m</div>\u001b[39m\n\u001b[36m</body>\u001b[39m\n    at waitForWrapper (/home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/wait-for.js:163:27)\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:86:33\n    at /home/iskalo/Templates/liberia-digital-insights/frontend/src/components/sidebar/__tests__/NewsletterWidget.test.jsx:31:25\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:533:5\n    at runTest (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1056:11)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runSuite (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1205:15)\n    at runFiles (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1262:5)\n    at startTests (file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/@vitest/runner/dist/index.js:1271:3)\n    at file:///home/iskalo/Templates/liberia-digital-insights/frontend/node_modules/vitest/dist/chunks/runBaseTests.3qpJUEJM.js:126:11"
+          ],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475968592,
+      "endTime": 1770475969903.8083,
+      "status": "failed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/sidebar/__tests__/NewsletterWidget.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Accordion"],
+          "fullName": "Accordion toggles sections and updates aria-expanded",
+          "status": "passed",
+          "title": "toggles sections and updates aria-expanded",
+          "duration": 462.7112280000001,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475984108,
+      "endTime": 1770475984570.7112,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Accordion.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Badge"],
+          "fullName": "Badge renders badge text",
+          "status": "passed",
+          "title": "renders badge text",
+          "duration": 164.17637899999954,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Badge"],
+          "fullName": "Badge applies variant classes",
+          "status": "passed",
+          "title": "applies variant classes",
+          "duration": 14.455971999999747,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Badge"],
+          "fullName": "Badge applies default variant when none specified",
+          "status": "passed",
+          "title": "applies default variant when none specified",
+          "duration": 21.894360999999662,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Badge"],
+          "fullName": "Badge applies custom className",
+          "status": "passed",
+          "title": "applies custom className",
+          "duration": 26.802546999999322,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475996670,
+      "endTime": 1770475996897.8025,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Badge.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button renders with text",
+          "status": "passed",
+          "title": "renders with text",
+          "duration": 56.82102400000008,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button handles click events",
+          "status": "passed",
+          "title": "handles click events",
+          "duration": 16.83252800000014,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button shows loading state",
+          "status": "passed",
+          "title": "shows loading state",
+          "duration": 109.75482199999988,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button disables when loading",
+          "status": "passed",
+          "title": "disables when loading",
+          "duration": 13.094099000000142,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button disables when disabled prop is true",
+          "status": "passed",
+          "title": "disables when disabled prop is true",
+          "duration": 12.545720999999958,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button applies variant classes",
+          "status": "passed",
+          "title": "applies variant classes",
+          "duration": 5.773220999999921,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button applies size classes",
+          "status": "passed",
+          "title": "applies size classes",
+          "duration": 3.548041999999896,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button renders as custom component when using as prop",
+          "status": "passed",
+          "title": "renders as custom component when using as prop",
+          "duration": 21.8307020000002,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button renders with left icon",
+          "status": "passed",
+          "title": "renders with left icon",
+          "duration": 10.804967000000033,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Button"],
+          "fullName": "Button renders with right icon",
+          "status": "passed",
+          "title": "renders with right icon",
+          "duration": 4.688006000000087,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475946535,
+      "endTime": 1770475946791.688,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Button.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Card"],
+          "fullName": "Card renders children",
+          "status": "passed",
+          "title": "renders children",
+          "duration": 71.9677650000001,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Card"],
+          "fullName": "Card applies custom className",
+          "status": "passed",
+          "title": "applies custom className",
+          "duration": 8.574774000000161,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Card"],
+          "fullName": "Card passes through props",
+          "status": "passed",
+          "title": "passes through props",
+          "duration": 7.6251579999998285,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476018392,
+      "endTime": 1770476018480.6252,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Card.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ContentRenderer"],
+          "fullName": "ContentRenderer renders sanitized HTML",
+          "status": "passed",
+          "title": "renders sanitized HTML",
+          "duration": 87.43052000000012,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ContentRenderer"],
+          "fullName": "ContentRenderer renders default message when empty",
+          "status": "passed",
+          "title": "renders default message when empty",
+          "duration": 8.103411999999935,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770476016186,
+      "endTime": 1770476016282.1035,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/ContentRenderer.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Form Components", "Field"],
+          "fullName": "Form Components Field renders children",
+          "status": "passed",
+          "title": "renders children",
+          "duration": 58.81087699999989,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "Field"],
+          "fullName": "Form Components Field applies custom className",
+          "status": "passed",
+          "title": "applies custom className",
+          "duration": 8.682902000000013,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "Label"],
+          "fullName": "Form Components Label renders label text",
+          "status": "passed",
+          "title": "renders label text",
+          "duration": 13.805038999999852,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "Label"],
+          "fullName": "Form Components Label associates with input via htmlFor",
+          "status": "passed",
+          "title": "associates with input via htmlFor",
+          "duration": 11.301872000000003,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "HelperText"],
+          "fullName": "Form Components HelperText renders helper text",
+          "status": "passed",
+          "title": "renders helper text",
+          "duration": 9.06768000000011,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "HelperText"],
+          "fullName": "Form Components HelperText applies custom className",
+          "status": "passed",
+          "title": "applies custom className",
+          "duration": 4.048680000000104,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "ErrorText"],
+          "fullName": "Form Components ErrorText renders error text",
+          "status": "passed",
+          "title": "renders error text",
+          "duration": 4.25405499999988,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Form Components", "ErrorText"],
+          "fullName": "Form Components ErrorText applies error styling",
+          "status": "passed",
+          "title": "applies error styling",
+          "duration": 3.574651000000131,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475960293,
+      "endTime": 1770475960409.5747,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Form.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input renders input element",
+          "status": "passed",
+          "title": "renders input element",
+          "duration": 155.526617,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input renders email input as input field",
+          "status": "passed",
+          "title": "renders email input as input field",
+          "duration": 15.815353999999843,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input handles value changes",
+          "status": "passed",
+          "title": "handles value changes",
+          "duration": 20.639991999999893,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input displays placeholder",
+          "status": "passed",
+          "title": "displays placeholder",
+          "duration": 6.400160000000142,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input applies custom className",
+          "status": "passed",
+          "title": "applies custom className",
+          "duration": 6.564311000000089,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input supports different input types",
+          "status": "passed",
+          "title": "supports different input types",
+          "duration": 14.850629000000026,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Input"],
+          "fullName": "Input can be disabled",
+          "status": "passed",
+          "title": "can be disabled",
+          "duration": 17.929693000000043,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475966363,
+      "endTime": 1770475966600.9297,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Input.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Modal"],
+          "fullName": "Modal renders when open and closes on close button and backdrop",
+          "status": "passed",
+          "title": "renders when open and closes on close button and backdrop",
+          "duration": 297.68657299999995,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475978915,
+      "endTime": 1770475979212.6865,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Modal.test.jsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Tabs"],
+          "fullName": "Tabs switches visible content when clicking tabs",
+          "status": "passed",
+          "title": "switches visible content when clicking tabs",
+          "duration": 1025.0804699999999,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1770475990833,
+      "endTime": 1770475991858.0806,
+      "status": "passed",
+      "message": "",
+      "name": "/home/iskalo/Templates/liberia-digital-insights/frontend/src/components/ui/__tests__/Tabs.test.jsx"
+    }
+  ]
+}
