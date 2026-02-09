@@ -19,13 +19,25 @@ import analyticsRouter from "./src/routes/analytics.js";
 import usersRouter from "./src/routes/users.js";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 app.use(express.json({ limit: "10mb" }));
 
-// CORS (simple allow-all for now; tighten in production)
+// CORS Configuration - Support multiple origins
+const allowedOrigins = [
+  process.env.CORS_ORIGIN, // From .env file (your Vercel domain)
+  "http://localhost:5173", // Local development
+  "http://localhost:3000", // Alternative local port
+];
+
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.CORS_ORIGIN || "*");
+  const origin = req.headers.origin;
+
+  // Allow if origin is in the allowed list or if CORS_ORIGIN is "*"
+  if (process.env.CORS_ORIGIN === "*" || allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin || "*");
+  }
+
   res.header(
     "Access-Control-Allow-Methods",
     "GET,POST,PUT,PATCH,DELETE,OPTIONS",
@@ -34,6 +46,8 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin,X-Requested-With,Content-Type,Accept,Authorization",
   );
+  res.header("Access-Control-Allow-Credentials", "true");
+
   if (req.method === "OPTIONS") {
     res.sendStatus(200);
   } else {
@@ -88,4 +102,5 @@ app.use((err, req, res, next) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
+  console.log(`🔒 CORS Origin: ${process.env.CORS_ORIGIN || "Not set"}`);
 });
