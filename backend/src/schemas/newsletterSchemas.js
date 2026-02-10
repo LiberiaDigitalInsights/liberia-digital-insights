@@ -37,10 +37,11 @@ export const createTemplateSchema = z.object({
     300,
     "Subject must not exceed 300 characters",
   ),
-  preview: optionalStringSchema.max(
-    500,
-    "Preview must not exceed 500 characters",
-  ),
+  preview: z
+    .string()
+    .trim()
+    .max(500, "Preview must not exceed 500 characters")
+    .optional(),
   content: nonEmptyStringSchema,
   category: z
     .enum(["custom", "weekly", "monthly", "special"])
@@ -50,18 +51,21 @@ export const createTemplateSchema = z.object({
 
 // Update template schema
 export const updateTemplateSchema = z.object({
-  name: optionalStringSchema.max(
-    200,
-    "Template name must not exceed 200 characters",
-  ),
-  subject: optionalStringSchema.max(
-    300,
-    "Subject must not exceed 300 characters",
-  ),
-  preview: optionalStringSchema.max(
-    500,
-    "Preview must not exceed 500 characters",
-  ),
+  name: z
+    .string()
+    .trim()
+    .max(200, "Template name must not exceed 200 characters")
+    .optional(),
+  subject: z
+    .string()
+    .trim()
+    .max(300, "Subject must not exceed 300 characters")
+    .optional(),
+  preview: z
+    .string()
+    .trim()
+    .max(500, "Preview must not exceed 500 characters")
+    .optional(),
   content: optionalStringSchema,
   category: z.enum(["custom", "weekly", "monthly", "special"]).optional(),
 });
@@ -69,10 +73,11 @@ export const updateTemplateSchema = z.object({
 // Send newsletter schema
 export const sendNewsletterSchema = z.object({
   template_id: z.string().uuid("Invalid template ID"),
-  subject: optionalStringSchema.max(
-    300,
-    "Subject must not exceed 300 characters",
-  ),
+  subject: z
+    .string()
+    .trim()
+    .max(300, "Subject must not exceed 300 characters")
+    .optional(),
   segment: z
     .enum(["all", "active", "inactive", "custom"])
     .optional()
