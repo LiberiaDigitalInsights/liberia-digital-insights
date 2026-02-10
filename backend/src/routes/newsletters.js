@@ -2,6 +2,12 @@ import { Router } from "express";
 import { supabase } from "../supabaseClient.js";
 import emailService from "../services/emailService.js";
 import { verifyToken, authorize } from "../middleware/rbacMiddleware.js";
+import { newsletterLimiter } from "../middleware/rateLimiter.js";
+import { validateBody } from "../middleware/validation.js";
+import {
+  subscribeSchema,
+  unsubscribeSchema,
+} from "../schemas/newsletterSchemas.js";
 
 const router = Router();
 
@@ -373,67 +379,63 @@ router.delete("/:id", verifyToken, authorize(["admin"]), async (req, res) => {
 });
 
 // POST /v1/newsletters/subscribe - Subscribe to newsletter (PUBLIC)
-router.post("/subscribe", async (req, res) => {
-  try {
-    const { name, email, company, org, position } = req.body;
-    if (!name || !email) {
-      return res.status(400).json({ error: "Name and email are required" });
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: "Invalid email format" });
-    }
+router.post(
+  "/subscribe",
+  newsletterLimiter,
+  validateBody(subscribeSchema),
+  async (req, res) => {
+    try {
+      const { name, email, company, org, position } = req.body;
 
-    const { data: existingSubscriber } = await supabase
-      .from("newsletter_subscribers")
-      .select("email")
-      .eq("email", email)
-      .single();
+      const { data: existingSubscriber } = await supabase
+        .from("newsletter_subscribers")
+        .select("email")
+        .eq("email", email)
+        .single();
 
-    if (existingSubscriber) {
-      return res.status(409).json({ error: "Email already subscribed" });
-    }
+      if (existingSubscriber) {
+        return res.status(409).json({ error: "Email already subscribed" });
+      }
 
-    const crypto = await import("crypto");
-    const unsubscribeToken = crypto.randomBytes(32).toString("hex");
+      const crypto = await import("crypto");
+      const unsubscribeToken = crypto.randomBytes(32).toString("hex");
 
-    const { data, error } = await supabase
-      .from("newsletter_subscribers")
-      .insert([
-        {
-          name,
-          email,
-          company,
-          org,
-          position,
-          subscribed_at: new Date().toISOString(),
-          status: "active",
-          unsubscribe_token: unsubscribeToken,
-        },
-      ])
-      .select()
-      .single();
+      const { data, error } = await supabase
+        .from("newsletter_subscribers")
+        .insert([
+          {
+            name,
+            email,
+            company,
+            org,
+            position,
+            subscribed_at: new Date().toISOString(),
+            status: "active",
+            unsubscribe_token: unsubscribeToken,
+          },
+        ])
+        .select()
+        .single();
 
-    if (error) throw error;
-    res
-      .status(201)
-      .json({
+      if (error) throw error;
+      res.status(201).json({
         message: "Successfully subscribed to newsletter",
         subscriber: data,
       });
 
-    setImmediate(async () => {
-      try {
-        await emailService.sendWelcomeEmail(data);
-      } catch (error) {
-        console.error("Failed to send welcome email:", error);
-      }
-    });
-  } catch (error) {
-    console.error("Newsletter subscription error:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
+      setImmediate(async () => {
+        try {
+          await emailService.sendWelcomeEmail(data);
+        } catch (error) {
+          console.error("Failed to send welcome email:", error);
+        }
+      });
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
 
 // POST /v1/newsletters/unsubscribe - Unsubscribe from newsletter (PUBLIC)
 router.post("/unsubscribe", async (req, res) => {

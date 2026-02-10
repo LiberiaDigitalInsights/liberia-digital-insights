@@ -1,5 +1,7 @@
 import "dotenv/config";
 import express from "express";
+import helmet from "helmet";
+import { generalLimiter } from "./src/middleware/rateLimiter.js";
 import uploadRouter from "./src/routes/upload.js";
 import articlesRouter from "./src/routes/articles.js";
 import insightsRouter from "./src/routes/insights.js";
@@ -20,6 +22,17 @@ import usersRouter from "./src/routes/users.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+// Security middleware - helmet for security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // Disable CSP for API
+    crossOriginEmbedderPolicy: false, // Allow embedding
+  }),
+);
+
+// Apply general rate limiter to all routes
+app.use(generalLimiter);
 
 app.use(express.json({ limit: "10mb" }));
 

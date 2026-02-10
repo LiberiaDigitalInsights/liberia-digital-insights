@@ -38,29 +38,34 @@ const Unsubscribe = lazy(() => import('./pages/Unsubscribe'));
 const Admin = lazy(() => import('./pages/Admin'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
+import { motion, AnimatePresence } from 'framer-motion';
+import PageTransition from './components/ui/PageTransition';
+
 // Loading fallback component
 function LoadingFallback() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_350px]">
-        <main className="space-y-8">
-          <section>
-            <Skeleton className="mb-4 h-6 w-40" />
-            <Skeleton className="h-56 w-full" />
-          </section>
-          <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-64 w-full" />
-          </section>
-        </main>
-        <aside className="space-y-4">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-40 w-full" />
-          <Skeleton className="h-40 w-full" />
-        </aside>
+    <PageTransition>
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_350px]">
+          <main className="space-y-8">
+            <section>
+              <Skeleton className="mb-4 h-6 w-40" />
+              <Skeleton className="h-56 w-full" />
+            </section>
+            <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <Skeleton className="h-64 w-full" />
+              <Skeleton className="h-64 w-full" />
+              <Skeleton className="h-64 w-full" />
+            </section>
+          </main>
+          <aside className="space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-40 w-full" />
+            <Skeleton className="h-40 w-full" />
+          </aside>
+        </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }
 
@@ -83,48 +88,262 @@ function App() {
   return (
     <>
       <ScrollToTop />
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/components" element={<ComponentsPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/insights" element={<Insights />} />
-          <Route path="/insight/:slug" element={<InsightDetail />} />
-          <Route path="/podcasts" element={<Podcasts />} />
-          <Route path="/podcast/:slug" element={<PodcastDetail />} />
-          <Route path="/articles" element={<Articles />} />
-          <Route path="/article/:slug" element={<ArticleDetail />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/event/:slug" element={<EventDetail />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/advertisement" element={<Advertisement />} />
-          <Route path="/subscribe" element={<Subscribe />} />
-          <Route path="/training-courses" element={<TrainingCourses />} />
-          <Route path="/training/:id" element={<TrainingDetail />} />
-          <Route path="/course/:id" element={<CourseDetail />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/unsubscribe" element={<Unsubscribe />} />
-          <Route path="/talent" element={<Talent />} />
-          <Route path="/category/:slug" element={<Category />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/tag/:slug" element={<Tag />} />
-          <Route path="/hashtag/:slug" element={<Tag />} />
-          <Route
-            path="/admin"
-            element={
-              <AuthGate>
-                <Admin />
-              </AuthGate>
-            }
-          />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/cookies" element={<CookiePage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+      <AnimatePresence mode="wait">
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes location={location} key={location.pathname}>
+            <Route
+              path="/"
+              element={
+                <PageTransition>
+                  <Home />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <PageTransition>
+                  <About />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <PageTransition>
+                  <Contact />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/components"
+              element={
+                <PageTransition>
+                  <ComponentsPage />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <PageTransition>
+                  <Dashboard />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/insights"
+              element={
+                <PageTransition>
+                  <Insights />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/insight/:slug"
+              element={
+                <PageTransition>
+                  <InsightDetail />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/podcasts"
+              element={
+                <PageTransition>
+                  <Podcasts />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/podcast/:slug"
+              element={
+                <PageTransition>
+                  <PodcastDetail />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/articles"
+              element={
+                <PageTransition>
+                  <Articles />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/article/:slug"
+              element={
+                <PageTransition>
+                  <ArticleDetail />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/events"
+              element={
+                <PageTransition>
+                  <Events />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/event/:slug"
+              element={
+                <PageTransition>
+                  <EventDetail />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/gallery"
+              element={
+                <PageTransition>
+                  <Gallery />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/advertisement"
+              element={
+                <PageTransition>
+                  <Advertisement />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/subscribe"
+              element={
+                <PageTransition>
+                  <Subscribe />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/training-courses"
+              element={
+                <PageTransition>
+                  <TrainingCourses />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/training/:id"
+              element={
+                <PageTransition>
+                  <TrainingDetail />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/course/:id"
+              element={
+                <PageTransition>
+                  <CourseDetail />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <PageTransition>
+                  <Register />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/unsubscribe"
+              element={
+                <PageTransition>
+                  <Unsubscribe />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/talent"
+              element={
+                <PageTransition>
+                  <Talent />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/category/:slug"
+              element={
+                <PageTransition>
+                  <Category />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/categories"
+              element={
+                <PageTransition>
+                  <Categories />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/tag/:slug"
+              element={
+                <PageTransition>
+                  <Tag />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/hashtag/:slug"
+              element={
+                <PageTransition>
+                  <Tag />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <AuthGate>
+                  <PageTransition>
+                    <Admin />
+                  </PageTransition>
+                </AuthGate>
+              }
+            />
+            <Route
+              path="/privacy"
+              element={
+                <PageTransition>
+                  <PrivacyPage />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/terms"
+              element={
+                <PageTransition>
+                  <TermsPage />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/cookies"
+              element={
+                <PageTransition>
+                  <CookiePage />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <PageTransition>
+                  <NotFound />
+                </PageTransition>
+              }
+            />
+          </Routes>
+        </Suspense>
+      </AnimatePresence>
     </>
   );
 }

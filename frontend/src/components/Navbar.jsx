@@ -77,7 +77,7 @@ export default function Navbar() {
   return (
     <nav className="z-40" role="navigation" aria-label="Primary">
       {/* Top utility strip with date + social */}
-      <div className="hidden bg-[var(--color-nav-top)] text-xs md:block">
+      <div className="hidden bg-nav-top text-xs md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5">
           <div className="text-white/90">
             <span className="hidden md:inline">
@@ -132,9 +132,11 @@ export default function Navbar() {
       {/* Primary nav bar with menu + search */}
       <div
         ref={primaryBarRef}
-        className={`border-t border-[var(--color-border)] bg-[var(--color-nav-bottom)] text-white ${
-          pinned ? 'fixed inset-x-0 top-0 z-50 shadow-sm' : ''
-        }`}
+        className={`border-t border-border transition-all duration-300 ${
+          pinned
+            ? 'fixed inset-x-0 top-0 z-50 bg-brand-600/80 backdrop-blur-md shadow-lg border-b border-white/10'
+            : 'bg-brand-600'
+        } text-white`}
       >
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2 text-sm">
           <div className="hidden items-center gap-5 md:flex">
@@ -182,7 +184,7 @@ export default function Navbar() {
                 role="menu"
                 tabIndex={-1}
                 ref={contentMenuRef}
-                className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
+                className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-surface p-2 text-text shadow-lg ring-1 ring-border transition-all duration-200 ${
                   openMenu === 'content' ? 'visible opacity-100' : 'invisible opacity-0'
                 } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
               >
@@ -240,7 +242,7 @@ export default function Navbar() {
                 role="menu"
                 tabIndex={-1}
                 ref={communityMenuRef}
-                className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
+                className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-surface p-2 text-text shadow-lg ring-1 ring-border transition-all duration-200 ${
                   openMenu === 'community' ? 'visible opacity-100' : 'invisible opacity-0'
                 } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
               >
@@ -294,7 +296,7 @@ export default function Navbar() {
                 role="menu"
                 tabIndex={-1}
                 ref={moreMenuRef}
-                className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-[var(--color-surface)] p-2 text-[var(--color-text)] shadow-lg ring-1 ring-[var(--color-border)] transition-all duration-200 ${
+                className={`absolute left-0 top-full z-50 mt-2 w-56 rounded-md bg-surface p-2 text-text shadow-lg ring-1 ring-border transition-all duration-200 ${
                   openMenu === 'more' ? 'visible opacity-100' : 'invisible opacity-0'
                 } group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
               >
@@ -346,15 +348,15 @@ export default function Navbar() {
         {/* Drawer panel */}
         <div
           id="mobile-drawer"
-          className={`absolute right-0 top-0 h-full w-full max-w-sm border-l border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl transition-transform duration-300 ease-out ${open ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`absolute right-0 top-0 h-full w-full max-w-sm border-l border-border bg-surface shadow-2xl transition-transform duration-300 ease-out ${open ? 'translate-x-0' : 'translate-x-full'}`}
           role="dialog"
           aria-modal="true"
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3">
+          <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-3">
             <Logo />
             <button
-              className="rounded-[var(--radius-sm)] p-2 text-[var(--color-text)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)]"
+              className="rounded-sm p-2 text-text transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)]"
               onClick={() => setOpen(false)}
               aria-label="Close menu"
             >
@@ -377,7 +379,7 @@ export default function Navbar() {
 
               {/* Quick actions */}
               <div className="flex gap-2">
-                <button className="flex-1 rounded-[var(--radius-md)] bg-brand-500 px-4 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-brand-600">
+                <button className="flex-1 rounded-md bg-brand-500 px-4 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-brand-600">
                   Subscribe
                 </button>
                 <ThemeToggle />
@@ -385,7 +387,7 @@ export default function Navbar() {
 
               {/* Main navigation */}
               <nav className="flex flex-col gap-1">
-                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-muted)]">
+                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
                   Navigation
                 </div>
                 {[
@@ -405,7 +407,7 @@ export default function Navbar() {
                     key={item.to}
                     onClick={() => setOpen(false)}
                     to={item.to}
-                    className="rounded-[var(--radius-sm)] px-3 py-2.5 text-sm font-medium text-[var(--color-text)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]"
+                    className="rounded-sm px-3 py-2.5 text-sm font-medium text-text transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]"
                   >
                     {item.label}
                   </Link>
@@ -414,7 +416,7 @@ export default function Navbar() {
 
               {/* Categories */}
               <div className="flex flex-col gap-2">
-                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-muted)]">
+                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
                   Categories
                 </div>
                 <div className="flex flex-col gap-1">
@@ -423,7 +425,7 @@ export default function Navbar() {
                       key={c}
                       onClick={() => setOpen(false)}
                       to={`/category/${encodeURIComponent(c.toLowerCase())}`}
-                      className="rounded-[var(--radius-sm)] px-3 py-2 text-sm text-[var(--color-muted)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)] hover:text-[var(--color-text)]"
+                      className="rounded-sm px-3 py-2 text-sm text-muted transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--color-surface),white_6%)] hover:text-text"
                     >
                       {c}
                     </Link>

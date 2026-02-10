@@ -87,11 +87,10 @@ export default function Articles() {
         {/* Header */}
         <header className="mb-8">
           <H1 className="mb-4 text-3xl font-bold">Articles</H1>
-          <p className="text-lg text-[var(--color-muted)]">
+          <p className="text-lg text-muted">
             Explore our collection of tech insights, stories, and analysis
           </p>
         </header>
-
         {/* Category Filters */}
         <div className="mb-8 flex flex-wrap gap-3">
           <button
@@ -99,7 +98,7 @@ export default function Articles() {
             className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
               category === 'all'
                 ? 'bg-brand-500 text-white'
-                : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
+                : 'bg-surface text-text hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
             }`}
           >
             All
@@ -111,41 +110,41 @@ export default function Articles() {
               className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
                 category === cat.slug
                   ? 'bg-brand-500 text-white'
-                  : 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
+                  : 'bg-surface text-text hover:bg-[color-mix(in_oklab,var(--color-surface),white_8%)]'
               }`}
             >
               {cat.name}
             </button>
           ))}
         </div>
-
         {/* Results count */}
-        <div className="mb-6 text-sm text-[var(--color-muted)]">
+        <div className="mb-6 text-sm text-muted">
           Showing {articles.length} of {pagination.total || 0} articles
           {category !== 'all' && ` in ${category}`}
         </div>
-
         {/* Inline Advertisement */}
         <div className="mb-8">
           <AdSlot position="inline" className="opacity-0 animate-fade-in" />
         </div>
-
+        import {(MotionGrid, MotionItem)} from '../components/ui/MotionWrapper';
         {/* Articles Grid */}
-        <div className="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <MotionGrid className="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {articles.length > 0 ? (
             articles.map((article, index) => {
               const isThirdArticle = (index + 1) % 3 === 0;
               return (
                 <React.Fragment key={article.id}>
-                  <ArticleCard
-                    image={article.cover_image_url}
-                    title={article.title}
-                    category={article.category?.name || 'Uncategorized'}
-                    date={new Date(article.published_at).toLocaleDateString()}
-                    readTime={Math.ceil(article.content.length / 1000) + ' min read'}
-                    tags={article.tags || []}
-                    to={`/article/${article.slug}`}
-                  />
+                  <MotionItem>
+                    <ArticleCard
+                      image={article.cover_image_url}
+                      title={article.title}
+                      category={article.category?.name || 'Uncategorized'}
+                      date={new Date(article.published_at).toLocaleDateString()}
+                      readTime={Math.ceil(article.content.length / 1000) + ' min read'}
+                      tags={article.tags || []}
+                      to={`/article/${article.slug}`}
+                    />
+                  </MotionItem>
                   {isThirdArticle && index < articles.length - 1 && (
                     <div className="col-span-full">
                       <AdSlot position="inline" className="opacity-0 animate-fade-in" />
@@ -155,12 +154,11 @@ export default function Articles() {
               );
             })
           ) : (
-            <div className="col-span-full py-12 text-center text-[var(--color-muted)]">
+            <div className="col-span-full py-12 text-center text-muted">
               No articles found in this category.
             </div>
           )}
-        </div>
-
+        </MotionGrid>
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2">
