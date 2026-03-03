@@ -109,6 +109,9 @@ const Footer = () => {
             rights reserved.
           </div>
           <div className="flex gap-6">
+            <Link href="/cookies" className="hover:underline">
+              Cookies
+            </Link>
             <Link href="/privacy" className="hover:underline">
               Privacy Policy
             </Link>

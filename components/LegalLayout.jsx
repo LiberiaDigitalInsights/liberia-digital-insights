@@ -13,7 +13,7 @@ export default function LegalLayout({ children, title, lastUpdated }) {
         <header className="mb-16 text-center">
           <Link href="/" className="inline-flex items-center gap-3 mb-10 group">
             <div className="p-3 bg-surface rounded-2xl border border-border/50 group-hover:border-brand-500/50 group-hover:shadow-2xl transition-all">
-              <Logo className="h-10 w-auto" />
+              <Logo noLink className="h-10 w-auto" />
             </div>
           </Link>
           <H1 className="mb-4 text-4xl md:text-5xl font-black uppercase italic tracking-tighter decoration-brand-500 decoration-8 underline underline-offset-8">
@@ -33,9 +33,9 @@ export default function LegalLayout({ children, title, lastUpdated }) {
         <footer className="mt-16 pt-8 border-t border-border/50 text-center">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-muted hover:text-brand-500 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-black normal-case tracking-widest text-muted hover:text-brand-500 transition-colors"
           >
-            <FaChevronLeft className="text-[10px]" /> Back to Intelligence Hub
+            <FaChevronLeft className="text-[10px]" /> Back to Home
           </Link>
         </footer>
       </div>
