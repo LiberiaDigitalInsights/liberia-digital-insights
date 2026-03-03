@@ -2,7 +2,7 @@
 
 import React from "react";
 import { H1, Muted } from "@/components/ui/Typography";
-import Card from "@/components/ui/Card";
+import Card, { CardContent } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import LazyImage from "@/components/LazyImage";
@@ -136,7 +136,7 @@ export default function TrainingCoursesPage() {
                       alt={t.title}
                       className="h-full w-full group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                     <div className="absolute bottom-6 left-6 right-6">
                       <div className="flex gap-2 mb-2">
                         <span className="px-2 py-1 bg-brand-500 text-white text-[10px] font-black uppercase tracking-widest rounded">
@@ -218,7 +218,7 @@ export default function TrainingCoursesPage() {
                       alt={c.title}
                       className="h-full w-full group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                     <div className="absolute bottom-6 left-6 right-6">
                       <div className="flex gap-2 mb-2">
                         <span className="px-2 py-1 bg-brand-500 text-white text-[10px] font-black uppercase tracking-widest rounded">
