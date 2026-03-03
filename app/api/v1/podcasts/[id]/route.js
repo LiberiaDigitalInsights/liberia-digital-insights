@@ -1,0 +1,84 @@
+import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
+import { withAuth } from "@/lib/apiAuth";
+
+// GET /api/v1/podcasts/[id] - Get podcast by ID
+export async function GET(request, { params }) {
+  try {
+    const { id } = await params;
+
+    const { data, error } = await supabase
+      .from("podcasts")
+      .select(
+        `
+        *,
+        categories(name, slug)
+      `,
+      )
+      .eq("id", id)
+      .single();
+
+    if (error) throw error;
+    if (!data)
+      return NextResponse.json({ error: "Podcast not found" }, { status: 404 });
+
+    // Transform data for frontend parity
+    const transformedPodcast = {
+      ...data,
+      category: data.categories
+        ? Array.isArray(data.categories)
+          ? data.categories[0]
+          : data.categories
+        : null,
+      categories: undefined,
+    };
+
+    return NextResponse.json(transformedPodcast);
+  } catch (error) {
+    console.error("[api/podcasts/id] GET error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// PUT /api/v1/podcasts/[id] - Update podcast
+async function putHandler(request, { params }) {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+
+    const { data, error } = await supabase
+      .from("podcasts")
+      .update(body)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    if (!data)
+      return NextResponse.json({ error: "Podcast not found" }, { status: 404 });
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("[api/podcasts/id] PUT error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// DELETE /api/v1/podcasts/[id] - Delete podcast
+async function deleteHandler(request, { params }) {
+  try {
+    const { id } = await params;
+
+    const { error } = await supabase.from("podcasts").delete().eq("id", id);
+
+    if (error) throw error;
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    console.error("[api/podcasts/id] DELETE error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export const PUT = withAuth(putHandler, ["admin", "editor"]);
+export const DELETE = withAuth(deleteHandler, ["admin", "editor"]);

@@ -1,40 +1,49 @@
 {
   "name": "liberia-digital-insights",
   "version": "1.0.0",
-  "description": "Liberia Digital Insights platform",
-  "type": "module",
-  "main": "dev-script/start-dev.js",
+  "private": true,
   "scripts": {
-    "start": "node dev-script/start-dev.js",
-    "dev": "node dev-script/start-dev.js",
-    "dev:docs": "cd frontend && npm run docs:dev",
-    "build:docs": "cd frontend && npm run docs:build",
-    "preview:docs": "cd frontend && npm run docs:preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "keywords": [
-    "liberia",
-    "digital",
-    "insights",
-    "vercel",
-    "supabase"
-  ],
-  "author": "Liberia Digital Insights Team",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/LiberiaDigitalInsights/liberia-digital-insights.git"
-  },
-  "bugs": {
-    "url": "https://github.com/LiberiaDigitalInsights/liberia-digital-insights/issues"
-  },
-  "homepage": "https://github.com/LiberiaDigitalInsights/liberia-digital-insights#readme",
   "dependencies": {
-    "vercel": "^48.12.0"
+    "@supabase/supabase-js": "^2.45.0",
+    "@tiptap/extension-color": "^3.10.2",
+    "@tiptap/extension-image": "^3.10.2",
+    "@tiptap/extension-link": "^3.10.2",
+    "@tiptap/extension-placeholder": "^3.10.2",
+    "@tiptap/extension-text-align": "^3.10.2",
+    "@tiptap/extension-text-style": "^3.10.2",
+    "@tiptap/extension-underline": "^3.10.2",
+    "@tiptap/pm": "^3.10.2",
+    "@tiptap/react": "^3.10.2",
+    "@tiptap/starter-kit": "^3.10.2",
+    "axios": "^1.13.2",
+    "bcryptjs": "^3.0.3",
+    "cheerio": "^1.2.0",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
+    "framer-motion": "^12.34.0",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.475.0",
+    "next": "^15.1.6",
+    "nodemailer": "^7.0.11",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-helmet-async": "^2.0.5",
+    "react-icons": "^5.5.0",
+    "recharts": "^2.15.4",
+    "tailwind-merge": "^3.0.1",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "concurrently": "^9.0.0"
+    "@tailwindcss/postcss": "^4.1.16",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.36.0",
+    "eslint-config-next": "15.1.6",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^4.1.16"
   }
 }
