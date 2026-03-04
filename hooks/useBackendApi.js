@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 
 // Generic API request function
-const apiRequest = async (endpoint, options = {}) => {
+export const apiRequest = async (endpoint, options = {}) => {
   const url = endpoint.startsWith("http") ? endpoint : `/api/v1${endpoint}`;
   const config = {
     headers: {
@@ -135,9 +135,20 @@ export const useAuth = () => {
   return { user, loading, isAuthenticated, login, register, logout };
 };
 
+// Helper to remove undefined/null values from params
+const cleanParams = (params) => {
+  const cleaned = {};
+  Object.keys(params).forEach((key) => {
+    if (params[key] !== undefined && params[key] !== null) {
+      cleaned[key] = params[key];
+    }
+  });
+  return cleaned;
+};
+
 // Hook for articles
 export const useArticles = (params = {}) => {
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams(cleanParams(params)).toString();
   return useApi(
     () => apiRequest(`/articles${query ? `?${query}` : ""}`),
     [query],
@@ -153,7 +164,7 @@ export const useArticle = (slug) => {
 
 // Hook for podcasts
 export const usePodcasts = (params = {}) => {
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams(cleanParams(params)).toString();
   return useApi(
     () => apiRequest(`/podcasts${query ? `?${query}` : ""}`),
     [query],
@@ -169,7 +180,7 @@ export const usePodcast = (slug) => {
 
 // Hook for events
 export const useEvents = (params = {}) => {
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams(cleanParams(params)).toString();
   return useApi(
     () => apiRequest(`/events${query ? `?${query}` : ""}`),
     [query],
@@ -185,7 +196,7 @@ export const useEvent = (slug) => {
 
 // Hook for insights
 export const useInsights = (params = {}) => {
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams(cleanParams(params)).toString();
   return useApi(
     () => apiRequest(`/insights${query ? `?${query}` : ""}`),
     [query],
@@ -201,7 +212,7 @@ export const useInsight = (slug) => {
 
 // Hook for newsletters
 export const useNewsletters = (params = {}) => {
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams(cleanParams(params)).toString();
   return useApi(
     () => apiRequest(`/newsletters${query ? `?${query}` : ""}`),
     [query],
@@ -210,7 +221,7 @@ export const useNewsletters = (params = {}) => {
 
 // Hook for advertisements
 export const useAdvertisements = (params = {}) => {
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams(cleanParams(params)).toString();
   return useApi(
     () => apiRequest(`/advertisements${query ? `?${query}` : ""}`),
     [query],
@@ -249,7 +260,7 @@ export const useNewsletterSubscription = () => {
 
 // Hook for training
 export const useTraining = (params = {}) => {
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams(cleanParams(params)).toString();
   return useApi(
     () => apiRequest(`/training${query ? `?${query}` : ""}`),
     [query],
@@ -263,7 +274,7 @@ export const useTrainingById = (id) => {
 
 // Hook for talents
 export const useTalents = (params = {}) => {
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams(cleanParams(params)).toString();
   return useApi(
     () => apiRequest(`/talents${query ? `?${query}` : ""}`),
     [query],

@@ -19,18 +19,22 @@ export async function GET(request) {
       .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
-    if (category && category !== "All") {
+    if (
+      category &&
+      category !== "All" &&
+      category !== "undefined" &&
+      category !== "null"
+    ) {
       query = query.eq("category", category);
     }
 
-    if (status) {
+    if (status && status !== "undefined" && status !== "null") {
       query = query.eq("status", status);
     }
 
     const { data, error, count } = await query;
 
     if (error) {
-      // Handle missing table or empty schema cache gracefully like legacy
       if (
         error.message?.includes("schema cache") ||
         error.code === "PGRST116"
