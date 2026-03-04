@@ -15,6 +15,7 @@ import {
   FaShareAlt,
 } from "react-icons/fa";
 import LazyImage from "@/components/LazyImage";
+import BookmarkButton from "@/components/ui/BookmarkButton";
 
 export default function EventDetailClient() {
   const { slug } = useParams();
@@ -92,9 +93,20 @@ export default function EventDetailClient() {
             </Badge>
           )}
         </div>
-        <H1 className="mb-4 text-3xl md:text-5xl font-extrabold tracking-tight">
-          {event.title}
-        </H1>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex-1">
+            <H1 className="mb-4 text-3xl md:text-5xl font-extrabold tracking-tight">
+              {event.title}
+            </H1>
+          </div>
+          <div className="flex justify-center md:justify-end">
+            <BookmarkButton
+              contentId={event.id}
+              contentType="event"
+              size="lg"
+            />
+          </div>
+        </div>
       </header>
 
       <div className="grid lg:grid-cols-[1fr_350px] gap-12">

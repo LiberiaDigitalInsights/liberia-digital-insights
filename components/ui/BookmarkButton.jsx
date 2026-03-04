@@ -1,0 +1,119 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import {
+  useAuth,
+  addBookmark,
+  removeBookmark,
+  useBookmarks,
+} from "@/hooks/useBackendApi";
+import { cn } from "@/lib/cn";
+
+export default function BookmarkButton({
+  contentId,
+  contentType,
+  className,
+  size = "md",
+  onToggle,
+}) {
+  const { isAuthenticated, user } = useAuth();
+  const { data: bookmarksData, refetch } = useBookmarks(
+    {},
+    { immediate: isAuthenticated },
+  );
+
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarkId, setBookmarkId] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Sync state with fetched bookmarks
+  useEffect(() => {
+    if (bookmarksData?.bookmarks) {
+      const found = bookmarksData.bookmarks.find(
+        (b) => b.content_id === contentId && b.content_type === contentType,
+      );
+      setIsBookmarked(!!found);
+      setBookmarkId(found?.id || null);
+    }
+  }, [bookmarksData, contentId, contentType]);
+
+  const handleToggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isAuthenticated) {
+      // Logic for showing login modal or redirecting could go here
+      alert("Please log in to bookmark content");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (isBookmarked && bookmarkId) {
+        await removeBookmark(bookmarkId);
+        setIsBookmarked(false);
+        setBookmarkId(null);
+      } else {
+        const response = await addBookmark(contentId, contentType);
+        setIsBookmarked(true);
+        setBookmarkId(response.id);
+      }
+
+      // Notify parent if callback provided
+      if (onToggle) onToggle(!isBookmarked);
+
+      // Refresh bookmarks list to keep global state in sync
+      refetch();
+    } catch (error) {
+      console.error("Bookmark toggle failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const Icon = isBookmarked ? FaBookmark : FaRegBookmark;
+
+  const sizeClasses = {
+    sm: "p-1.5 text-sm",
+    md: "p-2 text-base",
+    lg: "p-2.5 text-lg",
+  };
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+      onClick={handleToggle}
+      disabled={loading}
+      className={cn(
+        "relative flex items-center justify-center rounded-full transition-colors duration-200",
+        isBookmarked
+          ? "bg-brand-500 text-white"
+          : "bg-surface/80 text-muted hover:bg-surface hover:text-brand-500 border border-border/50",
+        sizeClasses[size],
+        loading && "opacity-50 cursor-not-allowed",
+        className,
+      )}
+      aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+    >
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={isBookmarked ? "active" : "inactive"}
+          initial={{ opacity: 0, scale: 0.5, rotate: -45 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          exit={{ opacity: 0, scale: 0.5, rotate: 45 }}
+          transition={{ duration: 0.2 }}
+        >
+          <Icon />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Subtle pulse animation when active */}
+      {isBookmarked && (
+        <span className="absolute inset-0 rounded-full animate-ping bg-brand-500/20 pointer-events-none" />
+      )}
+    </motion.button>
+  );
+}

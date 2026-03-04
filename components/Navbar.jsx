@@ -288,6 +288,7 @@ export default function Navbar() {
                 {[
                   { href: "/about", label: "About Us" },
                   { href: "/advertising", label: "Advertisement" },
+                  { href: "/bookmarks", label: "My Bookmarks" },
                   { href: "/contact", label: "Contact Us" },
                   { href: "/subscribe", label: "Subscribe" },
                 ].map((item) => (
@@ -326,6 +327,7 @@ export default function Navbar() {
       <div
         className={`md:hidden fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`}
         aria-hidden={!open}
+        inert={!open ? true : undefined}
       >
         {/* Backdrop */}
         <div
@@ -387,6 +389,7 @@ export default function Navbar() {
                   { href: "/advertising", label: "Advertisement" },
                   { href: "/talent", label: "Tech Talents" },
                   { href: "/training", label: "Training & Courses" },
+                  { href: "/bookmarks", label: "My Bookmarks" },
                   { href: "/contact", label: "Contact Us" },
                   { href: "/register", label: "Sign Up" },
                 ].map((item) => (

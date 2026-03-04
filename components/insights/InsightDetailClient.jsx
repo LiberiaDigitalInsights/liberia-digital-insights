@@ -9,6 +9,7 @@ import Badge from "@/components/ui/Badge";
 import { useInsight, usePodcasts, useEvents } from "@/hooks/useBackendApi";
 import ContentRenderer from "@/components/ui/ContentRenderer";
 import LazyImage from "@/components/LazyImage";
+import BookmarkButton from "@/components/ui/BookmarkButton";
 import PodcastWidget from "@/components/sidebar/PodcastWidget";
 import EventsWidget from "@/components/sidebar/EventsWidget";
 import NewsletterWidget from "@/components/sidebar/NewsletterWidget";
@@ -101,9 +102,18 @@ export default function InsightDetailClient() {
                 </Badge>
               </div>
             )}
-            <H1 className="mb-4 text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
-              {insight.title}
-            </H1>
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
+              <H1 className="flex-1 text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                {insight.title}
+              </H1>
+              <div className="flex justify-start md:justify-end">
+                <BookmarkButton
+                  contentId={insight.id}
+                  contentType="insight"
+                  size="lg"
+                />
+              </div>
+            </div>
             {insight.excerpt && (
               <p className="mb-6 text-xl text-muted leading-relaxed font-medium">
                 {insight.excerpt}

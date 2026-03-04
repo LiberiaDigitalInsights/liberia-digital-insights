@@ -286,6 +286,28 @@ export const useAnalyticsStats = () => {
   return useApi(() => apiRequest("/analytics/stats"), []);
 };
 
+// Hook for bookmarks
+export const useBookmarks = (params = {}, options = {}) => {
+  const query = new URLSearchParams(cleanParams(params)).toString();
+  return useApi(
+    () => apiRequest(`/bookmarks${query ? `?${query}` : ""}`),
+    [query],
+    options,
+  );
+};
+
+// Mutation functions for bookmarks
+export const addBookmark = (contentId, contentType) =>
+  apiRequest("/bookmarks", {
+    method: "POST",
+    body: JSON.stringify({ content_id: contentId, content_type: contentType }),
+  });
+
+export const removeBookmark = (bookmarkId) =>
+  apiRequest(`/bookmarks/${bookmarkId}`, {
+    method: "DELETE",
+  });
+
 // UI export
 export default {
   useAuth,
@@ -305,4 +327,7 @@ export default {
   useTalents,
   useCategories,
   useAnalyticsStats,
+  useBookmarks,
+  addBookmark,
+  removeBookmark,
 };

@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 import LazyImage from "@/components/LazyImage";
+import BookmarkButton from "@/components/ui/BookmarkButton";
 
 export default function ArticleCard({
+  id,
   image,
   title,
   excerpt,
@@ -80,6 +82,15 @@ export default function ArticleCard({
                     {category}
                   </div>
                 )}
+                {id && (
+                  <div className="absolute top-3 right-3 z-10">
+                    <BookmarkButton
+                      contentId={id}
+                      contentType="article"
+                      size="sm"
+                    />
+                  </div>
+                )}
               </div>
             )}
           </>
@@ -100,6 +111,15 @@ export default function ArticleCard({
                 {category && (
                   <div className="absolute top-3 left-3 rounded-full bg-brand-500 px-2.5 py-1 text-xs font-medium text-white shadow-lg z-10">
                     {category}
+                  </div>
+                )}
+                {id && (
+                  <div className="absolute top-3 right-3 z-10">
+                    <BookmarkButton
+                      contentId={id}
+                      contentType="article"
+                      size="sm"
+                    />
                   </div>
                 )}
               </div>

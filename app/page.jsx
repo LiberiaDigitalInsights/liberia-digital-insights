@@ -1,7 +1,42 @@
+"use client";
+
+import React, { Suspense } from "react";
 import { MotionGrid, MotionItem } from "@/components/ui/MotionWrapper";
 import { useArticles, usePodcasts, useEvents } from "@/hooks/useBackendApi";
+import { H1, H2, Muted } from "@/components/ui/Typography";
+import Button from "@/components/ui/Button";
+import FeaturedArticleRow from "@/components/articles/FeaturedArticleRow";
+import ArticleCard from "@/components/articles/ArticleCard";
+import AdSlot from "@/components/ads/AdSlot";
+import PodcastWidget from "@/components/sidebar/PodcastWidget";
+import NewsletterWidget from "@/components/sidebar/NewsletterWidget";
+import EventsWidget from "@/components/sidebar/EventsWidget";
 
-export default function HomePage() {
+function HomeSkeleton() {
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12 animate-pulse">
+      <div className="h-64 bg-surface rounded-2xl mb-12" />
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_350px]">
+        <div className="space-y-12">
+          <div className="h-10 bg-surface rounded w-1/4" />
+          <div className="h-80 bg-surface rounded" />
+          <div className="h-10 bg-surface rounded w-1/4" />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-48 bg-surface rounded" />
+            ))}
+          </div>
+        </div>
+        <div className="space-y-8">
+          <div className="h-64 bg-surface rounded" />
+          <div className="h-64 bg-surface rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HomeContent() {
   // Fetch real data from backend
   const { data: articlesData, loading: articlesLoading } = useArticles({
     limit: 12,
@@ -71,6 +106,7 @@ export default function HomePage() {
                 <MotionItem>
                   <FeaturedArticleRow
                     index={0}
+                    id={featured.id}
                     image={featured.cover_image_url}
                     title={featured.title}
                     excerpt={featured.excerpt}
@@ -121,6 +157,7 @@ export default function HomePage() {
                 {latestArticles.map((article) => (
                   <MotionItem key={article.id}>
                     <ArticleCard
+                      id={article.id}
                       image={article.cover_image_url}
                       title={article.title}
                       category={article.category?.name || "Uncategorized"}
@@ -148,6 +185,7 @@ export default function HomePage() {
               {latestArticles.slice(0, 6).map((article) => (
                 <MotionItem key={`news-${article.id}`}>
                   <ArticleCard
+                    id={article.id}
                     image={article.cover_image_url}
                     title={article.title}
                     category={article.category?.name || "News"}
@@ -178,5 +216,13 @@ export default function HomePage() {
         </aside>
       </div>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<HomeSkeleton />}>
+      <HomeContent />
+    </Suspense>
   );
 }

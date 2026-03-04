@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
+import { withAuth } from "@/lib/apiAuth";
 import { eventQuerySchema, eventSubmissionSchema } from "@/lib/schemas/content";
 
 // GET /api/v1/events - List all events

@@ -105,7 +105,17 @@ export default function ArticleDetailClient() {
             <Badge variant="solid">{article.category.name}</Badge>
           </div>
         )}
-        <H1 className="mb-4 text-3xl md:text-4xl font-bold">{article.title}</H1>
+        <div className="flex items-start justify-between gap-4">
+          <H1 className="mb-4 flex-1 text-3xl md:text-4xl font-bold">
+            {article.title}
+          </H1>
+          <BookmarkButton
+            contentId={article.id}
+            contentType="article"
+            size="lg"
+            className="mt-1"
+          />
+        </div>
         {article.excerpt && (
           <p className="mb-6 text-xl text-muted">{article.excerpt}</p>
         )}
@@ -163,6 +173,7 @@ export default function ArticleDetailClient() {
                   .map((related) => (
                     <ArticleCard
                       key={related.id}
+                      id={related.id}
                       image={related.cover_image_url}
                       title={related.title}
                       category={related.category?.name || "Uncategorized"}
