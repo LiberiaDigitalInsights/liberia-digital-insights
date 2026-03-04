@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useAdvertisements } from "@/hooks/useBackendApi";
+import LazyImage from "@/components/LazyImage";
 
 export default function AdSlot({
   position = "inline",
@@ -136,10 +137,11 @@ export default function AdSlot({
           }}
         >
           {ad.image_url ? (
-            <img
+            <LazyImage
               src={ad.image_url}
               alt={ad.title || "Advertisement"}
               className="h-full max-h-full w-auto object-contain"
+              priority={position === "hero"}
             />
           ) : null}
         </a>
@@ -173,11 +175,13 @@ export default function AdSlot({
           className="group block overflow-hidden rounded-md border border-border bg-surface hover:bg-[color-mix(in_oklab,var(--color-surface),white_4%)]"
         >
           {current.image_url ? (
-            <img
-              src={current.image_url}
-              alt={current.title || "Advertisement"}
-              className={`w-full ${position === "sidebar" ? "h-40 object-cover" : "h-40 object-cover"}`}
-            />
+            <div className="h-40 relative">
+              <LazyImage
+                src={current.image_url}
+                alt={current.title || "Advertisement"}
+                className="w-full h-full object-cover"
+              />
+            </div>
           ) : null}
           {current.title ? (
             <div className="p-3 text-sm font-medium group-hover:underline">

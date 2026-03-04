@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import VideoPlayer from "@/components/video/VideoPlayer";
 import { motion, AnimatePresence } from "framer-motion";
+import LazyImage from "@/components/LazyImage";
 
 export default function Lightbox({
   items,
@@ -87,11 +88,13 @@ export default function Lightbox({
           >
             <div className="w-full relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-black">
               {current.type === "image" ? (
-                <img
-                  src={current.url}
-                  alt={current.title}
-                  className="max-h-[70vh] w-full object-contain mx-auto"
-                />
+                <div className="relative max-h-[70vh] aspect-video">
+                  <LazyImage
+                    src={current.url}
+                    alt={current.title}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
               ) : (
                 <VideoPlayer
                   url={current.url}

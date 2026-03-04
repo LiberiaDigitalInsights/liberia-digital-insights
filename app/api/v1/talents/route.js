@@ -1,16 +1,23 @@
-import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { withAuth } from "@/lib/apiAuth";
+import {
+  talentQuerySchema,
+  talentSubmissionSchema,
+} from "@/lib/schemas/content";
 
 // GET /api/v1/talents - Get all talents (with filtering/pagination)
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
-    const category = searchParams.get("category");
-    const status = searchParams.get("status");
+    const queryParams = Object.fromEntries(searchParams.entries());
 
+    const result = talentQuerySchema.safeParse(queryParams);
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Invalid query parameters", details: result.error.format() },
+        { status: 400 },
+      );
+    }
+
+    const { page, limit, category, status } = result.data;
     const offset = (page - 1) * limit;
 
     let query = supabase
@@ -19,16 +26,11 @@ export async function GET(request) {
       .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
-    if (
-      category &&
-      category !== "All" &&
-      category !== "undefined" &&
-      category !== "null"
-    ) {
+    if (category && category !== "All") {
       query = query.eq("category", category);
     }
 
-    if (status && status !== "undefined" && status !== "null") {
+    if (status) {
       query = query.eq("status", status);
     }
 
@@ -53,7 +55,7 @@ export async function GET(request) {
         page,
         limit,
         total: count,
-        pages: Math.ceil(count / limit),
+        pages: Math.ceil((count || 0) / limit),
       },
     });
   } catch (error) {
@@ -66,6 +68,15 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
+
+    const result = talentSubmissionSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: result.error.format() },
+        { status: 400 },
+      );
+    }
+
     const {
       name,
       slug,
@@ -74,12 +85,12 @@ export async function POST(request) {
       category,
       links,
       avatar_url,
-      status = "published", // Default to published as in legacy, though usually submissions are 'pending'
+      status,
       skills,
       experience,
       location,
       availability,
-    } = body;
+    } = result.data;
 
     const { data, error } = await supabase
       .from("talents")
@@ -105,10 +116,6 @@ export async function POST(request) {
       .single();
 
     if (error) throw error;
-
-    // Note: Legacy used emailService.sendTalentSubmissionNotification(data)
-    // We will port emailService later or use a different mechanism.
-    // For now, we proceed as the record is created.
 
     return NextResponse.json(data, { status: 201 });
   } catch (error) {

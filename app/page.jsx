@@ -1,23 +1,8 @@
-"use client";
-
-import React from "react";
-import ArticleCard from "@/components/articles/ArticleCard";
-import FeaturedArticleRow from "@/components/articles/FeaturedArticleRow";
-import PodcastWidget from "@/components/sidebar/PodcastWidget";
-import NewsletterWidget from "@/components/sidebar/NewsletterWidget";
-import EventsWidget from "@/components/sidebar/EventsWidget";
-import AdSlot from "@/components/ads/AdSlot";
-import { H1, H2, Muted } from "@/components/ui/Typography";
-import Button from "@/components/ui/Button";
-import {
-  useArticles,
-  usePodcasts,
-  useEvents,
-  useNewsletters,
-} from "@/hooks/useBackendApi";
+import { MotionGrid, MotionItem } from "@/components/ui/MotionWrapper";
+import { useArticles, usePodcasts, useEvents } from "@/hooks/useBackendApi";
 
 export default function HomePage() {
-  // Fetch real data from backend (currently stubbed in hooks)
+  // Fetch real data from backend
   const { data: articlesData, loading: articlesLoading } = useArticles({
     limit: 12,
   });
@@ -25,9 +10,6 @@ export default function HomePage() {
     limit: 3,
   });
   const { data: eventsData, loading: eventsLoading } = useEvents({ limit: 3 });
-  const { data: newslettersData, loading: newslettersLoading } = useNewsletters(
-    { limit: 3 },
-  );
 
   // Extract data from backend responses
   const articles = articlesData?.articles || [];
@@ -35,61 +17,80 @@ export default function HomePage() {
   const latestArticles = articles.slice(0, 12);
   const podcasts = podcastsData?.podcasts || [];
   const events = eventsData?.events || [];
-  const newsletters = newslettersData?.newsletters || [];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Hero */}
-      <section className="mb-10 animate-fade-in">
-        <div className="rounded-lg border border-border bg-surface p-8 md:p-12 text-center shadow-sm">
-          <H1 className="mb-3 text-3xl font-extrabold tracking-tight md:text-4xl text-text">
-            Liberia's home for tech news and insights
-          </H1>
-          <Muted className="mx-auto mb-6 max-w-2xl text-base md:text-lg">
-            Stories, analysis, and interviews from Liberia’s growing technology
-            ecosystem.
-          </Muted>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button variant="solid" as="a" href="/insights">
-              Explore Insights
-            </Button>
-            <Button variant="secondary" as="a" href="/subscribe">
-              Subscribe to Newsletter
-            </Button>
+      <section className="mb-10">
+        <MotionItem className="rounded-2xl border border-border bg-gradient-to-br from-surface to-brand-500/5 p-8 md:p-16 text-center shadow-2xl relative overflow-hidden group">
+          <div className="absolute inset-0 bg-brand-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-3xl animate-pulse" />
+          <div className="relative z-10">
+            <H1 className="mb-4 text-4xl font-black tracking-tighter md:text-6xl text-text leading-tight uppercase italic">
+              Liberia's home for <br className="hidden md:block" />
+              <span className="text-brand-500">tech news</span> and insights
+            </H1>
+            <Muted className="mx-auto mb-10 max-w-2xl text-lg md:text-xl font-medium leading-relaxed">
+              Stories, analysis, and interviews from Liberia’s growing
+              technology ecosystem.
+            </Muted>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Button
+                variant="solid"
+                as="a"
+                href="/insights"
+                className="px-10 py-4 text-lg font-bold shadow-xl shadow-brand-500/20"
+              >
+                Explore Insights
+              </Button>
+              <Button
+                variant="secondary"
+                as="a"
+                href="/subscribe"
+                className="px-10 py-4 text-lg font-bold"
+              >
+                Newsletter
+              </Button>
+            </div>
           </div>
-        </div>
+        </MotionItem>
       </section>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_350px]">
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_350px]">
         {/* Main content */}
-        <main className="space-y-12">
+        <main className="space-y-16">
           {/* Featured Technology Section */}
-          <section className="animate-fade-in">
-            <H2 className="mb-6 text-2xl font-bold">Technology</H2>
-            <div className="opacity-0 animate-slide-up animation-delay-100">
+          <section>
+            <div className="flex items-center gap-4 mb-8">
+              <H2 className="text-3xl font-black uppercase tracking-tighter italic">
+                Technology
+              </H2>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+            <div>
               {featured ? (
-                <FeaturedArticleRow
-                  index={0}
-                  image={featured.cover_image_url}
-                  title={featured.title}
-                  excerpt={featured.excerpt}
-                  category={featured.category?.name || "Technology"}
-                  author={featured.author?.name || "Admin"}
-                  date={new Date(featured.published_at).toLocaleDateString()}
-                  readTime={
-                    Math.ceil((featured.content?.length || 0) / 1000) +
-                    " min read"
-                  }
-                  href={`/article/${featured.slug}`}
-                />
+                <MotionItem>
+                  <FeaturedArticleRow
+                    index={0}
+                    image={featured.cover_image_url}
+                    title={featured.title}
+                    excerpt={featured.excerpt}
+                    category={featured.category?.name || "Technology"}
+                    author={featured.author?.name || "Admin"}
+                    date={new Date(featured.published_at).toLocaleDateString()}
+                    readTime={
+                      Math.ceil((featured.content?.length || 0) / 1000) +
+                      " min read"
+                    }
+                    href={`/article/${featured.slug}`}
+                  />
+                </MotionItem>
               ) : articlesLoading ? (
                 <div className="animate-pulse space-y-4">
                   <div className="h-64 bg-surface rounded-lg"></div>
                   <div className="h-6 bg-surface rounded w-3/4"></div>
-                  <div className="h-4 bg-surface rounded w-1/2"></div>
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted">
+                <div className="text-center py-8 text-muted italic font-medium">
                   No featured articles available
                 </div>
               )}
@@ -97,34 +98,17 @@ export default function HomePage() {
           </section>
 
           {/* Inline Advertisement */}
-          <section className="animate-fade-in">
-            <AdSlot
-              position="inline"
-              className="opacity-0 animate-fade-in animation-delay-200"
-            />
-          </section>
+          <AdSlot position="inline" />
 
           {/* Article Grid */}
-          <section className="animate-fade-in">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {latestArticles.map((article, idx) => (
-                <div
-                  key={article.id}
-                  className="opacity-0 animate-slide-up"
-                  style={{ animationDelay: `${100 + idx * 50}ms` }}
-                >
-                  <ArticleCard
-                    image={article.cover_image_url}
-                    title={article.title}
-                    category={article.category?.name || "Uncategorized"}
-                    date={new Date(article.published_at).toLocaleDateString()}
-                    readTime={Math.ceil((article.content?.length || 0) / 1000)}
-                    href={`/article/${article.slug}`}
-                  />
-                </div>
-              ))}
+          <section>
+            <div className="flex items-center gap-4 mb-8">
+              <H2 className="text-3xl font-black uppercase tracking-tighter italic">
+                Latest stories
+              </H2>
+              <div className="h-px flex-1 bg-border" />
             </div>
-            {articlesLoading && (
+            {articlesLoading ? (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="animate-pulse">
@@ -132,21 +116,37 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
+            ) : (
+              <MotionGrid className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {latestArticles.map((article) => (
+                  <MotionItem key={article.id}>
+                    <ArticleCard
+                      image={article.cover_image_url}
+                      title={article.title}
+                      category={article.category?.name || "Uncategorized"}
+                      date={new Date(article.published_at).toLocaleDateString()}
+                      readTime={Math.ceil(
+                        (article.content?.length || 0) / 1000,
+                      )}
+                      href={`/article/${article.slug}`}
+                    />
+                  </MotionItem>
+                ))}
+              </MotionGrid>
             )}
           </section>
 
-          {/* Latest News */}
-          <section className="animate-fade-in">
-            <H2 className="mb-6 text-2xl font-bold uppercase tracking-tight">
-              Latest News
-            </H2>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {latestArticles.slice(0, 6).map((article, idx) => (
-                <div
-                  key={`news-${article.id}`}
-                  className="opacity-0 animate-slide-up"
-                  style={{ animationDelay: `${100 + idx * 50}ms` }}
-                >
+          {/* Insights / News Section */}
+          <section>
+            <div className="flex items-center gap-4 mb-8">
+              <H2 className="text-3xl font-black uppercase tracking-tighter italic text-brand-500">
+                Member Insights
+              </H2>
+              <div className="h-px flex-1 bg-brand-500/20" />
+            </div>
+            <MotionGrid className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {latestArticles.slice(0, 6).map((article) => (
+                <MotionItem key={`news-${article.id}`}>
                   <ArticleCard
                     image={article.cover_image_url}
                     title={article.title}
@@ -155,30 +155,26 @@ export default function HomePage() {
                     readTime={Math.ceil((article.content?.length || 0) / 1000)}
                     href={`/article/${article.slug}`}
                   />
-                </div>
+                </MotionItem>
               ))}
-            </div>
+            </MotionGrid>
           </section>
         </main>
 
         {/* Sidebar */}
-        <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
-          <div className="opacity-0 animate-fade-in animation-delay-100">
+        <aside className="space-y-10 lg:sticky lg:top-24 lg:self-start">
+          <MotionItem>
             <PodcastWidget podcasts={podcasts} loading={podcastsLoading} />
-          </div>
-          <div className="opacity-0 animate-fade-in animation-delay-200">
-            <NewsletterWidget
-              newsletters={newsletters}
-              loading={newslettersLoading}
-            />
-          </div>
-          <div className="opacity-0 animate-fade-in animation-delay-300">
+          </MotionItem>
+          <MotionItem>
+            <NewsletterWidget loading={false} />
+          </MotionItem>
+          <MotionItem>
             <EventsWidget events={events} loading={eventsLoading} />
-          </div>
-          <AdSlot
-            position="sidebar"
-            className="opacity-0 animate-fade-in animation-delay-400"
-          />
+          </MotionItem>
+          <MotionItem>
+            <AdSlot position="sidebar" />
+          </MotionItem>
         </aside>
       </div>
     </div>
