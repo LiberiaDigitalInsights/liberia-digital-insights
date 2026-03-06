@@ -11,7 +11,7 @@ import { MotionGrid, MotionItem } from "@/components/ui/MotionWrapper";
 export default function CategoryDetailClient() {
   const { slug } = useParams();
   const { data: categoriesData } = useCategories();
-  const category = categoriesData?.categories?.find((c) => c.slug === slug) || {
+  const category = categoriesData?.data?.find((c) => c.slug === slug) || {
     name: slug,
     description: "",
   };

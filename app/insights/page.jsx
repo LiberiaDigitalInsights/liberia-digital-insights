@@ -18,7 +18,7 @@ export default function InsightsPage() {
   const { data: categoriesData } = useCategories();
 
   const insights = insightsData?.insights || [];
-  const categories = categoriesData?.categories || [];
+  const categories = categoriesData?.data || [];
 
   // Filter insights based on selected category
   const filteredInsights =

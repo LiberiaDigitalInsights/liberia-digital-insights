@@ -3,19 +3,57 @@ import { supabase } from "@/lib/supabase";
 import { withAuth } from "@/lib/apiAuth";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { userQuerySchema, userSubmissionSchema } from "@/lib/schemas/content";
 
 // GET /api/v1/users - List all users (Admin only)
-async function getHandler() {
+async function getHandler(request) {
   try {
-    const { data, error } = await supabase
+    const { searchParams } = new URL(request.url);
+    const queryParams = Object.fromEntries(searchParams.entries());
+
+    const result = userQuerySchema.safeParse(queryParams);
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Invalid query parameters", details: result.error.format() },
+        { status: 400 },
+      );
+    }
+
+    const { page, limit, search, role } = result.data;
+    const offset = (page - 1) * limit;
+
+    let query = supabase
       .from("users")
       .select(
         "id, email, first_name, last_name, role, is_active, created_at, last_login",
+        { count: "exact" },
       )
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (role) {
+      query = query.eq("role", role);
+    }
+
+    if (search) {
+      query = query.or(
+        `first_name.ilike.%${search}%,last_name.ilike.%${search}%,email.ilike.%${search}%`,
+      );
+    }
+
+    const { data, error, count } = await query;
 
     if (error) throw error;
-    return NextResponse.json(data);
+
+    return NextResponse.json({
+      users: data || [],
+      pagination: {
+        page,
+        limit,
+        total: count,
+        pages: Math.ceil((count || 0) / limit),
+      },
+    });
   } catch (error) {
     console.error("[api/users] GET error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -26,22 +64,16 @@ async function getHandler() {
 async function postHandler(request) {
   try {
     const body = await request.json();
-    const { email, first_name, last_name, role = "editor" } = body;
-    const validRoles = ["admin", "editor", "moderator", "viewer", "user"];
 
-    if (!validRoles.includes(role)) {
+    const result = userSubmissionSchema.safeParse(body);
+    if (!result.success) {
       return NextResponse.json(
-        { error: "Invalid role provided" },
+        { error: "Validation failed", details: result.error.format() },
         { status: 400 },
       );
     }
 
-    if (!email || !first_name || !last_name) {
-      return NextResponse.json(
-        { error: "Email, first name, and last name are required" },
-        { status: 400 },
-      );
-    }
+    const { email, first_name, last_name, role, is_active } = result.data;
 
     // Check if user already exists
     const { data: existingUser } = await supabase
@@ -72,7 +104,7 @@ async function postHandler(request) {
           first_name,
           last_name,
           role,
-          is_active: true,
+          is_active,
           created_at: new Date().toISOString(),
         },
       ])

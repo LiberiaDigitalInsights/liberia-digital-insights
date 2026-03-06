@@ -9,7 +9,7 @@ import Card from "@/components/ui/Card";
 
 export default function CategoriesPage() {
   const { data: categoriesData, loading, error } = useCategories();
-  const categories = categoriesData?.categories || [];
+  const categories = categoriesData?.data || [];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">

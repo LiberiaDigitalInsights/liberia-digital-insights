@@ -29,10 +29,10 @@ function ArticlesContent() {
   });
 
   const { data: categoriesData } = useCategories();
-  const categories = categoriesData?.categories || [];
+  const categories = categoriesData?.data || [];
   const articles = articlesData?.articles || [];
-  const pagination = articlesData?.pagination || { total: 0, totalPages: 1 };
-  const totalPages = pagination.totalPages || 1;
+  const pagination = articlesData?.pagination || { total: 0, pages: 1 };
+  const totalPages = pagination.pages || 1;
 
   const handleCategoryChange = (cat) => {
     const params = new URLSearchParams(searchParams.toString());

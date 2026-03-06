@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 
-// Generic API request function
-export const apiRequest = async (endpoint, options = {}) => {
+// Generic API request function with retry mechanism
+export const apiRequest = async (endpoint, options = {}, retries = 2) => {
   const url = endpoint.startsWith("http") ? endpoint : `/api/v1${endpoint}`;
   const config = {
     headers: {
@@ -21,22 +21,40 @@ export const apiRequest = async (endpoint, options = {}) => {
     }
   }
 
-  try {
-    const response = await fetch(url, config);
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      const errorMessage =
-        error.error ||
-        error.message ||
-        `HTTP error! status: ${response.status}`;
-      throw new Error(errorMessage);
-    }
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    if (response.status === 204) return null;
-    return await response.json();
-  } catch (error) {
-    console.error(`API Error [${endpoint}]:`, error);
-    throw error;
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const response = await fetch(url, config);
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        const errorMessage =
+          error.error ||
+          error.message ||
+          `HTTP error! status: ${response.status}`;
+        throw new Error(errorMessage);
+      }
+
+      if (response.status === 204) return null;
+      return await response.json();
+    } catch (error) {
+      const isNetworkError =
+        error.name === "TypeError" || // fetch failed
+        error.name === "ConnectTimeoutError" ||
+        error.code === "EAI_AGAIN";
+
+      if (i < retries && isNetworkError) {
+        console.warn(
+          `API retry ${i + 1}/${retries} for [${endpoint}]:`,
+          error.message,
+        );
+        await delay(1000 * (i + 1)); // Exponential-ish backoff
+        continue;
+      }
+
+      console.error(`API Error [${endpoint}]:`, error);
+      throw error;
+    }
   }
 };
 
@@ -162,6 +180,30 @@ export const useArticle = (slug) => {
   });
 };
 
+export const useArticleById = (id) => {
+  return useApi(() => apiRequest(`/articles/${id}`), [id], {
+    immediate: !!id,
+  });
+};
+
+// Mutation functions for articles
+export const createArticle = (articleData) =>
+  apiRequest("/articles", {
+    method: "POST",
+    body: JSON.stringify(articleData),
+  });
+
+export const updateArticle = (id, articleData) =>
+  apiRequest(`/articles/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(articleData),
+  });
+
+export const deleteArticle = (id) =>
+  apiRequest(`/articles/${id}`, {
+    method: "DELETE",
+  });
+
 // Hook for podcasts
 export const usePodcasts = (params = {}) => {
   const query = new URLSearchParams(cleanParams(params)).toString();
@@ -177,6 +219,30 @@ export const usePodcast = (slug) => {
     immediate: !!slug,
   });
 };
+
+export const usePodcastById = (id) => {
+  return useApi(() => apiRequest(`/podcasts/${id}`), [id], {
+    immediate: !!id,
+  });
+};
+
+// Mutation functions for podcasts
+export const createPodcast = (podcastData) =>
+  apiRequest("/podcasts", {
+    method: "POST",
+    body: JSON.stringify(podcastData),
+  });
+
+export const updatePodcast = (id, podcastData) =>
+  apiRequest(`/podcasts/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(podcastData),
+  });
+
+export const deletePodcast = (id) =>
+  apiRequest(`/podcasts/${id}`, {
+    method: "DELETE",
+  });
 
 // Hook for events
 export const useEvents = (params = {}) => {
@@ -194,6 +260,30 @@ export const useEvent = (slug) => {
   });
 };
 
+export const useEventById = (id) => {
+  return useApi(() => apiRequest(`/events/${id}`), [id], {
+    immediate: !!id,
+  });
+};
+
+// Mutation functions for events
+export const createEvent = (eventData) =>
+  apiRequest("/events", {
+    method: "POST",
+    body: JSON.stringify(eventData),
+  });
+
+export const updateEvent = (id, eventData) =>
+  apiRequest(`/events/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(eventData),
+  });
+
+export const deleteEvent = (id) =>
+  apiRequest(`/events/${id}`, {
+    method: "DELETE",
+  });
+
 // Hook for insights
 export const useInsights = (params = {}) => {
   const query = new URLSearchParams(cleanParams(params)).toString();
@@ -209,6 +299,30 @@ export const useInsight = (slug) => {
     immediate: !!slug,
   });
 };
+
+export const useInsightById = (id) => {
+  return useApi(() => apiRequest(`/insights/${id}`), [id], {
+    immediate: !!id,
+  });
+};
+
+// Mutation functions for insights
+export const createInsight = (insightData) =>
+  apiRequest("/insights", {
+    method: "POST",
+    body: JSON.stringify(insightData),
+  });
+
+export const updateInsight = (id, insightData) =>
+  apiRequest(`/insights/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(insightData),
+  });
+
+export const deleteInsight = (id) =>
+  apiRequest(`/insights/${id}`, {
+    method: "DELETE",
+  });
 
 // Hook for newsletters
 export const useNewsletters = (params = {}) => {
@@ -286,6 +400,11 @@ export const useAnalyticsStats = () => {
   return useApi(() => apiRequest("/analytics/stats"), []);
 };
 
+// Hook for recent activity (Admin only)
+export const useRecentActivity = () => {
+  return useApi(() => apiRequest("/analytics/activity"), []);
+};
+
 // Hook for bookmarks
 export const useBookmarks = (params = {}, options = {}) => {
   const query = new URLSearchParams(cleanParams(params)).toString();
@@ -308,17 +427,75 @@ export const removeBookmark = (bookmarkId) =>
     method: "DELETE",
   });
 
+// Hook for users list (Admin)
+export const useUsers = (params = {}) => {
+  const query = new URLSearchParams(cleanParams(params)).toString();
+  return useApi(() => apiRequest(`/users${query ? `?${query}` : ""}`), [query]);
+};
+
+// Mutation functions for users
+export const updateUserRole = (id, role) =>
+  apiRequest(`/users/${id}/role`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
+
+export const updateUserStatus = (id, is_active) =>
+  apiRequest(`/users/${id}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ is_active }),
+  });
+
+export const deleteUser = (id) =>
+  apiRequest(`/users/${id}`, {
+    method: "DELETE",
+  });
+
+// Mutation functions for talents
+export const createTalent = (talentData) =>
+  apiRequest("/talents", {
+    method: "POST",
+    body: JSON.stringify(talentData),
+  });
+
+export const updateTalent = (id, talentData) =>
+  apiRequest(`/talents/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(talentData),
+  });
+
+export const deleteTalent = (id) =>
+  apiRequest(`/talents/${id}`, {
+    method: "DELETE",
+  });
+
 // UI export
 export default {
   useAuth,
   useArticles,
   useArticle,
+  useArticleById,
+  createArticle,
+  updateArticle,
+  deleteArticle,
   usePodcasts,
   usePodcast,
+  usePodcastById,
+  createPodcast,
+  updatePodcast,
+  deletePodcast,
   useEvents,
   useEvent,
+  useEventById,
+  createEvent,
+  updateEvent,
+  deleteEvent,
   useInsights,
   useInsight,
+  useInsightById,
+  createInsight,
+  updateInsight,
+  deleteInsight,
   useNewsletters,
   useAdvertisements,
   useNewsletterSubscription,
@@ -326,7 +503,15 @@ export default {
   useTraining,
   useTalents,
   useCategories,
+  useUsers,
+  updateUserRole,
+  updateUserStatus,
+  deleteUser,
+  createTalent,
+  updateTalent,
+  deleteTalent,
   useAnalyticsStats,
+  useRecentActivity,
   useBookmarks,
   addBookmark,
   removeBookmark,

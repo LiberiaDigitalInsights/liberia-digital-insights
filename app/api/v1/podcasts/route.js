@@ -1,23 +1,53 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { withAuth } from "@/lib/apiAuth";
+import {
+  podcastQuerySchema,
+  podcastSubmissionSchema,
+} from "@/lib/schemas/content";
 
 // GET /api/v1/podcasts - List all podcasts
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get("limit") || "10");
+    const queryParams = Object.fromEntries(searchParams.entries());
 
-    const { data, error } = await supabase
+    const result = podcastQuerySchema.safeParse(queryParams);
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Invalid query parameters", details: result.error.format() },
+        { status: 400 },
+      );
+    }
+
+    const { page, limit, status, category, search } = result.data;
+    const offset = (page - 1) * limit;
+
+    let query = supabase
       .from("podcasts")
       .select(
         `
         *,
         categories(name, slug)
       `,
+        { count: "exact" },
       )
       .order("published_at", { ascending: false })
-      .limit(limit);
+      .range(offset, offset + limit - 1);
+
+    if (category) {
+      query = query.eq("categories.slug", category);
+    }
+
+    if (status) {
+      query = query.eq("status", status);
+    }
+
+    if (search) {
+      query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
+    }
+
+    const { data, error, count } = await query;
 
     if (error) throw error;
 
@@ -32,7 +62,15 @@ export async function GET(request) {
       categories: undefined,
     }));
 
-    return NextResponse.json({ podcasts: transformedData });
+    return NextResponse.json({
+      podcasts: transformedData,
+      pagination: {
+        page,
+        limit,
+        total: count,
+        pages: Math.ceil((count || 0) / limit),
+      },
+    });
   } catch (error) {
     console.error("[api/podcasts] GET error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -43,9 +81,18 @@ export async function GET(request) {
 async function postHandler(request) {
   try {
     const body = await request.json();
+
+    const result = podcastSubmissionSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: result.error.format() },
+        { status: 400 },
+      );
+    }
+
     const { data, error } = await supabase
       .from("podcasts")
-      .insert([body])
+      .insert([result.data])
       .select()
       .single();
 

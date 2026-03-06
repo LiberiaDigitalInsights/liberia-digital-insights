@@ -1,14 +1,20 @@
 import { NextResponse } from "next/server";
 
 export function middleware(request) {
+  const { pathname } = request.nextUrl;
   const response = NextResponse.next();
 
-  // Security Headers
+  // 1. Security Headers
   // X-Content-Type-Options: Prevents MIME type sniffing
   response.headers.set("X-Content-Type-Options", "nosniff");
 
   // X-Frame-Options: Prevents clickjacking
-  response.headers.set("X-Frame-Options", "DENY");
+  // Allow /admin to be framed if needed, otherwise DENY
+  if (pathname.startsWith("/admin")) {
+    response.headers.set("X-Frame-Options", "SAMEORIGIN");
+  } else {
+    response.headers.set("X-Frame-Options", "DENY");
+  }
 
   // X-XSS-Protection: Basic XSS filter
   response.headers.set("X-XSS-Protection", "1; mode=block");
@@ -23,7 +29,6 @@ export function middleware(request) {
   );
 
   // Content-Security-Policy: Basic policy
-  // Note: For Next.js development, we keep it relatively open to avoid breaking HMR
   if (process.env.NODE_ENV === "production") {
     response.headers.set(
       "Content-Security-Policy",
@@ -31,13 +36,27 @@ export function middleware(request) {
     );
   }
 
+  // 2. RBAC / Auth Checks (Placeholders)
+  // For document requests to /admin, we could check for an auth cookie here
+  // if (!request.cookies.has('auth-token') && pathname.startsWith('/admin')) {
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = '/login';
+  //   url.searchParams.set('redirect', pathname);
+  //   return NextResponse.redirect(url);
+  // }
+
   return response;
 }
 
-// Only run middleware on API routes or specific paths
+// Ensure middleware runs on relevant paths
 export const config = {
   matcher: [
-    "/api/:path*",
-    // Add other paths if needed
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };
