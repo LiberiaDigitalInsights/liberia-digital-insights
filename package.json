@@ -32,7 +32,6 @@
     "nodemailer": "^7.0.11",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-helmet-async": "^2.0.5",
     "react-icons": "^5.5.0",
     "recharts": "^2.15.4",
     "tailwind-merge": "^3.0.1",
