@@ -22,6 +22,12 @@ export default function EventsPage() {
     (event) => new Date(event.date) >= currentDate,
   );
   const past = allEvents.filter((event) => new Date(event.date) < currentDate);
+  // Auto-switch to past if upcoming is empty
+  React.useEffect(() => {
+    if (!eventsLoading && upcoming.length === 0 && past.length > 0) {
+      setTab("past");
+    }
+  }, [eventsLoading, upcoming.length, past.length]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
