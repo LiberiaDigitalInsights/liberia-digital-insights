@@ -5,16 +5,64 @@ import { cn } from "@/lib/cn";
 
 const TabsContext = createContext();
 
-export function Tabs({ defaultValue, onValueChange, className, children }) {
-  const [value, setValue] = useState(defaultValue);
+export function Tabs({
+  defaultValue,
+  onValueChange,
+  className,
+  children,
+  tabs,
+  value: controlledValue,
+  onChange,
+}) {
+  const [internalValue, setInternalValue] = useState(
+    defaultValue || controlledValue,
+  );
+  const activeValue =
+    controlledValue !== undefined ? controlledValue : internalValue;
 
   const handleValueChange = (newValue) => {
-    setValue(newValue);
+    setInternalValue(newValue);
     onValueChange?.(newValue);
+    onChange?.(newValue);
   };
 
+  // Legacy Pattern Support (e.g. EventsPage, TagPage)
+  if (tabs && !children) {
+    return (
+      <TabsContext.Provider
+        value={{ value: activeValue, setValue: handleValueChange }}
+      >
+        <div className={cn("w-full", className)}>
+          <TabsList className="mb-8 w-full justify-start md:justify-center border-b border-border rounded-none bg-transparent overflow-x-auto flex-nowrap">
+            {tabs.map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className={cn(
+                  "border-b-2 rounded-none px-4 py-2 transition-all duration-300",
+                  activeValue === tab.value
+                    ? "border-brand-500 bg-transparent text-brand-500 font-bold"
+                    : "border-transparent bg-transparent text-muted hover:text-text",
+                )}
+              >
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {tabs.map((tab) => (
+            <TabsContent key={tab.value} value={tab.value}>
+              {tab.content}
+            </TabsContent>
+          ))}
+        </div>
+      </TabsContext.Provider>
+    );
+  }
+
   return (
-    <TabsContext.Provider value={{ value, setValue: handleValueChange }}>
+    <TabsContext.Provider
+      value={{ value: activeValue, setValue: handleValueChange }}
+    >
       <div className={cn("w-full", className)}>{children}</div>
     </TabsContext.Provider>
   );
