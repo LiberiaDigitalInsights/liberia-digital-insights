@@ -39,12 +39,8 @@ export default function BookmarkButton({
     try {
       if (isBookmarked && bookmarkId) {
         await removeBookmark(bookmarkId);
-        setIsBookmarked(false);
-        setBookmarkId(null);
       } else {
-        const response = await addBookmark(contentId, contentType);
-        setIsBookmarked(true);
-        setBookmarkId(response.id);
+        await addBookmark(contentId, contentType);
       }
 
       // Notify parent if callback provided
