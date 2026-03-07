@@ -17,7 +17,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "**.unsplash.com",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.unsplash.com",
       },
       {
         protocol: "https",

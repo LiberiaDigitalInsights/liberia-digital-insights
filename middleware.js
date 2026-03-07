@@ -25,10 +25,21 @@ export function middleware(request) {
 
   // Content-Security-Policy: Relaxed for Vercel Live and external assets
   if (process.env.NODE_ENV === "production") {
-    response.headers.set(
-      "Content-Security-Policy",
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.fbcdn.net https://*.fbcdn.com https://images.unsplash.com https://*.unsplash.com https:; font-src 'self' data:; connect-src 'self' https: https://vercel.live; frame-src 'self' https://vercel.live; frame-ancestors 'self' https://*.vercel.app;",
-    );
+    const cspValues = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.live",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' blob: data: https: https://*.fbcdn.net https://*.fbcdn.com https://*.fbsbx.com https://images.unsplash.com https://*.unsplash.com",
+      "font-src 'self' data: https://vercel.live https://*.vercel.live https://fonts.gstatic.com",
+      "connect-src 'self' https: https://vercel.live https://*.vercel.live ws: wss:",
+      "frame-src 'self' https://vercel.live https://*.vercel.live",
+      "frame-ancestors 'self' https://*.vercel.app",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ];
+
+    response.headers.set("Content-Security-Policy", cspValues.join("; "));
   }
 
   // 2. RBAC / Auth Checks (Placeholders)

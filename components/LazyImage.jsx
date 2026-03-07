@@ -86,6 +86,7 @@ export default function LazyImage({
               fill={fill}
               sizes={sizes}
               priority={priority}
+              referrerPolicy="no-referrer"
             />
           ) : (
             <img
@@ -97,6 +98,7 @@ export default function LazyImage({
                 setError(true);
                 setIsLoaded(true);
               }}
+              referrerPolicy="no-referrer"
               className={cn(
                 "h-full w-full object-cover transition-opacity duration-300",
                 isLoaded ? "opacity-100" : "opacity-0",
