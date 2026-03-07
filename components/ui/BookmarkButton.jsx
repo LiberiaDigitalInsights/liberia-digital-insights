@@ -3,12 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
-import {
-  useAuth,
-  addBookmark,
-  removeBookmark,
-  useBookmarks,
-} from "@/hooks/useBackendApi";
+import { useAuth, addBookmark, removeBookmark } from "@/hooks/useBackendApi";
+import { useBookmarkContext } from "@/context/BookmarkContext";
 import { cn } from "@/lib/cn";
 
 export default function BookmarkButton({
@@ -18,26 +14,16 @@ export default function BookmarkButton({
   size = "md",
   onToggle,
 }) {
-  const { isAuthenticated, user } = useAuth();
-  const { data: bookmarksData, refetch } = useBookmarks(
-    {},
-    { immediate: isAuthenticated },
-  );
+  const { isAuthenticated } = useAuth();
+  const {
+    isBookmarked: checkBookmarked,
+    getBookmarkId,
+    refresh,
+  } = useBookmarkContext();
 
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [bookmarkId, setBookmarkId] = useState(null);
+  const isBookmarked = checkBookmarked(contentId, contentType);
+  const bookmarkId = getBookmarkId(contentId, contentType);
   const [loading, setLoading] = useState(false);
-
-  // Sync state with fetched bookmarks
-  useEffect(() => {
-    if (bookmarksData?.bookmarks) {
-      const found = bookmarksData.bookmarks.find(
-        (b) => b.content_id === contentId && b.content_type === contentType,
-      );
-      setIsBookmarked(!!found);
-      setBookmarkId(found?.id || null);
-    }
-  }, [bookmarksData, contentId, contentType]);
 
   const handleToggle = async (e) => {
     e.preventDefault();
@@ -65,7 +51,7 @@ export default function BookmarkButton({
       if (onToggle) onToggle(!isBookmarked);
 
       // Refresh bookmarks list to keep global state in sync
-      refetch();
+      refresh();
     } catch (error) {
       console.error("Bookmark toggle failed:", error);
     } finally {

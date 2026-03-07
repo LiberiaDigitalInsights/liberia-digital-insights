@@ -108,7 +108,7 @@ export const useApi = (apiFunction, dependencies = [], options = {}) => {
     if (options.immediate !== false) {
       fetchData();
     }
-  }, dependencies);
+  }, [...dependencies, options.immediate]);
 
   return { data, loading, error, refetch: fetchData };
 };
