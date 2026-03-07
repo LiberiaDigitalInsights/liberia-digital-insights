@@ -342,6 +342,55 @@ export const useAdvertisements = (params = {}) => {
   );
 };
 
+// Mutation functions for advertisements
+export const createAdvertisement = (adData) =>
+  apiRequest("/advertisements", {
+    method: "POST",
+    body: JSON.stringify(adData),
+  });
+
+export const updateAdvertisement = (id, adData) =>
+  apiRequest(`/advertisements/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(adData),
+  });
+
+export const deleteAdvertisement = (id) =>
+  apiRequest(`/advertisements/${id}`, {
+    method: "DELETE",
+  });
+
+// Hook for gallery items
+export const useGallery = (params = {}) => {
+  const query = new URLSearchParams(cleanParams(params)).toString();
+  return useApi(
+    () => apiRequest(`/gallery${query ? `?${query}` : ""}`),
+    [query],
+  );
+};
+
+export const useGalleryCategories = () => {
+  return useApi(() => apiRequest("/gallery/categories"), []);
+};
+
+// Mutation functions for gallery
+export const createGalleryItem = (itemData) =>
+  apiRequest("/gallery", {
+    method: "POST",
+    body: JSON.stringify(itemData),
+  });
+
+export const updateGalleryItem = (id, itemData) =>
+  apiRequest(`/gallery/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(itemData),
+  });
+
+export const deleteGalleryItem = (id) =>
+  apiRequest(`/gallery/${id}`, {
+    method: "DELETE",
+  });
+
 // Hook for categories
 export const useCategories = () => {
   return useApi(() => apiRequest("/categories"), []);
@@ -372,6 +421,18 @@ export const useNewsletterSubscription = () => {
   return { subscribe, loading, error };
 };
 
+// Mutation functions for newsletter (Admin)
+export const sendNewsletter = (campaignData) =>
+  apiRequest("/newsletters/send", {
+    method: "POST",
+    body: JSON.stringify(campaignData),
+  });
+
+export const deleteSubscriber = (id) =>
+  apiRequest(`/newsletters/subscribers/${id}`, {
+    method: "DELETE",
+  });
+
 // Hook for training
 export const useTraining = (params = {}) => {
   const query = new URLSearchParams(cleanParams(params)).toString();
@@ -385,6 +446,24 @@ export const useTraining = (params = {}) => {
 export const useTrainingById = (id) => {
   return useApi(() => apiRequest(`/training/${id}`), [id], { immediate: !!id });
 };
+
+// Mutation functions for training
+export const createTrainingCourse = (courseData) =>
+  apiRequest("/training", {
+    method: "POST",
+    body: JSON.stringify(courseData),
+  });
+
+export const updateTrainingCourse = (id, courseData) =>
+  apiRequest(`/training/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(courseData),
+  });
+
+export const deleteTrainingCourse = (id) =>
+  apiRequest(`/training/${id}`, {
+    method: "DELETE",
+  });
 
 // Hook for talents
 export const useTalents = (params = {}) => {
@@ -404,6 +483,17 @@ export const useAnalyticsStats = () => {
 export const useRecentActivity = () => {
   return useApi(() => apiRequest("/analytics/activity"), []);
 };
+
+// Hook for settings
+export const useSettings = () => {
+  return useApi(() => apiRequest("/settings"), []);
+};
+
+export const updateSettings = (settingsData) =>
+  apiRequest("/settings", {
+    method: "PUT",
+    body: JSON.stringify(settingsData),
+  });
 
 // Hook for bookmarks
 export const useBookmarks = (params = {}, options = {}) => {
@@ -498,9 +588,22 @@ export default {
   deleteInsight,
   useNewsletters,
   useAdvertisements,
+  createAdvertisement,
+  updateAdvertisement,
+  deleteAdvertisement,
+  useGallery,
+  useGalleryCategories,
+  createGalleryItem,
+  updateGalleryItem,
+  deleteGalleryItem,
   useNewsletterSubscription,
+  sendNewsletter,
+  deleteSubscriber,
   useTrainingById,
   useTraining,
+  createTrainingCourse,
+  updateTrainingCourse,
+  deleteTrainingCourse,
   useTalents,
   useCategories,
   useUsers,
@@ -512,6 +615,8 @@ export default {
   deleteTalent,
   useAnalyticsStats,
   useRecentActivity,
+  useSettings,
+  updateSettings,
   useBookmarks,
   addBookmark,
   removeBookmark,
