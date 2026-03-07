@@ -4,13 +4,10 @@ import React, { useMemo } from "react";
 import {
   FaChartBar,
   FaUsers,
-  FaEye,
   FaArrowUp,
-  FaArrowDown,
   FaNewspaper,
   FaMicrophone,
   FaLightbulb,
-  FaCalendarAlt,
 } from "react-icons/fa";
 import {
   useAnalyticsStats,
@@ -20,7 +17,6 @@ import {
   useInsights,
 } from "@/hooks/useBackendApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
 import dynamic from "next/dynamic";
 
 const ResponsiveContainer = dynamic(
@@ -97,37 +93,35 @@ export default function AdminAnalytics() {
 
   const kpis = [
     {
-      label: "Total Page Views",
-      value:
-        stats?.total_views != null
-          ? stats.total_views.toLocaleString()
-          : "45.2K",
-      change: stats?.views_change ?? "+12%",
-      icon: FaEye,
+      label: "Total Articles",
+      value: stats?.articles != null ? stats.articles.toLocaleString() : "—",
+      change: stats?.articles != null ? "Live" : "—",
+      icon: FaNewspaper,
       color: "brand",
     },
     {
-      label: "Unique Visitors",
+      label: "Subscribers",
       value:
-        stats?.unique_visitors != null
-          ? stats.unique_visitors.toLocaleString()
-          : "12.8K",
-      change: stats?.visitors_change ?? "+8%",
+        stats?.subscribers != null ? stats.subscribers.toLocaleString() : "—",
+      change: stats?.subscribers != null ? "Live" : "—",
       icon: FaUsers,
       color: "info",
     },
     {
-      label: "Avg. Session",
-      value: stats?.avg_session ?? "3:42",
-      change: stats?.session_change ?? "-5%",
+      label: "Pending Reviews",
+      value:
+        stats?.pendingReviews != null
+          ? stats.pendingReviews.toLocaleString()
+          : "—",
+      change: stats?.pendingReviews != null ? "Live" : "—",
       icon: FaChartBar,
       color: "warning",
     },
     {
-      label: "Bounce Rate",
-      value: stats?.bounce_rate != null ? `${stats.bounce_rate}%` : "32.4%",
-      change: stats?.bounce_change ?? "-3%",
-      icon: FaArrowDown,
+      label: "Total Users",
+      value: stats?.users != null ? stats.users.toLocaleString() : "—",
+      change: stats?.users != null ? "Live" : "—",
+      icon: FaArrowUp,
       color: "danger",
     },
   ];
@@ -198,17 +192,13 @@ export default function AdminAnalytics() {
                       )}
                     </p>
                     <div className="flex items-center gap-1.5">
-                      {isPositive ? (
-                        <FaArrowUp className="text-emerald-500 text-[10px]" />
+                      {kpi.change === "Live" ? (
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                       ) : (
-                        <FaArrowDown className="text-rose-500 text-[10px]" />
+                        <FaArrowUp className="text-muted text-[10px]" />
                       )}
-                      <span
-                        className={`text-[10px] font-black uppercase tracking-widest ${
-                          isPositive ? "text-emerald-500" : "text-rose-500"
-                        }`}
-                      >
-                        {kpi.change} vs last month
+                      <span className="text-[10px] font-black uppercase tracking-widest text-muted">
+                        {kpi.change === "Live" ? "Live data" : kpi.change}
                       </span>
                     </div>
                   </div>
@@ -421,12 +411,19 @@ export default function AdminAnalytics() {
                 .map((event, i) => (
                   <div key={i} className="flex items-center gap-4 px-5 py-3">
                     <div className="w-2 h-2 rounded-full bg-brand-500 shrink-0" />
-                    <p className="text-xs font-bold text-text flex-1">
-                      {event.description || event.message}
-                    </p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-text">
+                        {event.message}
+                      </p>
+                      {event.detail && (
+                        <p className="text-[10px] text-muted font-medium truncate">
+                          {event.detail}
+                        </p>
+                      )}
+                    </div>
                     <span className="text-[10px] font-bold text-muted uppercase shrink-0">
-                      {event.created_at
-                        ? new Date(event.created_at).toLocaleTimeString([], {
+                      {event.time
+                        ? new Date(event.time).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                           })

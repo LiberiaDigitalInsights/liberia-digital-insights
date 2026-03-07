@@ -16,9 +16,9 @@ import {
 } from "react-icons/fa";
 import {
   useNewsletters,
+  useNewsletterSubscribers,
   sendNewsletter,
   deleteSubscriber,
-  useUsers,
 } from "@/hooks/useBackendApi";
 import { useToast } from "@/context/ToastContext";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -50,9 +50,8 @@ export default function AdminNewsletter() {
     loading: loadingCampaigns,
     refetch: refetchCampaigns,
   } = useNewsletters();
-  const { data: usersData, loading: loadingSubscribers } = useUsers({
-    role: "subscriber",
-  });
+  const { data: subscribersData, loading: loadingSubscribers } =
+    useNewsletterSubscribers();
   const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -115,16 +114,20 @@ export default function AdminNewsletter() {
     setShowModal(false);
   };
 
-  const campaigns = Array.isArray(newslettersData?.data)
-    ? newslettersData.data
-    : Array.isArray(newslettersData)
-      ? newslettersData
-      : [];
-  const subscribers = Array.isArray(usersData?.data)
-    ? usersData.data
-    : Array.isArray(usersData)
-      ? usersData
-      : [];
+  const campaigns = Array.isArray(newslettersData?.newsletters)
+    ? newslettersData.newsletters
+    : Array.isArray(newslettersData?.data)
+      ? newslettersData.data
+      : Array.isArray(newslettersData)
+        ? newslettersData
+        : [];
+  const subscribers = Array.isArray(subscribersData?.subscribers)
+    ? subscribersData.subscribers
+    : Array.isArray(subscribersData?.data)
+      ? subscribersData.data
+      : Array.isArray(subscribersData)
+        ? subscribersData
+        : [];
 
   return (
     <div className="space-y-8">

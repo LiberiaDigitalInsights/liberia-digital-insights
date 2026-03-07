@@ -31,7 +31,9 @@ import dynamic from "next/dynamic";
 // Dynamically import RichTextEditor to avoid SSR issues
 const RichTextEditor = dynamic(() => import("./RichTextEditor"), {
   ssr: false,
-  loading: () => <div className="h-40 w-full animate-pulse bg-muted rounded-lg" />,
+  loading: () => (
+    <div className="h-40 w-full animate-pulse bg-muted rounded-lg" />
+  ),
 });
 
 export default function AdminTraining() {
@@ -151,14 +153,21 @@ export default function AdminTraining() {
     }
   };
 
-  const courses = Array.isArray(trainingData?.data) ? trainingData.data : (Array.isArray(trainingData) ? trainingData : []);
+  const courses = Array.isArray(trainingData?.training)
+    ? trainingData.training
+    : Array.isArray(trainingData?.data)
+      ? trainingData.data
+      : Array.isArray(trainingData)
+        ? trainingData
+        : [];
 
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
       course.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       course.instructor?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || course.type === filterType;
-    const matchesStatus = filterStatus === "all" || course.status === filterStatus;
+    const matchesStatus =
+      filterStatus === "all" || course.status === filterStatus;
     return matchesSearch && matchesType && matchesStatus;
   });
 
@@ -224,9 +233,14 @@ export default function AdminTraining() {
       {/* Course List */}
       <div className="grid grid-cols-1 gap-4">
         {loading ? (
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-32 bg-muted animate-pulse rounded-2xl" />
-          ))}
+          <>
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="h-32 bg-muted animate-pulse rounded-2xl"
+              />
+            ))}
+          </>
         ) : filteredCourses.length > 0 ? (
           filteredCourses.map((course) => (
             <Card
@@ -248,23 +262,33 @@ export default function AdminTraining() {
                       </div>
                     )}
                     <div className="absolute top-2 left-2">
-                      <Badge variant="subtle" className="uppercase font-black text-[10px] tracking-widest backdrop-blur-md bg-white/20">
+                      <Badge
+                        variant="subtle"
+                        className="uppercase font-black text-[10px] tracking-widest backdrop-blur-md bg-white/20"
+                      >
                         {course.type}
                       </Badge>
                     </div>
                   </div>
-                  
+
                   <div className="flex-1 p-6 flex flex-col justify-between">
                     <div>
                       <div className="flex justify-between items-start">
                         <h3 className="text-xl font-black italic uppercase tracking-tighter text-text group-hover:text-brand-500 transition-colors">
                           {course.title}
                         </h3>
-                        <Badge variant={
-                          course.status === 'active' ? 'success' : 
-                          course.status === 'upcoming' ? 'info' : 
-                          course.status === 'completed' ? 'secondary' : 'warning'
-                        } className="uppercase font-black text-[10px] tracking-widest">
+                        <Badge
+                          variant={
+                            course.status === "active"
+                              ? "success"
+                              : course.status === "upcoming"
+                                ? "info"
+                                : course.status === "completed"
+                                  ? "secondary"
+                                  : "warning"
+                          }
+                          className="uppercase font-black text-[10px] tracking-widest"
+                        >
                           {course.status}
                         </Badge>
                       </div>
@@ -279,11 +303,17 @@ export default function AdminTraining() {
                         </div>
                         <div className="flex items-center gap-2 text-xs font-bold text-muted uppercase">
                           <FaCalendarAlt className="text-brand-500" />
-                          <span>{course.start_date ? new Date(course.start_date).toLocaleDateString() : "TBD"}</span>
+                          <span>
+                            {course.start_date
+                              ? new Date(course.start_date).toLocaleDateString()
+                              : "TBD"}
+                          </span>
                         </div>
                       </div>
-                      <div className="mt-4 prose prose-sm max-w-none text-muted line-clamp-2" 
-                           dangerouslySetInnerHTML={{ __html: course.description }} />
+                      <div
+                        className="mt-4 prose prose-sm max-w-none text-muted line-clamp-2"
+                        dangerouslySetInnerHTML={{ __html: course.description }}
+                      />
                     </div>
 
                     <div className="flex justify-end gap-3 mt-6">
@@ -335,7 +365,9 @@ export default function AdminTraining() {
                 <Input
                   required
                   value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
                   placeholder="e.g. Advanced Digital Journalism"
                 />
               </div>
@@ -347,7 +379,9 @@ export default function AdminTraining() {
                   </label>
                   <Select
                     value={formData.type}
-                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, type: e.target.value })
+                    }
                   >
                     <option value="course">Course</option>
                     <option value="workshop">Workshop</option>
@@ -361,7 +395,9 @@ export default function AdminTraining() {
                   </label>
                   <Select
                     value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, status: e.target.value })
+                    }
                   >
                     <option value="draft">Draft</option>
                     <option value="upcoming">Upcoming</option>
@@ -379,7 +415,9 @@ export default function AdminTraining() {
                   </label>
                   <Input
                     value={formData.instructor}
-                    onChange={(e) => setFormData({ ...formData, instructor: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, instructor: e.target.value })
+                    }
                     placeholder="Instructor name"
                   />
                 </div>
@@ -390,7 +428,9 @@ export default function AdminTraining() {
                   <Input
                     type="number"
                     value={formData.max_students}
-                    onChange={(e) => setFormData({ ...formData, max_students: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, max_students: e.target.value })
+                    }
                     placeholder="e.g. 50"
                   />
                 </div>
@@ -404,7 +444,9 @@ export default function AdminTraining() {
                   <Input
                     type="date"
                     value={formData.start_date}
-                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, start_date: e.target.value })
+                    }
                   />
                 </div>
                 <div>
@@ -414,7 +456,9 @@ export default function AdminTraining() {
                   <Input
                     type="date"
                     value={formData.end_date}
-                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, end_date: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -425,24 +469,31 @@ export default function AdminTraining() {
                 </label>
                 <Input
                   value={formData.duration}
-                  onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, duration: e.target.value })
+                  }
                   placeholder="e.g. 6 Weeks, 3 Days"
                 />
               </div>
             </div>
 
             <div className="space-y-4">
-               <div>
+              <div>
                 <label className="text-xs font-black uppercase tracking-widest text-muted mb-2 block">
                   Cover Image URL
                 </label>
                 <Input
                   value={formData.cover_image_url}
-                  onChange={(e) => setFormData({ ...formData, cover_image_url: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      cover_image_url: e.target.value,
+                    })
+                  }
                   placeholder="HTTPS link to image..."
                 />
               </div>
-              
+
               <div className="h-full flex flex-col">
                 <label className="text-xs font-black uppercase tracking-widest text-muted mb-2 block">
                   Full Description
@@ -450,7 +501,9 @@ export default function AdminTraining() {
                 <div className="flex-1 min-h-[300px] border border-border rounded-lg overflow-hidden flex flex-col">
                   <RichTextEditor
                     value={formData.description}
-                    onChange={(content) => setFormData({ ...formData, description: content })}
+                    onChange={(content) =>
+                      setFormData({ ...formData, description: content })
+                    }
                   />
                 </div>
               </div>
@@ -472,7 +525,11 @@ export default function AdminTraining() {
               disabled={submitting}
               className="rounded-full px-12 italic font-black uppercase tracking-widest shadow-lg shadow-brand-500/20"
             >
-              {submitting ? "Processing..." : editingItem ? "Update Program" : "Launch Program"}
+              {submitting
+                ? "Processing..."
+                : editingItem
+                  ? "Update Program"
+                  : "Launch Program"}
             </Button>
           </div>
         </form>

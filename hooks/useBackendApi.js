@@ -333,6 +333,15 @@ export const useNewsletters = (params = {}) => {
   );
 };
 
+// Hook for newsletter subscribers (Admin-only dedicated endpoint)
+export const useNewsletterSubscribers = (params = {}) => {
+  const query = new URLSearchParams(cleanParams(params)).toString();
+  return useApi(
+    () => apiRequest(`/newsletters/subscribers${query ? `?${query}` : ""}`),
+    [query],
+  );
+};
+
 // Hook for advertisements
 export const useAdvertisements = (params = {}) => {
   const query = new URLSearchParams(cleanParams(params)).toString();
@@ -597,6 +606,7 @@ export default {
   updateGalleryItem,
   deleteGalleryItem,
   useNewsletterSubscription,
+  useNewsletterSubscribers,
   sendNewsletter,
   deleteSubscriber,
   useTrainingById,

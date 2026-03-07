@@ -12,7 +12,7 @@ import {
   FaRocket,
   FaLock,
 } from "react-icons/fa";
-import { updateSettings } from "@/hooks/useBackendApi";
+import { useSettings, updateSettings } from "@/hooks/useBackendApi";
 import { useToast } from "@/context/ToastContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
@@ -109,10 +109,12 @@ function FieldGroup({ label, children }) {
 
 export default function AdminSettings() {
   const { showToast } = useToast();
+  const { data: remoteSettings, loading: loadingSettings } = useSettings();
   const [settings, setSettings] = useState(DEFAULTS);
   const [hasChanges, setHasChanges] = useState(false);
   const [saving, setSaving] = useState(false);
   const [activeSection, setActiveSection] = useState("general");
+  const [initialized, setInitialized] = useState(false);
 
   // Password change state
   const [passData, setPassData] = useState({
@@ -122,14 +124,20 @@ export default function AdminSettings() {
   });
   const [passSaving, setPassSaving] = useState(false);
 
+  // Merge: defaults → localStorage → backend (backend wins if available)
   useEffect(() => {
+    if (loadingSettings) return; // wait until backend query resolves
     try {
-      const saved = localStorage.getItem("ldi_admin_settings");
-      if (saved) setSettings((prev) => ({ ...prev, ...JSON.parse(saved) }));
+      const saved = JSON.parse(
+        localStorage.getItem("ldi_admin_settings") || "{}",
+      );
+      const merged = { ...DEFAULTS, ...saved, ...(remoteSettings || {}) };
+      setSettings(merged);
     } catch {
-      /* ignore */
+      setSettings((prev) => ({ ...prev, ...(remoteSettings || {}) }));
     }
-  }, []);
+    setInitialized(true);
+  }, [loadingSettings, remoteSettings]);
 
   const update = (field, value) => {
     setSettings((prev) => ({ ...prev, [field]: value }));
@@ -222,6 +230,24 @@ export default function AdminSettings() {
     { id: "security", label: "Security", icon: FaShieldAlt },
     { id: "account", label: "Account", icon: FaLock },
   ];
+
+  // Show skeleton while settings load from API
+  if (loadingSettings || !initialized) {
+    return (
+      <div className="space-y-6">
+        <div className="h-14 w-72 bg-muted animate-pulse rounded-2xl" />
+        <div className="h-6 w-96 bg-muted/50 animate-pulse rounded-xl" />
+        <div className="grid grid-cols-1 gap-6">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="h-40 bg-surface animate-pulse rounded-2xl border border-border/50"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

@@ -153,10 +153,10 @@ export default function AdminGallery() {
     }
   };
 
-  const galleryItems = Array.isArray(galleryData?.data)
-    ? galleryData.data
-    : Array.isArray(galleryData?.items)
-      ? galleryData.items
+  const galleryItems = Array.isArray(galleryData?.items)
+    ? galleryData.items
+    : Array.isArray(galleryData?.data)
+      ? galleryData.data
       : Array.isArray(galleryData)
         ? galleryData
         : [];

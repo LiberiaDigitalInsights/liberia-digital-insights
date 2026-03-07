@@ -136,11 +136,13 @@ export default function AdminAdvertisements() {
     }
   };
 
-  const ads = Array.isArray(adsData?.data)
-    ? adsData.data
-    : Array.isArray(adsData)
-      ? adsData
-      : [];
+  const ads = Array.isArray(adsData?.advertisements)
+    ? adsData.advertisements
+    : Array.isArray(adsData?.data)
+      ? adsData.data
+      : Array.isArray(adsData)
+        ? adsData
+        : [];
 
   const filteredAds = ads.filter((ad) => {
     const title = ad.title || ad.name || "";
