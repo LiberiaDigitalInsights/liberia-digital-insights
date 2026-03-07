@@ -8,7 +8,7 @@ import Button from "../ui/Button";
 import { useToast } from "@/context/ToastContext";
 import { useNewsletterSubscription } from "@/hooks/useBackendApi";
 
-export default function NewsletterWidget() {
+export default function NewsletterWidget({ loading: externalLoading = false }) {
   const { showToast } = useToast();
   const { subscribe, loading } = useNewsletterSubscription();
   const [form, setForm] = React.useState({

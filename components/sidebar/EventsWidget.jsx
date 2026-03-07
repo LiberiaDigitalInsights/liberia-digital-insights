@@ -5,10 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 import { useEvents } from "@/hooks/useBackendApi";
 
-export default function EventsWidget() {
-  const { data: eventsData, loading } = useEvents({ limit: 4 });
-  const events = eventsData?.events || [];
-
+export default function EventsWidget({ events = [], loading = false }) {
   return (
     <Card>
       <CardHeader>

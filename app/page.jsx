@@ -2,17 +2,25 @@
 
 import React, { Suspense } from "react";
 import { MotionGrid, MotionItem } from "@/components/ui/MotionWrapper";
-import { useArticles, usePodcasts, useEvents } from "@/hooks/useBackendApi";
+import {
+  useArticles,
+  usePodcasts,
+  useEvents,
+  useInsights,
+} from "@/hooks/useBackendApi";
 import { H1, H2, Muted } from "@/components/ui/Typography";
 import Button from "@/components/ui/Button";
 import FeaturedArticleRow from "@/components/articles/FeaturedArticleRow";
 import ArticleCard from "@/components/articles/ArticleCard";
+import PodcastCard from "@/components/podcasts/PodcastCard";
 import AdSlot from "@/components/ads/AdSlot";
 import PodcastWidget from "@/components/sidebar/PodcastWidget";
 import NewsletterWidget from "@/components/sidebar/NewsletterWidget";
 import EventsWidget from "@/components/sidebar/EventsWidget";
 
 function HomeSkeleton() {
+  // ... (HomeSkeleton remains same, or I can update it if I change the layout significantly)
+  // For now, I'll keep it as is or slightly adjust if needed.
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12 animate-pulse">
       <div className="h-64 bg-surface rounded-2xl mb-12" />
@@ -42,9 +50,12 @@ function HomeContent() {
     limit: 12,
   });
   const { data: podcastsData, loading: podcastsLoading } = usePodcasts({
-    limit: 3,
+    limit: 10,
   });
   const { data: eventsData, loading: eventsLoading } = useEvents({ limit: 3 });
+  const { data: insightsData, loading: insightsLoading } = useInsights({
+    limit: 6,
+  });
 
   // Extract data from backend responses
   const articles = articlesData?.articles || [];
@@ -52,6 +63,7 @@ function HomeContent() {
   const latestArticles = articles.slice(0, 12);
   const podcasts = podcastsData?.podcasts || [];
   const events = eventsData?.events || [];
+  const insights = insightsData?.insights || [];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
@@ -136,7 +148,7 @@ function HomeContent() {
           {/* Inline Advertisement */}
           <AdSlot position="inline" />
 
-          {/* Article Grid */}
+          {/* Article Grid - Latest Stories */}
           <section>
             <div className="flex items-center gap-4 mb-8">
               <H2 className="text-3xl font-black uppercase tracking-tighter italic">
@@ -173,29 +185,102 @@ function HomeContent() {
             )}
           </section>
 
-          {/* Insights / News Section */}
+          {/* INSIGHT TECH THURSDAYS Section */}
           <section>
             <div className="flex items-center gap-4 mb-8">
               <H2 className="text-3xl font-black uppercase tracking-tighter italic text-brand-500">
-                Member Insights
+                INSIGHT TECH THURSDAYS
               </H2>
               <div className="h-px flex-1 bg-brand-500/20" />
             </div>
-            <MotionGrid className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {latestArticles.slice(0, 6).map((article) => (
-                <MotionItem key={`news-${article.id}`}>
-                  <ArticleCard
-                    id={article.id}
-                    image={article.cover_image_url}
-                    title={article.title}
-                    category={article.category?.name || "News"}
-                    date={new Date(article.published_at).toLocaleDateString()}
-                    readTime={Math.ceil((article.content?.length || 0) / 1000)}
-                    href={`/article/${article.slug}`}
+            {insightsLoading ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="animate-pulse h-64 bg-surface rounded-xl"
                   />
-                </MotionItem>
-              ))}
-            </MotionGrid>
+                ))}
+              </div>
+            ) : insights.length > 0 ? (
+              <MotionGrid className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {insights.map((insight) => (
+                  <MotionItem key={`insight-${insight.id}`}>
+                    <ArticleCard
+                      id={insight.id}
+                      image={insight.cover_image_url}
+                      title={insight.title}
+                      category={insight.category?.name || "Insights"}
+                      date={new Date(insight.published_at).toLocaleDateString()}
+                      readTime={Math.ceil(
+                        (insight.content?.length || 0) / 1000,
+                      )}
+                      href={`/insight/${insight.slug}`}
+                    />
+                  </MotionItem>
+                ))}
+              </MotionGrid>
+            ) : (
+              <div className="text-center py-8 text-muted italic font-medium border border-dashed border-border rounded-xl">
+                New insights coming this Thursday
+              </div>
+            )}
+          </section>
+
+          {/* VIDEO INTERVIEWS (Podcasts) Section */}
+          <section>
+            <div className="flex items-center gap-4 mb-8">
+              <H2 className="text-3xl font-black uppercase tracking-tighter italic">
+                VIDEO INTERVIEWS
+              </H2>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_2fr]">
+              {/* Branding Block */}
+              <MotionItem className="flex items-center justify-center rounded-2xl border-2 border-brand-500/20 bg-brand-500/5 p-10 text-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-brand-500/5 group-hover:bg-brand-500/10 transition-colors duration-500" />
+                <div className="relative z-10">
+                  <div className="mb-4 text-2xl font-black tracking-tighter text-brand-500 italic uppercase">
+                    Liberia Digital <br /> Insights
+                  </div>
+                  <div className="mb-2 text-lg font-bold">VIDEO INTERVIEW</div>
+                  <div className="text-xs font-bold tracking-widest text-muted uppercase">
+                    Streaming Live
+                  </div>
+                </div>
+              </MotionItem>
+
+              {/* Podcast Grid */}
+              {podcastsLoading ? (
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  {[1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="h-64 bg-surface rounded-xl animate-pulse"
+                    />
+                  ))}
+                </div>
+              ) : (
+                <MotionGrid className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  {podcasts.slice(0, 4).map((podcast) => (
+                    <MotionItem key={`main-pod-${podcast.id}`}>
+                      <PodcastCard
+                        id={podcast.id}
+                        title={podcast.title}
+                        description={podcast.description}
+                        duration={podcast.duration}
+                        date={new Date(
+                          podcast.published_at,
+                        ).toLocaleDateString()}
+                        guest={podcast.author?.name}
+                        image={podcast.cover_image_url}
+                        href={`/podcast/${podcast.slug}`}
+                      />
+                    </MotionItem>
+                  ))}
+                </MotionGrid>
+              )}
+            </div>
           </section>
         </main>
 
