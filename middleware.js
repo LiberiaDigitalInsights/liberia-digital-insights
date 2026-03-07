@@ -8,13 +8,8 @@ export function middleware(request) {
   // X-Content-Type-Options: Prevents MIME type sniffing
   response.headers.set("X-Content-Type-Options", "nosniff");
 
-  // X-Frame-Options: Prevents clickjacking
-  // Allow /admin to be framed if needed, otherwise DENY
-  if (pathname.startsWith("/admin")) {
-    response.headers.set("X-Frame-Options", "SAMEORIGIN");
-  } else {
-    response.headers.set("X-Frame-Options", "DENY");
-  }
+  // X-Frame-Options: Improved for Vercel Live and internal framing
+  response.headers.set("X-Frame-Options", "SAMEORIGIN");
 
   // X-XSS-Protection: Basic XSS filter
   response.headers.set("X-XSS-Protection", "1; mode=block");
@@ -32,7 +27,7 @@ export function middleware(request) {
   if (process.env.NODE_ENV === "production") {
     response.headers.set(
       "Content-Security-Policy",
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.fbcdn.net https://images.unsplash.com https:; font-src 'self' data:; connect-src 'self' https:;",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.fbcdn.net https://*.fbcdn.com https://images.unsplash.com https://*.unsplash.com https:; font-src 'self' data:; connect-src 'self' https: https://vercel.live; frame-src 'self' https://vercel.live; frame-ancestors 'self' https://*.vercel.app;",
     );
   }
 
