@@ -14,9 +14,11 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/context/ToastContext";
 
 export default function AdminInsights() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [page, setPage] = useState(1);
@@ -53,11 +55,20 @@ export default function AdminInsights() {
     try {
       await deleteInsight(insightToDelete.id);
       await refetch();
+      showToast({
+        title: "Insight Deleted",
+        description: "The insight has been successfully removed.",
+        variant: "success",
+      });
       setShowDeleteModal(false);
       setInsightToDelete(null);
     } catch (error) {
       console.error("Failed to delete insight:", error);
-      alert("Failed to delete insight: " + error.message);
+      showToast({
+        title: "Delete Failed",
+        description: error.message || "An unexpected error occurred.",
+        variant: "danger",
+      });
     } finally {
       setIsDeleting(false);
     }

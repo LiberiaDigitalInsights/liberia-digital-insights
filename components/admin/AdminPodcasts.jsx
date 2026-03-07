@@ -9,9 +9,11 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/context/ToastContext";
 
 export default function AdminPodcasts() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [page, setPage] = useState(1);
@@ -48,11 +50,20 @@ export default function AdminPodcasts() {
     try {
       await deletePodcast(podcastToDelete.id);
       await refetch();
+      showToast({
+        title: "Podcast Deleted",
+        description: "The podcast has been successfully removed.",
+        variant: "success",
+      });
       setShowDeleteModal(false);
       setPodcastToDelete(null);
     } catch (error) {
       console.error("Failed to delete podcast:", error);
-      alert("Failed to delete podcast: " + error.message);
+      showToast({
+        title: "Delete Failed",
+        description: error.message || "An unexpected error occurred.",
+        variant: "danger",
+      });
     } finally {
       setIsDeleting(false);
     }

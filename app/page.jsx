@@ -69,7 +69,7 @@ function HomeContent() {
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Hero */}
       <section className="mb-10">
-        <MotionItem className="rounded-2xl border border-border bg-gradient-to-br from-surface to-brand-500/5 p-8 md:p-16 text-center shadow-2xl relative overflow-hidden group">
+        <MotionItem className="rounded-2xl border border-border bg-linear-to-br from-surface to-brand-500/5 p-8 md:p-16 text-center shadow-2xl relative overflow-hidden group">
           <div className="absolute inset-0 bg-brand-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-3xl animate-pulse" />
           <div className="relative z-10">
             <H1 className="mb-4 text-4xl font-black tracking-tighter md:text-6xl text-text leading-tight uppercase italic">

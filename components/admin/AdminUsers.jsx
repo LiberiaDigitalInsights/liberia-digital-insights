@@ -16,12 +16,14 @@ import {
   deleteUser,
 } from "@/hooks/useBackendApi";
 import { cn } from "@/lib/cn";
+import { useToast } from "@/context/ToastContext";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import Select from "@/components/ui/Select";
 
 export default function AdminUsers() {
+  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("all");
   const [page, setPage] = useState(1);
@@ -53,8 +55,17 @@ export default function AdminUsers() {
     try {
       await updateUserRole(id, newRole);
       await refetch();
+      showToast({
+        title: "Role Updated",
+        description: "User role has been successfully changed.",
+        variant: "success",
+      });
     } catch (error) {
-      alert("Failed to update role: " + error.message);
+      showToast({
+        title: "Update Failed",
+        description: error.message,
+        variant: "danger",
+      });
     } finally {
       setUpdatingId(null);
     }
@@ -65,8 +76,17 @@ export default function AdminUsers() {
     try {
       await updateUserStatus(id, !currentStatus);
       await refetch();
+      showToast({
+        title: "Status Updated",
+        description: `User account has been ${!currentStatus ? "enabled" : "disabled"}.`,
+        variant: "success",
+      });
     } catch (error) {
-      alert("Failed to update status: " + error.message);
+      showToast({
+        title: "Update Failed",
+        description: error.message,
+        variant: "danger",
+      });
     } finally {
       setUpdatingId(null);
     }
@@ -82,11 +102,19 @@ export default function AdminUsers() {
     setIsDeleting(true);
     try {
       await deleteUser(userToDelete.id);
-      await refetch();
+      showToast({
+        title: "User Deleted",
+        description: "The user account has been permanently removed.",
+        variant: "success",
+      });
       setShowDeleteModal(false);
       setUserToDelete(null);
     } catch (error) {
-      alert("Failed to delete user: " + error.message);
+      showToast({
+        title: "Delete Failed",
+        description: error.message,
+        variant: "danger",
+      });
     } finally {
       setIsDeleting(false);
     }

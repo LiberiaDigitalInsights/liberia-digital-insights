@@ -31,8 +31,10 @@ import Select from "@/components/ui/Select";
 import { uploadFile } from "@/lib/upload";
 import { talentSubmissionSchema } from "@/lib/schemas/content";
 import { cn } from "@/lib/cn";
+import { useToast } from "@/context/ToastContext";
 
 export default function AdminTalent() {
+  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [page, setPage] = useState(1);
@@ -122,7 +124,11 @@ export default function AdminTalent() {
       });
       setFormData((prev) => ({ ...prev, avatar_url: result.url }));
     } catch (error) {
-      alert("Upload failed: " + error.message);
+      showToast({
+        title: "Upload failed",
+        description: error.message,
+        variant: "danger",
+      });
     } finally {
       setUploading(false);
     }
@@ -167,7 +173,11 @@ export default function AdminTalent() {
       await updateTalent(id, { status: newStatus });
       refetch();
     } catch (error) {
-      alert("Failed to update status: " + error.message);
+      showToast({
+        title: "Update failed",
+        description: error.message,
+        variant: "danger",
+      });
     }
   };
 
@@ -183,8 +193,17 @@ export default function AdminTalent() {
       }
       setShowEditorModal(false);
       refetch();
+      showToast({
+        title: selectedTalent ? "Profile Updated" : "Profile Created",
+        description: `Successfully ${selectedTalent ? "updated" : "created"} ${formData.name}'s profile.`,
+        variant: "success",
+      });
     } catch (error) {
-      alert("Submission failed: " + error.message);
+      showToast({
+        title: "Submission failed",
+        description: error.message,
+        variant: "danger",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -375,9 +394,22 @@ export default function AdminTalent() {
             <Button
               className="bg-rose-500 text-white"
               onClick={async () => {
-                await deleteTalent(selectedTalent.id);
-                refetch();
-                setShowDeleteModal(false);
+                try {
+                  await deleteTalent(selectedTalent.id);
+                  refetch();
+                  showToast({
+                    title: "Profile Deleted",
+                    description: "The talent profile has been removed.",
+                    variant: "success",
+                  });
+                  setShowDeleteModal(false);
+                } catch (error) {
+                  showToast({
+                    title: "Delete failed",
+                    description: error.message,
+                    variant: "danger",
+                  });
+                }
               }}
             >
               Delete

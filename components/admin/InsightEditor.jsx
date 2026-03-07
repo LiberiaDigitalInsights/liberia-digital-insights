@@ -24,9 +24,11 @@ import {
 import { uploadFile } from "@/lib/upload";
 import { insightSubmissionSchema } from "@/lib/schemas/content";
 import { cn } from "@/lib/cn";
+import { useToast } from "@/context/ToastContext";
 
 export default function InsightEditor({ initialData, mode = "create" }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const { data: categoriesData } = useCategories();
   const categories = categoriesData?.data || [];
 
@@ -81,7 +83,11 @@ export default function InsightEditor({ initialData, mode = "create" }) {
       });
       setFormData((prev) => ({ ...prev, cover_image_url: result.url }));
     } catch (error) {
-      alert("Image upload failed: " + error.message);
+      showToast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "danger",
+      });
     } finally {
       setUploading(false);
     }
@@ -118,6 +124,11 @@ export default function InsightEditor({ initialData, mode = "create" }) {
       } else {
         await updateInsight(initialData.id, validatedData);
       }
+      showToast({
+        title: mode === "create" ? "Insight Created" : "Insight Updated",
+        description: `Successfully ${mode === "create" ? "created" : "updated"} the insight.`,
+        variant: "success",
+      });
       router.push("/admin/insights");
     } catch (error) {
       if (error.name === "ZodError") {
@@ -127,7 +138,11 @@ export default function InsightEditor({ initialData, mode = "create" }) {
         });
         setErrors(fieldErrors);
       } else {
-        alert("Action failed: " + error.message);
+        showToast({
+          title: mode === "create" ? "Creation Failed" : "Update Failed",
+          description: error.message,
+          variant: "danger",
+        });
       }
     } finally {
       setSubmitting(false);

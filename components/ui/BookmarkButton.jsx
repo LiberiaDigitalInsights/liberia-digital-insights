@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { useAuth, addBookmark, removeBookmark } from "@/hooks/useBackendApi";
 import { useBookmarkContext } from "@/context/BookmarkContext";
+import { useToast } from "@/context/ToastContext";
 import { cn } from "@/lib/cn";
 
 export default function BookmarkButton({
@@ -15,6 +16,7 @@ export default function BookmarkButton({
   onToggle,
 }) {
   const { isAuthenticated } = useAuth();
+  const { showToast } = useToast();
   const {
     isBookmarked: checkBookmarked,
     getBookmarkId,
@@ -30,8 +32,11 @@ export default function BookmarkButton({
     e.stopPropagation();
 
     if (!isAuthenticated) {
-      // Logic for showing login modal or redirecting could go here
-      alert("Please log in to bookmark content");
+      showToast({
+        title: "Login Required",
+        description: "Please log in to bookmark content.",
+        variant: "warning",
+      });
       return;
     }
 
@@ -39,8 +44,18 @@ export default function BookmarkButton({
     try {
       if (isBookmarked && bookmarkId) {
         await removeBookmark(bookmarkId);
+        showToast({
+          title: "Bookmark Removed",
+          description: "Content has been removed from your bookmarks.",
+          variant: "info",
+        });
       } else {
         await addBookmark(contentId, contentType);
+        showToast({
+          title: "Bookmark Added",
+          description: "Content has been saved to your bookmarks.",
+          variant: "success",
+        });
       }
 
       // Notify parent if callback provided

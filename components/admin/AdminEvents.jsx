@@ -14,9 +14,11 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/context/ToastContext";
 
 export default function AdminEvents() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [page, setPage] = useState(1);
@@ -53,11 +55,20 @@ export default function AdminEvents() {
     try {
       await deleteEvent(eventToDelete.id);
       await refetch();
+      showToast({
+        title: "Event Deleted",
+        description: "The event has been successfully removed.",
+        variant: "success",
+      });
       setShowDeleteModal(false);
       setEventToDelete(null);
     } catch (error) {
       console.error("Failed to delete event:", error);
-      alert("Failed to delete event: " + error.message);
+      showToast({
+        title: "Delete Failed",
+        description: error.message || "An unexpected error occurred.",
+        variant: "danger",
+      });
     } finally {
       setIsDeleting(false);
     }

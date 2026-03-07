@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { ToastContainer } from "@/components/ui/Toast";
 
 const ToastContext = createContext({
   toasts: [],
@@ -41,7 +42,10 @@ export function ToastProvider({ children }) {
   );
 
   return (
-    <ToastContext.Provider value={value}>{children}</ToastContext.Provider>
+    <ToastContext.Provider value={value}>
+      {children}
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
+    </ToastContext.Provider>
   );
 }
 

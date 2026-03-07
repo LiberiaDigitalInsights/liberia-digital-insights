@@ -25,9 +25,11 @@ import {
 import { uploadFile } from "@/lib/upload";
 import { articleSubmissionSchema } from "@/lib/schemas/content";
 import { cn } from "@/lib/cn";
+import { useToast } from "@/context/ToastContext";
 
 export default function ArticleEditor({ initialData, mode = "create" }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const { data: categoriesData, loading: categoriesLoading } = useCategories();
   const categories = categoriesData?.data || [];
 
@@ -86,7 +88,11 @@ export default function ArticleEditor({ initialData, mode = "create" }) {
       setFormData((prev) => ({ ...prev, cover_image_url: result.url }));
     } catch (error) {
       console.error("Upload failed:", error);
-      alert("Header image upload failed: " + error.message);
+      showToast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "danger",
+      });
     } finally {
       setUploading(false);
     }
@@ -127,6 +133,11 @@ export default function ArticleEditor({ initialData, mode = "create" }) {
         await updateArticle(initialData.id, validatedData);
       }
 
+      showToast({
+        title: mode === "create" ? "Article Published" : "Article Saved",
+        description: `Successfully ${mode === "create" ? "created" : "updated"} the article.`,
+        variant: "success",
+      });
       router.push("/admin/articles");
       router.refresh();
     } catch (error) {
@@ -138,7 +149,11 @@ export default function ArticleEditor({ initialData, mode = "create" }) {
         setErrors(fieldErrors);
       } else {
         console.error("Submission failed:", error);
-        alert("Action failed: " + error.message);
+        showToast({
+          title: mode === "create" ? "Creation Failed" : "Update Failed",
+          description: error.message,
+          variant: "danger",
+        });
       }
     } finally {
       setSubmitting(false);

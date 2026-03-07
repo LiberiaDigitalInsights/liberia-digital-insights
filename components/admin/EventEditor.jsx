@@ -22,9 +22,11 @@ import { createEvent, updateEvent } from "@/hooks/useBackendApi";
 import { uploadFile } from "@/lib/upload";
 import { eventSubmissionSchema } from "@/lib/schemas/content";
 import { cn } from "@/lib/cn";
+import { useToast } from "@/context/ToastContext";
 
 export default function EventEditor({ initialData, mode = "create" }) {
   const router = useRouter();
+  const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
@@ -77,7 +79,11 @@ export default function EventEditor({ initialData, mode = "create" }) {
       const result = await uploadFile(file, { type: "images", path: "events" });
       setFormData((prev) => ({ ...prev, cover_image_url: result.url }));
     } catch (error) {
-      alert("Image upload failed: " + error.message);
+      showToast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "danger",
+      });
     } finally {
       setUploading(false);
     }
@@ -100,6 +106,11 @@ export default function EventEditor({ initialData, mode = "create" }) {
       } else {
         await updateEvent(initialData.id, validatedData);
       }
+      showToast({
+        title: mode === "create" ? "Event Created" : "Event Updated",
+        description: `Successfully ${mode === "create" ? "scheduled" : "updated"} the event.`,
+        variant: "success",
+      });
       router.push("/admin/events");
     } catch (error) {
       if (error.name === "ZodError") {
@@ -109,7 +120,11 @@ export default function EventEditor({ initialData, mode = "create" }) {
         });
         setErrors(fieldErrors);
       } else {
-        alert("Action failed: " + error.message);
+        showToast({
+          title: mode === "create" ? "Creation Failed" : "Update Failed",
+          description: error.message,
+          variant: "danger",
+        });
       }
     } finally {
       setSubmitting(false);

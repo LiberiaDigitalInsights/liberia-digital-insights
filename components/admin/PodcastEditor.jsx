@@ -25,9 +25,11 @@ import {
 import { uploadFile } from "@/lib/upload";
 import { podcastSubmissionSchema } from "@/lib/schemas/content";
 import { cn } from "@/lib/cn";
+import { useToast } from "@/context/ToastContext";
 
 export default function PodcastEditor({ initialData, mode = "create" }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const { data: categoriesData } = useCategories();
   const categories = categoriesData?.data || [];
 
@@ -83,7 +85,11 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
       });
       setFormData((prev) => ({ ...prev, cover_image_url: result.url }));
     } catch (error) {
-      alert("Image upload failed: " + error.message);
+      showToast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "danger",
+      });
     } finally {
       setUploadingImage(false);
     }
@@ -100,7 +106,11 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
       });
       setFormData((prev) => ({ ...prev, audio_url: result.url }));
     } catch (error) {
-      alert("Audio upload failed: " + error.message);
+      showToast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "danger",
+      });
     } finally {
       setUploadingAudio(false);
     }
@@ -117,6 +127,11 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
       } else {
         await updatePodcast(initialData.id, validatedData);
       }
+      showToast({
+        title: mode === "create" ? "Episode Created" : "Episode Updated",
+        description: `Successfully ${mode === "create" ? "created" : "updated"} the podcast episode.`,
+        variant: "success",
+      });
       router.push("/admin/podcasts");
     } catch (error) {
       if (error.name === "ZodError") {
@@ -126,7 +141,11 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
         });
         setErrors(fieldErrors);
       } else {
-        alert("Action failed: " + error.message);
+        showToast({
+          title: mode === "create" ? "Creation Failed" : "Update Failed",
+          description: error.message,
+          variant: "danger",
+        });
       }
     } finally {
       setSubmitting(false);
