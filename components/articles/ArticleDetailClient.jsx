@@ -14,6 +14,7 @@ import {
   useEvents,
 } from "@/hooks/useBackendApi";
 import ContentRenderer from "@/components/ui/ContentRenderer";
+import BookmarkButton from "@/components/ui/BookmarkButton";
 import LazyImage from "@/components/LazyImage";
 import PodcastWidget from "@/components/sidebar/PodcastWidget";
 import EventsWidget from "@/components/sidebar/EventsWidget";

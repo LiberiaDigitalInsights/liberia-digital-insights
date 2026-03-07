@@ -28,11 +28,11 @@ export function middleware(request) {
     "max-age=31536000; includeSubDomains; preload",
   );
 
-  // Content-Security-Policy: Basic policy
+  // Content-Security-Policy: Relaxed for Vercel Live and external assets
   if (process.env.NODE_ENV === "production") {
     response.headers.set(
       "Content-Security-Policy",
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https:;",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.fbcdn.net https://images.unsplash.com https:; font-src 'self' data:; connect-src 'self' https:;",
     );
   }
 
