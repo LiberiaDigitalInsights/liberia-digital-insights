@@ -606,6 +606,29 @@ export const deleteTalent = (id) =>
     method: "DELETE",
   });
 
+export const inviteUser = (userData) =>
+  apiRequest("/users", {
+    method: "POST",
+    body: JSON.stringify(userData),
+  });
+
+export const changePassword = (passwordData) =>
+  apiRequest("/users/change-password", {
+    method: "PUT",
+    body: JSON.stringify(passwordData),
+  });
+
+export const resetUserPassword = (id) =>
+  apiRequest(`/users/${id}/reset-password`, {
+    method: "POST",
+  });
+
+export const testSmtp = (smtpData) =>
+  apiRequest("/settings/test-smtp", {
+    method: "POST",
+    body: JSON.stringify(smtpData),
+  });
+
 // UI export
 export default {
   useAuth,
@@ -675,4 +698,8 @@ export default {
   useBookmarks,
   addBookmark,
   removeBookmark,
+  inviteUser,
+  changePassword,
+  resetUserPassword,
+  testSmtp,
 };

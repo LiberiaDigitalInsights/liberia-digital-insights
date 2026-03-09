@@ -81,20 +81,35 @@ export default function ArticleEditor({ initialData, mode = "create" }) {
 
     setUploading(true);
     try {
+      // First attempt: Cloud Storage
       const result = await uploadFile(file, {
         type: "images",
         path: "articles",
       });
       setFormData((prev) => ({ ...prev, cover_image_url: result.url }));
-    } catch (error) {
-      console.error("Upload failed:", error);
       showToast({
-        title: "Upload Failed",
-        description: error.message,
-        variant: "danger",
+        title: "Image Uploaded",
+        description: "File saved to cloud storage.",
+        variant: "success",
       });
+    } catch (error) {
+      console.warn("Cloud upload failed, falling back to Base64:", error);
+      // Fallback: Local Base64 conversion
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, cover_image_url: reader.result }));
+        showToast({
+          title: "Storage Offline",
+          description: "Used local fallback (Base64).",
+          variant: "warning",
+        });
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
+      return; // setUploading(false) is called inside onloadend
     } finally {
-      setUploading(false);
+      // Only set false if we didn't go into the reader fallback
+      if (!uploading) setUploading(false);
     }
   };
 

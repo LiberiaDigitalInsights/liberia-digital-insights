@@ -12,7 +12,12 @@ import {
   FaRocket,
   FaLock,
 } from "react-icons/fa";
-import { useSettings, updateSettings } from "@/hooks/useBackendApi";
+import {
+  useSettings,
+  updateSettings,
+  changePassword,
+  testSmtp,
+} from "@/hooks/useBackendApi";
 import { useToast } from "@/context/ToastContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
@@ -202,8 +207,10 @@ export default function AdminSettings() {
     }
     setPassSaving(true);
     try {
-      // NOTE: integrate with changePassword API when available
-      await new Promise((r) => setTimeout(r, 800));
+      await changePassword({
+        currentPassword: passData.current,
+        newPassword: passData.newPass,
+      });
       showToast({
         title: "Password Updated",
         description: "Your new password is active.",
@@ -218,6 +225,36 @@ export default function AdminSettings() {
       });
     } finally {
       setPassSaving(false);
+    }
+  };
+
+  const [testingSmtp, setTestingSmtp] = useState(false);
+  const handleTestSmtp = async () => {
+    if (!settings.smtpHost || !settings.smtpUser || !settings.smtpPassword) {
+      showToast({
+        title: "Missing Info",
+        description: "Please fill in SMTP Host, User, and Password first.",
+        variant: "warning",
+      });
+      return;
+    }
+
+    setTestingSmtp(true);
+    try {
+      await testSmtp(settings);
+      showToast({
+        title: "SMTP Verified",
+        description: "Successfully connected to the mail server!",
+        variant: "success",
+      });
+    } catch (err) {
+      showToast({
+        title: "SMTP Error",
+        description: err.message,
+        variant: "danger",
+      });
+    } finally {
+      setTestingSmtp(false);
     }
   };
 
@@ -433,12 +470,23 @@ export default function AdminSettings() {
                   />
                 </FieldGroup>
               </div>
-              <ToggleSwitch
-                checked={settings.smtpSecure}
-                onChange={() => toggle("smtpSecure")}
-                label="Use TLS/SSL"
-                description="Enable encrypted SMTP connection"
-              />
+              <div className="flex items-center justify-between pt-4 border-t border-border/30">
+                <ToggleSwitch
+                  checked={settings.smtpSecure}
+                  onChange={() => toggle("smtpSecure")}
+                  label="Use TLS/SSL"
+                  description="Enable encrypted SMTP connection"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleTestSmtp}
+                  disabled={testingSmtp}
+                  className="rounded-full text-[10px] font-black uppercase tracking-widest px-4 h-9"
+                >
+                  {testingSmtp ? "Testing..." : "Test Connection"}
+                </Button>
+              </div>
             </SectionCard>
           )}
 

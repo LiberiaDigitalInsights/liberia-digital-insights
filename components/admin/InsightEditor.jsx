@@ -82,14 +82,27 @@ export default function InsightEditor({ initialData, mode = "create" }) {
         path: "insights",
       });
       setFormData((prev) => ({ ...prev, cover_image_url: result.url }));
-    } catch (error) {
       showToast({
-        title: "Upload Failed",
-        description: error.message,
-        variant: "danger",
+        title: "Image Uploaded",
+        description: "File saved to cloud storage.",
+        variant: "success",
       });
+    } catch (error) {
+      console.warn("Cloud upload failed, falling back to Base64:", error);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, cover_image_url: reader.result }));
+        showToast({
+          title: "Storage Offline",
+          description: "Used local fallback (Base64).",
+          variant: "warning",
+        });
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
+      return;
     } finally {
-      setUploading(false);
+      if (!uploading) setUploading(false);
     }
   };
 

@@ -7,6 +7,8 @@ import {
   FaUserCheck,
   FaTrash,
   FaSpinner,
+  FaPlus,
+  FaLock,
 } from "react-icons/fa";
 import ContentManager from "./ContentManager";
 import {
@@ -14,6 +16,8 @@ import {
   updateUserRole,
   updateUserStatus,
   deleteUser,
+  inviteUser,
+  resetUserPassword,
 } from "@/hooks/useBackendApi";
 import { cn } from "@/lib/cn";
 import { useToast } from "@/context/ToastContext";
@@ -21,6 +25,7 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import Select from "@/components/ui/Select";
+import Input from "@/components/ui/Input";
 
 export default function AdminUsers() {
   const { showToast } = useToast();
@@ -31,6 +36,15 @@ export default function AdminUsers() {
   const [userToDelete, setUserToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [updatingId, setUpdatingId] = useState(null);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviting, setInviting] = useState(false);
+  const [inviteData, setInviteData] = useState({
+    email: "",
+    first_name: "",
+    last_name: "",
+    role: "editor",
+    is_active: true,
+  });
 
   const {
     data: usersData,
@@ -120,6 +134,57 @@ export default function AdminUsers() {
     }
   };
 
+  const handleInviteSubmit = async (e) => {
+    e.preventDefault();
+    setInviting(true);
+    try {
+      await inviteUser(inviteData);
+      showToast({
+        title: "User Invited",
+        description: `Invitation sent to ${inviteData.email}.`,
+        variant: "success",
+      });
+      setShowInviteModal(false);
+      setInviteData({
+        email: "",
+        first_name: "",
+        last_name: "",
+        role: "editor",
+        is_active: true,
+      });
+      refetch();
+    } catch (error) {
+      showToast({
+        title: "Invitation Failed",
+        description: error.message,
+        variant: "danger",
+      });
+    } finally {
+      setInviting(false);
+    }
+  };
+
+  const handleResetPassword = async (id, name) => {
+    if (!confirm(`Generate a new temporary password for ${name}?`)) return;
+    setUpdatingId(id);
+    try {
+      const result = await resetUserPassword(id);
+      showToast({
+        title: "Password Reset",
+        description: `Email sent! Temp Pass: ${result.tempPassword}`,
+        variant: "warning",
+      });
+    } catch (error) {
+      showToast({
+        title: "Reset Failed",
+        description: error.message,
+        variant: "danger",
+      });
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   const columns = [
     {
       key: "user",
@@ -200,6 +265,14 @@ export default function AdminUsers() {
             )}
           </button>
           <button
+            onClick={() => handleResetPassword(item.id, item.first_name)}
+            disabled={updatingId === item.id}
+            className="p-2 text-amber-500 hover:bg-amber-500/10 rounded-xl transition-all"
+            title="Reset Password"
+          >
+            <FaLock className="w-3.5 h-3.5" />
+          </button>
+          <button
             onClick={() => handleDeleteClick(item)}
             disabled={updatingId === item.id}
             className="p-2 text-muted hover:text-rose-600 hover:bg-rose-600/5 rounded-xl transition-all"
@@ -222,6 +295,7 @@ export default function AdminUsers() {
         columns={columns}
         onSearch={setSearchTerm}
         onFilterStatus={setFilterRole}
+        onAdd={() => setShowInviteModal(true)}
         filterStatus={filterRole}
         searchTerm={searchTerm}
         pagination={pagination}
@@ -261,6 +335,112 @@ export default function AdminUsers() {
             . This will remove all their data and access.
           </p>
         </div>
+      </Modal>
+
+      <Modal
+        open={showInviteModal}
+        onClose={() => setShowInviteModal(false)}
+        title="Invite New User"
+        size="md"
+      >
+        <form onSubmit={handleInviteSubmit} className="space-y-6 py-4">
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="First Name"
+              value={inviteData.first_name}
+              onChange={(e) =>
+                setInviteData({ ...inviteData, first_name: e.target.value })
+              }
+              placeholder="e.g. John"
+              required
+            />
+            <Input
+              label="Last Name"
+              value={inviteData.last_name}
+              onChange={(e) =>
+                setInviteData({ ...inviteData, last_name: e.target.value })
+              }
+              placeholder="e.g. Doe"
+              required
+            />
+          </div>
+          <Input
+            label="Email Address"
+            type="email"
+            value={inviteData.email}
+            onChange={(e) =>
+              setInviteData({ ...inviteData, email: e.target.value })
+            }
+            placeholder="john.doe@example.com"
+            required
+          />
+          <div className="grid grid-cols-2 gap-4">
+            <Select
+              label="System Role"
+              value={inviteData.role}
+              onChange={(e) =>
+                setInviteData({ ...inviteData, role: e.target.value })
+              }
+              required
+            >
+              <option value="admin">Admin</option>
+              <option value="editor">Editor</option>
+              <option value="moderator">Moderator</option>
+              <option value="user">User</option>
+            </Select>
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-muted">
+                Initial Status
+              </label>
+              <div className="flex items-center h-10 gap-4">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setInviteData({ ...inviteData, is_active: true })
+                  }
+                  className={cn(
+                    "px-4 py-1 rounded-full text-[10px] font-black uppercase transition-all",
+                    inviteData.is_active
+                      ? "bg-emerald-500 text-white"
+                      : "bg-muted/10 text-muted hover:bg-muted/20",
+                  )}
+                >
+                  Active
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setInviteData({ ...inviteData, is_active: false })
+                  }
+                  className={cn(
+                    "px-4 py-1 rounded-full text-[10px] font-black uppercase transition-all",
+                    !inviteData.is_active
+                      ? "bg-rose-500 text-white"
+                      : "bg-muted/10 text-muted hover:bg-muted/20",
+                  )}
+                >
+                  Disabled
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="pt-6 border-t border-border/30 flex justify-end gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowInviteModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={inviting}
+              className="bg-brand-500 text-white px-8"
+            >
+              {inviting ? "Sending..." : "Send Invitation"}
+            </Button>
+          </div>
+        </form>
       </Modal>
     </>
   );
