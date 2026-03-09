@@ -43,7 +43,7 @@ export default function AdminLayout({ children }) {
       <AdminSidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col h-dvh overflow-hidden">
         {/* Top Header */}
         <header className="h-16 flex items-center justify-between px-8 bg-surface/50 backdrop-blur-md border-b border-border sticky top-0 z-30">
           <div className="flex items-center gap-4">

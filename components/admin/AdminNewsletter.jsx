@@ -17,8 +17,13 @@ import {
 import {
   useNewsletters,
   useNewsletterSubscribers,
+  useNewsletterTemplates,
   sendNewsletter,
+  createNewsletter,
+  updateNewsletter,
+  deleteNewsletter,
   deleteSubscriber,
+  updateSubscriberStatus,
 } from "@/hooks/useBackendApi";
 import { useToast } from "@/context/ToastContext";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -50,9 +55,15 @@ export default function AdminNewsletter() {
     loading: loadingCampaigns,
     refetch: refetchCampaigns,
   } = useNewsletters();
-  const { data: subscribersData, loading: loadingSubscribers } =
-    useNewsletterSubscribers();
+  const {
+    data: subscribersData,
+    loading: loadingSubscribers,
+    refetch: refetchSubscribers,
+  } = useNewsletterSubscribers();
+  const { data: templatesData } = useNewsletterTemplates();
   const { showToast } = useToast();
+
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -69,6 +80,40 @@ export default function AdminNewsletter() {
       status: "draft",
     });
     setEditingItem(null);
+  };
+
+  const handleApplyTemplate = (template) => {
+    setFormData({
+      ...formData,
+      subject: template.subject || formData.subject,
+      content: template.content || formData.content,
+    });
+    setShowTemplateModal(false);
+    showToast({
+      title: "Template Applied",
+      description: `Applied "${template.name}" template.`,
+      variant: "info",
+    });
+  };
+
+  const handleStatusToggle = async (subscriber) => {
+    const newStatus =
+      subscriber.status === "active" ? "unsubscribed" : "active";
+    try {
+      await updateSubscriberStatus(subscriber.id, newStatus);
+      showToast({
+        title: "Status Updated",
+        description: `Subscriber ${subscriber.email} is now ${newStatus}.`,
+        variant: "success",
+      });
+      refetchSubscribers();
+    } catch (error) {
+      showToast({
+        title: "Update Failed",
+        description: error.message,
+        variant: "danger",
+      });
+    }
   };
 
   const handleSend = async (newsletter) => {
@@ -102,16 +147,53 @@ export default function AdminNewsletter() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    // Note: create/update newsletter logic would be here if API supports it
-    // For now, focusing on the UI porting and the Send capability
-    showToast({
-      title: "Feature coming soon",
-      description:
-        "Newsletter creation is being integrated with the new mailer.",
-      variant: "info",
-    });
-    setSubmitting(false);
-    setShowModal(false);
+    try {
+      if (editingItem) {
+        await updateNewsletter(editingItem.id, formData);
+        showToast({
+          title: "Updated",
+          description: "Campaign updated.",
+          variant: "success",
+        });
+      } else {
+        await createNewsletter(formData);
+        showToast({
+          title: "Created",
+          description: "New campaign created.",
+          variant: "success",
+        });
+      }
+      setShowModal(false);
+      resetForm();
+      refetchCampaigns();
+    } catch (error) {
+      showToast({
+        title: "Error",
+        description: error.message,
+        variant: "danger",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteCampaign = async (id) => {
+    if (!confirm("Are you sure you want to delete this campaign?")) return;
+    try {
+      await deleteNewsletter(id);
+      showToast({
+        title: "Deleted",
+        description: "Campaign removed.",
+        variant: "success",
+      });
+      refetchCampaigns();
+    } catch (error) {
+      showToast({
+        title: "Error",
+        description: error.message,
+        variant: "danger",
+      });
+    }
   };
 
   const campaigns = Array.isArray(newslettersData?.newsletters)
@@ -157,6 +239,13 @@ export default function AdminNewsletter() {
               <FaEnvelope className="mr-2" />
             )}
             {activeTab === "campaigns" ? "Subscribers" : "Campaigns"}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setShowTemplateModal(true)}
+            className="rounded-full px-6 uppercase font-black tracking-widest text-xs"
+          >
+            Templates
           </Button>
           <Button
             onClick={() => {
@@ -297,6 +386,16 @@ export default function AdminNewsletter() {
                             <Button
                               variant="ghost"
                               size="sm"
+                              onClick={() => {
+                                setEditingItem(camp);
+                                setFormData({
+                                  title: camp.title || "",
+                                  subject: camp.subject || "",
+                                  content: camp.content || "",
+                                  status: camp.status || "draft",
+                                });
+                                setShowModal(true);
+                              }}
                               className="h-8 w-8 p-0 rounded-full hover:bg-muted"
                             >
                               <FaEdit />
@@ -304,6 +403,7 @@ export default function AdminNewsletter() {
                             <Button
                               variant="ghost"
                               size="sm"
+                              onClick={() => handleDeleteCampaign(camp.id)}
                               className="h-8 w-8 p-0 rounded-full hover:bg-rose-500/10 text-rose-500"
                             >
                               <FaTrash />
@@ -380,26 +480,15 @@ export default function AdminNewsletter() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={async () => {
-                              if (confirm("Unsubscribe this user?")) {
-                                try {
-                                  await deleteSubscriber(sub.id);
-                                  showToast({
-                                    title: "Unsubscribed",
-                                    variant: "success",
-                                  });
-                                } catch (e) {
-                                  showToast({
-                                    title: "Error",
-                                    description: e.message,
-                                    variant: "danger",
-                                  });
-                                }
-                              }
-                            }}
-                            className="h-8 w-8 p-0 rounded-full hover:bg-rose-500/10 text-rose-500"
+                            onClick={() => handleStatusToggle(sub)}
+                            className={cn(
+                              "h-8 rounded-full px-4 text-[10px] uppercase font-black italic tracking-widest transition-all",
+                              sub.is_active
+                                ? "hover:bg-rose-500/10 hover:text-rose-500"
+                                : "hover:bg-brand-500/10 hover:text-brand-500",
+                            )}
                           >
-                            <FaTrash />
+                            {sub.is_active ? "Deactivate" : "Activate"}
                           </Button>
                         </td>
                       </tr>
@@ -421,9 +510,8 @@ export default function AdminNewsletter() {
         </CardContent>
       </Card>
 
-      {/* Modal */}
       <Modal
-        isOpen={showModal}
+        open={showModal}
         onClose={() => !submitting && setShowModal(false)}
         title={editingItem ? "Edit Newsletter" : "New Campaign"}
         size="xl"
@@ -494,6 +582,46 @@ export default function AdminNewsletter() {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Templates Modal */}
+      <Modal
+        open={showTemplateModal}
+        onClose={() => setShowTemplateModal(false)}
+        title="Newsletter Templates"
+        size="lg"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {templatesData?.templates?.map((tpl) => (
+            <Card
+              key={tpl.id}
+              className="group hover:border-brand-500 transition-all cursor-pointer bg-surface border-border/50"
+              onClick={() => handleApplyTemplate(tpl)}
+            >
+              <CardContent className="p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-black italic uppercase tracking-tighter text-text group-hover:text-brand-500 transition-colors">
+                    {tpl.name}
+                  </h4>
+                  <Badge
+                    variant="subtle"
+                    className="text-[10px] font-black uppercase tracking-widest"
+                  >
+                    {tpl.category}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted line-clamp-2 leading-relaxed">
+                  {tpl.description || "Draft template for custom campaigns."}
+                </p>
+                <div className="pt-2 flex justify-end">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-brand-500">
+                    Apply Template →
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </Modal>
     </div>
   );

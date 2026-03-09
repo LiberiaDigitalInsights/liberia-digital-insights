@@ -36,6 +36,24 @@ const RichTextEditor = dynamic(() => import("../ui/RichTextEditor"), {
   ),
 });
 
+const MediaPreview = ({ url, type }) => {
+  if (!url) return null;
+
+  if (type === "image") {
+    return (
+      <div className="mt-2 relative group">
+        <img
+          src={url}
+          alt="Preview"
+          className="max-h-40 rounded-lg object-cover border border-muted"
+        />
+      </div>
+    );
+  }
+
+  return null;
+};
+
 export default function AdminTraining() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
@@ -43,6 +61,8 @@ export default function AdminTraining() {
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   const { data: trainingData, loading, refetch } = useTraining();
   const { showToast } = useToast();
@@ -59,6 +79,35 @@ export default function AdminTraining() {
     status: "upcoming",
     cover_image_url: "",
   });
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast({
+        title: "File Too Large",
+        description: "Image size must be less than 5MB",
+        variant: "danger",
+      });
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      showToast({
+        title: "Invalid File Type",
+        description: "Please select an image file",
+        variant: "danger",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData((prev) => ({ ...prev, cover_image_url: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -171,6 +220,14 @@ export default function AdminTraining() {
     return matchesSearch && matchesType && matchesStatus;
   });
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedCourses = filteredCourses.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -241,8 +298,8 @@ export default function AdminTraining() {
               />
             ))}
           </>
-        ) : filteredCourses.length > 0 ? (
-          filteredCourses.map((course) => (
+        ) : paginatedCourses.length > 0 ? (
+          paginatedCourses.map((course) => (
             <Card
               key={course.id}
               className="group hover:border-brand-500/50 transition-all duration-300 bg-surface border-border/50"
@@ -309,6 +366,13 @@ export default function AdminTraining() {
                               : "TBD"}
                           </span>
                         </div>
+                        <div className="flex items-center gap-2 text-xs font-bold text-muted uppercase">
+                          <FaUsers className="text-brand-500" />
+                          <span>
+                            {course.students || 0}/{course.max_students || 0}{" "}
+                            Enrolled
+                          </span>
+                        </div>
                       </div>
                       <div
                         className="mt-4 prose prose-sm max-w-none text-muted line-clamp-2"
@@ -340,7 +404,7 @@ export default function AdminTraining() {
             </Card>
           ))
         ) : (
-          <div className="p-20 text-center border-2 border-dashed border-border rounded-3xl">
+          <div className="p-20 text-center border-2 border-dashed border-border rounded-3xl col-span-full">
             <p className="text-muted font-black italic uppercase tracking-widest">
               No training programs found.
             </p>
@@ -348,9 +412,40 @@ export default function AdminTraining() {
         )}
       </div>
 
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between bg-surface p-4 rounded-2xl border border-border/50">
+          <p className="text-xs font-black uppercase tracking-widest text-muted">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              className="rounded-full px-6 italic font-black uppercase tracking-widest text-[10px]"
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+              }
+              disabled={currentPage === totalPages}
+              className="rounded-full px-6 italic font-black uppercase tracking-widest text-[10px]"
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Modal */}
       <Modal
-        isOpen={showModal}
+        open={showModal}
         onClose={() => !submitting && setShowModal(false)}
         title={editingItem ? "Edit Training Program" : "Create New Program"}
         size="xl"
@@ -478,33 +573,48 @@ export default function AdminTraining() {
             </div>
 
             <div className="space-y-4">
-              <div>
-                <label className="text-xs font-black uppercase tracking-widest text-muted mb-2 block">
-                  Cover Image URL
-                </label>
-                <Input
-                  value={formData.cover_image_url}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      cover_image_url: e.target.value,
-                    })
-                  }
-                  placeholder="HTTPS link to image..."
-                />
-              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-black uppercase tracking-widest text-muted mb-2 block">
+                    Cover Image
+                  </label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={formData.cover_image_url}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          cover_image_url: e.target.value,
+                        })
+                      }
+                      placeholder="HTTPS link to image..."
+                      className="flex-1"
+                    />
+                    <label className="px-3 py-2 bg-brand-500 text-white rounded-lg cursor-pointer hover:bg-brand-600 transition-colors text-xs font-black uppercase tracking-widest flex items-center shrink-0">
+                      Upload
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  <MediaPreview url={formData.cover_image_url} type="image" />
+                </div>
 
-              <div className="h-full flex flex-col">
-                <label className="text-xs font-black uppercase tracking-widest text-muted mb-2 block">
-                  Full Description
-                </label>
-                <div className="flex-1 min-h-[300px] border border-border rounded-lg overflow-hidden flex flex-col">
-                  <RichTextEditor
-                    value={formData.description}
-                    onChange={(content) =>
-                      setFormData({ ...formData, description: content })
-                    }
-                  />
+                <div className="h-full flex flex-col">
+                  <label className="text-xs font-black uppercase tracking-widest text-muted mb-2 block">
+                    Full Description
+                  </label>
+                  <div className="flex-1 min-h-[300px] border border-border rounded-lg overflow-hidden flex flex-col">
+                    <RichTextEditor
+                      value={formData.description}
+                      onChange={(content) =>
+                        setFormData({ ...formData, description: content })
+                      }
+                    />
+                  </div>
                 </div>
               </div>
             </div>

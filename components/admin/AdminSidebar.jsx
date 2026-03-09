@@ -123,7 +123,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
   return (
     <div
       className={cn(
-        "bg-surface border-r border-border transition-all duration-300 flex flex-col h-screen sticky top-0",
+        "bg-surface border-r border-border transition-all duration-300 flex flex-col h-dvh sticky top-0 z-40",
         isCollapsed ? "w-20" : "w-64",
       )}
     >
@@ -161,7 +161,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 >
                   <Icon
                     className={cn(
-                      "w-5 h-5 flex-shrink-0",
+                      "w-5 h-5 shrink-0",
                       active ? "text-white" : "group-hover:text-brand-500",
                     )}
                   />
@@ -192,7 +192,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
           )}
           title={isCollapsed ? "Logout" : ""}
         >
-          <FaSignOutAlt className="w-5 h-5 flex-shrink-0" />
+          <FaSignOutAlt className="w-5 h-5 shrink-0" />
           {!isCollapsed && <span className="text-sm font-bold">Logout</span>}
         </button>
       </div>

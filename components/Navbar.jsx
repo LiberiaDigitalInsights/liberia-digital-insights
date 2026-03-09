@@ -7,7 +7,7 @@ import React from "react";
 import Logo from "./Logo";
 import Search from "./Search";
 import { CATEGORIES } from "@/constants/categories";
-import { FaFacebookF, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaFacebookF, FaHamburger, FaTwitter, FaYoutube } from "react-icons/fa";
 import AdSlot from "@/components/ads/AdSlot";
 
 export default function Navbar() {
@@ -25,6 +25,9 @@ export default function Navbar() {
   const primaryBarRef = React.useRef(null);
 
   const isActive = (path) => pathname === path;
+
+  // Do not show navbar on admin pages
+  // if (pathname?.startsWith("/admin")) return null;
 
   React.useEffect(() => {
     function onDocClick(e) {
@@ -316,7 +319,7 @@ export default function Navbar() {
             aria-controls="mobile-drawer"
             onClick={() => setOpen((v) => !v)}
           >
-            ☰
+            <FaHamburger />
           </button>
         </div>
       </div>

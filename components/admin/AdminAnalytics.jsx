@@ -171,47 +171,44 @@ export default function AdminAnalytics() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        {kpis.map((kpi, i) => {
-          const isPositive = String(kpi.change).startsWith("+");
-          return (
-            <Card
-              key={i}
-              className="bg-surface border-border/50 hover:shadow-lg hover:shadow-black/5 transition-all duration-300"
-            >
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start">
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted">
-                      {kpi.label}
-                    </p>
-                    <p className="text-3xl font-black italic tracking-tighter text-text">
-                      {loadingStats ? (
-                        <span className="inline-block h-9 w-24 bg-muted rounded-lg animate-pulse" />
-                      ) : (
-                        kpi.value
-                      )}
-                    </p>
-                    <div className="flex items-center gap-1.5">
-                      {kpi.change === "Live" ? (
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      ) : (
-                        <FaArrowUp className="text-muted text-[10px]" />
-                      )}
-                      <span className="text-[10px] font-black uppercase tracking-widest text-muted">
-                        {kpi.change === "Live" ? "Live data" : kpi.change}
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    className={`w-12 h-12 rounded-2xl bg-${kpi.color}-500/10 flex items-center justify-center text-${kpi.color}-500`}
-                  >
-                    <kpi.icon className="text-xl" />
+        {kpis.map((kpi, i) => (
+          <Card
+            key={i}
+            className="bg-surface border-border/50 hover:shadow-lg hover:shadow-black/5 transition-all duration-300"
+          >
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted">
+                    {kpi.label}
+                  </p>
+                  <p className="text-3xl font-black italic tracking-tighter text-text">
+                    {loadingStats ? (
+                      <span className="inline-block h-9 w-24 bg-muted rounded-lg animate-pulse" />
+                    ) : (
+                      kpi.value
+                    )}
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    {kpi.change === "Live" ? (
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    ) : (
+                      <FaArrowUp className="text-muted text-[10px]" />
+                    )}
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted">
+                      {kpi.change === "Live" ? "Live data" : kpi.change}
+                    </span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+                <div
+                  className={`w-12 h-12 rounded-2xl bg-${kpi.color}-500/10 flex items-center justify-center text-${kpi.color}-500`}
+                >
+                  <kpi.icon className="text-xl" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Charts Row */}

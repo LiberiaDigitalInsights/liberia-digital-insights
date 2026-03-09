@@ -13,6 +13,8 @@ import {
 import {
   useGallery,
   useGalleryCategories,
+  createGalleryCategory,
+  deleteGalleryCategory,
   createGalleryItem,
   updateGalleryItem,
   deleteGalleryItem,
@@ -37,10 +39,17 @@ export default function AdminGallery() {
   const [submitting, setSubmitting] = useState(false);
 
   const { data: galleryData, loading, refetch } = useGallery();
-  const { data: categories } = useGalleryCategories();
+  const { data: categoriesData, refetch: refetchCategories } =
+    useGalleryCategories();
   const { data: eventsData } = useEvents();
   const { data: podcastsData } = usePodcasts();
   const { showToast } = useToast();
+
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [addingCategory, setAddingCategory] = useState(false);
+
+  const categories = categoriesData?.categories || categoriesData || [];
 
   const [formData, setFormData] = useState({
     title: "",
@@ -54,6 +63,66 @@ export default function AdminGallery() {
     tags: "",
     featured: false,
   });
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData((prev) => ({ ...prev, url: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleThumbnailUpload = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData((prev) => ({ ...prev, thumbnail_url: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    if (!newCategoryName.trim()) return;
+    setAddingCategory(true);
+    try {
+      await createGalleryCategory({ name: newCategoryName });
+      showToast({ title: "Category Added", variant: "success" });
+      setNewCategoryName("");
+      refetchCategories();
+    } catch (error) {
+      showToast({
+        title: "Error",
+        description: error.message,
+        variant: "danger",
+      });
+    } finally {
+      setAddingCategory(false);
+    }
+  };
+
+  const handleDeleteCategory = async (id) => {
+    if (
+      !confirm(
+        "Are you sure? Items in this category might become uncategorized.",
+      )
+    )
+      return;
+    try {
+      await deleteGalleryCategory(id);
+      showToast({ title: "Category Deleted", variant: "success" });
+      refetchCategories();
+    } catch (error) {
+      showToast({
+        title: "Error",
+        description: error.message,
+        variant: "danger",
+      });
+    }
+  };
 
   const resetForm = () => {
     setFormData({
@@ -188,15 +257,24 @@ export default function AdminGallery() {
             Manage your platform's visual and multi-media assets.
           </p>
         </div>
-        <Button
-          onClick={() => {
-            resetForm();
-            setShowModal(true);
-          }}
-          className="rounded-full px-8 py-6 uppercase font-black tracking-widest italic"
-        >
-          <FaPlus className="mr-2" /> Add Item
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setShowCategoryModal(true)}
+            className="rounded-full px-6 uppercase font-black tracking-widest text-xs"
+          >
+            Manage Categories
+          </Button>
+          <Button
+            onClick={() => {
+              resetForm();
+              setShowModal(true);
+            }}
+            className="rounded-full px-8 py-6 uppercase font-black tracking-widest italic"
+          >
+            <FaPlus className="mr-2" /> Add Item
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -309,7 +387,7 @@ export default function AdminGallery() {
 
       {/* Modal */}
       <Modal
-        isOpen={showModal}
+        open={showModal}
         onClose={() => !submitting && setShowModal(false)}
         title={editingItem ? "Edit Asset" : "Add New Asset"}
         size="lg"
@@ -364,29 +442,59 @@ export default function AdminGallery() {
 
               <div>
                 <label className="text-xs font-black uppercase tracking-widest text-muted mb-2 block">
-                  Media URL
+                  Media Source
                 </label>
-                <Input
-                  required
-                  value={formData.url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, url: e.target.value })
-                  }
-                  placeholder="HTTPS link to media..."
-                />
+                <div className="flex gap-2">
+                  <Input
+                    value={formData.url}
+                    onChange={(e) =>
+                      setFormData({ ...formData, url: e.target.value })
+                    }
+                    placeholder="HTTPS link to media..."
+                    className="flex-1"
+                  />
+                  {formData.type === "image" && (
+                    <label className="px-3 py-2 bg-brand-500 text-white rounded-lg cursor-pointer hover:bg-brand-600 transition-colors text-xs font-black uppercase tracking-widest flex items-center shrink-0">
+                      Upload
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+                <MediaPreview url={formData.url} type="image" />
               </div>
 
               <div>
                 <label className="text-xs font-black uppercase tracking-widest text-muted mb-2 block">
-                  Thumbnail URL (Optional)
+                  Thumbnail (Optional)
                 </label>
-                <Input
-                  value={formData.thumbnail_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, thumbnail_url: e.target.value })
-                  }
-                  placeholder="HTTPS link to thumbnail..."
-                />
+                <div className="flex gap-2">
+                  <Input
+                    value={formData.thumbnail_url}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        thumbnail_url: e.target.value,
+                      })
+                    }
+                    placeholder="HTTPS link to thumbnail..."
+                    className="flex-1"
+                  />
+                  <label className="px-3 py-2 bg-brand-500 text-white rounded-lg cursor-pointer hover:bg-brand-600 transition-colors text-xs font-black uppercase tracking-widest flex items-center shrink-0">
+                    Upload
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleThumbnailUpload}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                <MediaPreview url={formData.thumbnail_url} type="image" />
               </div>
             </div>
           </div>
@@ -502,6 +610,54 @@ export default function AdminGallery() {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Categories Modal */}
+      <Modal
+        open={showCategoryModal}
+        onClose={() => setShowCategoryModal(false)}
+        title="Manage Categories"
+        size="md"
+      >
+        <div className="space-y-6">
+          <form onSubmit={handleAddCategory} className="flex gap-2">
+            <Input
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              placeholder="New category name..."
+              className="flex-1"
+              required
+            />
+            <Button
+              type="submit"
+              disabled={addingCategory}
+              className="rounded-lg font-black uppercase text-xs px-6"
+            >
+              Add
+            </Button>
+          </form>
+
+          <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
+            {categories.map((cat) => (
+              <div
+                key={cat.id || cat}
+                className="flex items-center justify-between p-3 bg-muted/20 rounded-xl group hover:bg-muted/40 transition-colors"
+              >
+                <span className="font-black italic uppercase tracking-tight text-sm text-text">
+                  {cat.name || cat}
+                </span>
+                <Button
+                  onClick={() => handleDeleteCategory(cat.id || cat)}
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 rounded-full text-rose-500 hover:bg-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <FaTrash />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
       </Modal>
     </div>
   );

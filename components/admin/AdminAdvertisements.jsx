@@ -28,6 +28,24 @@ import Textarea from "@/components/ui/Textarea";
 import Badge from "@/components/ui/Badge";
 import { cn } from "@/lib/cn";
 
+const MediaPreview = ({ url, type }) => {
+  if (!url) return null;
+
+  if (type === "image") {
+    return (
+      <div className="mt-2 relative group">
+        <img
+          src={url}
+          alt="Preview"
+          className="max-h-40 rounded-lg object-cover border border-muted"
+        />
+      </div>
+    );
+  }
+
+  return null;
+};
+
 export default function AdminAdvertisements() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -48,6 +66,26 @@ export default function AdminAdvertisements() {
     start_date: "",
     end_date: "",
   });
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast({
+        title: "File Too Large",
+        description: "Image size must be less than 5MB",
+        variant: "danger",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData((prev) => ({ ...prev, image_url: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -319,7 +357,15 @@ export default function AdminAdvertisements() {
                   {ad.description || "No description provided."}
                 </p>
 
-                <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-border/50">
+                <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-border/50">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted">
+                      Views
+                    </p>
+                    <p className="font-black italic text-brand-500">
+                      {ad.impressions || 0}
+                    </p>
+                  </div>
                   <div className="space-y-1">
                     <p className="text-[10px] font-black uppercase tracking-widest text-muted">
                       Clicks
@@ -382,7 +428,7 @@ export default function AdminAdvertisements() {
 
       {/* Modal */}
       <Modal
-        isOpen={showModal}
+        open={showModal}
         onClose={() => !submitting && setShowModal(false)}
         title={editingItem ? "Edit Campaign" : "New Advertisement"}
         size="lg"
@@ -457,16 +503,28 @@ export default function AdminAdvertisements() {
             <div className="space-y-4">
               <div>
                 <label className="text-xs font-black uppercase tracking-widest text-muted mb-2 block">
-                  Banner Image URL
+                  Banner Image
                 </label>
-                <Input
-                  required
-                  value={formData.image_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, image_url: e.target.value })
-                  }
-                  placeholder="HTTPS link to banner image..."
-                />
+                <div className="flex gap-2">
+                  <Input
+                    value={formData.image_url}
+                    onChange={(e) =>
+                      setFormData({ ...formData, image_url: e.target.value })
+                    }
+                    placeholder="HTTPS link to banner image..."
+                    className="flex-1"
+                  />
+                  <label className="px-3 py-2 bg-brand-500 text-white rounded-lg cursor-pointer hover:bg-brand-600 transition-colors text-xs font-black uppercase tracking-widest flex items-center shrink-0">
+                    Upload
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                <MediaPreview url={formData.image_url} type="image" />
               </div>
 
               <div>

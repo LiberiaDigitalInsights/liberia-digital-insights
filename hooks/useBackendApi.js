@@ -342,6 +342,33 @@ export const useNewsletterSubscribers = (params = {}) => {
   );
 };
 
+export const updateSubscriberStatus = (id, status) =>
+  apiRequest(`/newsletters/subscribers/${id}`, {
+    method: "PUT",
+    body: JSON.stringify({ status }),
+  });
+
+export const useNewsletterTemplates = () => {
+  return useApi(() => apiRequest("/newsletters/templates"), []);
+};
+
+export const createNewsletter = (newsletterData) =>
+  apiRequest("/newsletters", {
+    method: "POST",
+    body: JSON.stringify(newsletterData),
+  });
+
+export const updateNewsletter = (id, newsletterData) =>
+  apiRequest(`/newsletters/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(newsletterData),
+  });
+
+export const deleteNewsletter = (id) =>
+  apiRequest(`/newsletters/${id}`, {
+    method: "DELETE",
+  });
+
 // Hook for advertisements
 export const useAdvertisements = (params = {}) => {
   const query = new URLSearchParams(cleanParams(params)).toString();
@@ -381,6 +408,17 @@ export const useGallery = (params = {}) => {
 export const useGalleryCategories = () => {
   return useApi(() => apiRequest("/gallery/categories"), []);
 };
+
+export const createGalleryCategory = (categoryData) =>
+  apiRequest("/gallery/categories", {
+    method: "POST",
+    body: JSON.stringify(categoryData),
+  });
+
+export const deleteGalleryCategory = (id) =>
+  apiRequest(`/gallery/categories/${id}`, {
+    method: "DELETE",
+  });
 
 // Mutation functions for gallery
 export const createGalleryItem = (itemData) =>
@@ -602,6 +640,8 @@ export default {
   deleteAdvertisement,
   useGallery,
   useGalleryCategories,
+  createGalleryCategory,
+  deleteGalleryCategory,
   createGalleryItem,
   updateGalleryItem,
   deleteGalleryItem,
@@ -609,6 +649,11 @@ export default {
   useNewsletterSubscribers,
   sendNewsletter,
   deleteSubscriber,
+  updateSubscriberStatus,
+  useNewsletterTemplates,
+  createNewsletter,
+  updateNewsletter,
+  deleteNewsletter,
   useTrainingById,
   useTraining,
   createTrainingCourse,

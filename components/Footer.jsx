@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import {
   FaFacebookF,
@@ -11,6 +14,10 @@ import {
 import FooterNewsletterWidget from "./FooterNewsletterWidget";
 
 const Footer = () => {
+  const pathname = usePathname();
+
+  // Do not show footer on admin pages
+  if (pathname?.startsWith("/admin")) return null;
   return (
     <footer
       className="relative mt-16 overflow-hidden bg-surface border-t border-border"
