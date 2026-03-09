@@ -29,7 +29,7 @@ import Badge from "@/components/ui/Badge";
 import dynamic from "next/dynamic";
 
 // Dynamically import RichTextEditor to avoid SSR issues
-const RichTextEditor = dynamic(() => import("./RichTextEditor"), {
+const RichTextEditor = dynamic(() => import("../ui/RichTextEditor"), {
   ssr: false,
   loading: () => (
     <div className="h-40 w-full animate-pulse bg-muted rounded-lg" />
