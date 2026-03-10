@@ -34,13 +34,37 @@ export default function TermsPage() {
 
       <section className="mt-12">
         <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
-          2. User Conduct
+          2. Description of Service
+        </h2>
+        <p>
+          Liberia Digital Insights provides digital insights, news, analysis,
+          and educational content focused on Liberia's digital transformation.
+          Our Service includes articles, podcasts, events, talent networking,
+          and training courses.
+        </p>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
+          3. User Accounts
+        </h2>
+        <p>
+          When you create an account, you must provide accurate and complete
+          information. You are responsible for maintaining the confidentiality
+          of your account credentials and for all activities that occur under
+          your account.
+        </p>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
+          4. User Conduct
         </h2>
         <p>
           The Hub is a space for professional growth and innovation. You agree
           not to use our Service to:
         </p>
-        <ul className="list-disc list-inside space-y-2 mb-8">
+        <ul className="list-disc list-inside space-y-2 mb-8 text-muted font-medium">
           <li>Violate any applicable laws or regulations</li>
           <li>Infringe upon intellectual property rights</li>
           <li>Post or share false, misleading, or harmful content</li>
@@ -52,34 +76,55 @@ export default function TermsPage() {
 
       <section className="mt-12">
         <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
-          3. Intellectual Property
+          5. Intellectual Property
         </h2>
-        <h3>Our Content</h3>
+        <h3 className="mt-4">Our Content</h3>
         <p>
           All content on our Service, including text, graphics, logos, images,
           audio, video, and software, is owned by or licensed to Liberia Digital
           Insights and is protected by copyright, trademark, and other
           intellectual property laws.
         </p>
+        <h3 className="mt-4">Your Content</h3>
         <p>
-          Unauthorized use of our content is strictly prohibited without
-          explicit written consent from the editorial board.
+          By submitting content, you grant us a worldwide, non-exclusive license
+          to use and distribute your content for the purpose of operating the
+          Service.
         </p>
       </section>
 
       <section className="mt-12">
         <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
-          4. Limitation of Liability
+          6. Disclaimers & Limitation of Liability
         </h2>
         <p>
-          To the fullest extent permitted by law, Liberia Digital Insights shall
-          not be liable for any indirect, incidental, special, consequential, or
-          punitive damages arising from your use of the service.
+          Our Service is provided on an "as is" and "as available" basis.
+          Liberia Digital Insights shall not be liable for any indirect,
+          incidental, or consequential damages arising from your use of the
+          service.
         </p>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
+          7. Governing Law
+        </h2>
         <p>
-          Our Service is provided on an "as is" and "as available" basis. We
-          make no representations or warranties of any kind regarding its
-          availability or accuracy.
+          These Terms shall be interpreted and governed by the laws of Liberia.
+          Any disputes shall be resolved in the courts of Monrovia, Liberia.
+        </p>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
+          8. Contact Us
+        </h2>
+        <p>
+          If you have any questions about these Terms, please contact us at{" "}
+          <strong className="text-brand-500">
+            legal@liberiadigitalinsights.com
+          </strong>
+          .
         </p>
       </section>
     </LegalLayout>

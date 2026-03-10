@@ -27,25 +27,15 @@ export default function TagPage() {
 
   const { data: articlesData, loading: articlesLoading } = useArticles({
     limit: 40,
+    tag: tagKey,
   });
   const { data: podcastsData, loading: podcastsLoading } = usePodcasts({
     limit: 20,
+    tag: tagKey,
   });
 
-  const allArticles = articlesData?.articles || [];
-  const allPodcasts = podcastsData?.podcasts || [];
-
-  const taggedArticles = allArticles.filter(
-    (a) =>
-      Array.isArray(a.tags) &&
-      a.tags.some((t) => String(t).toLowerCase() === tagKey),
-  );
-
-  const taggedPodcasts = allPodcasts.filter(
-    (p) =>
-      Array.isArray(p.tags) &&
-      p.tags.some((t) => String(t).toLowerCase() === tagKey),
-  );
+  const taggedArticles = articlesData?.articles || [];
+  const taggedPodcasts = podcastsData?.podcasts || [];
 
   const tabs = [
     {

@@ -43,6 +43,10 @@ export async function GET(request) {
       query = query.eq("status", status);
     }
 
+    if (queryParams.tag) {
+      query = query.contains("tags", [queryParams.tag]);
+    }
+
     if (search) {
       query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
     }

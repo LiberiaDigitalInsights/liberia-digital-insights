@@ -43,7 +43,7 @@ export default function PrivacyPage() {
           We may collect personally identifiable information that you
           voluntarily provide to us, including:
         </p>
-        <ul className="list-disc list-inside space-y-2 mb-8">
+        <ul className="list-disc list-inside space-y-2 mb-8 text-muted font-medium">
           <li>Name and email address (for newsletter subscription)</li>
           <li>Company and organization details</li>
           <li>Job position and professional information</li>
@@ -56,7 +56,7 @@ export default function PrivacyPage() {
           When you visit our website, we automatically collect certain technical
           information:
         </p>
-        <ul className="list-disc list-inside space-y-2">
+        <ul className="list-disc list-inside space-y-2 text-muted font-medium">
           <li>IP address and geolocation data</li>
           <li>Browser type, operating system, and device information</li>
           <li>Pages visited and time spent on our site</li>
@@ -67,7 +67,47 @@ export default function PrivacyPage() {
 
       <section className="mt-12">
         <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
-          3. Data Security & Storage
+          3. How We Use Your Information
+        </h2>
+        <p>
+          We use the information we collect for various purposes, including:
+        </p>
+        <ul className="list-disc list-inside space-y-2 text-muted font-medium">
+          <li>To provide and maintain our website and services</li>
+          <li>To send you our newsletter with insights and updates</li>
+          <li>To respond to your inquiries and provide customer support</li>
+          <li>To improve our website based on user feedback and analytics</li>
+          <li>To monitor usage patterns and analyze website performance</li>
+          <li>To detect, prevent, and address technical issues</li>
+          <li>To comply with legal obligations and protect our rights</li>
+        </ul>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
+          4. Information Sharing and Disclosure
+        </h2>
+        <p>
+          We do not sell, trade, or otherwise transfer your personal information
+          to third parties without your consent, except as described in this
+          policy:
+        </p>
+        <h3 className="mt-6">Service Providers</h3>
+        <p>
+          We may share information with trusted third-party service providers
+          who assist us in operating our website, such as email marketing
+          services and analytics providers.
+        </p>
+        <h3 className="mt-6">Legal Requirements</h3>
+        <p>
+          We may disclose your information if required by law or in good faith
+          belief that such action is necessary to comply with legal obligations.
+        </p>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
+          5. Data Security & Storage
         </h2>
         <p>
           In an era of digital omnipresence, security is not an afterthought—it
@@ -85,20 +125,37 @@ export default function PrivacyPage() {
 
       <section className="mt-12">
         <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
-          4. Contact Us
+          6. Your Privacy Rights
+        </h2>
+        <p>
+          You have the following rights regarding your personal information:
+        </p>
+        <ul className="list-disc list-inside space-y-2 text-muted font-medium">
+          <li>Access and review your personal information</li>
+          <li>Correct inaccurate or incomplete information</li>
+          <li>Request deletion of your personal information</li>
+          <li>Opt-out of marketing communications</li>
+          <li>Request a copy of your data (data portability)</li>
+        </ul>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="text-2xl font-black uppercase tracking-tighter italic text-brand-500 mb-6">
+          7. Contact Us
         </h2>
         <p>
           If you have any questions about this Privacy Policy or our data
           practices, please contact our privacy team:
         </p>
-        <div className="bg-background p-6 rounded-2xl border border-border/50 not-prose">
-          <ul className="space-y-3 text-sm font-bold text-muted uppercase tracking-widest">
+        <div className="bg-background p-8 rounded-4xl border border-border/50 not-prose shadow-xl shadow-brand-500/5">
+          <ul className="space-y-4 text-sm font-black text-muted uppercase tracking-widest">
             <li className="flex gap-4">
-              <span className="text-brand-500">EMAIL:</span>{" "}
+              <span className="text-brand-500 italic">EMAIL:</span>{" "}
               privacy@liberiadigitalinsights.com
             </li>
             <li className="flex gap-4">
-              <span className="text-brand-500">ADDRESS:</span> Monrovia, Liberia
+              <span className="text-brand-500 italic">ADDRESS:</span> Monrovia,
+              Liberia
             </li>
           </ul>
         </div>

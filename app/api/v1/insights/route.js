@@ -41,6 +41,10 @@ export async function GET(request) {
       query = query.eq("categories.slug", category);
     }
 
+    if (queryParams.tag) {
+      query = query.contains("tags", [queryParams.tag]);
+    }
+
     if (search) {
       query = query.or(`title.ilike.%${search}%,excerpt.ilike.%${search}%`);
     }

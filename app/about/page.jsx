@@ -131,6 +131,45 @@ export default function AboutPage() {
         </MotionGrid>
       </section>
 
+      {/* What We Do */}
+      <section className="mb-24 px-4 py-16 bg-brand-500/5 rounded-4xl">
+        <div className="text-center mb-12">
+          <H2 className="mb-4 text-4xl font-black italic tracking-tighter text-brand-500">
+            WHAT WE DO
+          </H2>
+          <Muted>Our core activities and impact areas.</Muted>
+        </div>
+        <div className="grid gap-8 md:grid-cols-3">
+          <Card className="p-8 border-none bg-surface/50 backdrop-blur-sm shadow-xl hover:-translate-y-2 transition-transform duration-300">
+            <h3 className="mb-4 text-2xl font-bold text-text">
+              Digital Literacy
+            </h3>
+            <p className="text-muted leading-relaxed">
+              We provide essential training and resources to help Liberians
+              navigate the digital landscape with confidence and skill.
+            </p>
+          </Card>
+          <Card className="p-8 border-none bg-surface/50 backdrop-blur-sm shadow-xl hover:-translate-y-2 transition-transform duration-300">
+            <h3 className="mb-4 text-2xl font-bold text-text">
+              Tech Journalism
+            </h3>
+            <p className="text-muted leading-relaxed">
+              In-depth reporting on technology trends, local innovation stories,
+              and policy developments shaping Liberia's future.
+            </p>
+          </Card>
+          <Card className="p-8 border-none bg-surface/50 backdrop-blur-sm shadow-xl hover:-translate-y-2 transition-transform duration-300">
+            <h3 className="mb-4 text-2xl font-bold text-text">
+              Community Building
+            </h3>
+            <p className="text-muted leading-relaxed">
+              Fostering a vibrant ecosystem where developers, entrepreneurs, and
+              tech enthusiasts can connect and collaborate.
+            </p>
+          </Card>
+        </div>
+      </section>
+
       {/* Team Section */}
       <section className="mb-24">
         <div className="text-center mb-12">
@@ -158,6 +197,38 @@ export default function AboutPage() {
             </Card>
           ))}
         </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="mb-12">
+        <Card className="relative overflow-hidden p-12 text-center bg-brand-500 text-white border-none shadow-2xl shadow-brand-500/40 rounded-[2.5rem]">
+          <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-white rounded-full blur-[100px]"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-black rounded-full blur-[100px]"></div>
+          </div>
+          <H2 className="mb-6 text-4xl md:text-5xl font-black italic tracking-tighter">
+            JOIN THE DIGITAL REVOLUTION
+          </H2>
+          <p className="mb-10 mx-auto max-w-2xl text-lg text-white/90 font-medium">
+            Be part of Liberia's digital transformation story. Subscribe to our
+            newsletter, follow us on social media, or get in touch to learn more
+            about how we can collaborate.
+          </p>
+          <div className="flex flex-wrap justify-center gap-6">
+            <a
+              href="/register"
+              className="rounded-2xl bg-white px-10 py-4 text-lg font-black uppercase tracking-tighter text-brand-500 hover:scale-105 transition-transform shadow-xl"
+            >
+              Get Started
+            </a>
+            <a
+              href="/contact"
+              className="rounded-2xl border-2 border-white/30 backdrop-blur-sm bg-white/10 px-10 py-4 text-lg font-black uppercase tracking-tighter text-white hover:bg-white/20 transition-all shadow-xl"
+            >
+              Contact Us
+            </a>
+          </div>
+        </Card>
       </section>
     </div>
   );

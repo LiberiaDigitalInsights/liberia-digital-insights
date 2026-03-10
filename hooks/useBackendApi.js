@@ -629,6 +629,12 @@ export const testSmtp = (smtpData) =>
     body: JSON.stringify(smtpData),
   });
 
+export const submitContactForm = (formData) =>
+  apiRequest("/contact", {
+    method: "POST",
+    body: JSON.stringify(formData),
+  });
+
 // UI export
 export default {
   useAuth,
@@ -702,4 +708,5 @@ export default {
   changePassword,
   resetUserPassword,
   testSmtp,
+  submitContactForm,
 };

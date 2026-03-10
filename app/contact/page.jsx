@@ -47,23 +47,33 @@ export default function ContactPage() {
     if (!validateForm()) return;
 
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
+    try {
+      const { submitContactForm } = await import("@/hooks/useBackendApi");
+      await submitContactForm(formData);
 
-    showToast({
-      title: "Message Sent!",
-      description: "Thank you for reaching out. We will get back to you soon.",
-      variant: "success",
-    });
+      showToast({
+        title: "Message Sent!",
+        description:
+          "Thank you for reaching out. We will get back to you soon.",
+        variant: "success",
+      });
 
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      category: "",
-      message: "",
-    });
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        category: "",
+        message: "",
+      });
+    } catch (err) {
+      showToast({
+        title: "Submission Failed",
+        description: err.message || "Failed to send message. Please try again.",
+        variant: "danger",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -85,8 +95,10 @@ export default function ContactPage() {
       <div className="grid gap-12 lg:grid-cols-3">
         {/* Contact info column */}
         <div className="space-y-6">
-          <Card className="p-8 border-none bg-brand-500/5 shadow-sm">
-            <h2 className="text-2xl font-bold mb-8">Get in Touch</h2>
+          <Card className="p-8 border-none bg-brand-500/5 shadow-sm rounded-3xl">
+            <h2 className="text-2xl font-black italic tracking-tighter text-brand-500 mb-8 uppercase">
+              Get in Touch
+            </h2>
             <div className="space-y-8">
               <div className="flex gap-4 items-start">
                 <div className="h-10 w-10 rounded-xl bg-brand-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-brand-500/20">
@@ -98,7 +110,7 @@ export default function ContactPage() {
                   </div>
                   <a
                     href="mailto:info@liberiadigitalinsights.com"
-                    className="text-text font-medium hover:text-brand-500 transition-colors"
+                    className="text-text font-bold hover:text-brand-500 transition-colors"
                   >
                     info@liberiadigitalinsights.com
                   </a>
@@ -113,10 +125,10 @@ export default function ContactPage() {
                     Phone
                   </div>
                   <a
-                    href="tel:+231000000000"
-                    className="text-text font-medium hover:text-brand-500 transition-colors"
+                    href="tel:+231777850481"
+                    className="text-text font-bold hover:text-brand-500 transition-colors"
                   >
-                    +231 123 456 789
+                    +231 77 785 0481
                   </a>
                 </div>
               </div>
@@ -128,7 +140,37 @@ export default function ContactPage() {
                   <div className="text-sm font-bold uppercase tracking-wider text-muted mb-1">
                     Address
                   </div>
-                  <p className="text-text font-medium">Monrovia, Liberia</p>
+                  <p className="text-text font-bold">Monrovia, Liberia</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-12 pt-8 border-t border-border/10">
+              <h3 className="text-sm font-black uppercase tracking-widest text-brand-500/60 mb-4">
+                Business Inquiries
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-xs font-bold text-muted uppercase tracking-tighter mb-1">
+                    Advertising
+                  </p>
+                  <a
+                    href="mailto:sales@liberiadigitalinsights.com"
+                    className="text-sm font-bold hover:text-brand-500 transition-colors"
+                  >
+                    sales@liberiadigitalinsights.com
+                  </a>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-muted uppercase tracking-tighter mb-1">
+                    Press & Media
+                  </p>
+                  <a
+                    href="mailto:newsroom@liberiadigitalinsights.com"
+                    className="text-sm font-bold hover:text-brand-500 transition-colors"
+                  >
+                    newsroom@liberiadigitalinsights.com
+                  </a>
                 </div>
               </div>
             </div>
