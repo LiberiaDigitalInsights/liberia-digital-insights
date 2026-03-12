@@ -15,6 +15,7 @@ import {
 } from "@/hooks/useBackendApi";
 import ContentRenderer from "@/components/ui/ContentRenderer";
 import BookmarkButton from "@/components/ui/BookmarkButton";
+import ShareButton from "@/components/ui/ShareButton";
 import LazyImage from "@/components/LazyImage";
 import PodcastWidget from "@/components/sidebar/PodcastWidget";
 import EventsWidget from "@/components/sidebar/EventsWidget";
@@ -38,7 +39,9 @@ export default function ArticleDetailClient() {
   const { data: eventsData } = useEvents({ limit: 3 });
 
   const article = articleData?.article;
-  const relatedArticles = relatedArticlesData?.articles || [];
+  const relatedArticles = (relatedArticlesData?.articles || []).filter(
+    (a) => a.id !== article?.id && a.slug !== slug,
+  );
 
   // Loading state
   if (articleLoading) {
@@ -110,18 +113,23 @@ export default function ArticleDetailClient() {
           <H1 className="mb-4 flex-1 text-3xl md:text-4xl font-bold">
             {article.title}
           </H1>
-          <BookmarkButton
-            contentId={article.id}
-            contentType="article"
-            size="lg"
-            className="mt-1"
-          />
+          <div className="flex items-center gap-2 mt-1">
+            <ShareButton
+              title={article.title}
+              url={typeof window !== "undefined" ? window.location.href : ""}
+            />
+            <BookmarkButton
+              contentId={article.id}
+              contentType="article"
+              size="lg"
+            />
+          </div>
         </div>
         {article.excerpt && (
           <p className="mb-6 text-xl text-muted">{article.excerpt}</p>
         )}
         <div className="flex flex-wrap items-center gap-4 text-sm text-muted">
-          {article.author?.name && <span>By {article.author.name}</span>}
+          <span>By {article.author?.name || "LDI Staff"}</span>
           {article.published_at && <span>•</span>}
           {article.published_at && (
             <span>{new Date(article.published_at).toLocaleDateString()}</span>
