@@ -14,9 +14,6 @@ export default function NewsletterWidget({ loading: externalLoading = false }) {
   const [form, setForm] = React.useState({
     name: "",
     email: "",
-    company: "",
-    org: "",
-    position: "",
   });
   const [errors, setErrors] = React.useState({});
   const [status, setStatus] = React.useState("idle"); // idle | success | error
@@ -53,11 +50,11 @@ export default function NewsletterWidget({ loading: externalLoading = false }) {
       await subscribe(form);
       showToast({
         title: "Subscribed",
-        description: "Thanks for subscribing to our newsletter!",
+        description: "Thanks for subscribing!",
         variant: "success",
       });
       setStatus("success");
-      setForm({ name: "", email: "", company: "", org: "", position: "" });
+      setForm({ name: "", email: "" });
     } catch (err) {
       showToast({
         title: "Error",
@@ -69,58 +66,53 @@ export default function NewsletterWidget({ loading: externalLoading = false }) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>NEWSLETTER SIGNUP</CardTitle>
+    <Card className="bg-surface/50 border-border/40">
+      <CardHeader className="pb-2">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-1 h-6 bg-brand-500 rounded-full" />
+          <CardTitle className="text-lg">Weekly Newsletter</CardTitle>
+        </div>
       </CardHeader>
       <CardContent>
-        <p className="mb-4 text-sm text-muted">
-          Sign up for our weekly newsletter and get the latest industry insights
-          right in your inbox.
+        <p className="mb-6 text-xs text-muted leading-relaxed">
+          Get the latest technology insights and local trends delivered to your
+          inbox every Thursday.
         </p>
-        <form className="space-y-3" onSubmit={onSubmit} noValidate>
+        <form className="space-y-4" onSubmit={onSubmit} noValidate>
           <Field>
-            <Label htmlFor="newsletter-name">Name</Label>
             <Input
               id="newsletter-name"
-              placeholder="Your name"
+              placeholder="Full Name"
               value={form.name}
               onChange={onChange}
+              className="bg-bg/50 border-border/40 text-sm"
               aria-invalid={Boolean(errors.name) || undefined}
             />
-            {errors.name ? (
-              <HelperText variant="error">{errors.name}</HelperText>
-            ) : (
-              <HelperText>Enter your full name</HelperText>
-            )}
           </Field>
           <Field>
-            <Label htmlFor="newsletter-email">Your Email</Label>
             <Input
               id="newsletter-email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="Email Address"
               value={form.email}
               onChange={onChange}
+              className="bg-bg/50 border-border/40 text-sm"
               aria-invalid={Boolean(errors.email) || undefined}
             />
-            {errors.email ? (
-              <HelperText variant="error">{errors.email}</HelperText>
-            ) : (
-              <HelperText>We’ll never share your email</HelperText>
-            )}
           </Field>
           <Button
             type="submit"
-            className="w-full"
+            className="w-full font-bold text-xs tracking-widest uppercase"
             loading={loading}
-            loadingText="Submitting..."
           >
-            Sign Up
+            Subscribe Now
           </Button>
           {status === "success" && (
-            <div role="status" className="text-sm text-green-600">
-              You’re all set! Check your inbox for a welcome email.
+            <div
+              role="status"
+              className="text-xs text-green-500 text-center font-medium mt-2"
+            >
+              Welcome aboard! Check your inbox.
             </div>
           )}
         </form>

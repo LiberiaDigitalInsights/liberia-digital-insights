@@ -8,36 +8,34 @@ import {
   useEvents,
   useInsights,
 } from "@/hooks/useBackendApi";
-import { H1, H2, Muted } from "@/components/ui/Typography";
 import Button from "@/components/ui/Button";
-import FeaturedArticleRow from "@/components/articles/FeaturedArticleRow";
-import ArticleCard from "@/components/articles/ArticleCard";
-import PodcastCard from "@/components/podcasts/PodcastCard";
 import AdSlot from "@/components/ads/AdSlot";
-import PodcastWidget from "@/components/sidebar/PodcastWidget";
 import NewsletterWidget from "@/components/sidebar/NewsletterWidget";
 import EventsWidget from "@/components/sidebar/EventsWidget";
+import NewsCard from "@/components/articles/NewsCard";
+import SectionHeading from "@/components/ui/SectionHeading";
+import VideoShowcase from "@/components/articles/VideoShowcase";
+import SocialBanner from "@/components/ui/SocialBanner";
+import LazyImage from "@/components/LazyImage";
 
 function HomeSkeleton() {
-  // ... (HomeSkeleton remains same, or I can update it if I change the layout significantly)
-  // For now, I'll keep it as is or slightly adjust if needed.
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12 animate-pulse">
-      <div className="h-64 bg-surface rounded-2xl mb-12" />
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_350px]">
-        <div className="space-y-12">
-          <div className="h-10 bg-surface rounded w-1/4" />
-          <div className="h-80 bg-surface rounded" />
-          <div className="h-10 bg-surface rounded w-1/4" />
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-48 bg-surface rounded" />
-            ))}
-          </div>
+    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12 space-y-20 animate-pulse">
+      {/* Hero Skeleton */}
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10">
+        <div className="h-[500px] bg-surface rounded-2xl" />
+        <div className="space-y-10">
+          <div className="h-64 bg-surface rounded-2xl" />
+          <div className="h-64 bg-surface rounded-2xl" />
         </div>
-        <div className="space-y-8">
-          <div className="h-64 bg-surface rounded" />
-          <div className="h-64 bg-surface rounded" />
+      </div>
+      {/* Section Skeleton */}
+      <div className="space-y-8">
+        <div className="h-10 bg-surface rounded w-1/4" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-80 bg-surface rounded-2xl" />
+          ))}
         </div>
       </div>
     </div>
@@ -47,259 +45,293 @@ function HomeSkeleton() {
 function HomeContent() {
   // Fetch real data from backend
   const { data: articlesData, loading: articlesLoading } = useArticles({
-    limit: 12,
+    limit: 20,
+  });
+  const { data: featuredData } = useArticles({
+    featured: "true",
+    limit: 4,
   });
   const { data: podcastsData, loading: podcastsLoading } = usePodcasts({
     limit: 10,
   });
-  const { data: eventsData, loading: eventsLoading } = useEvents({ limit: 3 });
+  const { data: eventsData, loading: eventsLoading } = useEvents({ limit: 4 });
   const { data: insightsData, loading: insightsLoading } = useInsights({
     limit: 6,
   });
 
   // Extract data from backend responses
   const articles = articlesData?.articles || [];
-  const featured = articles[0];
-  const latestArticles = articles.slice(0, 12);
+  const featuredPool = featuredData?.articles || [];
   const podcasts = podcastsData?.podcasts || [];
   const events = eventsData?.events || [];
   const insights = insightsData?.insights || [];
 
+  // 1. Hero Section
+  const mainFeatured = articles[0];
+  const sideArticles = articles.slice(1, 3);
+
+  // 2. Technology Section
+  const techArticles = articles.slice(3, 9);
+
+  // 3. Featured Insight (#TechTalkThursday)
+  const mainInsight = insights[0] || articles[9];
+
+  // 4. Editor's Choice - Use pool if available, fallback to articles
+  const editorsChoice =
+    featuredPool.length > 0 ? featuredPool : articles.slice(10, 14);
+
+  // 5. In Case You Missed It - Use insights[1:4], fallback to articles
+  const missedIt =
+    insights.length > 1 ? insights.slice(1, 5) : articles.slice(14, 18);
+
+  // 6. Latest News (Everything else)
+  const latestNews = articles.slice(6, 20);
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
-      {/* Hero */}
-      <section className="mb-10">
-        <MotionItem className="rounded-2xl border border-border bg-linear-to-br from-surface to-brand-500/5 p-8 md:p-16 text-center shadow-2xl relative overflow-hidden group">
-          <div className="absolute inset-0 bg-brand-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-3xl animate-pulse" />
-          <div className="relative z-10">
-            <H1 className="mb-4 text-4xl font-black tracking-tighter md:text-6xl text-text leading-tight uppercase italic">
-              Liberia's home for <br className="hidden md:block" />
-              <span className="text-brand-500">tech news</span> and insights
-            </H1>
-            <Muted className="mx-auto mb-10 max-w-2xl text-lg md:text-xl font-medium leading-relaxed">
-              Stories, analysis, and interviews from Liberia’s growing
-              technology ecosystem.
-            </Muted>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button
-                variant="solid"
-                as="a"
-                href="/insights"
-                className="px-10 py-4 text-lg font-bold shadow-xl shadow-brand-500/20"
-              >
-                Explore Insights
-              </Button>
-              <Button
-                variant="secondary"
-                as="a"
-                href="/subscribe"
-                className="px-10 py-4 text-lg font-bold"
-              >
-                Newsletter
-              </Button>
-            </div>
+    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-16 space-y-20 mb-20">
+      {/* Hero Section - Magazine Style Horizontal */}
+      <section className="space-y-12">
+        {mainFeatured && (
+          <NewsCard
+            id={mainFeatured.id}
+            image={mainFeatured.cover_image_url}
+            title={mainFeatured.title}
+            excerpt={mainFeatured.excerpt}
+            author={mainFeatured.author}
+            category={mainFeatured.category?.name || "Technology"}
+            date={new Date(mainFeatured.published_at).toLocaleDateString()}
+            readTime={Math.ceil((mainFeatured.content?.length || 0) / 1000)}
+            href={`/article/${mainFeatured.slug}`}
+            horizontal
+            noBorder
+            className="min-h-[450px]"
+          />
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {sideArticles.map((article) => (
+            <NewsCard
+              key={article.id}
+              id={article.id}
+              image={article.cover_image_url}
+              title={article.title}
+              excerpt={article.excerpt}
+              category={article.category?.name || "Technology"}
+              date={new Date(article.published_at).toLocaleDateString()}
+              readTime={Math.ceil((article.content?.length || 0) / 1000)}
+              href={`/article/${article.slug}`}
+              noBorder
+              className="bg-surface/50"
+            />
+          ))}
+          <div className="md:col-span-2 lg:col-span-1">
+            <AdSlot position="top" />
           </div>
-        </MotionItem>
+        </div>
       </section>
 
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_350px]">
-        {/* Main content */}
-        <main className="space-y-16">
-          {/* Featured Technology Section */}
-          <section>
-            <div className="flex items-center gap-4 mb-8">
-              <H2 className="text-3xl font-black uppercase tracking-tighter italic">
-                Technology
-              </H2>
-              <div className="h-px flex-1 bg-border" />
-            </div>
+      {/* #TECHNOLOGY Section */}
+      <section>
+        <SectionHeading subtitle="Innovation & Digital Transformation">
+          Technology
+        </SectionHeading>
+        {techArticles.length > 0 ? (
+          <MotionGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {techArticles.map((article) => (
+              <NewsCard
+                key={article.id}
+                id={article.id}
+                image={article.cover_image_url}
+                title={article.title}
+                excerpt={article.excerpt}
+                category={article.category?.name || "Technology"}
+                date={new Date(article.published_at).toLocaleDateString()}
+                readTime={Math.ceil((article.content?.length || 0) / 1000)}
+                href={`/article/${article.slug}`}
+                noBorder
+                className="bg-surface/30 hover:bg-surface/50 transition-colors"
+              />
+            ))}
+          </MotionGrid>
+        ) : (
+          <div className="h-40 flex items-center justify-center border border-border/10 rounded-3xl bg-surface/10">
+            <p className="text-muted text-sm italic">
+              More technology stories coming soon...
+            </p>
+          </div>
+        )}
+      </section>
+
+      {/* #TECHTALKTHURSDAY Featured Callout */}
+      {mainInsight && (
+        <section className="bg-surface border border-border/50 rounded-3xl p-10 md:p-20 shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-16 items-center">
             <div>
-              {featured ? (
-                <MotionItem>
-                  <FeaturedArticleRow
-                    index={0}
-                    id={featured.id}
-                    image={featured.cover_image_url}
-                    title={featured.title}
-                    excerpt={featured.excerpt}
-                    category={featured.category?.name || "Technology"}
-                    author={featured.author?.name || "Admin"}
-                    date={new Date(featured.published_at).toLocaleDateString()}
-                    readTime={
-                      Math.ceil((featured.content?.length || 0) / 1000) +
-                      " min read"
-                    }
-                    href={`/article/${featured.slug}`}
-                  />
-                </MotionItem>
-              ) : articlesLoading ? (
-                <div className="animate-pulse space-y-4">
-                  <div className="h-64 bg-surface rounded-lg"></div>
-                  <div className="h-6 bg-surface rounded w-3/4"></div>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted italic font-medium">
-                  No featured articles available
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* Inline Advertisement */}
-          <AdSlot position="inline" />
-
-          {/* Article Grid - Latest Stories */}
-          <section>
-            <div className="flex items-center gap-4 mb-8">
-              <H2 className="text-3xl font-black uppercase tracking-tighter italic">
-                Latest stories
-              </H2>
-              <div className="h-px flex-1 bg-border" />
-            </div>
-            {articlesLoading ? (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="animate-pulse">
-                    <div className="h-48 bg-surface rounded-lg"></div>
-                  </div>
-                ))}
+              <div className="flex items-center gap-3 mb-8">
+                <div className="h-1 w-12 bg-brand-500 rounded-full" />
+                <span className="text-sm font-bold tracking-widest text-brand-500 uppercase">
+                  Featured Insight
+                </span>
               </div>
-            ) : (
-              <MotionGrid className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {latestArticles.map((article) => (
-                  <MotionItem key={article.id}>
-                    <ArticleCard
-                      id={article.id}
-                      image={article.cover_image_url}
-                      title={article.title}
-                      category={article.category?.name || "Uncategorized"}
-                      date={new Date(article.published_at).toLocaleDateString()}
-                      readTime={Math.ceil(
-                        (article.content?.length || 0) / 1000,
-                      )}
-                      href={`/article/${article.slug}`}
-                    />
-                  </MotionItem>
-                ))}
-              </MotionGrid>
-            )}
-          </section>
-
-          {/* INSIGHT TECH THURSDAYS Section */}
-          <section>
-            <div className="flex items-center gap-4 mb-8">
-              <H2 className="text-3xl font-black uppercase tracking-tighter italic text-brand-500">
-                INSIGHT TECH THURSDAYS
-              </H2>
-              <div className="h-px flex-1 bg-brand-500/20" />
+              <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight mb-8">
+                #TechTalk<span className="text-brand-500">Thursday</span>
+              </h2>
+              <h3 className="text-xl md:text-2xl font-semibold mb-6 leading-snug text-text">
+                {mainInsight.title}
+              </h3>
+              <p className="text-muted text-base mb-10 font-normal leading-relaxed">
+                {mainInsight.excerpt}
+              </p>
+              <Button
+                as="a"
+                href={`/${mainInsight.content ? "article" : "insight"}/${mainInsight.slug}`}
+                variant="solid"
+                className="px-10 py-4 rounded-xl font-bold uppercase tracking-wider text-sm"
+              >
+                Read Full Story
+              </Button>
             </div>
-            {insightsLoading ? (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {[...Array(3)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="animate-pulse h-64 bg-surface rounded-xl"
-                  />
-                ))}
-              </div>
-            ) : insights.length > 0 ? (
-              <MotionGrid className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {insights.map((insight) => (
-                  <MotionItem key={`insight-${insight.id}`}>
-                    <ArticleCard
-                      id={insight.id}
-                      image={insight.cover_image_url}
-                      title={insight.title}
-                      category={insight.category?.name || "Insights"}
-                      date={new Date(insight.published_at).toLocaleDateString()}
-                      readTime={Math.ceil(
-                        (insight.content?.length || 0) / 1000,
-                      )}
-                      href={`/insight/${insight.slug}`}
-                    />
-                  </MotionItem>
-                ))}
-              </MotionGrid>
+            <div className="relative aspect-4/3 rounded-2xl overflow-hidden shadow-2xl border-4 border-white/5 group">
+              <LazyImage
+                src={mainInsight.cover_image_url}
+                alt={mainInsight.title}
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Split Split Editor's Choice vs Missed It */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div>
+          <SectionHeading subtitle="Our top picks this week">
+            Editor's Choice
+          </SectionHeading>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-8">
+            {editorsChoice.length > 0 ? (
+              editorsChoice.map((article) => (
+                <NewsCard
+                  key={`editor-${article.id}`}
+                  id={article.id}
+                  image={article.cover_image_url}
+                  title={article.title}
+                  excerpt={article.excerpt}
+                  category={article.category?.name || "Featured"}
+                  date={new Date(article.published_at).toLocaleDateString()}
+                  href={`/article/${article.slug}`}
+                  noBorder
+                  className="bg-surface/30"
+                />
+              ))
             ) : (
-              <div className="text-center py-8 text-muted italic font-medium border border-dashed border-border rounded-xl">
-                New insights coming this Thursday
+              <div className="col-span-full h-40 flex items-center justify-center border border-border/10 rounded-3xl bg-surface/10">
+                <p className="text-muted text-sm italic">
+                  Selection updated weekly...
+                </p>
               </div>
             )}
-          </section>
+          </div>
+        </div>
+        <div>
+          <SectionHeading subtitle="Deep dives you might have missed">
+            In Case You Missed It
+          </SectionHeading>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-8">
+            {missedIt.length > 0 ? (
+              missedIt.map((item) => (
+                <NewsCard
+                  key={`missed-${item.id}`}
+                  id={item.id}
+                  image={item.cover_image_url}
+                  title={item.title}
+                  excerpt={item.excerpt}
+                  category={item.category?.name || "Insight"}
+                  date={new Date(item.published_at).toLocaleDateString()}
+                  href={`/${item.content && !item.slug.includes("insight") ? "article" : "insight"}/${item.slug}`}
+                  noBorder
+                  className="bg-surface/30"
+                />
+              ))
+            ) : (
+              <div className="col-span-full h-40 flex items-center justify-center border border-border/10 rounded-3xl bg-surface/10">
+                <p className="text-muted text-sm italic">
+                  More deep dives coming soon...
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
 
-          {/* VIDEO INTERVIEWS (Podcasts) Section */}
-          <section>
-            <div className="flex items-center gap-4 mb-8">
-              <H2 className="text-3xl font-black uppercase tracking-tighter italic">
-                VIDEO INTERVIEWS
-              </H2>
-              <div className="h-px flex-1 bg-border" />
-            </div>
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_2fr]">
-              {/* Branding Block */}
-              <MotionItem className="flex items-center justify-center rounded-2xl border-2 border-brand-500/20 bg-brand-500/5 p-10 text-center relative overflow-hidden group">
-                <div className="absolute inset-0 bg-brand-500/5 group-hover:bg-brand-500/10 transition-colors duration-500" />
-                <div className="relative z-10">
-                  <div className="mb-4 text-2xl font-black tracking-tighter text-brand-500 italic uppercase">
-                    Liberia Digital <br /> Insights
-                  </div>
-                  <div className="mb-2 text-lg font-bold">VIDEO INTERVIEW</div>
-                  <div className="text-xs font-bold tracking-widest text-muted uppercase">
-                    Streaming Live
-                  </div>
-                </div>
-              </MotionItem>
+      {/* Video Interviews (Dark Section) */}
+      <VideoShowcase videos={podcasts} loading={podcastsLoading} />
 
-              {/* Podcast Grid */}
-              {podcastsLoading ? (
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  {[1, 2].map((i) => (
-                    <div
-                      key={i}
-                      className="h-64 bg-surface rounded-xl animate-pulse"
-                    />
-                  ))}
-                </div>
-              ) : (
-                <MotionGrid className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  {podcasts.slice(0, 4).map((podcast) => (
-                    <MotionItem key={`main-pod-${podcast.id}`}>
-                      <PodcastCard
-                        id={podcast.id}
-                        title={podcast.title}
-                        description={podcast.description}
-                        duration={podcast.duration}
-                        date={new Date(
-                          podcast.published_at,
-                        ).toLocaleDateString()}
-                        guest={podcast.author?.name}
-                        image={podcast.cover_image_url}
-                        href={`/podcast/${podcast.slug}`}
-                      />
-                    </MotionItem>
-                  ))}
-                </MotionGrid>
-              )}
-            </div>
-          </section>
+      {/* Latest News Grid with Sidebar */}
+      <section className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-12">
+        <main>
+          <SectionHeading subtitle="Current affairs and updates">
+            Latest News
+          </SectionHeading>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+            {latestNews.length > 0 ? (
+              latestNews.map((article) => (
+                <NewsCard
+                  key={`latest-${article.id}`}
+                  id={article.id}
+                  image={article.cover_image_url}
+                  title={article.title}
+                  excerpt={article.excerpt}
+                  category={article.category?.name || "News"}
+                  date={new Date(article.published_at).toLocaleDateString()}
+                  readTime={Math.ceil((article.content?.length || 0) / 1000)}
+                  href={`/article/${article.slug}`}
+                  noBorder
+                  className="bg-surface/30"
+                />
+              ))
+            ) : (
+              <div className="col-span-full h-60 flex items-center justify-center border border-border/10 rounded-3xl bg-surface/10">
+                <p className="text-muted text-sm italic">
+                  Loading latest stories...
+                </p>
+              </div>
+            )}
+          </div>
+          <div className="mt-12 text-center">
+            <Button
+              variant="outline"
+              className="px-12 py-4 rounded-xl font-semibold border-2"
+            >
+              Load More Stories
+            </Button>
+          </div>
         </main>
 
-        {/* Sidebar */}
-        <aside className="space-y-10 lg:sticky lg:top-24 lg:self-start">
-          <MotionItem>
-            <PodcastWidget podcasts={podcasts} loading={podcastsLoading} />
-          </MotionItem>
-          <MotionItem>
-            <NewsletterWidget loading={false} />
-          </MotionItem>
-          <MotionItem>
-            <EventsWidget events={events} loading={eventsLoading} />
-          </MotionItem>
-          <MotionItem>
-            <AdSlot position="sidebar" />
-          </MotionItem>
+        <aside className="space-y-12">
+          <NewsletterWidget />
+          <EventsWidget events={events} loading={eventsLoading} />
+          <AdSlot position="sidebar" />
+          <div className="bg-linear-to-br from-brand-600 to-brand-800 p-10 rounded-3xl text-white shadow-xl">
+            <h4 className="text-xl font-extrabold tracking-tight mb-3">
+              Join Our Community
+            </h4>
+            <p className="text-sm opacity-90 mb-8 font-medium leading-relaxed">
+              Get exclusive technology insights and news delivered directly to
+              your inbox weekly.
+            </p>
+            <a
+              href="/register"
+              className="block w-full text-center py-4 bg-white text-brand-600 rounded-xl font-bold text-sm tracking-wide shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+            >
+              SIGN UP FREE
+            </a>
+          </div>
         </aside>
-      </div>
+      </section>
+
+      {/* Social Banner */}
+      <SocialBanner />
     </div>
   );
 }

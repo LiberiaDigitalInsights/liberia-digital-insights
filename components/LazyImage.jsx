@@ -58,8 +58,17 @@ export default function LazyImage({
   return (
     <div className={cn("relative overflow-hidden", className)} {...props}>
       {error ? (
-        <div className="flex h-full w-full items-center justify-center bg-surface text-muted">
-          <span className="text-sm">Image not found</span>
+        <div className="absolute inset-0 bg-surface">
+          <img
+            src="/ldi_placeholder.png"
+            alt="Placeholder"
+            className="h-full w-full object-cover opacity-50"
+          />
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+            <span className="text-xs font-semibold text-white/50 tracking-widest uppercase">
+              Loading...
+            </span>
+          </div>
         </div>
       ) : (
         <>

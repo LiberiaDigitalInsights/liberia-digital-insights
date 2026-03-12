@@ -20,7 +20,7 @@ export async function GET(request) {
       );
     }
 
-    const { page, limit, status, category, search } = result.data;
+    const { page, limit, status, category, tag, search } = result.data;
     const offset = (page - 1) * limit;
 
     let query = supabase
@@ -29,7 +29,7 @@ export async function GET(request) {
         `
         *,
         categories(name, slug),
-        users(first_name, last_name, email)
+        users(first_name, last_name, email, role)
       `,
         { count: "exact" },
       )
@@ -54,15 +54,30 @@ export async function GET(request) {
     if (error) throw error;
 
     // Transform data for frontend parity
-    const transformedData = data.map((article) => ({
-      ...article,
-      category: article.categories
-        ? Array.isArray(article.categories)
-          ? article.categories[0]
-          : article.categories
-        : null,
-      categories: undefined,
-    }));
+    const transformedData = data.map((article) => {
+      // Find the user data (handles both array and object responses)
+      const userData = Array.isArray(article.users)
+        ? article.users[0]
+        : article.users;
+
+      return {
+        ...article,
+        category: article.categories
+          ? Array.isArray(article.categories)
+            ? article.categories[0]
+            : article.categories
+          : null,
+        author: {
+          name:
+            `${userData?.first_name || ""} ${userData?.last_name || ""}`.trim() ||
+            "LDI Staff",
+          role: userData?.role || "Editor",
+          email: userData?.email || null,
+        },
+        categories: undefined,
+        users: undefined,
+      };
+    });
 
     return NextResponse.json({
       articles: transformedData,

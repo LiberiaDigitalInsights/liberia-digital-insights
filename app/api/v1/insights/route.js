@@ -20,7 +20,7 @@ export async function GET(request) {
       );
     }
 
-    const { page, limit, status, category, search } = result.data;
+    const { page, limit, status, category, tag, search } = result.data;
     const offset = (page - 1) * limit;
 
     let query = supabase
@@ -41,8 +41,8 @@ export async function GET(request) {
       query = query.eq("categories.slug", category);
     }
 
-    if (queryParams.tag) {
-      query = query.contains("tags", [queryParams.tag]);
+    if (tag) {
+      query = query.contains("tags", [tag]);
     }
 
     if (search) {

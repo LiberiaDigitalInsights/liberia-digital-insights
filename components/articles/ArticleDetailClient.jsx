@@ -4,7 +4,7 @@ import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { H1, H2, Muted } from "@/components/ui/Typography";
-import ArticleCard from "@/components/articles/ArticleCard";
+import NewsCard from "@/components/articles/NewsCard";
 import { Card, CardContent } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import {
@@ -160,29 +160,33 @@ export default function ArticleDetailClient() {
       {relatedArticles.length > 0 && (
         <section className="mt-16 border-t border-border pt-12">
           <H2 className="mb-6 text-2xl font-bold">Related Articles</H2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-2">
             {relatedLoading
-              ? [1, 2, 3].map((i) => (
+              ? [1, 2].map((i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="h-48 bg-surface rounded mb-4"></div>
+                    <div className="h-40 bg-surface rounded-3xl mb-4"></div>
                     <div className="h-4 bg-surface rounded w-3/4 mb-2"></div>
                     <div className="h-3 bg-surface rounded w-1/2"></div>
                   </div>
                 ))
               : relatedArticles
-                  .slice(0, 3)
+                  .slice(0, 2)
                   .map((related) => (
-                    <ArticleCard
+                    <NewsCard
                       key={related.id}
                       id={related.id}
                       image={related.cover_image_url}
                       title={related.title}
-                      category={related.category?.name || "Uncategorized"}
+                      excerpt={related.excerpt}
+                      category={related.category?.name || "Technology"}
                       date={new Date(related.published_at).toLocaleDateString()}
                       readTime={Math.ceil(
                         (related.content?.length || 0) / 1000,
                       )}
                       href={`/article/${related.slug}`}
+                      noBorder
+                      compact
+                      className="bg-surface/30"
                     />
                   ))}
           </div>
