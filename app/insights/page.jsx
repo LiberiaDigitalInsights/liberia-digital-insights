@@ -1,223 +1,191 @@
 "use client";
 
-import React from "react";
-import { H1, H2, Muted } from "@/components/ui/Typography";
-import Card from "@/components/ui/Card";
-import ArticleCard from "@/components/articles/ArticleCard";
-import FeaturedArticleRow from "@/components/articles/FeaturedArticleRow";
+import React, { Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import NewsCard from "@/components/articles/NewsCard";
+import SectionHeading from "@/components/ui/SectionHeading";
+import Button from "@/components/ui/Button";
 import { useInsights, useCategories } from "@/hooks/useBackendApi";
-import { FaHashtag, FaLightbulb, FaBullhorn } from "react-icons/fa";
+import { MotionGrid, MotionItem } from "@/components/ui/MotionWrapper";
 
-export default function InsightsPage() {
-  const [selectedCategory, setSelectedCategory] = React.useState("all");
+function InsightsContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  // Fetch real data from backend (currently stubbed)
-  const { data: insightsData, loading: insightsLoading } = useInsights({
+  const category = searchParams.get("category") || "all";
+  const page = Number(searchParams.get("page")) || 1;
+
+  const { data: insightsData, loading } = useInsights({
+    page,
     limit: 12,
+    ...(category !== "all" && { category }),
   });
+
   const { data: categoriesData } = useCategories();
-
-  const insights = insightsData?.insights || [];
   const categories = categoriesData?.data || [];
+  const insights = insightsData?.insights || [];
+  const pagination = insightsData?.pagination || { total: 0, pages: 1 };
+  const totalPages = pagination.pages || 1;
 
-  // Filter insights based on selected category
-  const filteredInsights =
-    selectedCategory === "all"
-      ? insights
-      : insights.filter(
-          (insight) => insight.category?.slug === selectedCategory,
-        );
+  const handleCategoryChange = (cat) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("category", cat);
+    params.set("page", "1");
+    router.push(`/insights?${params.toString()}`);
+  };
 
-  const specialFeatures = [
-    {
-      icon: FaHashtag,
-      title: "#InsightTechThursdays",
-      description:
-        "Weekly insights and tips from tech experts in Liberia. Every Thursday, we share valuable knowledge to help you grow in tech.",
-      bgColor: "bg-blue-500/20",
-      iconColor: "text-blue-500",
-      cardBg: "bg-blue-500/5",
-    },
-    {
-      icon: FaLightbulb,
-      title: "Editorial Insights",
-      description:
-        "In-depth analysis and opinion pieces on technology trends, policies, and innovations shaping Liberia's digital landscape.",
-      bgColor: "bg-yellow-500/20",
-      iconColor: "text-yellow-500",
-      cardBg: "bg-yellow-500/5",
-    },
-    {
-      icon: FaBullhorn,
-      title: "Industry Voices",
-      description:
-        "Thought leadership articles and perspectives from tech leaders, entrepreneurs, and innovators across Liberia.",
-      bgColor: "bg-green-500/20",
-      iconColor: "text-green-500",
-      cardBg: "bg-green-500/5",
-    },
-  ];
+  const handlePageChange = (newPage) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", newPage.toString());
+    router.push(`/insights?${params.toString()}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  if (loading) {
+    return (
+      <div className="animate-pulse">
+        <div className="mb-8 flex flex-wrap gap-2">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-8 w-24 bg-surface rounded-full" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="rounded-3xl bg-surface/30 p-5 space-y-4 border border-border/10"
+            >
+              <div className="aspect-video rounded-2xl bg-surface" />
+              <div className="h-4 w-3/4 bg-surface rounded" />
+              <div className="h-3 w-1/2 bg-surface rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
-      {/* Header */}
-      <header className="mb-12 text-center">
-        <H1 className="mb-4">Editorial Insights</H1>
-        <Muted className="mx-auto max-w-3xl text-lg">
-          Discover in-depth analysis, expert opinions, and special editorial
-          features covering technology, innovation, and digital transformation
-          in Liberia.
-        </Muted>
-      </header>
-
-      {/* Special Features */}
-      <section className="mb-16">
-        <H2 className="mb-8 text-center">Special Features</H2>
-        <div className="grid gap-6 md:grid-cols-3">
-          {specialFeatures.map((feature, idx) => {
-            const Icon = feature.icon;
-            return (
-              <Card
-                key={idx}
-                className={`p-6 opacity-0 animate-slide-up ${feature.cardBg}`}
-                style={{ animationDelay: `${100 + idx * 100}ms` }}
-              >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className={`rounded-full p-3 ${feature.bgColor}`}>
-                    <Icon className={`h-6 w-6 ${feature.iconColor}`} />
-                  </div>
-                  <h3 className="text-xl font-semibold">{feature.title}</h3>
-                </div>
-                <p className="text-sm text-muted">{feature.description}</p>
-              </Card>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Featured #InsightTechThursdays */}
-      <Card className="mb-16 bg-gradient-to-r from-blue-500/5 to-purple-500/5 p-8 border-none shadow-sm">
-        <div className="grid gap-8 md:grid-cols-2">
-          <div className="flex items-center justify-center">
-            <div className="text-center md:text-left">
-              <div className="mb-4 text-3xl font-bold tracking-tight text-text">
-                #InsightTechThursdays
-              </div>
-              <div className="mb-6 text-xl font-semibold text-text">
-                IF YOUR GITHUB IS EMPTY, YOU'RE INVISIBLE IN TECH.
-              </div>
-              <Muted className="mb-8 block">
-                Join us every Thursday for weekly tech insights, career tips,
-                and expert advice from Liberia's tech community.
-              </Muted>
-            </div>
-          </div>
-          <div className="opacity-0 animate-slide-up animation-delay-200">
-            {insightsLoading ? (
-              <div className="animate-pulse">
-                <div className="h-64 bg-surface rounded"></div>
-              </div>
-            ) : insights.length > 0 ? (
-              <FeaturedArticleRow
-                index={1}
-                image={insights[0].cover_image_url}
-                title={insights[0].title}
-                excerpt={
-                  insights[0].excerpt ||
-                  "Weekly insights from tech experts in Liberia."
-                }
-                category="#InsightTechThursdays"
-                author={insights[0].author?.name || "Stephen M. Parteh"}
-                date={new Date(insights[0].published_at).toLocaleDateString()}
-                readTime={
-                  Math.ceil((insights[0].content?.length || 0) / 1000) +
-                  " min read"
-                }
-                href={`/insight/${insights[0].slug}`}
-              />
-            ) : (
-              <div className="text-center text-muted">
-                No insights available yet.
-              </div>
-            )}
-          </div>
-        </div>
-      </Card>
-
-      {/* Category Filter */}
-      <div className="mb-8 flex flex-wrap gap-2">
+    <div className="animate-fade-in">
+      {/* Category Filters */}
+      <div className="mb-10 flex flex-wrap gap-2">
         <button
-          onClick={() => setSelectedCategory("all")}
+          onClick={() => handleCategoryChange("all")}
           className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
-            selectedCategory === "all"
+            category === "all"
               ? "bg-brand-500 text-white shadow-lg shadow-brand-500/20"
               : "bg-surface text-text hover:bg-brand-500/10"
           }`}
         >
-          All Insights ({insights.length})
+          All
         </button>
-        {categories.map((category) => {
-          const count = insights.filter(
-            (i) => i.category?.slug === category.slug,
-          ).length;
-          if (count === 0 && selectedCategory !== category.slug) return null;
-          return (
-            <button
-              key={category.slug}
-              onClick={() => setSelectedCategory(category.slug)}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
-                selectedCategory === category.slug
-                  ? "bg-brand-500 text-white shadow-lg shadow-brand-500/20"
-                  : "bg-surface text-text hover:bg-brand-500/10"
-              }`}
-            >
-              {category.name} ({count})
-            </button>
-          );
-        })}
+        {categories.map((cat) => (
+          <button
+            key={cat.slug}
+            onClick={() => handleCategoryChange(cat.slug)}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
+              category === cat.slug
+                ? "bg-brand-500 text-white shadow-lg shadow-brand-500/20"
+                : "bg-surface text-text hover:bg-brand-500/10"
+            }`}
+          >
+            {cat.name}
+          </button>
+        ))}
       </div>
 
+      {/* Results count */}
+      <p className="mb-8 text-sm text-muted">
+        Showing {insights.length} of {pagination.total || 0} insights
+        {category !== "all" && ` in "${category}"`}
+      </p>
+
       {/* Insights Grid */}
-      <section>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {insightsLoading ? (
-            [1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="animate-pulse">
-                <div className="h-48 bg-surface rounded mb-4"></div>
-                <div className="h-4 bg-surface rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-surface rounded w-1/2"></div>
-              </div>
-            ))
-          ) : filteredInsights.length > 0 ? (
-            filteredInsights.map((insight, idx) => (
-              <div
-                key={insight.id}
-                className="opacity-0 animate-slide-up"
-                style={{ animationDelay: `${100 + idx * 50}ms` }}
-              >
-                <ArticleCard
-                  image={insight.cover_image_url}
-                  title={insight.title}
-                  excerpt={insight.excerpt}
-                  category={insight.category?.name || "Insights"}
-                  author={insight.author?.name}
-                  date={new Date(insight.published_at).toLocaleDateString()}
-                  readTime={Math.ceil((insight.content?.length || 0) / 1000)}
-                  href={`/insight/${insight.slug}`}
-                />
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-muted">
-                {selectedCategory === "all"
-                  ? "No insights available yet."
-                  : `No insights found in this category.`}
-              </p>
-            </div>
-          )}
+      <MotionGrid className="mb-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {insights.length > 0 ? (
+          insights.map((insight) => (
+            <MotionItem key={insight.id}>
+              <NewsCard
+                id={insight.id}
+                image={insight.cover_image_url}
+                title={insight.title}
+                excerpt={insight.excerpt}
+                category={insight.category?.name || "Insights"}
+                author={insight.author}
+                date={new Date(insight.published_at).toLocaleDateString()}
+                readTime={Math.ceil((insight.content?.length || 0) / 1000)}
+                href={`/insight/${insight.slug}`}
+                noBorder
+                className="bg-surface/30 h-full"
+              />
+            </MotionItem>
+          ))
+        ) : (
+          <div className="col-span-full py-16 text-center text-muted">
+            <p className="text-lg font-medium">No insights found.</p>
+            <p className="mt-2 text-sm opacity-60">
+              Try selecting a different category.
+            </p>
+          </div>
+        )}
+      </MotionGrid>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page === 1}
+            onClick={() => handlePageChange(page - 1)}
+          >
+            Previous
+          </Button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <Button
+              key={p}
+              variant={p === page ? "solid" : "outline"}
+              size="sm"
+              onClick={() => handlePageChange(p)}
+            >
+              {p}
+            </Button>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page === totalPages}
+            onClick={() => handlePageChange(page + 1)}
+          >
+            Next
+          </Button>
         </div>
-      </section>
+      )}
+    </div>
+  );
+}
+
+export default function InsightsPage() {
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+      <header className="mb-12">
+        <SectionHeading
+          subtitle="In-depth analysis, expert opinions, and editorial features on technology and digital transformation in Liberia."
+          align="left"
+        >
+          Insights
+        </SectionHeading>
+      </header>
+
+      <Suspense
+        fallback={
+          <div className="text-center py-12 text-muted">
+            Loading insights...
+          </div>
+        }
+      >
+        <InsightsContent />
+      </Suspense>
     </div>
   );
 }

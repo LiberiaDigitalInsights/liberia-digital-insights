@@ -19,7 +19,7 @@ export async function GET(request) {
       );
     }
 
-    const { page, limit, category, status } = result.data;
+    const { page, limit, category, status, search } = result.data;
     const offset = (page - 1) * limit;
 
     let query = supabase
@@ -34,6 +34,10 @@ export async function GET(request) {
 
     if (status) {
       query = query.eq("status", status);
+    }
+
+    if (search) {
+      query = query.ilike("name", `%${search}%`);
     }
 
     const { data, error, count } = await query;

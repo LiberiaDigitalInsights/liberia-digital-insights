@@ -162,7 +162,7 @@ function HomeContent() {
         )}
       </section>
 
-      {/* #TECHTALKTHURSDAY Featured Callout */}
+      {/* #INSIGHTTECHTHURSDAY Featured Callout */}
       {mainInsight && (
         <section className="bg-surface border border-border/50 rounded-3xl p-10 md:p-20 shadow-2xl">
           <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-16 items-center">
@@ -174,7 +174,7 @@ function HomeContent() {
                 </span>
               </div>
               <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight mb-8">
-                #TechTalk<span className="text-brand-500">Thursday</span>
+                #InsightTech<span className="text-brand-500">Thursday</span>
               </h2>
               <h3 className="text-xl md:text-2xl font-semibold mb-6 leading-snug text-text">
                 {mainInsight.title}

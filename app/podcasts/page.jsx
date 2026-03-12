@@ -1,93 +1,112 @@
 "use client";
 
 import React from "react";
-import { H1, Muted } from "@/components/ui/Typography";
 import PodcastCard from "@/components/podcasts/PodcastCard";
+import SectionHeading from "@/components/ui/SectionHeading";
 import { usePodcasts } from "@/hooks/useBackendApi";
 import { MotionGrid, MotionItem } from "@/components/ui/MotionWrapper";
 
 export default function PodcastsPage() {
-  const { data: podcastsData, loading: podcastsLoading } = usePodcasts({
-    limit: 12,
-  });
+  const { data: podcastsData, loading } = usePodcasts({ limit: 12 });
   const podcasts = podcastsData?.podcasts || [];
+  const featured = podcasts[0];
+  const rest = podcasts.slice(1);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {/* Header */}
-      <header className="mb-12 text-center">
-        <H1 className="mb-4">Podcasts</H1>
-        <Muted className="mx-auto max-w-2xl text-lg">
-          Insights, stories, and interviews from Liberia’s technology leaders,
-          entrepreneurs, and innovators. Listen to the latest episodes of
-          Liberia Digital Insights Podcast.
-        </Muted>
+      <header className="mb-12">
+        <SectionHeading
+          subtitle="Insights, stories, and interviews from Liberia's technology leaders, entrepreneurs, and innovators."
+          align="left"
+        >
+          Podcasts
+        </SectionHeading>
       </header>
 
       {/* Featured Episode */}
-      {podcastsLoading ? (
-        <div className="mb-12 animate-pulse">
-          <div className="h-64 bg-surface rounded-lg"></div>
-        </div>
-      ) : podcasts.length > 0 ? (
+      {loading ? (
+        <div className="mb-16 animate-pulse rounded-3xl bg-surface/30 border border-border/10 h-64" />
+      ) : featured ? (
         <section className="mb-16">
+          <p className="mb-4 text-xs font-bold uppercase tracking-widest text-brand-500">
+            Latest Episode
+          </p>
           <PodcastCard
-            id={podcasts[0].id}
-            title={podcasts[0].title}
+            id={featured.id}
+            title={featured.title}
             description={
-              podcasts[0].description ||
+              featured.description ||
               "Join us for a deep dive into the latest tech trends in Liberia."
             }
-            duration={podcasts[0].duration}
-            date={new Date(podcasts[0].published_at).toLocaleDateString()}
-            guest={podcasts[0].author?.name}
-            image={podcasts[0].cover_image_url}
-            href={`/podcast/${podcasts[0].slug}`}
-            className="md:grid md:grid-cols-[1.2fr_0.8fr]"
+            duration={featured.duration}
+            date={new Date(featured.published_at).toLocaleDateString()}
+            guest={featured.guest}
+            image={featured.cover_image_url}
+            href={`/podcast/${featured.slug}`}
+            tags={featured.tags || []}
+            featured
           />
         </section>
       ) : null}
 
-      {/* Episodes Grid */}
-      <section>
-        <div className="flex items-center justify-between mb-8 border-b border-border pb-4">
-          <h2 className="text-2xl font-bold text-text">All Episodes</h2>
-          <Muted className="text-sm font-medium">
-            {podcasts.length} Episodes
-          </Muted>
-        </div>
+      {/* All Episodes */}
+      {(loading || rest.length > 0) && (
+        <section>
+          <div className="flex items-center justify-between mb-8 border-b border-border/20 pb-4">
+            <h2 className="text-2xl font-bold text-text">All Episodes</h2>
+            <span className="text-sm text-muted font-medium">
+              {podcasts.length} {podcasts.length === 1 ? "Episode" : "Episodes"}
+            </span>
+          </div>
 
-        <MotionGrid className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {podcastsLoading ? (
-            [1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="animate-pulse">
-                <div className="h-48 bg-surface rounded mb-4"></div>
-                <div className="h-4 bg-surface rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-surface rounded w-1/2"></div>
-              </div>
-            ))
-          ) : podcasts.length > 0 ? (
-            podcasts.map((podcast, idx) => (
-              <MotionItem key={podcast.id}>
-                <PodcastCard
-                  id={podcast.id}
-                  title={podcast.title}
-                  description={podcast.description}
-                  duration={podcast.duration}
-                  date={new Date(podcast.published_at).toLocaleDateString()}
-                  guest={podcast.author?.name}
-                  image={podcast.cover_image_url}
-                  href={`/podcast/${podcast.slug}`}
-                />
-              </MotionItem>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-muted">No podcasts available yet.</p>
+          <MotionGrid className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {loading
+              ? [1, 2, 3, 4, 5, 6].map((i) => (
+                  <div
+                    key={i}
+                    className="animate-pulse rounded-3xl bg-surface/30 border border-border/10 overflow-hidden"
+                  >
+                    <div className="aspect-video bg-surface" />
+                    <div className="p-5 space-y-3">
+                      <div className="h-4 w-3/4 bg-surface rounded" />
+                      <div className="h-3 w-1/2 bg-surface rounded" />
+                    </div>
+                  </div>
+                ))
+              : rest.map((podcast) => (
+                  <MotionItem key={podcast.id}>
+                    <PodcastCard
+                      id={podcast.id}
+                      title={podcast.title}
+                      description={podcast.description}
+                      duration={podcast.duration}
+                      date={new Date(podcast.published_at).toLocaleDateString()}
+                      guest={podcast.guest}
+                      image={podcast.cover_image_url}
+                      href={`/podcast/${podcast.slug}`}
+                      tags={podcast.tags || []}
+                    />
+                  </MotionItem>
+                ))}
+          </MotionGrid>
+
+          {!loading && rest.length === 0 && podcasts.length > 0 && (
+            <p className="text-center py-8 text-sm text-muted">
+              Only one episode so far — more coming soon!
+            </p>
+          )}
+
+          {!loading && podcasts.length === 0 && (
+            <div className="col-span-full text-center py-16 text-muted">
+              <p className="text-lg font-medium">No episodes yet.</p>
+              <p className="mt-2 text-sm opacity-60">
+                Check back soon for the latest episodes.
+              </p>
             </div>
           )}
-        </MotionGrid>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

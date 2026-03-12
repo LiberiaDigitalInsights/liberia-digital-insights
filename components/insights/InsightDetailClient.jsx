@@ -3,13 +3,19 @@
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { H1, H2, Muted } from "@/components/ui/Typography";
-import { Card } from "@/components/ui/Card";
+import { H1, H2 } from "@/components/ui/Typography";
 import Badge from "@/components/ui/Badge";
-import { useInsight, usePodcasts, useEvents } from "@/hooks/useBackendApi";
+import NewsCard from "@/components/articles/NewsCard";
+import {
+  useInsight,
+  useInsights,
+  usePodcasts,
+  useEvents,
+} from "@/hooks/useBackendApi";
 import ContentRenderer from "@/components/ui/ContentRenderer";
 import LazyImage from "@/components/LazyImage";
 import BookmarkButton from "@/components/ui/BookmarkButton";
+import ShareButton from "@/components/ui/ShareButton";
 import PodcastWidget from "@/components/sidebar/PodcastWidget";
 import EventsWidget from "@/components/sidebar/EventsWidget";
 import NewsletterWidget from "@/components/sidebar/NewsletterWidget";
@@ -19,37 +25,36 @@ export default function InsightDetailClient() {
   const { slug } = useParams();
   const router = useRouter();
 
-  // Fetch insight by slug from backend
   const {
     data: insightData,
     loading: insightLoading,
     error: insightError,
   } = useInsight(slug);
-
+  const { data: relatedData, loading: relatedLoading } = useInsights({
+    limit: 3,
+  });
   const { data: podcastsData } = usePodcasts({ limit: 3 });
   const { data: eventsData } = useEvents({ limit: 3 });
 
   const insight = insightData?.insight;
+  const relatedInsights = (relatedData?.insights || []).filter(
+    (i) => i.id !== insight?.id && i.slug !== slug,
+  );
 
-  // Loading state
   if (insightLoading) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12">
-        <div className="animate-pulse">
-          <div className="mb-4 h-8 w-32 bg-surface rounded"></div>
-          <div className="mb-4 h-12 w-3/4 bg-surface rounded"></div>
-          <div className="mb-8 h-64 bg-surface rounded"></div>
-          <div className="space-y-4">
-            <div className="h-4 bg-surface rounded w-full"></div>
-            <div className="h-4 bg-surface rounded w-full"></div>
-            <div className="h-4 bg-surface rounded w-3/4"></div>
-          </div>
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 w-32 bg-surface rounded" />
+          <div className="h-12 w-3/4 bg-surface rounded" />
+          <div className="h-64 bg-surface rounded" />
+          <div className="h-4 w-full bg-surface rounded" />
+          <div className="h-4 w-3/4 bg-surface rounded" />
         </div>
       </div>
     );
   }
 
-  // Error state
   if (insightError || !insight) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12 text-center">
@@ -71,7 +76,7 @@ export default function InsightDetailClient() {
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_350px]">
         {/* Main Content */}
-        <div className="space-y-8">
+        <div>
           {/* Breadcrumb */}
           <nav className="mb-6 text-sm text-muted">
             <Link href="/" className="hover:text-text">
@@ -85,7 +90,7 @@ export default function InsightDetailClient() {
             <span>{insight.category?.name || "Insights"}</span>
           </nav>
 
-          {/* Back button */}
+          {/* Back */}
           <button
             onClick={() => router.back()}
             className="mb-6 text-sm text-muted hover:text-text transition-colors duration-200"
@@ -93,20 +98,24 @@ export default function InsightDetailClient() {
             ← Back
           </button>
 
-          {/* Insight Header */}
+          {/* Header */}
           <header className="mb-8">
             {insight.category && (
               <div className="mb-4">
-                <Badge variant="solid" className="bg-blue-600">
-                  Special Insight
-                </Badge>
+                <Badge variant="solid">{insight.category.name}</Badge>
               </div>
             )}
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
-              <H1 className="flex-1 text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+            <div className="flex items-start justify-between gap-4">
+              <H1 className="mb-4 flex-1 text-3xl md:text-4xl font-bold leading-tight">
                 {insight.title}
               </H1>
-              <div className="flex justify-start md:justify-end">
+              <div className="flex items-center gap-2 mt-1">
+                <ShareButton
+                  title={insight.title}
+                  url={
+                    typeof window !== "undefined" ? window.location.href : ""
+                  }
+                />
                 <BookmarkButton
                   contentId={insight.id}
                   contentType="insight"
@@ -115,21 +124,12 @@ export default function InsightDetailClient() {
               </div>
             </div>
             {insight.excerpt && (
-              <p className="mb-6 text-xl text-muted leading-relaxed font-medium">
+              <p className="mb-6 text-xl text-muted leading-relaxed">
                 {insight.excerpt}
               </p>
             )}
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted">
-              {insight.author?.name && (
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-brand-500/20 flex items-center justify-center text-brand-500 font-bold">
-                    {insight.author.name.charAt(0)}
-                  </div>
-                  <span className="font-semibold text-text">
-                    {insight.author.name}
-                  </span>
-                </div>
-              )}
+              <span>By {insight.author?.name || "LDI Staff"}</span>
               {insight.published_at && <span>•</span>}
               {insight.published_at && (
                 <span>
@@ -149,7 +149,7 @@ export default function InsightDetailClient() {
 
           {/* Featured Image */}
           {insight.cover_image_url && (
-            <div className="mb-10 overflow-hidden rounded-2xl shadow-2xl aspect-video relative">
+            <div className="mb-10 overflow-hidden rounded-2xl aspect-video relative shadow-2xl">
               <LazyImage
                 src={insight.cover_image_url}
                 alt={insight.title}
@@ -159,8 +159,8 @@ export default function InsightDetailClient() {
             </div>
           )}
 
-          {/* Insight Content */}
-          <article className="mb-12">
+          {/* Content */}
+          <article className="mb-12 prose prose-invert max-w-none">
             {insight.content ? (
               <ContentRenderer html={insight.content} />
             ) : (
@@ -170,19 +170,47 @@ export default function InsightDetailClient() {
             )}
           </article>
 
-          <Card className="bg-brand-500/5 border-none p-8 text-center">
-            <H2 className="mb-4 text-xl font-bold">Enjoyed this Insight?</H2>
-            <p className="mb-6 text-muted">
-              Subscribe to our newsletter to receive the latest tech insights
-              every Thursday.
-            </p>
-            <Link
-              href="/subscribe"
-              className="inline-flex items-center gap-2 rounded-full bg-brand-500 px-8 py-3 text-white font-bold transition-all hover:scale-105 hover:bg-brand-600 shadow-xl shadow-brand-500/30"
-            >
-              Subscribe Now
-            </Link>
-          </Card>
+          {/* Related Insights */}
+          {relatedInsights.length > 0 && (
+            <section className="mt-16 border-t border-border pt-12">
+              <H2 className="mb-6 text-2xl font-bold">Related Insights</H2>
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                {relatedLoading
+                  ? [1, 2].map((i) => (
+                      <div
+                        key={i}
+                        className="animate-pulse rounded-3xl bg-surface/30 p-5 border border-border/10 space-y-4"
+                      >
+                        <div className="aspect-2/1 rounded-2xl bg-surface" />
+                        <div className="h-4 w-3/4 bg-surface rounded" />
+                        <div className="h-3 w-1/2 bg-surface rounded" />
+                      </div>
+                    ))
+                  : relatedInsights
+                      .slice(0, 2)
+                      .map((related) => (
+                        <NewsCard
+                          key={related.id}
+                          id={related.id}
+                          image={related.cover_image_url}
+                          title={related.title}
+                          excerpt={related.excerpt}
+                          category={related.category?.name || "Insights"}
+                          date={new Date(
+                            related.published_at,
+                          ).toLocaleDateString()}
+                          readTime={Math.ceil(
+                            (related.content?.length || 0) / 1000,
+                          )}
+                          href={`/insight/${related.slug}`}
+                          noBorder
+                          compact
+                          className="bg-surface/30"
+                        />
+                      ))}
+              </div>
+            </section>
+          )}
         </div>
 
         {/* Sidebar */}

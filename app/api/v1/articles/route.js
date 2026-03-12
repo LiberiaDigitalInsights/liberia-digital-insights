@@ -38,7 +38,22 @@ export async function GET(request) {
       .range(offset, offset + limit - 1);
 
     if (category) {
-      query = query.eq("categories.slug", category);
+      // Resolve slug → category ID first, then filter articles by category_id
+      const { data: categoryData, error: catError } = await supabase
+        .from("categories")
+        .select("id")
+        .eq("slug", category)
+        .single();
+
+      if (catError || !categoryData) {
+        // Unknown category slug — return empty result
+        return NextResponse.json({
+          articles: [],
+          pagination: { page, limit, total: 0, pages: 0 },
+        });
+      }
+
+      query = query.eq("category_id", categoryData.id);
     }
 
     if (tag) {

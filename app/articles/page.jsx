@@ -2,10 +2,8 @@
 
 import React, { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { H1 } from "@/components/ui/Typography";
-import ArticleCard from "@/components/articles/ArticleCard";
-import Badge from "@/components/ui/Badge";
+import NewsCard from "@/components/articles/NewsCard";
+import SectionHeading from "@/components/ui/SectionHeading";
 import Button from "@/components/ui/Button";
 import AdSlot from "@/components/ads/AdSlot";
 import { useArticles, useCategories } from "@/hooks/useBackendApi";
@@ -51,11 +49,21 @@ function ArticlesContent() {
   if (loading) {
     return (
       <div className="animate-pulse">
-        <div className="mb-8 h-8 w-48 bg-surface rounded"></div>
-        <div className="mb-8 h-4 w-96 bg-surface rounded"></div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-8 flex flex-wrap gap-2">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-8 w-24 bg-surface rounded-full" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-64 bg-surface rounded"></div>
+            <div
+              key={i}
+              className="rounded-3xl bg-surface/30 p-5 space-y-4 border border-border/10"
+            >
+              <div className="aspect-video rounded-2xl bg-surface" />
+              <div className="h-4 w-3/4 bg-surface rounded" />
+              <div className="h-3 w-1/2 bg-surface rounded" />
+            </div>
           ))}
         </div>
       </div>
@@ -65,7 +73,7 @@ function ArticlesContent() {
   return (
     <div className="animate-fade-in">
       {/* Category Filters */}
-      <div className="mb-8 flex flex-wrap gap-2">
+      <div className="mb-10 flex flex-wrap gap-2">
         <button
           onClick={() => handleCategoryChange("all")}
           className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
@@ -92,26 +100,31 @@ function ArticlesContent() {
       </div>
 
       {/* Results count */}
-      <div className="mb-6 text-sm text-muted">
+      <p className="mb-8 text-sm text-muted">
         Showing {articles.length} of {pagination.total || 0} articles
-        {category !== "all" && ` in ${category}`}
-      </div>
+        {category !== "all" && ` in "${category}"`}
+      </p>
 
       {/* Articles Grid */}
-      <MotionGrid className="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <MotionGrid className="mb-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {articles.length > 0 ? (
           articles.map((article, index) => {
             const isThirdArticle = (index + 1) % 4 === 0;
             return (
               <React.Fragment key={article.id}>
                 <MotionItem>
-                  <ArticleCard
+                  <NewsCard
+                    id={article.id}
                     image={article.cover_image_url}
                     title={article.title}
-                    category={article.category?.name || "Uncategorized"}
+                    excerpt={article.excerpt}
+                    category={article.category?.name || "Technology"}
+                    author={article.author}
                     date={new Date(article.published_at).toLocaleDateString()}
                     readTime={Math.ceil((article.content?.length || 0) / 1000)}
                     href={`/article/${article.slug}`}
+                    noBorder
+                    className="bg-surface/30 h-full"
                   />
                 </MotionItem>
                 {isThirdArticle && index < articles.length - 1 && (
@@ -123,8 +136,11 @@ function ArticlesContent() {
             );
           })
         ) : (
-          <div className="col-span-full py-12 text-center text-muted">
-            No articles found in this category.
+          <div className="col-span-full py-16 text-center text-muted">
+            <p className="text-lg font-medium">No articles found.</p>
+            <p className="mt-2 text-sm opacity-60">
+              Try selecting a different category.
+            </p>
           </div>
         )}
       </MotionGrid>
@@ -167,11 +183,14 @@ function ArticlesContent() {
 export default function ArticlesPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
-      <header className="mb-8">
-        <H1 className="mb-4 text-3xl font-bold">Articles</H1>
-        <p className="text-lg text-muted">
-          Explore our collection of tech insights, stories, and analysis
-        </p>
+      {/* Page Header */}
+      <header className="mb-12">
+        <SectionHeading
+          subtitle="Explore our collection of tech insights, stories, and analysis"
+          align="left"
+        >
+          Articles
+        </SectionHeading>
       </header>
 
       <Suspense
