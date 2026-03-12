@@ -188,6 +188,10 @@ export default function Navbar() {
                   { href: "/insights", label: "Insights" },
                   { href: "/articles", label: "Articles" },
                   { href: "/podcasts", label: "Podcasts" },
+                  {
+                    href: "/tag/insighttechthursday",
+                    label: "#InsightTechThursday",
+                  },
                   { href: "/gallery", label: "Gallery" },
                   { href: "/events", label: "Events" },
                   { href: "/categories", label: "Categories" },
@@ -386,6 +390,10 @@ export default function Navbar() {
                   { href: "/about", label: "About Us" },
                   { href: "/insights", label: "Insights" },
                   { href: "/podcasts", label: "Podcasts" },
+                  {
+                    href: "/tag/insighttechthursday",
+                    label: "#InsightTechThursday",
+                  },
                   { href: "/articles", label: "Articles" },
                   { href: "/gallery", label: "Gallery" },
                   { href: "/events", label: "Events" },

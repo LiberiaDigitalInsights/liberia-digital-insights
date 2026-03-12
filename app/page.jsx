@@ -58,6 +58,10 @@ function HomeContent() {
   const { data: insightsData, loading: insightsLoading } = useInsights({
     limit: 6,
   });
+  const { data: taggedData } = useInsights({
+    tag: "insighttechthursday",
+    limit: 1,
+  });
 
   // Extract data from backend responses
   const articles = articlesData?.articles || [];
@@ -73,8 +77,9 @@ function HomeContent() {
   // 2. Technology Section
   const techArticles = articles.slice(3, 9);
 
-  // 3. Featured Insight (#TechTalkThursday)
-  const mainInsight = insights[0] || articles[9];
+  // 3. Featured Insight (#InsightTechThursday)
+  const taggedInsight = taggedData?.insights?.[0];
+  const mainInsight = taggedInsight || insights[0] || articles[9];
 
   // 4. Editor's Choice - Use pool if available, fallback to articles
   const editorsChoice =

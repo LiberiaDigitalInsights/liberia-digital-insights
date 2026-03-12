@@ -129,6 +129,27 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
     }
   };
 
+  const handleTagAdd = (e) => {
+    if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
+      e.preventDefault();
+      const newTag = tagInput.trim().toLowerCase().replace(/^#/, "");
+      if (!formData.tags.includes(newTag)) {
+        setFormData((prev) => ({
+          ...prev,
+          tags: [...prev.tags, newTag],
+        }));
+      }
+      setTagInput("");
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((t) => t !== tagToRemove),
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -333,6 +354,60 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
                     </option>
                   ))}
                 </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted">
+                  Tags
+                </label>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {formData.tags?.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-1 bg-brand-500/10 text-brand-500 text-[10px] font-black uppercase tracking-tighter rounded-lg flex items-center gap-1 group/tag"
+                    >
+                      #{tag}
+                      <button
+                        type="button"
+                        onClick={() => removeTag(tag)}
+                        className="opacity-0 group-hover/tag:opacity-100 transition-opacity hover:text-rose-500"
+                      >
+                        <FaTimes className="w-2 h-2" />
+                      </button>
+                    </span>
+                  ))}
+                  {formData.tags?.length === 0 && (
+                    <span className="text-[10px] text-muted italic font-medium">
+                      No tags added
+                    </span>
+                  )}
+                </div>
+                <div className="relative">
+                  <Input
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyDown={handleTagAdd}
+                    placeholder="Add tags (press Enter)..."
+                    className="text-[10px] font-bold rounded-xl pr-10"
+                  />
+                  {tagInput.trim() && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleTagAdd({ key: "Enter", preventDefault: () => {} })
+                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-500 text-[10px] font-black uppercase"
+                    >
+                      Add
+                    </button>
+                  )}
+                </div>
+                <p className="text-[9px] text-muted font-medium italic mt-1 leading-tight">
+                  Press Enter or comma to add. Use{" "}
+                  <span className="text-brand-500 font-bold">
+                    #insighttechthursday
+                  </span>{" "}
+                  for the featured column.
+                </p>
               </div>
             </CardContent>
           </Card>
