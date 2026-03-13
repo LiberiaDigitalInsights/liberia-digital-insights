@@ -3,6 +3,7 @@ import Link from "next/link";
 import { cn } from "@/lib/cn";
 import LazyImage from "@/components/LazyImage";
 import BookmarkButton from "@/components/ui/BookmarkButton";
+import { stripHtml } from "@/lib/text";
 
 export default function NewsCard({
   id,
@@ -20,6 +21,7 @@ export default function NewsCard({
   noBorder = false,
   compact = false,
 }) {
+  const cleanExcerpt = stripHtml(excerpt);
   // Ensure author always exists for display
   const authorData = author || {
     name: "LDI Staff",

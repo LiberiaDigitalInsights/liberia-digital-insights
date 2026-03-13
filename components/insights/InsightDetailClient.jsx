@@ -15,7 +15,9 @@ import {
 import ContentRenderer from "@/components/ui/ContentRenderer";
 import LazyImage from "@/components/LazyImage";
 import BookmarkButton from "@/components/ui/BookmarkButton";
-import ShareButton from "@/components/ui/ShareButton";
+import ShareButton from "@/components/ui/BookmarkButton";
+import { stripHtml } from "@/lib/text";
+
 import PodcastWidget from "@/components/sidebar/PodcastWidget";
 import EventsWidget from "@/components/sidebar/EventsWidget";
 import NewsletterWidget from "@/components/sidebar/NewsletterWidget";
@@ -125,7 +127,7 @@ export default function InsightDetailClient() {
             </div>
             {insight.excerpt && (
               <p className="mb-6 text-xl text-muted leading-relaxed">
-                {insight.excerpt}
+                {stripHtml(insight.excerpt)}
               </p>
             )}
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted">

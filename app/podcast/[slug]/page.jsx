@@ -43,13 +43,6 @@ function toSpotifyEmbed(url) {
   return url;
 }
 
-function stripHtml(html) {
-  if (typeof window === "undefined") return html;
-  const tmp = document.createElement("div");
-  tmp.innerHTML = html;
-  return tmp.textContent || tmp.innerText || "";
-}
-
 // ── Inline Audio Player ────────────────────────────────────────────────────────
 function InlinePlayer({ src, image, title, duration }) {
   const audioRef = useRef(null);
@@ -503,10 +496,15 @@ export default function PodcastDetail() {
       {/* ── Episode Summary ── */}
       <section className="mb-10">
         <H2 className="text-2xl font-bold mb-4">Episode Summary</H2>
-        <p className="text-muted leading-relaxed text-lg mb-6">
-          {podcast.description ||
-            "Join us in this episode as we discuss tech innovation and digital transformation in Liberia."}
-        </p>
+        <div
+          className="text-muted leading-relaxed text-lg mb-6"
+          dangerouslySetInnerHTML={{
+            __html:
+              podcast.description ||
+              "Join us in this episode as we discuss tech innovation and digital transformation in Liberia.",
+          }}
+        />
+
         {podcast.content && (
           <div
             className="prose prose-invert max-w-none border-t border-border/20 pt-8 text-text"

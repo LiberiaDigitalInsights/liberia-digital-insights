@@ -42,6 +42,8 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
     category_id: initialData?.category_id || "",
     status: initialData?.status || "draft",
     tags: initialData?.tags || [],
+    guest: initialData?.guest || "",
+    video_url: initialData?.video_url || "",
   });
 
   const [errors, setErrors] = useState({});
@@ -111,6 +113,16 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
   const handleAudioUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > 100 * 1024 * 1024) {
+      showToast({
+        title: "File Too Large",
+        description: "Audio file must be less than 100MB.",
+        variant: "warning",
+      });
+      return;
+    }
+
     setUploadingAudio(true);
     try {
       const result = await uploadFile(file, {
@@ -238,6 +250,33 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
                 )}
               </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted">
+                    Guest Name
+                  </label>
+                  <Input
+                    name="guest"
+                    value={formData.guest}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Mark Zuckerberg"
+                    className="text-sm font-bold border-0 border-b-2 px-0 rounded-none focus:border-brand-500 bg-transparent"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted">
+                    Video Resource URL
+                  </label>
+                  <Input
+                    name="video_url"
+                    value={formData.video_url}
+                    onChange={handleInputChange}
+                    placeholder="YouTube, Facebook, or direct link..."
+                    className="text-sm font-bold border-0 border-b-2 px-0 rounded-none focus:border-brand-500 bg-transparent"
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-muted">
                   Podcast Description
@@ -263,13 +302,14 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
                       : "border-border/50 bg-muted/10",
                   )}
                 >
-                  {formData.audio_url ? (
+                  {formData.audio_url && (
                     <div className="w-full space-y-4">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-black uppercase tracking-widest text-brand-500">
-                          Audio Ready
+                          Audio Preview
                         </span>
                         <button
+                          type="button"
                           onClick={() =>
                             setFormData((p) => ({ ...p, audio_url: "" }))
                           }
@@ -284,24 +324,32 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
                         className="w-full"
                       />
                     </div>
-                  ) : (
-                    <div className="text-center space-y-3">
-                      <FaMicrophone className="w-8 h-8 mx-auto text-muted/50" />
-                      <p className="text-xs font-bold text-muted">
-                        Drag & drop MP3/WAV or click to upload
-                      </p>
-                      <label className="inline-block px-6 py-2 bg-text text-surface rounded-full text-[10px] font-black uppercase tracking-widest cursor-pointer hover:scale-105 transition-transform">
-                        {uploadingAudio ? "Uploading..." : "Select Audio File"}
-                        <input
-                          type="file"
-                          accept="audio/*"
-                          onChange={handleAudioUpload}
-                          className="hidden"
-                          disabled={uploadingAudio}
-                        />
-                      </label>
-                    </div>
                   )}
+
+                  <div className="text-center space-y-3">
+                    {!formData.audio_url && (
+                      <FaMicrophone className="w-8 h-8 mx-auto text-muted/50" />
+                    )}
+                    <p className="text-xs font-bold text-muted">
+                      {formData.audio_url
+                        ? "Replace existing audio:"
+                        : "Drag & drop MP3/WAV or click to upload"}
+                    </p>
+                    <label className="inline-block px-6 py-2 bg-text text-surface rounded-full text-[10px] font-black uppercase tracking-widest cursor-pointer hover:scale-105 transition-transform">
+                      {uploadingAudio
+                        ? "Uploading..."
+                        : formData.audio_url
+                          ? "Upload New Audio"
+                          : "Select Audio File"}
+                      <input
+                        type="file"
+                        accept="audio/*"
+                        onChange={handleAudioUpload}
+                        className="hidden"
+                        disabled={uploadingAudio}
+                      />
+                    </label>
+                  </div>
                 </div>
                 {errors.audio_url && (
                   <p className="text-[10px] text-rose-500 font-black uppercase">
@@ -433,6 +481,18 @@ export default function PodcastEditor({ initialData, mode = "create" }) {
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </div>
+              <div className="mt-4 pt-4 border-t border-border/10">
+                <label className="text-[9px] font-black uppercase tracking-widest text-muted mb-2 block">
+                  Or External Image URL
+                </label>
+                <Input
+                  name="cover_image_url"
+                  value={formData.cover_image_url}
+                  onChange={handleInputChange}
+                  placeholder="https://example.com/image.jpg"
+                  className="text-[10px] font-bold h-8 border-0 bg-muted/10 rounded-lg px-3 focus:bg-muted/20"
                 />
               </div>
             </CardContent>

@@ -31,6 +31,24 @@ import Textarea from "@/components/ui/Textarea";
 import Badge from "@/components/ui/Badge";
 import { cn } from "@/lib/cn";
 
+const MediaPreview = ({ url, type }) => {
+  if (!url) return null;
+
+  if (type === "image") {
+    return (
+      <div className="mt-2 relative group">
+        <img
+          src={url}
+          alt="Preview"
+          className="max-h-40 rounded-lg object-cover border border-muted"
+        />
+      </div>
+    );
+  }
+
+  return null;
+};
+
 export default function AdminGallery() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");

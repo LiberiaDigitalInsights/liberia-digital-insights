@@ -59,9 +59,3 @@ async function postHandler(request) {
 
 // Support both admin and editor roles for uploads
 export const POST = withAuth(postHandler, ["admin", "editor"]);
-
-export const config = {
-  api: {
-    bodyParser: false, // Disabling bodyParser for formData handling
-  },
-};

@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 import LazyImage from "@/components/LazyImage";
+import { stripHtml } from "@/lib/text";
 
 export default function PodcastCard({
   id,
@@ -19,6 +20,7 @@ export default function PodcastCard({
   featured = false,
 }) {
   const linkHref = href || `/podcast/${id}`;
+  const cleanDescription = stripHtml(description);
 
   return (
     <Link
@@ -92,14 +94,14 @@ export default function PodcastCard({
         >
           {title}
         </h3>
-        {description && (
+        {cleanDescription && (
           <p
             className={cn(
               "mb-6 text-muted leading-relaxed font-medium",
               featured ? "text-sm line-clamp-3" : "text-xs line-clamp-2",
             )}
           >
-            {description}
+            {cleanDescription}
           </p>
         )}
 

@@ -6,6 +6,7 @@ import { cn } from "@/lib/cn";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import LazyImage from "@/components/LazyImage";
+import { stripHtml } from "@/lib/text";
 
 export default function EventCard({
   title,
