@@ -1,64 +1,48 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { unsubscribeSchema } from "@/lib/schemas/newsletter";
 
-// POST /api/v1/newsletters/unsubscribe - Public newsletter unsubscription
+// POST /api/v1/newsletters/unsubscribe - Unsubscribe a user
 export async function POST(request) {
   try {
-    const body = await request.json();
+    const { id, email } = await request.json();
 
-    // Validate input
-    const validated = unsubscribeSchema.safeParse(body);
-    if (!validated.success) {
+    if (!id && !email) {
       return NextResponse.json(
-        { error: validated.error.errors[0].message },
+        { error: "Subscriber ID or email is required" },
         { status: 400 },
       );
     }
 
-    const { token } = validated.data;
+    let query = supabase.from("newsletter_subscribers").update({
+      status: "unsubscribed",
+      unsubscribed_at: new Date().toISOString(),
+    });
 
-    // Find subscriber by token
-    const { data: subscriber, error: findError } = await supabase
-      .from("newsletter_subscribers")
-      .select("*")
-      .eq("unsubscribe_token", token)
-      .single();
+    if (id) {
+      query = query.eq("id", id);
+    } else {
+      query = query.eq("email", email);
+    }
 
-    if (findError || !subscriber) {
+    const { data, error } = await query.select();
+
+    if (error) throw error;
+    if (!data || data.length === 0) {
       return NextResponse.json(
-        { error: "Invalid unsubscribe token" },
+        { error: "Subscriber not found" },
         { status: 404 },
       );
     }
 
-    if (subscriber.status === "unsubscribed") {
-      return NextResponse.json(
-        { error: "Already unsubscribed" },
-        { status: 400 },
-      );
-    }
-
-    // Update status to unsubscribed
-    const { data, error } = await supabase
-      .from("newsletter_subscribers")
-      .update({
-        status: "unsubscribed",
-        unsubscribed_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", subscriber.id)
-      .select()
-      .single();
-
-    if (error) throw error;
-
     return NextResponse.json({
-      message: "Successfully unsubscribed from newsletter",
-      subscriber: data,
+      success: true,
+      message: "You have been successfully unsubscribed.",
     });
   } catch (error) {
     console.error("[api/newsletters/unsubscribe] POST error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to unsubscribe: " + error.message },
+      { status: 500 },
+    );
   }
 }

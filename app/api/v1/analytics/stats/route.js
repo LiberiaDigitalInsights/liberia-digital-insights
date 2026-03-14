@@ -5,42 +5,73 @@ import { withAuth } from "@/lib/apiAuth";
 // GET /api/v1/analytics/stats - Get aggregate dashboard stats (Admin/Editor)
 async function getHandler() {
   try {
-    const [
-      { count: articlesCount, error: articlesError },
-      { count: subscribersCount, error: subscribersError },
-      { count: pendingCount, error: pendingError },
-      { count: podcastsCount, error: podcastsError },
-      { count: eventsCount, error: eventsError },
-      { count: usersCount, error: usersError },
-    ] = await Promise.all([
-      supabase.from("articles").select("*", { count: "exact", head: true }),
-      supabase
-        .from("newsletter_subscribers")
-        .select("*", { count: "exact", head: true }),
-      supabase
-        .from("articles")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "pending"),
-      supabase.from("podcasts").select("*", { count: "exact", head: true }),
-      supabase.from("events").select("*", { count: "exact", head: true }),
-      supabase.from("users").select("*", { count: "exact", head: true }),
-    ]);
+    const queries = [
+      {
+        name: "articles",
+        query: supabase
+          .from("articles")
+          .select("*", { count: "exact", head: true }),
+      },
+      {
+        name: "subscribers",
+        query: supabase
+          .from("newsletter_subscribers")
+          .select("*", { count: "exact", head: true }),
+      },
+      {
+        name: "pendingReviews",
+        query: supabase
+          .from("articles")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "pending"),
+      },
+      {
+        name: "podcasts",
+        query: supabase
+          .from("podcasts")
+          .select("*", { count: "exact", head: true }),
+      },
+      {
+        name: "events",
+        query: supabase
+          .from("events")
+          .select("*", { count: "exact", head: true }),
+      },
+      {
+        name: "users",
+        query: supabase
+          .from("users")
+          .select("*", { count: "exact", head: true }),
+      },
+    ];
 
-    if (articlesError) throw articlesError;
-    if (subscribersError) throw subscribersError;
+    const results = await Promise.allSettled(queries.map((q) => q.query));
 
-    return NextResponse.json({
-      articles: articlesCount || 0,
-      subscribers: subscribersCount || 0,
-      pendingReviews: pendingCount || 0,
-      podcasts: podcastsCount || 0,
-      events: eventsCount || 0,
-      users: usersCount || 0,
+    const stats = {};
+    results.forEach((result, index) => {
+      const qName = queries[index].name;
+      if (result.status === "fulfilled") {
+        const { count, error } = result.value;
+        if (error) {
+          console.error(`[api/analytics/stats] Error in ${qName}:`, error);
+          stats[qName] = 0; // Fallback
+        } else {
+          stats[qName] = count || 0;
+        }
+      } else {
+        console.error(
+          `[api/analytics/stats] Promise rejected for ${qName}:`,
+          result.reason,
+        );
+        stats[qName] = 0; // Fallback
+      }
     });
+
+    return NextResponse.json(stats);
   } catch (error) {
-    console.error("[api/analytics/stats] GET error:", error);
+    console.error("[api/analytics/stats] Global GET error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch dashboard stats" },
+      { error: "Failed to fetch dashboard stats", details: error.message },
       { status: 500 },
     );
   }

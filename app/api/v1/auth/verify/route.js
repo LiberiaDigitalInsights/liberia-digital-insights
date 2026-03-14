@@ -23,16 +23,54 @@ export async function POST(request) {
       .eq("id", decoded.id || decoded.userId)
       .single();
 
-    if (error || !user || !user.is_active) {
+    if (error) {
+      console.error("[api/auth/verify] DB error:", error);
+      // Check for timeout or connectivity issues (Supabase specific error codes or fetch errors)
+      const isConnectionError =
+        error.message?.includes("fetch failed") ||
+        error.message?.includes("timeout") ||
+        error.code === "PGRST301" || // Supabase timeout/overload
+        error.code === "57P01"; // Database is shutting down (Supabase maintenance)
+
+      if (isConnectionError) {
+        return NextResponse.json(
+          {
+            error: "Database connection timeout. Please try again.",
+            details: error.message,
+          },
+          { status: 503 },
+        );
+      }
+
       return NextResponse.json(
-        { error: "Invalid token or user inactive" },
+        { error: "Invalid token or user not found" },
+        { status: 401 },
+      );
+    }
+
+    if (!user || !user.is_active) {
+      return NextResponse.json(
+        { error: "User inactive or account disabled" },
         { status: 401 },
       );
     }
 
     return NextResponse.json({ valid: true, user });
   } catch (error) {
-    console.error("[api/auth/verify] error:", error);
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    console.error("[api/auth/verify] Catch error:", error);
+    // Distinguish between JWT decode error and others
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      return NextResponse.json(
+        { error: "Session expired or invalid" },
+        { status: 401 },
+      );
+    }
+    return NextResponse.json(
+      { error: "Authentication service unavailable" },
+      { status: 500 },
+    );
   }
 }

@@ -17,6 +17,7 @@ async function getHandler() {
       // Table may not exist yet — return empty so the UI uses defaults
       if (
         error.code === "PGRST116" ||
+        error.code === "PGRST205" ||
         error.message?.includes("does not exist")
       ) {
         return NextResponse.json({});
@@ -47,7 +48,10 @@ async function putHandler(request) {
 
     if (error) {
       // If the table doesn't exist, still return success — settings are stored on client
-      if (error.message?.includes("does not exist")) {
+      if (
+        error.code === "PGRST205" ||
+        error.message?.includes("does not exist")
+      ) {
         return NextResponse.json({ success: true, persisted: false });
       }
       throw error;

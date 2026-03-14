@@ -10,7 +10,6 @@ import {
   FaEnvelope,
   FaShieldAlt,
   FaRocket,
-  FaLock,
 } from "react-icons/fa";
 import {
   useSettings,
@@ -121,14 +120,6 @@ export default function AdminSettings() {
   const [activeSection, setActiveSection] = useState("general");
   const [initialized, setInitialized] = useState(false);
 
-  // Password change state
-  const [passData, setPassData] = useState({
-    current: "",
-    newPass: "",
-    confirm: "",
-  });
-  const [passSaving, setPassSaving] = useState(false);
-
   // Merge: defaults → localStorage → backend (backend wins if available)
   useEffect(() => {
     if (loadingSettings) return; // wait until backend query resolves
@@ -158,17 +149,18 @@ export default function AdminSettings() {
     setSaving(true);
     try {
       localStorage.setItem("ldi_admin_settings", JSON.stringify(settings));
-      await updateSettings(settings).catch(() => null); // best-effort backend save
+      await updateSettings(settings); // No more swallowed catch here
       showToast({
         title: "Settings Saved",
         description: "All changes have been applied.",
         variant: "success",
       });
       setHasChanges(false);
-    } catch {
+    } catch (err) {
+      console.error("Save error:", err);
       showToast({
         title: "Save Failed",
-        description: "Could not persist settings.",
+        description: err.message || "Could not persist settings to the cloud.",
         variant: "danger",
       });
     } finally {
@@ -265,7 +257,6 @@ export default function AdminSettings() {
     { id: "email", label: "Email / SMTP", icon: FaEnvelope },
     { id: "performance", label: "Performance", icon: FaRocket },
     { id: "security", label: "Security", icon: FaShieldAlt },
-    { id: "account", label: "Account", icon: FaLock },
   ];
 
   // Show skeleton while settings load from API
@@ -559,60 +550,6 @@ export default function AdminSettings() {
                   placeholder="5"
                 />
               </FieldGroup>
-            </SectionCard>
-          )}
-
-          {activeSection === "account" && (
-            <SectionCard
-              title="Account Security"
-              icon={FaLock}
-              iconClass="text-slate-400"
-            >
-              <form onSubmit={handlePasswordChange} className="space-y-5">
-                <p className="text-xs text-muted font-bold">
-                  Update your account password.
-                </p>
-                <FieldGroup label="Current Password">
-                  <Input
-                    type="password"
-                    required
-                    value={passData.current}
-                    onChange={(e) =>
-                      setPassData({ ...passData, current: e.target.value })
-                    }
-                    placeholder="Current password"
-                  />
-                </FieldGroup>
-                <FieldGroup label="New Password">
-                  <Input
-                    type="password"
-                    required
-                    value={passData.newPass}
-                    onChange={(e) =>
-                      setPassData({ ...passData, newPass: e.target.value })
-                    }
-                    placeholder="New password (min 6 chars)"
-                  />
-                </FieldGroup>
-                <FieldGroup label="Confirm New Password">
-                  <Input
-                    type="password"
-                    required
-                    value={passData.confirm}
-                    onChange={(e) =>
-                      setPassData({ ...passData, confirm: e.target.value })
-                    }
-                    placeholder="Repeat new password"
-                  />
-                </FieldGroup>
-                <Button
-                  type="submit"
-                  disabled={passSaving}
-                  className="w-full rounded-full uppercase font-black text-xs tracking-widest shadow-lg shadow-brand-500/20"
-                >
-                  {passSaving ? "Updating..." : "Update Password"}
-                </Button>
-              </form>
             </SectionCard>
           )}
         </div>

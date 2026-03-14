@@ -72,6 +72,11 @@ export default function AdminNewsletter() {
     status: "draft",
   });
 
+  const [showRecipientModal, setShowRecipientModal] = useState(false);
+  const [selectedSubscribers, setSelectedSubscribers] = useState([]);
+  const [sendingNewsletter, setSendingNewsletter] = useState(null);
+  const [recipientSearch, setRecipientSearch] = useState("");
+
   const resetForm = () => {
     setFormData({
       title: "",
@@ -106,7 +111,7 @@ export default function AdminNewsletter() {
         description: `Subscriber ${subscriber.email} is now ${newStatus}.`,
         variant: "success",
       });
-      refetchSubscribers();
+      await refetchSubscribers();
     } catch (error) {
       showToast({
         title: "Update Failed",
@@ -116,26 +121,60 @@ export default function AdminNewsletter() {
     }
   };
 
-  const handleSend = async (newsletter) => {
-    if (
-      !confirm(
-        `Are you sure you want to send "${newsletter.title}" to all subscribers?`,
-      )
-    )
-      return;
+  const handleSend = (newsletter) => {
+    setSendingNewsletter(newsletter);
+    // Auto-select all active subscribers by default
+    const activeSubIds = (subscribersData?.subscribers || [])
+      .filter((s) => s.status === "active")
+      .map((s) => s.id);
+    setSelectedSubscribers(activeSubIds);
+    setShowRecipientModal(true);
+  };
 
+  const toggleSubscriberSelection = (id) => {
+    setSelectedSubscribers((prev) =>
+      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id],
+    );
+  };
+
+  const handleSelectAll = (select) => {
+    if (select) {
+      const activeIds = (subscribersData?.subscribers || [])
+        .filter((s) => s.status === "active")
+        .map((s) => s.id);
+      setSelectedSubscribers(activeIds);
+    } else {
+      setSelectedSubscribers([]);
+    }
+  };
+
+  const confirmSend = async () => {
+    if (selectedSubscribers.length === 0) {
+      showToast({
+        title: "No Recipients",
+        description: "Please select at least one subscriber.",
+        variant: "warning",
+      });
+      return;
+    }
+
+    const isResend = sendingNewsletter.status === "sent";
     setSubmitting(true);
     try {
-      await sendNewsletter({ newsletter_id: newsletter.id });
+      await sendNewsletter({
+        newsletter_id: sendingNewsletter.id,
+        subscriber_ids: selectedSubscribers,
+      });
       showToast({
-        title: "Campaign Sent",
-        description: "Newsletter is being dispatched to all subscribers.",
+        title: isResend ? "Campaign Resent" : "Campaign Sent",
+        description: `Newsletter is being dispatched to ${selectedSubscribers.length} selected recipients.`,
         variant: "success",
       });
-      refetchCampaigns();
+      setShowRecipientModal(false);
+      await refetchCampaigns();
     } catch (error) {
       showToast({
-        title: "Send Failed",
+        title: "Dispatch Failed",
         description: error.message,
         variant: "danger",
       });
@@ -165,7 +204,7 @@ export default function AdminNewsletter() {
       }
       setShowModal(false);
       resetForm();
-      refetchCampaigns();
+      await refetchCampaigns();
     } catch (error) {
       showToast({
         title: "Error",
@@ -186,7 +225,7 @@ export default function AdminNewsletter() {
         description: "Campaign removed.",
         variant: "success",
       });
-      refetchCampaigns();
+      await refetchCampaigns();
     } catch (error) {
       showToast({
         title: "Error",
@@ -374,15 +413,19 @@ export default function AdminNewsletter() {
                         </td>
                         <td className="p-4 text-right">
                           <div className="flex justify-end gap-2">
-                            {camp.status === "draft" && (
-                              <Button
-                                onClick={() => handleSend(camp)}
-                                size="sm"
-                                className="bg-brand-500 hover:bg-brand-600 rounded-full px-4 h-8 text-[10px] uppercase font-black italic tracking-widest shadow-lg shadow-brand-500/20"
-                              >
-                                <FaPaperPlane className="mr-2" /> Send
-                              </Button>
-                            )}
+                            <Button
+                              onClick={() => handleSend(camp)}
+                              size="sm"
+                              className={cn(
+                                "rounded-full px-4 h-8 text-[10px] uppercase font-black italic tracking-widest shadow-lg",
+                                camp.status === "sent"
+                                  ? "bg-muted text-text hover:bg-muted/80 shadow-muted/20"
+                                  : "bg-brand-500 hover:bg-brand-600 shadow-brand-500/20",
+                              )}
+                            >
+                              <FaPaperPlane className="mr-2" />
+                              {camp.status === "sent" ? "Resend" : "Send"}
+                            </Button>
                             <Button
                               variant="ghost"
                               size="sm"
@@ -621,6 +664,127 @@ export default function AdminNewsletter() {
               </CardContent>
             </Card>
           ))}
+        </div>
+      </Modal>
+      {/* Recipient Selection Modal */}
+      <Modal
+        open={showRecipientModal}
+        onClose={() => setShowRecipientModal(false)}
+        title="Select Recipients"
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div className="bg-brand-50/50 p-4 rounded-xl border border-brand-100 mb-4">
+            <h4 className="text-sm font-bold text-brand-900 mb-1">
+              Dispatching: {sendingNewsletter?.title}
+            </h4>
+            <p className="text-xs text-brand-700/70">
+              Select which subscribers should receive this newsletter. Only
+              active subscribers are shown.
+            </p>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="relative w-full md:w-64">
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search subscribers..."
+                value={recipientSearch}
+                onChange={(e) => setRecipientSearch(e.target.value)}
+                className="pl-10 h-10"
+              />
+            </div>
+            <div className="flex gap-2 w-full md:w-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleSelectAll(true)}
+                className="flex-1 md:flex-none h-10 px-4"
+              >
+                Select All
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleSelectAll(false)}
+                className="flex-1 md:flex-none h-10 px-4"
+              >
+                Clear All
+              </Button>
+            </div>
+          </div>
+
+          <div className="max-h-[400px] overflow-y-auto border rounded-xl divide-y">
+            {(subscribersData?.subscribers || [])
+              .filter(
+                (s) =>
+                  s.status === "active" &&
+                  (s.email
+                    .toLowerCase()
+                    .includes(recipientSearch.toLowerCase()) ||
+                    s.name
+                      .toLowerCase()
+                      .includes(recipientSearch.toLowerCase())),
+              )
+              .map((sub) => (
+                <div
+                  key={sub.id}
+                  className="p-3 flex items-center gap-3 hover:bg-muted/30 transition-colors cursor-pointer"
+                  onClick={() => toggleSubscriberSelection(sub.id)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedSubscribers.includes(sub.id)}
+                    onChange={() => {}} // Handled by div onClick
+                    className="w-4 h-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-text truncate">
+                      {sub.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {sub.email}
+                    </p>
+                  </div>
+                  {sub.org && (
+                    <Badge variant="outline" className="hidden sm:block">
+                      {sub.org}
+                    </Badge>
+                  )}
+                </div>
+              ))}
+          </div>
+
+          <div className="flex items-center justify-between pt-4 border-t">
+            <p className="text-sm text-muted-foreground font-medium">
+              Selected:{" "}
+              <span className="text-brand-600 font-bold">
+                {selectedSubscribers.length}
+              </span>
+            </p>
+            <div className="flex gap-3">
+              <Button
+                variant="ghost"
+                onClick={() => setShowRecipientModal(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmSend}
+                disabled={submitting || selectedSubscribers.length === 0}
+                className="bg-brand-500 hover:bg-brand-600 text-white px-8 h-12 shadow-lg shadow-brand-500/30"
+              >
+                {submitting ? (
+                  "Dispatching..."
+                ) : (
+                  <>
+                    <FaPaperPlane className="mr-2" />
+                    Confirm Send
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
       </Modal>
     </div>

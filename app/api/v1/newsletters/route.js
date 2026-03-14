@@ -60,6 +60,7 @@ async function postHandler(request) {
   try {
     const body = await request.json();
     const {
+      title,
       subject,
       preview,
       content,
@@ -72,6 +73,7 @@ async function postHandler(request) {
       .from("newsletters")
       .insert([
         {
+          title: title || subject,
           subject,
           preview,
           content,

@@ -70,4 +70,4 @@ async function deleteHandler(request, { params }) {
 
 export const GET = withAuth(getHandler, ["admin", "editor"]);
 export const PUT = withAuth(putHandler, ["admin", "editor"]);
-export const DELETE = withAuth(deleteHandler, ["admin"]);
+export const DELETE = withAuth(deleteHandler, ["admin", "editor"]);

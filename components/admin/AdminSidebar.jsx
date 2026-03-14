@@ -19,6 +19,7 @@ import {
   FaEnvelope,
   FaSignOutAlt,
   FaImages,
+  FaLock,
 } from "react-icons/fa";
 import { useAuth } from "@/hooks/useBackendApi";
 import { cn } from "@/lib/cn";
@@ -82,6 +83,12 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
       icon: FaChartBar,
     },
     { id: "users", label: "Manage Users", href: "/admin/users", icon: FaUsers },
+    {
+      id: "account",
+      label: "My Account",
+      href: "/admin/account",
+      icon: FaLock,
+    },
     { id: "settings", label: "Settings", href: "/admin/settings", icon: FaCog },
   ];
 
@@ -97,7 +104,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
       "talents",
       "training",
       "newsletter",
-      "settings",
+      "account",
     ],
     moderator: [
       "dashboard",
@@ -107,9 +114,9 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
       "events",
       "gallery",
       "talents",
-      "settings",
+      "account",
     ],
-    viewer: ["dashboard", "articles", "insights", "podcasts", "settings"],
+    viewer: ["dashboard", "articles", "insights", "podcasts", "account"],
   };
 
   const allowedIds = rolePermissions[role] || rolePermissions.viewer;
