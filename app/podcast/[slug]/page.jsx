@@ -226,11 +226,31 @@ export default function PodcastDetail() {
     .filter((p) => p.id !== podcast?.id && p.slug !== slug)
     .slice(0, 3);
 
-  // Fetch full guest profile from talents table if needed
+  // Fetch full guest profile — prefer guest_profile JSONB from the podcast itself
   const handleGuestClick = async () => {
     if (!podcast?.guest) return;
 
-    // If we already have the profile, just open
+    // If guest_profile JSONB is already on the podcast, use it directly
+    if (podcast.guest_profile) {
+      const gp = podcast.guest_profile;
+      setSelectedGuest({
+        name: podcast.guest,
+        role: gp.title || "Guest Speaker",
+        avatar_url: gp.photo_url || null,
+        bio: gp.bio || null,
+        location: gp.location || null,
+        skills: gp.skills || [],
+        links: {
+          ...(gp.twitter ? { twitter: gp.twitter } : {}),
+          ...(gp.linkedin ? { linkedin: gp.linkedin } : {}),
+          ...(gp.website ? { website: gp.website } : {}),
+        },
+      });
+      setIsGuestModalOpen(true);
+      return;
+    }
+
+    // If we already fetched this guest from talents, just open
     if (selectedGuest && selectedGuest.name === podcast.guest) {
       setIsGuestModalOpen(true);
       return;
@@ -238,21 +258,19 @@ export default function PodcastDetail() {
 
     setGuestLoading(true);
     try {
-      // Search for talent by name
+      // Search for talent by name as fallback
       const response = await fetch(
         `/api/v1/talents?search=${encodeURIComponent(podcast.guest)}`,
       );
       const result = await response.json();
 
       if (result.talents && result.talents.length > 0) {
-        // Find best match (exact name if possible)
         const match =
           result.talents.find(
             (t) => t.name.toLowerCase() === podcast.guest.toLowerCase(),
           ) || result.talents[0];
         setSelectedGuest(match);
       } else {
-        // Fallback to basic info if no talent found
         setSelectedGuest({
           name: podcast.guest,
           role: "Guest Speaker",
@@ -262,7 +280,6 @@ export default function PodcastDetail() {
       setIsGuestModalOpen(true);
     } catch (err) {
       console.error("Failed to fetch guest profile:", err);
-      // Fallback on error
       setSelectedGuest({
         name: podcast.guest,
         role: "Guest Speaker",
@@ -315,6 +332,9 @@ export default function PodcastDetail() {
   const availablePlatforms = PLATFORMS.filter((p) => podcast[p.key]);
   const transcript = podcast.transcript || null;
   const showNotes = podcast.showNotes || [];
+
+  const guestPhoto = podcast.guest_profile?.photo_url;
+  const guestTitle = podcast.guest_profile?.title;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12">
@@ -399,33 +419,35 @@ export default function PodcastDetail() {
 
           <div className="relative z-10">
             <div className="mb-4 text-xs font-bold uppercase tracking-widest text-muted flex items-center justify-between">
-              Guest
+              Guest Speaker
               {guestLoading && (
                 <div className="h-3 w-3 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
               )}
             </div>
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 shrink-0 rounded-full bg-brand-500/20 flex items-center justify-center text-brand-500 font-bold text-sm group-hover:scale-110 transition-transform duration-300">
-                {String(podcast.guest).charAt(0).toUpperCase()}
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 shrink-0 rounded-2xl overflow-hidden bg-brand-500/20 flex items-center justify-center text-brand-500 font-bold text-xl group-hover:scale-110 transition-transform duration-300 border border-border/10">
+                {guestPhoto ? (
+                  <img
+                    src={guestPhoto}
+                    alt={podcast.guest}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  String(podcast.guest).charAt(0).toUpperCase()
+                )}
               </div>
-              <div>
+              <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-text group-hover:text-brand-400 transition-colors">
                   {podcast.guest}
                 </p>
-                <p className="text-xs text-muted">Click to view profile</p>
-              </div>
-              <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-2 group-hover:translate-x-0 duration-300">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="w-4 h-4 text-brand-500"
-                >
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
+                {guestTitle && (
+                  <p className="text-xs text-brand-500 font-medium mt-0.5">
+                    {guestTitle}
+                  </p>
+                )}
+                <p className="text-xs text-muted mt-0.5">
+                  Click to view full profile →
+                </p>
               </div>
             </div>
           </div>
