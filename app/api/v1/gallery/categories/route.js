@@ -12,7 +12,12 @@ export async function GET() {
     if (error) throw error;
 
     const categories = [
-      ...new Set(data.map((item) => item.category).filter(Boolean)),
+      ...new Set([
+        ...data.map((item) => item.category).filter(Boolean),
+        "Podcast",
+        "News",
+        "Insights",
+      ]),
     ];
     return NextResponse.json(categories);
   } catch (error) {

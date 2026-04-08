@@ -44,7 +44,7 @@ export default function LazyImage({
     return allowedHosts.some((host) => src.includes(host));
   }, [src]);
 
-  // Detect hosts that usually block Next.js image optimization (hotlinking protection)
+  // Detect hosts that usually block Next.js image optimization or have slow responses
   const isProblematicHost =
     src &&
     typeof src === "string" &&
@@ -53,7 +53,9 @@ export default function LazyImage({
       src.includes("googleusercontent.com") ||
       src.includes("gstatic.com") ||
       src.includes("licdn.com") ||
-      src.includes("twimg.com"));
+      src.includes("twimg.com") ||
+      src.includes("unsplash.com") ||
+      src.includes("supabase.co"));
 
   return (
     <div className={cn("relative overflow-hidden", className)} {...props}>

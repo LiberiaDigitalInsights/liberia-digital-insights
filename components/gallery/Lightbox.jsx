@@ -87,7 +87,7 @@ export default function Lightbox({
             className="w-full flex flex-col items-center gap-8"
           >
             <div className="w-full relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-black">
-              {current.type === "image" ? (
+              {current.type?.toLowerCase() === "image" ? (
                 <div className="relative max-h-[70vh] aspect-video">
                   <LazyImage
                     src={current.url}

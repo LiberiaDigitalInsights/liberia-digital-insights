@@ -29,10 +29,10 @@ export default function GalleryItem({ item, onClick, className }) {
           alt={item.title || "Gallery item"}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
 
         <div className="absolute top-4 right-4 z-10">
-          {item.type === "video" ? (
+          {item.type?.toLowerCase() === "video" ? (
             <div className="h-10 w-10 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-xl shadow-rose-500/20">
               <FaPlay className="text-sm ml-0.5" />
             </div>
@@ -46,12 +46,12 @@ export default function GalleryItem({ item, onClick, className }) {
 
       <div className="absolute inset-0 flex flex-col justify-end p-6 pointer-events-none">
         <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-          <h3 className="mb-2 line-clamp-2 text-sm font-black uppercase tracking-widest text-white italic italic leading-tight">
+          <h3 className="mb-2 line-clamp-2 text-sm font-black uppercase tracking-widest text-white italic leading-tight">
             {item.title}
           </h3>
-          {(item.events?.title || item.podcasts?.title) && (
+          {item.source && (
             <p className="mb-3 text-[10px] font-bold text-white/60 uppercase tracking-tighter">
-              {item.events?.title || item.podcasts?.title}
+              From {item.source}
             </p>
           )}
           <div className="flex gap-2">
