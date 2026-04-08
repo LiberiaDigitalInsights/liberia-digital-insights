@@ -41,7 +41,7 @@ const DEFAULTS = {
   smtpPort: "587",
   smtpUser: "",
   smtpPassword: "",
-  smtpSecure: true,
+  smtpSecure: false,
   enableCaching: true,
   imageOptimization: true,
   analyticsTracking: false,

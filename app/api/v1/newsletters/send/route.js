@@ -66,6 +66,7 @@ async function postHandler(request) {
       process.env.CORS_ORIGIN ||
       "http://localhost:3000";
 
+    let lastErrorMessage = null;
     const sendPromises = subscribers.map((sub) => {
       const unsubLink = `${siteUrl}/newsletter/unsubscribe?id=${sub.id}`;
 
@@ -84,12 +85,21 @@ async function postHandler(request) {
         },
       }).catch((err) => {
         console.error(`Failed to send newsletter to ${sub.email}:`, err);
+        lastErrorMessage = err.message;
         return null;
       });
     });
 
     const results = await Promise.all(sendPromises);
     const successCount = results.filter((r) => r !== null).length;
+
+    if (successCount === 0 && subscribers.length > 0) {
+      throw new Error(
+        `Dispatch failed completely. Last error: ${
+          lastErrorMessage || "Unknown SMTP error"
+        }`,
+      );
+    }
 
     // 4. Update newsletter status
     const { error: updateError } = await supabase
