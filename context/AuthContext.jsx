@@ -1,8 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-// We'll update this import once backendApi is ported or shimmed
-// import { backendApi } from '../services/backendApi';
+import { authApi } from "@/hooks/useBackendApi";
 
 const AuthContext = createContext(null);
 
@@ -13,24 +12,23 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const verifySession = async () => {
-      const token = localStorage.getItem("ldi_token");
+      const token = authApi.getToken();
       if (!token) {
         setLoading(false);
         return;
       }
 
       try {
-        // Placeholder for real verification
-        // const response = await backendApi.auth.verify(token);
-        // if (response.valid) {
-        //   setUser(response.user);
-        // } else {
-        //   localStorage.removeItem('ldi_token');
-        // }
-        setLoading(false);
+        const response = await authApi.verify(token);
+        if (response.user) {
+          setUser(response.user);
+        } else {
+          authApi.clearToken();
+        }
       } catch (err) {
         console.error("Session verification failed:", err);
-        localStorage.removeItem("ldi_token");
+        authApi.clearToken();
+      } finally {
         setLoading(false);
       }
     };
@@ -38,15 +36,14 @@ export const AuthProvider = ({ children }) => {
     verifySession();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (credentials) => {
     setLoading(true);
     setError(null);
     try {
-      // Placeholder for real login
-      // const response = await backendApi.auth.login({ email, password });
-      // localStorage.setItem('ldi_token', response.token);
-      // setUser(response.user);
-      // return response.user;
+      const response = await authApi.login(credentials);
+      authApi.setToken(response.token);
+      setUser(response.user);
+      return response.user;
     } catch (err) {
       const msg = err.message || "Login failed";
       setError(msg);
@@ -56,8 +53,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const register = async (userData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await authApi.register(userData);
+      return response;
+    } catch (err) {
+      const msg = err.message || "Registration failed";
+      setError(msg);
+      throw new Error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
-    localStorage.removeItem("ldi_token");
+    authApi.clearToken();
     setUser(null);
   };
 
@@ -66,6 +78,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     login,
+    register,
     logout,
     isAuthenticated: !!user,
     isAdmin: user?.role === "admin",

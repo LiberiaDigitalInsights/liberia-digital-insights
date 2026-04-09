@@ -19,7 +19,7 @@ import {
   FaUser,
 } from "react-icons/fa";
 import AdSlot from "@/components/ads/AdSlot";
-import { useAuth } from "@/hooks/useBackendApi";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -398,7 +398,7 @@ export default function Navbar() {
                         <span>My Bookmarks</span>
                       </Link>
                       <Link
-                        href="/about"
+                        href="/profile"
                         onClick={() => setUserMenuOpen(false)}
                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-brand-500/5 hover:text-brand-500"
                       >
@@ -533,6 +533,7 @@ export default function Navbar() {
                   { href: "/talent", label: "Tech Talents" },
                   { href: "/training", label: "Training & Courses" },
                   { href: "/bookmarks", label: "My Bookmarks" },
+                  { href: "/profile", label: "My Profile" },
                   { href: "/contact", label: "Contact Us" },
                   { href: "/register", label: "Sign Up" },
                 ].map((item) => (
