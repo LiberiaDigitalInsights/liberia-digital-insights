@@ -3,74 +3,125 @@ import { supabase } from "@/lib/supabase";
 import { withAuth } from "@/lib/apiAuth";
 
 // GET /api/v1/analytics/activity - Get recent activity (Admin/Editor)
-async function getHandler() {
+async function getHandler(request) {
   try {
-    const limit = 5;
+    const { searchParams } = new URL(request.url);
+    const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 200);
+    const type = searchParams.get("type") || "all"; // all | article | podcast | insight | event | user
 
-    // Run parallel queries for recent items
+    const PER_TYPE =
+      type === "all" ? Math.max(10, Math.ceil(limit / 5)) : limit;
+
+    const shouldFetch = (t) => type === "all" || type === t;
+
     const [
-      { data: articles, error: articlesError },
-      { data: users, error: usersError },
-      { data: podcasts, error: podcastsError },
-      { data: events, error: eventsError },
+      { data: articles },
+      { data: users },
+      { data: podcasts },
+      { data: events },
+      { data: insights },
     ] = await Promise.all([
-      supabase
-        .from("articles")
-        .select("id, title, created_at")
-        .order("created_at", { ascending: false })
-        .limit(limit),
-      supabase
-        .from("users")
-        .select("id, first_name, last_name, email, created_at")
-        .order("created_at", { ascending: false })
-        .limit(limit),
-      supabase
-        .from("podcasts")
-        .select("id, title, created_at")
-        .order("created_at", { ascending: false })
-        .limit(limit),
-      supabase
-        .from("events")
-        .select("id, title, created_at")
-        .order("created_at", { ascending: false })
-        .limit(limit),
+      shouldFetch("article")
+        ? supabase
+            .from("articles")
+            .select("id, title, status, created_at, published_at")
+            .order("created_at", { ascending: false })
+            .limit(PER_TYPE)
+        : Promise.resolve({ data: [] }),
+      shouldFetch("user")
+        ? supabase
+            .from("users")
+            .select("id, first_name, last_name, email, role, created_at")
+            .order("created_at", { ascending: false })
+            .limit(PER_TYPE)
+        : Promise.resolve({ data: [] }),
+      shouldFetch("podcast")
+        ? supabase
+            .from("podcasts")
+            .select("id, title, guest, status, created_at")
+            .order("created_at", { ascending: false })
+            .limit(PER_TYPE)
+        : Promise.resolve({ data: [] }),
+      shouldFetch("event")
+        ? supabase
+            .from("events")
+            .select("id, title, status, date, created_at")
+            .order("created_at", { ascending: false })
+            .limit(PER_TYPE)
+        : Promise.resolve({ data: [] }),
+      shouldFetch("insight")
+        ? supabase
+            .from("insights")
+            .select("id, title, status, created_at")
+            .order("created_at", { ascending: false })
+            .limit(PER_TYPE)
+        : Promise.resolve({ data: [] }),
     ]);
 
-    if (articlesError) throw articlesError;
-
-    // Normalize and combine
+    // Normalize into a unified activity feed
     const activities = [
       ...(articles || []).map((a) => ({
+        id: `article-${a.id}`,
         type: "article",
-        message: "New article published",
+        message:
+          a.status === "published"
+            ? "Article published"
+            : "Article saved as draft",
         detail: a.title,
+        meta: a.status,
         time: a.created_at,
+        href: `/admin/articles/edit/${a.id}`,
       })),
       ...(users || []).map((u) => ({
+        id: `user-${u.id}`,
         type: "user",
-        message: "New user registration",
-        detail: u.email,
+        message: "New user registered",
+        detail: `${u.first_name || ""} ${u.last_name || ""}`.trim() || u.email,
+        meta: u.role,
         time: u.created_at,
+        href: `/admin/users`,
       })),
       ...(podcasts || []).map((p) => ({
+        id: `podcast-${p.id}`,
         type: "podcast",
-        message: "Podcast uploaded",
+        message:
+          p.status === "published"
+            ? "Podcast episode published"
+            : "Podcast episode drafted",
         detail: p.title,
+        meta: p.guest || null,
         time: p.created_at,
+        href: `/admin/podcasts/edit/${p.id}`,
       })),
       ...(events || []).map((e) => ({
+        id: `event-${e.id}`,
         type: "event",
         message: "Event created",
         detail: e.title,
+        meta: e.status,
         time: e.created_at,
+        href: `/admin/events/edit/${e.id}`,
+      })),
+      ...(insights || []).map((i) => ({
+        id: `insight-${i.id}`,
+        type: "insight",
+        message:
+          i.status === "published" ? "Insight published" : "Insight drafted",
+        detail: i.title,
+        meta: i.status,
+        time: i.created_at,
+        href: `/admin/insights/edit/${i.id}`,
       })),
     ];
 
-    // Sort by time desc and take top 5
+    // Sort by most recent
     activities.sort((a, b) => new Date(b.time) - new Date(a.time));
-    const recentActivity = activities.slice(0, 5);
+    const trimmed = activities.slice(0, limit);
 
-    return NextResponse.json(recentActivity);
+    return NextResponse.json({
+      activities: trimmed,
+      total: trimmed.length,
+    });
   } catch (error) {
     console.error("[api/analytics/activity] GET error:", error);
     return NextResponse.json(
