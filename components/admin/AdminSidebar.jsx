@@ -20,6 +20,7 @@ import {
   FaSignOutAlt,
   FaImages,
   FaLock,
+  FaClock,
 } from "react-icons/fa";
 import { useAuth } from "@/hooks/useBackendApi";
 import { cn } from "@/lib/cn";
@@ -82,6 +83,12 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
       href: "/admin/analytics",
       icon: FaChartBar,
     },
+    {
+      id: "activity",
+      label: "Activity",
+      href: "/admin/activity",
+      icon: FaClock,
+    },
     { id: "users", label: "Manage Users", href: "/admin/users", icon: FaUsers },
     {
       id: "account",
@@ -104,6 +111,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
       "talents",
       "training",
       "newsletter",
+      "activity",
       "account",
     ],
     moderator: [
@@ -114,6 +122,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
       "events",
       "gallery",
       "talents",
+      "activity",
       "account",
     ],
     viewer: ["dashboard", "articles", "insights", "podcasts", "account"],
