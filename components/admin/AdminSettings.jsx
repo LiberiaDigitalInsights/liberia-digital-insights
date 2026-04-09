@@ -222,13 +222,13 @@ export default function AdminSettings() {
 
   const [testingSmtp, setTestingSmtp] = useState(false);
   const handleTestSmtp = async () => {
-    if (!settings.smtpHost || !settings.smtpUser || !settings.smtpPassword) {
+    // If fields are blank, notify that we're testing environment defaults
+    if (!settings.smtpHost && !settings.smtpUser && !settings.smtpPassword) {
       showToast({
-        title: "Missing Info",
-        description: "Please fill in SMTP Host, User, and Password first.",
-        variant: "warning",
+        title: "Testing Defaults",
+        description: "Testing connection using environment variables...",
+        variant: "info",
       });
-      return;
     }
 
     setTestingSmtp(true);

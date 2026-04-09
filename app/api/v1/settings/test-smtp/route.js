@@ -7,14 +7,30 @@ async function postHandler(request) {
   try {
     const settings = await request.json();
 
-    if (!settings.smtpHost || !settings.smtpUser || !settings.smtpPassword) {
+    // Prepare settings with fallbacks to environment variables
+    const finalSettings = {
+      smtpHost: settings.smtpHost || process.env.SMTP_HOST,
+      smtpPort: settings.smtpPort || process.env.SMTP_PORT || "587",
+      smtpUser: settings.smtpUser || process.env.SMTP_USER,
+      smtpPassword: settings.smtpPassword || process.env.SMTP_PASS,
+      smtpSecure: settings.smtpSecure ?? process.env.SMTP_SECURE === "false",
+    };
+
+    if (
+      !finalSettings.smtpHost ||
+      !finalSettings.smtpUser ||
+      !finalSettings.smtpPassword
+    ) {
       return NextResponse.json(
-        { error: "SMTP host, user, and password are required for testing" },
+        {
+          error:
+            "SMTP host, user, and password are required (either in settings or environment)",
+        },
         { status: 400 },
       );
     }
 
-    await verifySmtp(settings);
+    await verifySmtp(finalSettings);
 
     return NextResponse.json({
       success: true,
