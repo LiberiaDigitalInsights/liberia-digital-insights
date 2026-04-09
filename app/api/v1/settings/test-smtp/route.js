@@ -13,7 +13,9 @@ async function postHandler(request) {
       smtpPort: settings.smtpPort || process.env.SMTP_PORT || "587",
       smtpUser: settings.smtpUser || process.env.SMTP_USER,
       smtpPassword: settings.smtpPassword || process.env.SMTP_PASS,
-      smtpSecure: settings.smtpSecure ?? process.env.SMTP_SECURE === "false",
+      smtpSecure:
+        settings.smtpSecure ??
+        process.env.SMTP_SECURE?.toLowerCase() === "true",
     };
 
     if (
