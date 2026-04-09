@@ -186,26 +186,51 @@ function TypeSummaryCard({ typeKey, activities }) {
 
 export default function AdminActivity() {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [page, setPage] = useState(1);
   const [key, setKey] = useState(0); // force re-fetch on refresh
+  const limit = 10;
 
   const fetchActivity = useCallback(
-    () => apiRequest(`/analytics/activity?limit=100&type=${activeFilter}`),
+    () =>
+      apiRequest(
+        `/analytics/activity?limit=${limit}&page=${page}&type=${activeFilter}`,
+      ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeFilter, key],
+    [activeFilter, page, key],
   );
 
-  const { data: result, loading } = useApi(fetchActivity, [activeFilter, key]);
+  const { data: result, loading } = useApi(fetchActivity, [
+    activeFilter,
+    page,
+    key,
+  ]);
 
-  const activities = Array.isArray(result?.activities)
-    ? result.activities
-    : Array.isArray(result)
-      ? result
-      : [];
+  const activities = result?.activities || [];
+  const pagination = result?.pagination || {
+    page: 1,
+    total: 0,
+    pages: 1,
+    limit: 20,
+  };
 
   const handleRefresh = () => setKey((k) => k + 1);
 
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter);
+    setPage(1);
+  };
+
+  const scrollRef = React.useRef(null);
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" ref={scrollRef}>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-1">
@@ -231,12 +256,12 @@ export default function AdminActivity() {
       </div>
 
       {/* Summary breakdown (only shown in "all" mode with data) */}
-      {activeFilter === "all" && activities.length > 0 && (
+      {activeFilter === "all" && pagination.total > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {Object.keys(TYPE_CONFIG).map((t) => (
             <button
               key={t}
-              onClick={() => setActiveFilter(t)}
+              onClick={() => handleFilterChange(t)}
               className="text-left transition-transform hover:scale-105 active:scale-95"
             >
               <TypeSummaryCard typeKey={t} activities={activities} />
@@ -253,7 +278,7 @@ export default function AdminActivity() {
           {FILTERS.map((f) => (
             <button
               key={f.key}
-              onClick={() => setActiveFilter(f.key)}
+              onClick={() => handleFilterChange(f.key)}
               className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shrink-0 transition-all ${
                 activeFilter === f.key
                   ? "bg-brand-500 text-white shadow-lg shadow-brand-500/25"
@@ -263,9 +288,9 @@ export default function AdminActivity() {
               {f.label}
             </button>
           ))}
-          {activities.length > 0 && (
+          {!loading && pagination.total > 0 && (
             <span className="ml-auto shrink-0 px-3 py-1 rounded-full bg-muted/10 text-[10px] font-black text-muted uppercase tracking-widest">
-              {activities.length} events
+              {pagination.total} total events
             </span>
           )}
         </div>
@@ -299,6 +324,67 @@ export default function AdminActivity() {
               {activities.map((event, i) => (
                 <ActivityRow key={event.id || i} event={event} index={i} />
               ))}
+
+              {/* Pagination UI */}
+              {pagination.pages > 1 && (
+                <div className="flex items-center justify-between border-t border-border/20 px-6 py-4 bg-muted/5">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handlePageChange(page - 1)}
+                      disabled={page === 1}
+                      className="px-4 py-2 rounded-xl border border-border/50 text-[10px] font-black uppercase tracking-widest text-muted hover:text-text hover:bg-surface disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      onClick={() => handlePageChange(page + 1)}
+                      disabled={page === pagination.pages}
+                      className="px-4 py-2 rounded-xl border border-border/50 text-[10px] font-black uppercase tracking-widest text-muted hover:text-text hover:bg-surface disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+                    >
+                      Next
+                    </button>
+                  </div>
+
+                  <div className="hidden sm:flex items-center gap-1.5">
+                    {[...Array(pagination.pages)].map((_, i) => {
+                      const p = i + 1;
+                      // Only show current, first, last, and relative pages if there are many
+                      if (
+                        pagination.pages > 7 &&
+                        p !== 1 &&
+                        p !== pagination.pages &&
+                        Math.abs(p - page) > 1
+                      ) {
+                        if (Math.abs(p - page) === 2) {
+                          return (
+                            <span key={p} className="text-muted px-1">
+                              ...
+                            </span>
+                          );
+                        }
+                        return null;
+                      }
+                      return (
+                        <button
+                          key={p}
+                          onClick={() => handlePageChange(p)}
+                          className={`h-8 w-8 rounded-lg flex items-center justify-center text-[10px] font-black transition-all ${
+                            page === p
+                              ? "bg-brand-500 text-white shadow-md shadow-brand-500/20"
+                              : "text-muted hover:text-text hover:bg-surface"
+                          }`}
+                        >
+                          {p}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="text-[10px] font-bold text-muted uppercase tracking-widest">
+                    Page {page} of {pagination.pages}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </CardContent>

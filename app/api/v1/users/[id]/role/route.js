@@ -27,6 +27,17 @@ async function putHandler(request, { params }) {
     if (!data)
       return NextResponse.json({ error: "User not found" }, { status: 404 });
 
+    // Log the update
+    const { logAudit, getClientIp } = await import("@/lib/audit");
+    await logAudit({
+      action: "UPDATE_USER_ROLE",
+      targetType: "user",
+      targetId: id,
+      actorId: request.user.id,
+      ipAddress: getClientIp(request),
+      metadata: { new_role: role },
+    });
+
     return NextResponse.json(data);
   } catch (error) {
     console.error("[api/users/id/role] error:", error);

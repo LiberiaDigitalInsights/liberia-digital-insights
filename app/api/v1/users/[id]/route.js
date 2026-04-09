@@ -40,6 +40,18 @@ async function putHandler(request, { params }) {
       .single();
 
     if (error) throw error;
+
+    // Log the update
+    const { logAudit, getClientIp } = await import("@/lib/audit");
+    await logAudit({
+      action: "UPDATE_USER_BASICS",
+      targetType: "user",
+      targetId: id,
+      actorId: request.user.id,
+      ipAddress: getClientIp(request),
+      metadata: { first_name, last_name },
+    });
+
     return NextResponse.json(data);
   } catch (error) {
     console.error("[api/users/id] PUT error:", error);
@@ -73,6 +85,16 @@ async function deleteHandler(request, { params }) {
 
     const { error } = await supabase.from("users").delete().eq("id", id);
     if (error) throw error;
+
+    // Log the deletion
+    const { logAudit, getClientIp } = await import("@/lib/audit");
+    await logAudit({
+      action: "DELETE_USER",
+      targetType: "user",
+      targetId: id,
+      actorId: request.user.id,
+      ipAddress: getClientIp(request),
+    });
 
     return new NextResponse(null, { status: 204 });
   } catch (error) {

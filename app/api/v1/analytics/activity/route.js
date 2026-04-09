@@ -6,61 +6,110 @@ import { withAuth } from "@/lib/apiAuth";
 async function getHandler(request) {
   try {
     const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
     const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 200);
-    const type = searchParams.get("type") || "all"; // all | article | podcast | insight | event | user
+    const type = searchParams.get("type") || "all";
 
-    const PER_TYPE =
-      type === "all" ? Math.max(10, Math.ceil(limit / 5)) : limit;
+    const fetchLimit = page * limit; // We fetch enough to find the items for the requested page
 
     const shouldFetch = (t) => type === "all" || type === t;
 
-    const [
-      { data: articles },
-      { data: users },
-      { data: podcasts },
-      { data: events },
-      { data: insights },
-    ] = await Promise.all([
-      shouldFetch("article")
-        ? supabase
-            .from("articles")
-            .select("id, title, status, created_at, published_at")
-            .order("created_at", { ascending: false })
-            .limit(PER_TYPE)
-        : Promise.resolve({ data: [] }),
-      shouldFetch("user")
-        ? supabase
-            .from("users")
-            .select("id, first_name, last_name, email, role, created_at")
-            .order("created_at", { ascending: false })
-            .limit(PER_TYPE)
-        : Promise.resolve({ data: [] }),
-      shouldFetch("podcast")
-        ? supabase
-            .from("podcasts")
-            .select("id, title, guest, status, created_at")
-            .order("created_at", { ascending: false })
-            .limit(PER_TYPE)
-        : Promise.resolve({ data: [] }),
-      shouldFetch("event")
-        ? supabase
-            .from("events")
-            .select("id, title, status, date, created_at")
-            .order("created_at", { ascending: false })
-            .limit(PER_TYPE)
-        : Promise.resolve({ data: [] }),
-      shouldFetch("insight")
-        ? supabase
-            .from("insights")
-            .select("id, title, status, created_at")
-            .order("created_at", { ascending: false })
-            .limit(PER_TYPE)
-        : Promise.resolve({ data: [] }),
+    const queries = [];
+    const countQueries = [];
+
+    if (shouldFetch("article")) {
+      queries.push(
+        supabase
+          .from("articles")
+          .select("id, title, status, created_at, published_at")
+          .order("created_at", { ascending: false })
+          .limit(fetchLimit),
+      );
+      countQueries.push(
+        supabase.from("articles").select("*", { count: "exact", head: true }),
+      );
+    } else {
+      queries.push(Promise.resolve({ data: [] }));
+      countQueries.push(Promise.resolve({ count: 0 }));
+    }
+
+    if (shouldFetch("user")) {
+      queries.push(
+        supabase
+          .from("users")
+          .select("id, first_name, last_name, email, role, created_at")
+          .order("created_at", { ascending: false })
+          .limit(fetchLimit),
+      );
+      countQueries.push(
+        supabase.from("users").select("*", { count: "exact", head: true }),
+      );
+    } else {
+      queries.push(Promise.resolve({ data: [] }));
+      countQueries.push(Promise.resolve({ count: 0 }));
+    }
+
+    if (shouldFetch("podcast")) {
+      queries.push(
+        supabase
+          .from("podcasts")
+          .select("id, title, guest, status, created_at")
+          .order("created_at", { ascending: false })
+          .limit(fetchLimit),
+      );
+      countQueries.push(
+        supabase.from("podcasts").select("*", { count: "exact", head: true }),
+      );
+    } else {
+      queries.push(Promise.resolve({ data: [] }));
+      countQueries.push(Promise.resolve({ count: 0 }));
+    }
+
+    if (shouldFetch("event")) {
+      queries.push(
+        supabase
+          .from("events")
+          .select("id, title, status, date, created_at")
+          .order("created_at", { ascending: false })
+          .limit(fetchLimit),
+      );
+      countQueries.push(
+        supabase.from("events").select("*", { count: "exact", head: true }),
+      );
+    } else {
+      queries.push(Promise.resolve({ data: [] }));
+      countQueries.push(Promise.resolve({ count: 0 }));
+    }
+
+    if (shouldFetch("insight")) {
+      queries.push(
+        supabase
+          .from("insights")
+          .select("id, title, status, created_at")
+          .order("created_at", { ascending: false })
+          .limit(fetchLimit),
+      );
+      countQueries.push(
+        supabase.from("insights").select("*", { count: "exact", head: true }),
+      );
+    } else {
+      queries.push(Promise.resolve({ data: [] }));
+      countQueries.push(Promise.resolve({ count: 0 }));
+    }
+
+    const [results, counts] = await Promise.all([
+      Promise.all(queries),
+      Promise.all(countQueries),
     ]);
+
+    const [articles, users, podcasts, events, insights] = results.map(
+      (r) => r.data || [],
+    );
+    const totalCount = counts.reduce((acc, c) => acc + (c.count || 0), 0);
 
     // Normalize into a unified activity feed
     const activities = [
-      ...(articles || []).map((a) => ({
+      ...articles.map((a) => ({
         id: `article-${a.id}`,
         type: "article",
         message:
@@ -72,7 +121,7 @@ async function getHandler(request) {
         time: a.created_at,
         href: `/admin/articles/edit/${a.id}`,
       })),
-      ...(users || []).map((u) => ({
+      ...users.map((u) => ({
         id: `user-${u.id}`,
         type: "user",
         message: "New user registered",
@@ -81,7 +130,7 @@ async function getHandler(request) {
         time: u.created_at,
         href: `/admin/users`,
       })),
-      ...(podcasts || []).map((p) => ({
+      ...podcasts.map((p) => ({
         id: `podcast-${p.id}`,
         type: "podcast",
         message:
@@ -93,7 +142,7 @@ async function getHandler(request) {
         time: p.created_at,
         href: `/admin/podcasts/edit/${p.id}`,
       })),
-      ...(events || []).map((e) => ({
+      ...events.map((e) => ({
         id: `event-${e.id}`,
         type: "event",
         message: "Event created",
@@ -102,7 +151,7 @@ async function getHandler(request) {
         time: e.created_at,
         href: `/admin/events/edit/${e.id}`,
       })),
-      ...(insights || []).map((i) => ({
+      ...insights.map((i) => ({
         id: `insight-${i.id}`,
         type: "insight",
         message:
@@ -116,11 +165,18 @@ async function getHandler(request) {
 
     // Sort by most recent
     activities.sort((a, b) => new Date(b.time) - new Date(a.time));
-    const trimmed = activities.slice(0, limit);
+
+    const offset = (page - 1) * limit;
+    const paginated = activities.slice(offset, offset + limit);
 
     return NextResponse.json({
-      activities: trimmed,
-      total: trimmed.length,
+      activities: paginated,
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        pages: Math.ceil(totalCount / limit),
+      },
     });
   } catch (error) {
     console.error("[api/analytics/activity] GET error:", error);

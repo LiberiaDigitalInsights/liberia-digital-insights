@@ -21,6 +21,7 @@ import {
   FaImages,
   FaLock,
   FaClock,
+  FaShieldAlt,
 } from "react-icons/fa";
 import { useAuth } from "@/hooks/useBackendApi";
 import { cn } from "@/lib/cn";
@@ -88,6 +89,12 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
       label: "Activity",
       href: "/admin/activity",
       icon: FaClock,
+    },
+    {
+      id: "audit",
+      label: "Audit Logs",
+      href: "/admin/audit",
+      icon: FaShieldAlt,
     },
     { id: "users", label: "Manage Users", href: "/admin/users", icon: FaUsers },
     {

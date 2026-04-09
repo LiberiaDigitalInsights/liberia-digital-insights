@@ -57,6 +57,18 @@ async function putHandler(request) {
       throw error;
     }
 
+    // Log the update
+    const { logAudit, getClientIp } = await import("@/lib/audit");
+    await logAudit({
+      action: "UPDATE_SETTINGS",
+      targetType: "setting",
+      targetId: SETTINGS_KEY,
+      actorId: request.user.id,
+      ipAddress: getClientIp(request),
+      // We don't log the full value because it contains secrets like smtpPassword
+      metadata: { keys: Object.keys(body) },
+    });
+
     return NextResponse.json({ success: true, persisted: true });
   } catch (error) {
     console.error("[api/settings] PUT error:", error);

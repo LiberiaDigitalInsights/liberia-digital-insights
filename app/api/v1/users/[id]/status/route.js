@@ -26,6 +26,16 @@ async function patchHandler(request, { params }) {
     if (!data)
       return NextResponse.json({ error: "User not found" }, { status: 404 });
 
+    // Log the update
+    const { logAudit, getClientIp } = await import("@/lib/audit");
+    await logAudit({
+      action: is_active ? "ENABLE_USER" : "DISABLE_USER",
+      targetType: "user",
+      targetId: id,
+      actorId: request.user.id,
+      ipAddress: getClientIp(request),
+    });
+
     return NextResponse.json(data);
   } catch (error) {
     console.error("[api/users/id/status] error:", error);
