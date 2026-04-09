@@ -73,6 +73,7 @@ export default function BookmarksClient() {
             <TabsTrigger value="all">All Content</TabsTrigger>
             <TabsTrigger value="article">Articles</TabsTrigger>
             <TabsTrigger value="event">Events</TabsTrigger>
+            <TabsTrigger value="podcast">Podcasts</TabsTrigger>
             <TabsTrigger value="insight">Insights</TabsTrigger>
           </TabsList>
         </div>
@@ -98,6 +99,19 @@ export default function BookmarksClient() {
                 if (!content) return null;
 
                 // Map content back to ArticleCard props
+                let label = "Article";
+                let hrefType = "article";
+                if (content_type === "event") {
+                  label = "Event";
+                  hrefType = "event";
+                } else if (content_type === "insight") {
+                  label = "Insight";
+                  hrefType = "insight";
+                } else if (content_type === "podcast") {
+                  label = "Podcast";
+                  hrefType = "podcast";
+                }
+
                 return (
                   <ArticleCard
                     key={bookmark.id}
@@ -105,17 +119,12 @@ export default function BookmarksClient() {
                     title={content.title}
                     excerpt={content.excerpt}
                     image={content.cover_image_url}
-                    category={
-                      content_type === "article"
-                        ? "Article"
-                        : content_type === "event"
-                          ? "Event"
-                          : "Insight"
-                    }
+                    category={label}
                     date={new Date(
                       content.published_at || content.date,
                     ).toLocaleDateString()}
-                    href={`/${content_type}/${content.slug}`}
+                    href={`/${hrefType}/${content.slug}`}
+                    contentType={content_type}
                     className="h-full"
                   />
                 );

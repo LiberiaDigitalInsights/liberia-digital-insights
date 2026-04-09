@@ -48,8 +48,11 @@ async function getHandler(request) {
       const insightIds = bookmarks
         .filter((b) => b.content_type === "insight")
         .map((b) => b.content_id);
+      const podcastIds = bookmarks
+        .filter((b) => b.content_type === "podcast")
+        .map((b) => b.content_id);
 
-      const [articles, events, insights] = await Promise.all([
+      const [articles, events, insights, podcasts] = await Promise.all([
         articleIds.length > 0
           ? supabase
               .from("articles")
@@ -68,6 +71,14 @@ async function getHandler(request) {
               .select("id, title, slug, cover_image_url, excerpt, published_at")
               .in("id", insightIds)
           : { data: [] },
+        podcastIds.length > 0
+          ? supabase
+              .from("podcasts")
+              .select(
+                "id, title, slug, cover_image_url, description, published_at",
+              )
+              .in("id", podcastIds)
+          : { data: [] },
       ]);
 
       const contentMap = {
@@ -77,6 +88,12 @@ async function getHandler(request) {
         event: Object.fromEntries((events.data || []).map((e) => [e.id, e])),
         insight: Object.fromEntries(
           (insights.data || []).map((i) => [i.id, i]),
+        ),
+        podcast: Object.fromEntries(
+          (podcasts.data || []).map((p) => [
+            p.id,
+            { ...p, excerpt: p.description },
+          ]),
         ),
       };
 

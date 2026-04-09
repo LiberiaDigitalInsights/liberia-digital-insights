@@ -20,6 +20,7 @@ export default function ArticleCard({
   featuredReverse = false,
   className,
   tags = [],
+  contentType = "article",
 }) {
   return (
     <motion.div
@@ -86,7 +87,7 @@ export default function ArticleCard({
                   <div className="absolute top-3 right-3 z-10">
                     <BookmarkButton
                       contentId={id}
-                      contentType="article"
+                      contentType={contentType}
                       size="sm"
                     />
                   </div>
@@ -117,7 +118,7 @@ export default function ArticleCard({
                   <div className="absolute top-3 right-3 z-10">
                     <BookmarkButton
                       contentId={id}
-                      contentType="article"
+                      contentType={contentType}
                       size="sm"
                     />
                   </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/cn";
 import LazyImage from "@/components/LazyImage";
 import { stripHtml } from "@/lib/text";
+import BookmarkButton from "@/components/ui/BookmarkButton";
 
 export default function PodcastCard({
   id,
@@ -82,6 +83,11 @@ export default function PodcastCard({
             {duration}
           </div>
         )}
+
+        {/* Bookmark Button */}
+        <div className="absolute top-3 right-3 z-20">
+          <BookmarkButton contentId={id} contentType="podcast" size="sm" />
+        </div>
       </div>
 
       {/* Content */}
