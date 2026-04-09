@@ -7,15 +7,28 @@ import React from "react";
 import Logo from "./Logo";
 import Search from "./Search";
 import { CATEGORIES } from "@/constants/categories";
-import { FaFacebookF, FaHamburger, FaTwitter, FaYoutube } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaHamburger,
+  FaTwitter,
+  FaYoutube,
+  FaUserCircle,
+  FaSignOutAlt,
+  FaTachometerAlt,
+  FaBookmark,
+  FaUser,
+} from "react-icons/fa";
 import AdSlot from "@/components/ads/AdSlot";
+import { useAuth } from "@/hooks/useBackendApi";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
   const [openMenu, setOpenMenu] = React.useState(null);
+  const [userMenuOpen, setUserMenuOpen] = React.useState(false);
   const [pinned, setPinned] = React.useState(false);
   const [barHeight, setBarHeight] = React.useState(0);
+  const { user, isAuthenticated, logout } = useAuth();
   const contentTriggerRef = React.useRef(null);
   const contentMenuRef = React.useRef(null);
   const communityTriggerRef = React.useRef(null);
@@ -55,9 +68,20 @@ export default function Navbar() {
         setOpenMenu(null);
       }
     }
+
+    function onUserClick(e) {
+      if (userMenuOpen && !e.target.closest("#user-menu-container")) {
+        setUserMenuOpen(false);
+      }
+    }
+
     document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, [openMenu]);
+    document.addEventListener("mousedown", onUserClick);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("mousedown", onUserClick);
+    };
+  }, [openMenu, userMenuOpen]);
 
   React.useEffect(() => {
     const onScroll = () => {
@@ -315,6 +339,95 @@ export default function Navbar() {
           <div className="ml-auto hidden items-center gap-3 md:flex">
             <Search placeholder="Search For" />
             <ThemeToggle />
+
+            {/* User Profile Section */}
+            <div className="relative ml-2" id="user-menu-container">
+              {isAuthenticated ? (
+                <>
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 p-1.5 transition-all hover:bg-white/20"
+                  >
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-500 text-xs font-bold text-white shadow-sm">
+                      {user?.first_name?.charAt(0) || <FaUser />}
+                    </div>
+                    <span className="text-xs font-medium">
+                      {user?.first_name || "Account"}
+                    </span>
+                    <span
+                      className={`text-[10px] transition-transform duration-200 ${userMenuOpen ? "rotate-180" : ""}`}
+                    >
+                      ▼
+                    </span>
+                  </button>
+
+                  {/* Desktop Dropdown */}
+                  <div
+                    className={`absolute right-0 top-full z-50 mt-2 w-56 transform rounded-xl bg-surface p-2 text-text shadow-2xl ring-1 ring-black/5 transition-all duration-200 ${
+                      userMenuOpen
+                        ? "visible translate-y-0 opacity-100"
+                        : "invisible translate-y-2 opacity-0"
+                    }`}
+                  >
+                    <div className="mb-2 border-b border-border p-3">
+                      <p className="text-sm font-bold">
+                        {user?.first_name} {user?.last_name}
+                      </p>
+                      <p className="truncate text-xs text-muted">
+                        {user?.email}
+                      </p>
+                    </div>
+
+                    <div className="space-y-1">
+                      {user?.role === "admin" && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-brand-500/5 hover:text-brand-500"
+                        >
+                          <FaTachometerAlt className="text-brand-500" />
+                          <span>Admin Dashboard</span>
+                        </Link>
+                      )}
+                      <Link
+                        href="/bookmarks"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-brand-500/5 hover:text-brand-500"
+                      >
+                        <FaBookmark className="text-brand-500" />
+                        <span>My Bookmarks</span>
+                      </Link>
+                      <Link
+                        href="/about"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-brand-500/5 hover:text-brand-500"
+                      >
+                        <FaUser className="text-brand-500" />
+                        <span>My Profile</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          logout();
+                          setUserMenuOpen(false);
+                        }}
+                        className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-500 transition-colors hover:bg-red-50"
+                      >
+                        <FaSignOutAlt />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold transition-all hover:bg-white/20"
+                >
+                  <FaUserCircle className="text-lg" />
+                  Sign In
+                </Link>
+              )}
+            </div>
           </div>
           <button
             className="md:hidden rounded px-2 py-1 text-sm text-white"
@@ -369,14 +482,33 @@ export default function Navbar() {
               </div>
 
               {/* Quick actions */}
-              <div className="flex gap-2">
-                <Link
-                  href="/subscribe"
-                  onClick={() => setOpen(false)}
-                  className="flex-1 rounded-md bg-brand-500 px-4 py-2.5 text-center text-sm font-medium text-white transition-colors duration-200 hover:bg-brand-600"
-                >
-                  Subscribe
-                </Link>
+              <div className="flex items-center gap-2">
+                {isAuthenticated ? (
+                  <div className="flex flex-1 items-center gap-3 rounded-md bg-brand-500/5 p-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-500 text-sm font-bold text-white uppercase italic">
+                      {user?.first_name?.charAt(0)}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold">
+                        {user?.first_name}
+                      </span>
+                      <button
+                        onClick={logout}
+                        className="text-left text-[10px] font-bold uppercase tracking-widest text-red-500"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="flex-1 rounded-md bg-brand-500 px-4 py-2.5 text-center text-sm font-medium text-white transition-colors duration-200 hover:bg-brand-600"
+                  >
+                    Sign In
+                  </Link>
+                )}
                 <ThemeToggle />
               </div>
 
@@ -417,6 +549,17 @@ export default function Navbar() {
                     {item.label}
                   </Link>
                 ))}
+
+                {isAuthenticated && user?.role === "admin" && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm font-bold text-brand-500 transition-colors duration-200 hover:bg-brand-500/10"
+                  >
+                    <FaTachometerAlt />
+                    Admin Dashboard
+                  </Link>
+                )}
               </nav>
 
               {/* Categories */}
