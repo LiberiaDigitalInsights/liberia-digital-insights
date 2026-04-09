@@ -113,6 +113,79 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Custom Prose Styles (Fallback if @tailwindcss/typography is missing) */
+  .prose {
+    color: var(--color-text);
+    line-height: 1.75;
+    font-size: 1.125rem;
+  }
+
+  .prose p {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    color: var(--color-text);
+    font-weight: 700;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    line-height: 1.2;
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+  }
+  .prose h3 {
+    font-size: 1.25rem;
+  }
+
+  .prose ul,
+  .prose ol {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+    padding-left: 1.625em;
+  }
+
+  .prose li {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .prose strong {
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .prose blockquote {
+    font-style: italic;
+    border-left: 4px solid var(--color-brand-500);
+    padding-left: 1rem;
+    margin: 2rem 0;
+    color: var(--color-muted);
+  }
+
+  .prose img {
+    border-radius: var(--radius-lg);
+    margin: 2rem 0;
+  }
+
+  .prose a {
+    color: var(--color-brand-500);
+    text-decoration: underline;
+    font-weight: 500;
+  }
+
+  .prose.prose-invert {
+    --tw-prose-body: var(--color-text);
+    --tw-prose-headings: var(--color-text);
+  }
 }
 
 /* Reduced motion accessibility */

@@ -126,7 +126,9 @@ export default function ArticleDetailClient() {
           </div>
         </div>
         {article.excerpt && (
-          <p className="mb-6 text-xl text-muted">{article.excerpt}</p>
+          <p className="mb-6 text-xl text-muted text-justify leading-relaxed">
+            {article.excerpt}
+          </p>
         )}
         <div className="flex flex-wrap items-center gap-4 text-sm text-muted">
           <span>By {article.author?.name || "LDI Staff"}</span>
