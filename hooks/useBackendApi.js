@@ -32,7 +32,10 @@ export const apiRequest = async (endpoint, options = {}, retries = 2) => {
           error.error ||
           error.message ||
           `HTTP error! status: ${response.status}`;
-        throw new Error(errorMessage);
+
+        const apiError = new Error(errorMessage);
+        apiError.status = response.status;
+        throw apiError;
       }
 
       if (response.status === 204) return null;
@@ -52,7 +55,15 @@ export const apiRequest = async (endpoint, options = {}, retries = 2) => {
         continue;
       }
 
-      console.error(`API Error [${endpoint}]:`, error);
+      // Only log true system errors (500+) or network failures to console.error
+      // Status 4xx errors are typically functional/validation errors handled by UI
+      const isSystemError = !error.status || error.status >= 500;
+      if (isSystemError) {
+        console.error(`API Error [${endpoint}]:`, error);
+      } else {
+        console.warn(`API Client Error [${endpoint}]:`, error.message);
+      }
+
       throw error;
     }
   }
