@@ -21,6 +21,11 @@ import PodcastWidget from "@/components/sidebar/PodcastWidget";
 import EventsWidget from "@/components/sidebar/EventsWidget";
 import NewsletterWidget from "@/components/sidebar/NewsletterWidget";
 import AdSlot from "@/components/ads/AdSlot";
+import ReadingProgressBar from "@/components/ui/ReadingProgressBar";
+import TableOfContents from "@/components/articles/TableOfContents";
+import { calculateReadTime, extractHeadings } from "@/lib/reading";
+import { FaClock, FaUser, FaTag } from "react-icons/fa";
+import { cn } from "@/lib/cn";
 
 export default function ArticleDetailClient() {
   const { slug } = useParams();
@@ -32,13 +37,18 @@ export default function ArticleDetailClient() {
     loading: articleLoading,
     error: articleError,
   } = useArticle(slug);
+  const article = articleData?.article;
+
   const { data: relatedArticlesData, loading: relatedLoading } = useArticles({
-    limit: 3,
+    limit: 6,
+    category: article?.category?.slug,
   });
   const { data: podcastsData } = usePodcasts({ limit: 3 });
   const { data: eventsData } = useEvents({ limit: 3 });
 
-  const article = articleData?.article;
+  const headings = extractHeadings(article?.content);
+  const readTime = calculateReadTime(article?.content);
+
   const relatedArticles = (relatedArticlesData?.articles || []).filter(
     (a) => a.id !== article?.id && a.slug !== slug,
   );
@@ -130,41 +140,142 @@ export default function ArticleDetailClient() {
             {article.excerpt}
           </p>
         )}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-muted">
-          <span>By {article.author?.name || "LDI Staff"}</span>
-          {article.published_at && <span>•</span>}
+        <div className="flex flex-wrap items-center gap-6 text-xs font-bold uppercase tracking-widest text-muted">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-brand-500/10 flex items-center justify-center text-brand-500">
+              <FaUser className="text-[10px]" />
+            </div>
+            <span>{article.author?.name || "LDI Staff"}</span>
+          </div>
+          <div className="flex items-center gap-2 transition-colors hover:text-brand-500">
+            <FaClock className="text-brand-500/50" />
+            <span>{readTime} min read</span>
+          </div>
           {article.published_at && (
-            <span>{new Date(article.published_at).toLocaleDateString()}</span>
-          )}
-          {article.content && <span>•</span>}
-          {article.content && (
-            <span>{Math.ceil(article.content.length / 1000)} min read</span>
+            <div className="flex items-center gap-2 text-muted/60">
+              <span>
+                {new Date(article.published_at).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
+            </div>
           )}
         </div>
       </header>
 
-      {/* Featured Image */}
-      {article.cover_image_url && (
-        <div className="mb-8 overflow-hidden rounded-lg aspect-video relative">
-          <LazyImage
-            src={article.cover_image_url}
-            alt={article.title}
-            className="h-full w-full"
-            priority
-          />
-        </div>
-      )}
+      <ReadingProgressBar />
 
-      {/* Article Content */}
-      <article className="mb-12 prose prose-invert max-w-none">
-        {article.content ? (
-          <ContentRenderer html={article.content} />
-        ) : (
-          <p className="text-muted">
-            {article.excerpt || "No content available."}
-          </p>
-        )}
-      </article>
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_280px]">
+        <div>
+          {/* Featured Image */}
+          {article.cover_image_url && (
+            <div className="mb-10 overflow-hidden rounded-3xl aspect-video relative shadow-2xl">
+              <LazyImage
+                src={article.cover_image_url}
+                alt={article.title}
+                className="h-full w-full object-cover"
+                priority
+              />
+            </div>
+          )}
+
+          {/* Article Content */}
+          <article className="mb-12 prose prose-invert prose-brand max-w-none text-justify lg:text-left selection:bg-brand-500/30">
+            {article.content ? (
+              <ContentRenderer html={article.content} />
+            ) : (
+              <p className="text-muted italic">
+                {article.excerpt || "No content available."}
+              </p>
+            )}
+          </article>
+
+          {/* Bottom Share & Actions */}
+          <div className="py-8 border-y border-border/50 flex flex-col md:flex-row items-center justify-between gap-6 bg-surface/30 rounded-3xl px-8">
+            <div className="space-y-1 text-center md:text-left">
+              <h4 className="font-black italic text-lg text-text">
+                Enjoyed this article?
+              </h4>
+              <p className="text-sm text-muted font-medium">
+                Share it with your network and join the conversation.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted mr-2">
+                Share via
+              </span>
+              <ShareButton
+                title={article.title}
+                url={typeof window !== "undefined" ? window.location.href : ""}
+                className="scale-110"
+              />
+              <BookmarkButton
+                contentId={article.id}
+                contentType="article"
+                size="lg"
+              />
+            </div>
+          </div>
+
+          {/* Read Next Section */}
+          {relatedArticles.length > 0 && (
+            <div className="mt-12 p-8 rounded-3xl bg-brand-500/5 border border-brand-500/10 flex items-center justify-between gap-6 group">
+              <div className="flex-1 min-w-0">
+                <span className="text-[10px] font-black uppercase tracking-widest text-brand-500 mb-2 block">
+                  Read Next
+                </span>
+                <Link
+                  href={`/article/${relatedArticles[0].slug}`}
+                  className="block"
+                >
+                  <h4 className="text-xl font-black italic tracking-tight text-text group-hover:text-brand-500 transition-colors line-clamp-1">
+                    {relatedArticles[0].title}
+                  </h4>
+                  <p className="text-sm text-muted mt-1 line-clamp-1 font-medium">
+                    {relatedArticles[0].excerpt}
+                  </p>
+                </Link>
+              </div>
+              <Link
+                href={`/article/${relatedArticles[0].slug}`}
+                className="w-12 h-12 rounded-full bg-brand-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-brand-500/20 group-hover:scale-110 transition-transform"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-5 h-5"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar */}
+        <aside className="space-y-12">
+          {headings.length > 0 && (
+            <div className="sticky top-28">
+              <TableOfContents headings={headings} />
+            </div>
+          )}
+
+          <div className={cn("space-y-10", headings.length > 0 && "lg:pt-8")}>
+            <PodcastWidget podcasts={podcastsData?.podcasts || []} />
+            <NewsletterWidget />
+            <EventsWidget events={eventsData?.events || []} />
+            <AdSlot position="sidebar" />
+          </div>
+        </aside>
+      </div>
 
       {/* Related Articles */}
       {relatedArticles.length > 0 && (
