@@ -24,6 +24,7 @@
     "bcryptjs": "^3.0.3",
     "cheerio": "^1.2.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
     "framer-motion": "^12.34.0",
     "jsonwebtoken": "^9.0.2",
