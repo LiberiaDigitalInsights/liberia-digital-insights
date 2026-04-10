@@ -55,6 +55,8 @@ export default function AdminGallery() {
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: galleryData, loading, refetch } = useGallery();
   const { data: categoriesData, refetch: refetchCategories } =
@@ -175,16 +177,21 @@ export default function AdminGallery() {
     setShowModal(true);
   };
 
-  const handleDelete = async (item) => {
-    if (!confirm(`Are you sure you want to delete "${item.title}"?`)) return;
+  const handleDelete = (item) => {
+    setDeleteTarget(item);
+  };
 
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
     try {
-      await deleteGalleryItem(item.id);
+      await deleteGalleryItem(deleteTarget.id);
       showToast({
         title: "Item Deleted",
         description: "Gallery item has been removed.",
         variant: "success",
       });
+      setDeleteTarget(null);
       refetch();
     } catch (error) {
       showToast({
@@ -192,6 +199,8 @@ export default function AdminGallery() {
         description: error.message,
         variant: "danger",
       });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -564,13 +573,29 @@ export default function AdminGallery() {
               <label className="text-xs font-black uppercase tracking-widest text-muted mb-2 block">
                 Category
               </label>
-              <Input
-                value={formData.category}
-                onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value })
-                }
-                placeholder="e.g. Workshop, Interview..."
-              />
+              {categories.length > 0 ? (
+                <Select
+                  value={formData.category}
+                  onChange={(e) =>
+                    setFormData({ ...formData, category: e.target.value })
+                  }
+                >
+                  <option value="">Select category...</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id || cat} value={cat.name || cat}>
+                      {cat.name || cat}
+                    </option>
+                  ))}
+                </Select>
+              ) : (
+                <Input
+                  value={formData.category}
+                  onChange={(e) =>
+                    setFormData({ ...formData, category: e.target.value })
+                  }
+                  placeholder="e.g. Workshop, Interview..."
+                />
+              )}
             </div>
           </div>
 
@@ -628,6 +653,47 @@ export default function AdminGallery() {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Delete Confirm Modal */}
+      <Modal
+        open={!!deleteTarget}
+        onClose={() => !isDeleting && setDeleteTarget(null)}
+        title="Delete Gallery Item"
+        size="sm"
+        footer={
+          <>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteTarget(null)}
+              disabled={isDeleting}
+              className="rounded-xl font-black uppercase text-xs"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmDelete}
+              disabled={isDeleting}
+              className="bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-black uppercase text-xs px-6"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </Button>
+          </>
+        }
+      >
+        <div className="text-center py-4 space-y-3">
+          <div className="w-14 h-14 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+            <FaTrash className="w-5 h-5" />
+          </div>
+          <p className="font-black text-text italic tracking-tight">
+            Delete this asset?
+          </p>
+          <p className="text-sm text-muted">
+            &quot;
+            <span className="text-text font-bold">{deleteTarget?.title}</span>
+            &quot; will be permanently removed.
+          </p>
+        </div>
       </Modal>
 
       {/* Categories Modal */}
