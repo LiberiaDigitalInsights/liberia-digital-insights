@@ -27,7 +27,31 @@ export default function ContentManager({
   filterStatus = "all",
   searchTerm = "",
   pagination = { current: 1, total: 1, onPageChange: () => {} },
+  selection = null, // { selectedIds: [], onSelectionChange: (ids) => {} }
 }) {
+  const allIds = items.map((item) => item.id);
+  const isAllSelected =
+    items.length > 0 && selection?.selectedIds?.length === items.length;
+  const isSomeSelected = selection?.selectedIds?.length > 0 && !isAllSelected;
+
+  const toggleAll = () => {
+    if (isAllSelected) {
+      selection.onSelectionChange([]);
+    } else {
+      selection.onSelectionChange(allIds);
+    }
+  };
+
+  const toggleItem = (id) => {
+    if (selection.selectedIds.includes(id)) {
+      selection.onSelectionChange(
+        selection.selectedIds.filter((i) => i !== id),
+      );
+    } else {
+      selection.onSelectionChange([...selection.selectedIds, id]);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -76,6 +100,7 @@ export default function ContentManager({
                   <option value="all">All Status</option>
                   <option value="published">Published</option>
                   <option value="draft">Draft</option>
+                  <option value="archived">Archived</option>
                   <option value="pending">Pending Review</option>
                 </Select>
               </div>
@@ -94,6 +119,19 @@ export default function ContentManager({
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-muted/30 border-b border-border/50">
+                  {selection && (
+                    <th className="px-6 py-4 w-10">
+                      <input
+                        type="checkbox"
+                        checked={isAllSelected}
+                        ref={(el) => {
+                          if (el) el.indeterminate = isSomeSelected;
+                        }}
+                        onChange={toggleAll}
+                        className="h-4 w-4 rounded border-border/50 bg-surface text-brand-500 focus:ring-brand-500/30 transition-all cursor-pointer"
+                      />
+                    </th>
+                  )}
                   {columns.map((col) => (
                     <th
                       key={col.key}
@@ -122,8 +160,23 @@ export default function ContentManager({
                   items.map((item, idx) => (
                     <tr
                       key={item.id || idx}
-                      className="hover:bg-brand-500/5 transition-colors group cursor-default"
+                      className={cn(
+                        "hover:bg-brand-500/5 transition-colors group cursor-default",
+                        selection?.selectedIds?.includes(item.id) &&
+                          "bg-brand-500/10",
+                      )}
                     >
+                      {selection && (
+                        <td className="px-6 py-5">
+                          <input
+                            type="checkbox"
+                            checked={selection.selectedIds.includes(item.id)}
+                            onChange={() => toggleItem(item.id)}
+                            onClick={(e) => e.stopPropagation()} // Prevent row click from triggering selection twice if we add row click later
+                            className="h-4 w-4 rounded border-border/50 bg-surface text-brand-500 focus:ring-brand-500/30 transition-all cursor-pointer"
+                          />
+                        </td>
+                      )}
                       {columns.map((col) => (
                         <td
                           key={col.key}

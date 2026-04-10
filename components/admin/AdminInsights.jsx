@@ -15,6 +15,8 @@ import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/context/ToastContext";
+import BulkActions from "./BulkActions";
+import { apiRequest } from "@/hooks/useBackendApi";
 
 export default function AdminInsights() {
   const router = useRouter();
@@ -25,6 +27,9 @@ export default function AdminInsights() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [insightToDelete, setInsightToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isBulkProcessing, setIsBulkProcessing] = useState(false);
+  const [bulkActionType, setBulkActionType] = useState(null);
 
   const {
     data: insightsData,
@@ -71,6 +76,66 @@ export default function AdminInsights() {
       });
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleBulkAction = async (action) => {
+    if (action === "delete") {
+      setBulkActionType("delete");
+      setShowDeleteModal(true);
+      return;
+    }
+
+    setIsBulkProcessing(true);
+    try {
+      const result = await apiRequest("/insights/bulk", {
+        method: "POST",
+        body: JSON.stringify({ ids: selectedIds, action }),
+      });
+
+      await refetch();
+      setSelectedIds([]);
+      showToast({
+        title: "Bulk Action Successful",
+        description: result.message,
+        variant: "success",
+      });
+    } catch (error) {
+      showToast({
+        title: "Bulk Action Failed",
+        description: error.message,
+        variant: "danger",
+      });
+    } finally {
+      setIsBulkProcessing(false);
+    }
+  };
+
+  const handleConfirmBulkDelete = async () => {
+    setIsBulkProcessing(true);
+    try {
+      await apiRequest("/insights/bulk", {
+        method: "POST",
+        body: JSON.stringify({ ids: selectedIds, action: "delete" }),
+      });
+
+      await refetch();
+      setSelectedIds([]);
+      setShowDeleteModal(false);
+      setBulkActionType(null);
+      showToast({
+        title: "Bulk Delete Successful",
+        description: `${selectedIds.length} insights have been removed.`,
+        variant: "success",
+      });
+    } catch (error) {
+      showToast({
+        title: "Bulk Delete Failed",
+        description: error.message,
+        variant: "danger",
+      });
+    } finally {
+      setIsBulkProcessing(false);
     }
   };
 
@@ -170,30 +235,57 @@ export default function AdminInsights() {
         filterStatus={filterStatus}
         searchTerm={searchTerm}
         pagination={pagination}
+        selection={{
+          selectedIds,
+          onSelectionChange: setSelectedIds,
+        }}
+      />
+
+      <BulkActions
+        selectedCount={selectedIds.length}
+        onAction={handleBulkAction}
+        onClear={() => setSelectedIds([])}
+        filterStatus={filterStatus}
       />
 
       {/* Delete Confirmation Modal */}
       <Modal
         open={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        title="Delete Insight"
+        onClose={() => {
+          setShowDeleteModal(false);
+          setBulkActionType(null);
+        }}
+        title={
+          bulkActionType === "delete"
+            ? "Bulk Delete Insights"
+            : "Delete Insight"
+        }
         size="sm"
         footer={
           <>
             <Button
               variant="outline"
-              onClick={() => setShowDeleteModal(false)}
+              onClick={() => {
+                setShowDeleteModal(false);
+                setBulkActionType(null);
+              }}
               className="font-black uppercase tracking-widest text-[10px] rounded-xl"
-              disabled={isDeleting}
+              disabled={isDeleting || isBulkProcessing}
             >
               Cancel
             </Button>
             <Button
-              onClick={confirmDelete}
+              onClick={
+                bulkActionType === "delete"
+                  ? handleConfirmBulkDelete
+                  : confirmDelete
+              }
               className="bg-rose-500 hover:bg-rose-600 text-white font-black uppercase tracking-widest text-[10px] rounded-xl px-6"
-              disabled={isDeleting}
+              disabled={isDeleting || isBulkProcessing}
             >
-              {isDeleting ? "Deleting..." : "Confirm Delete"}
+              {isDeleting || isBulkProcessing
+                ? "Processing..."
+                : "Confirm Delete"}
             </Button>
           </>
         }
@@ -206,11 +298,23 @@ export default function AdminInsights() {
             Are you absolutely sure?
           </p>
           <p className="text-muted leading-relaxed">
-            You are about to delete{" "}
-            <span className="text-text font-bold">
-              "{insightToDelete?.title}"
-            </span>
-            . This action is permanent and cannot be undone.
+            {bulkActionType === "delete" ? (
+              <>
+                You are about to delete{" "}
+                <span className="text-text font-bold">
+                  {selectedIds.length} insights
+                </span>
+                . This action is permanent and cannot be undone.
+              </>
+            ) : (
+              <>
+                You are about to delete{" "}
+                <span className="text-text font-bold">
+                  "{insightToDelete?.title}"
+                </span>
+                . This action is permanent and cannot be undone.
+              </>
+            )}
           </p>
         </div>
       </Modal>
