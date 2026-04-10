@@ -23,6 +23,7 @@ import {
   FaClock,
   FaShieldAlt,
   FaUserPlus,
+  FaHeartbeat,
 } from "react-icons/fa";
 import { useAuth } from "@/hooks/useBackendApi";
 import { cn } from "@/lib/cn";
@@ -96,6 +97,12 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
       label: "Audit Logs",
       href: "/admin/audit",
       icon: FaShieldAlt,
+    },
+    {
+      id: "health",
+      label: "Platform Health",
+      href: "/admin/health",
+      icon: FaHeartbeat,
     },
     { id: "users", label: "Manage Users", href: "/admin/users", icon: FaUsers },
     {
