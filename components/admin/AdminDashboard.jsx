@@ -17,7 +17,9 @@ import {
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useAnalyticsStats, useRecentActivity } from "@/hooks/useBackendApi";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { cn } from "@/lib/cn";
+import { FaBell, FaBellSlash } from "react-icons/fa";
 
 const StatCard = ({ title, value, icon: Icon, color, change, loading }) => {
   return (
@@ -83,6 +85,26 @@ const QuickAction = ({ title, icon: Icon, href }) => (
 export default function AdminDashboard() {
   const { data: stats, loading: statsLoading } = useAnalyticsStats();
   const { data: activityData, loading: activityLoading } = useRecentActivity();
+  const {
+    subscription,
+    isSupported,
+    loading: pushLoading,
+    permission,
+    subscribe,
+    unsubscribe,
+  } = usePushNotifications();
+
+  const handlePushToggle = async () => {
+    if (subscription) {
+      await unsubscribe();
+    } else {
+      try {
+        await subscribe();
+      } catch (err) {
+        alert("Failed to enable notifications. Please check site permissions.");
+      }
+    }
+  };
 
   const statCards = [
     {
@@ -130,7 +152,34 @@ export default function AdminDashboard() {
             ecosystem.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {isSupported && (
+            <button
+              onClick={handlePushToggle}
+              disabled={pushLoading || permission === "denied"}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all duration-300 border shadow-sm",
+                subscription
+                  ? "bg-green-500/10 text-green-600 border-green-500/20 hover:bg-green-500/20"
+                  : "bg-surface text-muted border-border hover:border-brand-500 hover:text-brand-500",
+                permission === "denied" &&
+                  "opacity-50 cursor-not-allowed grayscale",
+              )}
+            >
+              {pushLoading ? (
+                <div className="w-4 h-4 border-2 border-current border-t-transparent animate-spin rounded-full" />
+              ) : subscription ? (
+                <FaBell className="w-3.5 h-3.5" />
+              ) : (
+                <FaBellSlash className="w-3.5 h-3.5" />
+              )}
+              {permission === "denied"
+                ? "Notifications Blocked"
+                : subscription
+                  ? "Live Alerts Active"
+                  : "Enable Push Alerts"}
+            </button>
+          )}
           <Link
             href="/admin/articles/new"
             className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-brand-500 text-white text-sm font-black uppercase tracking-widest shadow-lg shadow-brand-500/20 hover:scale-105 transition-transform"
