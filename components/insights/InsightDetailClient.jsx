@@ -26,6 +26,7 @@ import ReadingProgressBar from "@/components/ui/ReadingProgressBar";
 import TableOfContents from "@/components/articles/TableOfContents";
 import { calculateReadTime, extractHeadings } from "@/lib/reading";
 import { FaClock, FaUser } from "react-icons/fa";
+import { cn } from "@/lib/cn";
 
 export default function InsightDetailClient() {
   const { slug } = useParams();
@@ -194,7 +195,7 @@ export default function InsightDetailClient() {
           </article>
 
           {/* Bottom Actions */}
-          <div className="py-10 border-y border-border/50 flex flex-col md:flex-row items-center justify-between gap-6 bg-brand-500/5 rounded-[2rem] px-10">
+          <div className="py-10 border-y border-border/50 flex flex-col md:flex-row items-center justify-between gap-6 bg-brand-500/5 rounded-4xl px-10">
             <div className="space-y-2 text-center md:text-left">
               <h4 className="font-black italic text-3xl tracking-tighter text-text">
                 Did this insight help you?
