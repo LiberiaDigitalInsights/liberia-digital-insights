@@ -24,6 +24,7 @@ import {
   FaShieldAlt,
   FaUserPlus,
   FaHeartbeat,
+  FaFileExport,
 } from "react-icons/fa";
 import { useAuth } from "@/hooks/useBackendApi";
 import { cn } from "@/lib/cn";
@@ -104,6 +105,12 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
       href: "/admin/health",
       icon: FaHeartbeat,
     },
+    {
+      id: "exports",
+      label: "Data Exports",
+      href: "/admin/exports",
+      icon: FaFileExport,
+    },
     { id: "users", label: "Manage Users", href: "/admin/users", icon: FaUsers },
     {
       id: "invitations",
@@ -133,6 +140,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
       "training",
       "newsletter",
       "activity",
+      "exports",
       "account",
     ],
     moderator: [

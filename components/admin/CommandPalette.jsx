@@ -16,6 +16,7 @@ import {
   FaClock,
   FaUserPlus,
   FaImages,
+  FaFileExport,
 } from "react-icons/fa";
 import { cn } from "@/lib/cn";
 
@@ -74,6 +75,13 @@ const QUICK_ACTIONS = [
     label: "Manage Media Gallery",
     icon: FaImages,
     href: "/admin/gallery",
+    category: "Navigation",
+  },
+  {
+    id: "data-exports",
+    label: "System Data Exports",
+    icon: FaFileExport,
+    href: "/admin/exports",
     category: "Navigation",
   },
 ];
