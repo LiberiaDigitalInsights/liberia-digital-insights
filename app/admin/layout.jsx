@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import NotificationBell from "@/components/admin/NotificationBell";
+import CommandPalette from "@/components/admin/CommandPalette";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { cn } from "@/lib/cn";
+import { FaKeyboard, FaSearch } from "react-icons/fa";
 
 export default function AdminLayout({ children }) {
   const { user, loading, isAuthenticated } = useAuth();
@@ -56,6 +58,28 @@ export default function AdminLayout({ children }) {
               <h1 className="text-xl font-black uppercase italic tracking-tighter text-brand-500">
                 Liberia Digital <span className="text-text">Insights</span>
               </h1>
+
+              {/* Command Palette Trigger Hint */}
+              <button
+                onClick={() =>
+                  window.dispatchEvent(
+                    new KeyboardEvent("keydown", {
+                      key: "k",
+                      metaKey: true,
+                      ctrlKey: true,
+                    }),
+                  )
+                }
+                className="ml-6 hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-muted/20 text-muted hover:border-brand-500 hover:text-brand-500 transition-all group"
+              >
+                <FaSearch className="w-3 h-3" />
+                <span className="text-[10px] font-black uppercase tracking-widest">
+                  Command Search
+                </span>
+                <span className="flex items-center gap-0.5 px-1 rounded bg-muted/40 text-[9px] border border-border">
+                  <span className="text-[10px]">⌘</span>K
+                </span>
+              </button>
             </div>
 
             <div className="flex items-center gap-6">
@@ -80,6 +104,9 @@ export default function AdminLayout({ children }) {
             <div className="mx-auto max-w-7xl animate-fade-in">{children}</div>
           </main>
         </div>
+
+        {/* Global Command Palette */}
+        <CommandPalette />
       </div>
     </NotificationProvider>
   );
